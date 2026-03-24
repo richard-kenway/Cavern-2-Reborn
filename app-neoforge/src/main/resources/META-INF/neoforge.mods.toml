@@ -7,7 +7,7 @@ modId="${mod_id}"
 version="${mod_version}"
 displayName="${mod_name}"
 description='''Modern rewrite bootstrap for Cavern.
-This build currently contains only the skeleton project structure.
+This build contains the project skeleton and a minimal content registration slice.
 '''
 
 [[dependencies.${mod_id}]]
@@ -23,4 +23,3 @@ type="required"
 versionRange="${minecraft_version_range}"
 ordering="NONE"
 side="BOTH"
-
