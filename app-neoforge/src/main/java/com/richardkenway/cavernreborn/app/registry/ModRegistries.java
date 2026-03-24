@@ -1,7 +1,5 @@
 package com.richardkenway.cavernreborn.app.registry;
 
-import java.util.function.Supplier;
-
 import com.richardkenway.cavernreborn.CavernReborn;
 
 import net.minecraft.core.registries.Registries;
@@ -13,16 +11,19 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.DeferredItem;
 
 public final class ModRegistries {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(CavernReborn.MOD_ID);
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(CavernReborn.MOD_ID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, CavernReborn.MOD_ID);
-    public static final Supplier<Block> BOOTSTRAP_BLOCK = BLOCKS.register("bootstrap_block",
+    public static final DeferredBlock<Block> BOOTSTRAP_BLOCK = BLOCKS.register("bootstrap_block",
         () -> new Block(BlockBehaviour.Properties.of().strength(1.5F).sound(SoundType.STONE)));
-    public static final Supplier<BlockItem> BOOTSTRAP_BLOCK_ITEM = ITEMS.registerSimpleBlockItem(BOOTSTRAP_BLOCK);
-    public static final Supplier<CreativeModeTab> MAIN_TAB = CREATIVE_MODE_TABS.register("main",
+    public static final DeferredItem<BlockItem> BOOTSTRAP_BLOCK_ITEM = ITEMS.registerSimpleBlockItem(BOOTSTRAP_BLOCK);
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MAIN_TAB = CREATIVE_MODE_TABS.register("main",
         () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.cavernreborn.main"))
             .icon(() -> new ItemStack(BOOTSTRAP_BLOCK_ITEM.get()))

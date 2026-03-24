@@ -1,0 +1,13 @@
+services:
+  gradle:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+      - gradle-cache:/gradle-cache
+    command: ["./gradlew", "--no-daemon", "help"]
+
+volumes:
+  gradle-cache:
