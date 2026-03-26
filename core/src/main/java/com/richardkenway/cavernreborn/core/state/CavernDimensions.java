@@ -6,6 +6,7 @@ public final class CavernDimensions {
     public static final int CAVERN_ENTRY_X = 0;
     public static final int CAVERN_ENTRY_Y = 80;
     public static final int CAVERN_ENTRY_Z = 0;
+    public static final int MIN_SAFE_Y = 64;
 
     private CavernDimensions() {
     }

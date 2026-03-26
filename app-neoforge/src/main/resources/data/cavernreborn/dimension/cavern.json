@@ -1,7 +1,11 @@
 {
-  "type": "minecraft:overworld",
+  "type": "cavernreborn:cavern",
   "generator": {
-    "type": "minecraft:flat",
-    "settings": "minecraft:the_void"
+    "type": "minecraft:noise",
+    "settings": "minecraft:overworld",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "minecraft:plains"
+    }
   }
 }

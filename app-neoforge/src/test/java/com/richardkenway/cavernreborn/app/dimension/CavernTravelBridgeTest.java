@@ -46,9 +46,9 @@ class CavernTravelBridgeTest {
 
         bootstrap.cavernTravelBridge().travelToCavern(
             player,
-            new PortalReturnState("cavern", CavernDimensions.OVERWORLD_DIMENSION_ID, 12, 64, 12),
+            new PortalReturnState("cavern", CavernDimensions.OVERWORLD_DIMENSION_ID, 12, 12, 12),
             new TeleportContext("cavern", 0.25D, 0.5D, 0.75D, "north"),
-            new PortalWorldIndex.PortalPlacement(8, 70, 8)
+            new PortalWorldIndex.PortalPlacement(8, 18, 8)
         );
 
         Optional<CavernTravelPlan> returnPlan = bootstrap.cavernTravelBridge().returnHome(player);
@@ -56,7 +56,7 @@ class CavernTravelBridgeTest {
         assertTrue(returnPlan.isPresent());
         assertEquals(CavernDimensions.OVERWORLD_DIMENSION_ID, player.lastTargetDimensionId);
         assertEquals(8.0D, player.lastX);
-        assertEquals(70.0D, player.lastY);
+        assertEquals(18.0D, player.lastY);
         assertEquals(8.0D, player.lastZ);
         assertEquals(45.0F, player.lastYaw);
         assertEquals(15.0F, player.lastPitch);
