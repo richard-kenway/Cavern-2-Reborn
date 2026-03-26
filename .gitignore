@@ -4,8 +4,9 @@ build/
 **/build/
 out/
 run/
+logs/
+**/logs/
 *.iml
 *.ipr
 *.iws
 .DS_Store
-
