@@ -12,6 +12,7 @@ class CavernStateBootstrapTest {
 
         assertNotNull(bootstrap.playerReturnStateRepository());
         assertNotNull(bootstrap.worldPortalIndexRepository());
-        assertEquals("Cavern Reborn return-state skeleton ready", bootstrap.describe());
+        assertNotNull(bootstrap.portalLoopCoordinator());
+        assertEquals("Cavern Reborn return-state and portal wiring ready", bootstrap.describe());
     }
 }

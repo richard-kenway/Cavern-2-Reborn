@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 public record PortalWorldIndex(Map<String, Set<PortalPlacement>> portalsByKey) {
@@ -47,6 +48,11 @@ public record PortalWorldIndex(Map<String, Set<PortalPlacement>> portalsByKey) {
 
     public Set<PortalPlacement> placementsFor(String portalKey) {
         return portalsByKey.getOrDefault(requireText(portalKey, "portalKey"), Set.of());
+    }
+
+    public Optional<PortalPlacement> firstPlacementFor(String portalKey) {
+        Set<PortalPlacement> placements = placementsFor(portalKey);
+        return placements.stream().findFirst();
     }
 
     private static Map<String, Set<PortalPlacement>> copyIndex(Map<String, Set<PortalPlacement>> source) {
