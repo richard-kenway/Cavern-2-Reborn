@@ -1,5 +1,7 @@
 {
   "block.cavernreborn.bootstrap_block": "Bootstrap Block",
   "item.cavernreborn.bootstrap_block": "Bootstrap Block",
+  "block.cavernreborn.cavern_portal": "Cavern Portal",
+  "item.cavernreborn.cavern_portal": "Cavern Portal",
   "itemGroup.cavernreborn.main": "Cavern Reborn"
 }

@@ -1,5 +1,7 @@
 package com.richardkenway.cavernreborn;
 
+import java.util.Objects;
+
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -15,11 +17,15 @@ import net.neoforged.fml.common.Mod;
 public final class CavernReborn {
     public static final String MOD_ID = "cavernreborn";
     public static final Logger LOGGER = LogUtils.getLogger();
-    private final CavernStateBootstrap cavernStateBootstrap;
+    private static CavernStateBootstrap cavernStateBootstrap;
 
     public CavernReborn(IEventBus modEventBus) {
         ModRegistries.register(modEventBus);
-        this.cavernStateBootstrap = new CavernStateBootstrap();
-        LOGGER.info("Bootstrapped {} with {}", CavernProject.PROJECT_NAME, cavernStateBootstrap.describe());
+        cavernStateBootstrap = new CavernStateBootstrap();
+        LOGGER.info("Bootstrapped {} with {}", CavernProject.PROJECT_NAME, cavernStateBootstrap().describe());
+    }
+
+    public static CavernStateBootstrap cavernStateBootstrap() {
+        return Objects.requireNonNull(cavernStateBootstrap, "cavernStateBootstrap");
     }
 }

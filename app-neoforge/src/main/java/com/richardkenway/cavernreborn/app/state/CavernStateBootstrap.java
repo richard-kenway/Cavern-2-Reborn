@@ -1,6 +1,7 @@
 package com.richardkenway.cavernreborn.app.state;
 
 import com.richardkenway.cavernreborn.app.dimension.CavernTravelBridge;
+import com.richardkenway.cavernreborn.app.portal.CavernPortalInteractionService;
 import com.richardkenway.cavernreborn.core.CavernProject;
 import com.richardkenway.cavernreborn.core.state.CavernDimensionTravelPlanner;
 import com.richardkenway.cavernreborn.core.state.PlayerReturnStateStore;
@@ -13,6 +14,7 @@ public final class CavernStateBootstrap {
     private final PortalLoopService portalLoopService;
     private final CavernDimensionTravelPlanner cavernDimensionTravelPlanner;
     private final CavernTravelBridge cavernTravelBridge;
+    private final CavernPortalInteractionService cavernPortalInteractionService;
 
     public CavernStateBootstrap() {
         this(new InMemoryPlayerReturnStateRepository(), new InMemoryWorldPortalIndexRepository());
@@ -27,6 +29,7 @@ public final class CavernStateBootstrap {
         this.portalLoopService = new PortalLoopService(playerReturnStateStore, worldPortalIndexStore);
         this.cavernDimensionTravelPlanner = new CavernDimensionTravelPlanner(portalLoopService);
         this.cavernTravelBridge = new CavernTravelBridge(cavernDimensionTravelPlanner);
+        this.cavernPortalInteractionService = new CavernPortalInteractionService(cavernTravelBridge);
     }
 
     public PlayerReturnStateStore playerReturnStateStore() {
@@ -49,7 +52,11 @@ public final class CavernStateBootstrap {
         return cavernTravelBridge;
     }
 
+    public CavernPortalInteractionService cavernPortalInteractionService() {
+        return cavernPortalInteractionService;
+    }
+
     public String describe() {
-        return CavernProject.PROJECT_NAME + " return-state, portal wiring and CAVERN dimension travel bridge ready";
+        return CavernProject.PROJECT_NAME + " return-state, portal block flow and CAVERN dimension travel bridge ready";
     }
 }

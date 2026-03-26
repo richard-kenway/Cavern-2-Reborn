@@ -10,10 +10,10 @@ This repository currently contains the project skeleton and a minimal content re
 - `core` for loader-agnostic gameplay rules and domain models
 - `data` for serialization, schema and persistence-oriented types
 - a bootstrap block, `BlockItem` and creative tab used to validate registry wiring
-- a return-state, portal wiring and `CAVERN` travel skeleton for the first `CAVERN` architecture phase
+- a return-state, portal block flow and `CAVERN` travel skeleton for the first `CAVERN` architecture phase
 - a registered `CAVERN` target dimension, a minimal world stub and safe placement rules on top of that skeleton
 
-No full `CAVERN` worldgen, player-facing dimension content or gameplay systems are implemented yet.
+No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 
 ## Structure
 
