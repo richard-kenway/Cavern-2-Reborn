@@ -11,7 +11,7 @@ import com.richardkenway.cavernreborn.core.state.PortalWorldIndex;
 import com.richardkenway.cavernreborn.core.state.TeleportContext;
 
 public final class CavernPortalInteractionService {
-    public static final String PORTAL_KEY = "cavern_portal";
+    public static final String PORTAL_KEY_PREFIX = "cavern_portal";
 
     private final CavernTravelBridge travelBridge;
 
@@ -30,15 +30,16 @@ public final class CavernPortalInteractionService {
             return travelBridge.returnHome(context);
         }
 
+        String portalKey = portalKeyFor(context);
         PortalReturnState returnState = new PortalReturnState(
-            PORTAL_KEY,
+            portalKey,
             context.currentDimensionId(),
             context.portalX(),
             context.portalY(),
             context.portalZ()
         );
         TeleportContext teleportContext = new TeleportContext(
-            PORTAL_KEY,
+            portalKey,
             context.hitOffsetX(),
             context.hitOffsetY(),
             context.hitOffsetZ(),
@@ -51,5 +52,17 @@ public final class CavernPortalInteractionService {
         );
 
         return travelBridge.travelToCavern(context, returnState, teleportContext, portalPlacement);
+    }
+
+    private static String portalKeyFor(CavernPortalInteractionContext context) {
+        return PORTAL_KEY_PREFIX
+            + "|"
+            + context.currentDimensionId()
+            + "|"
+            + context.portalX()
+            + "|"
+            + context.portalY()
+            + "|"
+            + context.portalZ();
     }
 }

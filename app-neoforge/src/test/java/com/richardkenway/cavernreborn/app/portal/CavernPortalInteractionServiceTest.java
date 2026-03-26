@@ -138,6 +138,65 @@ class CavernPortalInteractionServiceTest {
         assertEquals(0.0D, context.lastX);
     }
 
+    @Test
+    void useInsideCavernReturnsToTheExactPortalUsedForEntry() {
+        CavernStateBootstrap bootstrap = new CavernStateBootstrap();
+        CavernPortalInteractionService service = bootstrap.cavernPortalInteractionService();
+        UUID playerId = UUID.randomUUID();
+
+        service.use(new FakePortalInteractionContext(
+            playerId,
+            false,
+            CavernDimensions.OVERWORLD_DIMENSION_ID,
+            11,
+            70,
+            11,
+            0.25D,
+            0.5D,
+            0.75D,
+            "north",
+            90.0F,
+            30.0F
+        ));
+        service.use(new FakePortalInteractionContext(
+            playerId,
+            false,
+            CavernDimensions.OVERWORLD_DIMENSION_ID,
+            25,
+            72,
+            25,
+            0.25D,
+            0.5D,
+            0.75D,
+            "north",
+            90.0F,
+            30.0F
+        ));
+
+        FakePortalInteractionContext returnContext = new FakePortalInteractionContext(
+            playerId,
+            false,
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            0,
+            80,
+            0,
+            0.25D,
+            0.5D,
+            0.75D,
+            "south",
+            45.0F,
+            15.0F
+        );
+
+        Optional<CavernTravelPlan> plan = service.use(returnContext);
+
+        assertTrue(plan.isPresent());
+        assertEquals(CavernDimensions.OVERWORLD_DIMENSION_ID, returnContext.lastTargetDimensionId);
+        assertEquals(25.0D, returnContext.lastX);
+        assertEquals(72.0D, returnContext.lastY);
+        assertEquals(25.0D, returnContext.lastZ);
+    }
+
     private static final class FakePortalInteractionContext implements CavernPortalInteractionContext {
         private final UUID playerId;
         private final boolean clientSide;
