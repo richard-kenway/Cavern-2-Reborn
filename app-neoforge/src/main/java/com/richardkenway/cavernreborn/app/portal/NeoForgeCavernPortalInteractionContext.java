@@ -17,7 +17,7 @@ import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 
-public final class NeoForgeCavernPortalInteractionContext implements CavernPortalInteractionContext {
+public final class NeoForgeCavernPortalInteractionContext implements CavernPortalInteractionContext, CavernArrivalPlacementProbe {
     private final ServerPlayer serverPlayer;
     private final Level level;
     private final BlockPos portalPosition;
@@ -99,6 +99,20 @@ public final class NeoForgeCavernPortalInteractionContext implements CavernPorta
     public void teleportTo(String targetDimensionId, double x, double y, double z, float yaw, float pitch) {
         ServerLevel targetLevel = resolveLevel(targetDimensionId);
         serverPlayer.teleportTo(targetLevel, x, y, z, EnumSet.noneOf(RelativeMovement.class), yaw, pitch);
+    }
+
+    @Override
+    public boolean isSafeArrivalAt(String targetDimensionId, int x, int y, int z) {
+        ServerLevel targetLevel = resolveLevel(targetDimensionId);
+        BlockPos feetPos = new BlockPos(x, y, z);
+
+        if (y <= targetLevel.getMinBuildHeight() || y + 1 >= targetLevel.getMaxBuildHeight()) {
+            return false;
+        }
+
+        return targetLevel.getBlockState(feetPos.below()).blocksMotion()
+            && targetLevel.isEmptyBlock(feetPos)
+            && targetLevel.isEmptyBlock(feetPos.above());
     }
 
     private ServerLevel resolveLevel(String targetDimensionId) {

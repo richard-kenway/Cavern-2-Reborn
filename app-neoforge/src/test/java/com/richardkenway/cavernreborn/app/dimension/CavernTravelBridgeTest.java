@@ -6,10 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 
+import com.richardkenway.cavernreborn.app.portal.CavernArrivalPlacementProbe;
 import com.richardkenway.cavernreborn.app.state.CavernStateBootstrap;
 import com.richardkenway.cavernreborn.core.state.CavernDimensions;
 import com.richardkenway.cavernreborn.core.state.CavernTravelPlan;
@@ -19,9 +21,9 @@ import com.richardkenway.cavernreborn.core.state.TeleportContext;
 
 class CavernTravelBridgeTest {
     @Test
-    void travelToCavernExecutesRegisteredDimensionEntry() {
+    void travelToCavernAdjustsUnsafePlacementUsingWorldProbe() {
         CavernStateBootstrap bootstrap = new CavernStateBootstrap();
-        FakePlayerTravelContext player = new FakePlayerTravelContext(UUID.randomUUID(), 90.0F, 30.0F);
+        FakePlayerTravelContext player = new FakePlayerTravelContext(UUID.randomUUID(), 90.0F, 30.0F, Set.of(64));
 
         Optional<CavernTravelPlan> plan = bootstrap.cavernTravelBridge().travelToCavern(
             player,
@@ -33,7 +35,7 @@ class CavernTravelBridgeTest {
         assertTrue(plan.isPresent());
         assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, player.lastTargetDimensionId);
         assertEquals((double) CavernDimensions.CAVERN_ENTRY_X, player.lastX);
-        assertEquals((double) CavernDimensions.CAVERN_ENTRY_Y, player.lastY);
+        assertEquals(64.0D, player.lastY);
         assertEquals((double) CavernDimensions.CAVERN_ENTRY_Z, player.lastZ);
         assertEquals(90.0F, player.lastYaw);
         assertEquals(30.0F, player.lastPitch);
@@ -42,7 +44,7 @@ class CavernTravelBridgeTest {
     @Test
     void returnHomeExecutesSavedWorldIndexPlacement() {
         CavernStateBootstrap bootstrap = new CavernStateBootstrap();
-        FakePlayerTravelContext player = new FakePlayerTravelContext(UUID.randomUUID(), 45.0F, 15.0F);
+        FakePlayerTravelContext player = new FakePlayerTravelContext(UUID.randomUUID(), 45.0F, 15.0F, Set.of(64));
 
         bootstrap.cavernTravelBridge().travelToCavern(
             player,
@@ -65,16 +67,17 @@ class CavernTravelBridgeTest {
     @Test
     void returnHomeWithoutSavedStateDoesNothing() {
         CavernStateBootstrap bootstrap = new CavernStateBootstrap();
-        FakePlayerTravelContext player = new FakePlayerTravelContext(UUID.randomUUID(), 45.0F, 15.0F);
+        FakePlayerTravelContext player = new FakePlayerTravelContext(UUID.randomUUID(), 45.0F, 15.0F, Set.of(64));
 
         assertFalse(bootstrap.cavernTravelBridge().returnHome(player).isPresent());
         assertNull(player.lastTargetDimensionId);
     }
 
-    private static final class FakePlayerTravelContext implements PlayerTravelContext {
+    private static final class FakePlayerTravelContext implements PlayerTravelContext, CavernArrivalPlacementProbe {
         private final UUID playerId;
         private final float yaw;
         private final float pitch;
+        private final Set<Integer> safeArrivalYs;
         private String lastTargetDimensionId;
         private double lastX;
         private double lastY;
@@ -82,10 +85,11 @@ class CavernTravelBridgeTest {
         private float lastYaw;
         private float lastPitch;
 
-        private FakePlayerTravelContext(UUID playerId, float yaw, float pitch) {
+        private FakePlayerTravelContext(UUID playerId, float yaw, float pitch, Set<Integer> safeArrivalYs) {
             this.playerId = playerId;
             this.yaw = yaw;
             this.pitch = pitch;
+            this.safeArrivalYs = safeArrivalYs;
         }
 
         @Override
@@ -111,6 +115,12 @@ class CavernTravelBridgeTest {
             this.lastZ = z;
             this.lastYaw = yaw;
             this.lastPitch = pitch;
+        }
+
+        @Override
+        public boolean isSafeArrivalAt(String targetDimensionId, int x, int y, int z) {
+            return CavernDimensions.CAVERN_DIMENSION_ID.equals(targetDimensionId)
+                && safeArrivalYs.contains(y);
         }
     }
 }

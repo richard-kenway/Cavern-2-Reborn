@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,8 @@ class CavernPortalInteractionServiceTest {
             0.75D,
             "north",
             90.0F,
-            30.0F
+            30.0F,
+            Set.of(64)
         );
 
         Optional<CavernTravelPlan> plan = service.use(context);
@@ -38,7 +40,7 @@ class CavernPortalInteractionServiceTest {
         assertTrue(plan.isPresent());
         assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, context.lastTargetDimensionId);
         assertEquals((double) CavernDimensions.CAVERN_ENTRY_X, context.lastX);
-        assertEquals((double) CavernDimensions.CAVERN_ENTRY_Y, context.lastY);
+        assertEquals(64.0D, context.lastY);
         assertEquals((double) CavernDimensions.CAVERN_ENTRY_Z, context.lastZ);
         assertEquals(90.0F, context.lastYaw);
         assertEquals(30.0F, context.lastPitch);
@@ -62,7 +64,8 @@ class CavernPortalInteractionServiceTest {
             0.75D,
             "north",
             90.0F,
-            30.0F
+            30.0F,
+            Set.of(64)
         );
         service.use(entryContext);
 
@@ -78,7 +81,8 @@ class CavernPortalInteractionServiceTest {
             0.75D,
             "south",
             45.0F,
-            15.0F
+            15.0F,
+            Set.of(64)
         );
 
         Optional<CavernTravelPlan> plan = service.use(cavernContext);
@@ -108,7 +112,8 @@ class CavernPortalInteractionServiceTest {
             0.75D,
             "north",
             90.0F,
-            30.0F
+            30.0F,
+            Set.of(64)
         );
 
         assertFalse(service.use(context).isPresent());
@@ -131,7 +136,8 @@ class CavernPortalInteractionServiceTest {
             0.75D,
             "south",
             45.0F,
-            15.0F
+            15.0F,
+            Set.of(64)
         );
 
         assertFalse(service.use(context).isPresent());
@@ -156,7 +162,8 @@ class CavernPortalInteractionServiceTest {
             0.75D,
             "north",
             90.0F,
-            30.0F
+            30.0F,
+            Set.of(64)
         ));
         service.use(new FakePortalInteractionContext(
             playerId,
@@ -170,7 +177,8 @@ class CavernPortalInteractionServiceTest {
             0.75D,
             "north",
             90.0F,
-            30.0F
+            30.0F,
+            Set.of(64)
         ));
 
         FakePortalInteractionContext returnContext = new FakePortalInteractionContext(
@@ -185,7 +193,8 @@ class CavernPortalInteractionServiceTest {
             0.75D,
             "south",
             45.0F,
-            15.0F
+            15.0F,
+            Set.of(64)
         );
 
         Optional<CavernTravelPlan> plan = service.use(returnContext);
@@ -197,7 +206,7 @@ class CavernPortalInteractionServiceTest {
         assertEquals(25.0D, returnContext.lastZ);
     }
 
-    private static final class FakePortalInteractionContext implements CavernPortalInteractionContext {
+    private static final class FakePortalInteractionContext implements CavernPortalInteractionContext, CavernArrivalPlacementProbe {
         private final UUID playerId;
         private final boolean clientSide;
         private final String currentDimensionId;
@@ -210,6 +219,7 @@ class CavernPortalInteractionServiceTest {
         private final String approachFacing;
         private final float yaw;
         private final float pitch;
+        private final Set<Integer> safeArrivalYs;
         private String lastTargetDimensionId;
         private double lastX;
         private double lastY;
@@ -229,7 +239,8 @@ class CavernPortalInteractionServiceTest {
             double hitOffsetZ,
             String approachFacing,
             float yaw,
-            float pitch
+            float pitch,
+            Set<Integer> safeArrivalYs
         ) {
             this.playerId = playerId;
             this.clientSide = clientSide;
@@ -243,6 +254,7 @@ class CavernPortalInteractionServiceTest {
             this.approachFacing = approachFacing;
             this.yaw = yaw;
             this.pitch = pitch;
+            this.safeArrivalYs = safeArrivalYs;
         }
 
         @Override
@@ -313,6 +325,12 @@ class CavernPortalInteractionServiceTest {
             this.lastZ = z;
             this.lastYaw = yaw;
             this.lastPitch = pitch;
+        }
+
+        @Override
+        public boolean isSafeArrivalAt(String targetDimensionId, int x, int y, int z) {
+            return CavernDimensions.CAVERN_DIMENSION_ID.equals(targetDimensionId)
+                && safeArrivalYs.contains(y);
         }
     }
 }

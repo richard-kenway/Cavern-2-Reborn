@@ -11,7 +11,7 @@ This repository currently contains the project skeleton and a minimal content re
 - `data` for serialization, schema and persistence-oriented types
 - a bootstrap block, `BlockItem` and creative tab used to validate registry wiring
 - a return-state, portal block flow and `CAVERN` travel skeleton for the first `CAVERN` architecture phase
-- a registered `CAVERN` target dimension, a minimal world stub and safe placement rules on top of that skeleton
+- a registered `CAVERN` target dimension, a minimal world stub and the first real safe-arrival check on top of that skeleton
 
 No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 

@@ -3,6 +3,7 @@ package com.richardkenway.cavernreborn.app.dimension;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.richardkenway.cavernreborn.app.portal.CavernArrivalPlacementProbe;
 import com.richardkenway.cavernreborn.core.state.CavernPlacementResolver;
 import com.richardkenway.cavernreborn.core.state.CavernPlacementTarget;
 import com.richardkenway.cavernreborn.core.state.CavernDimensionTravelPlanner;
@@ -14,14 +15,24 @@ import com.richardkenway.cavernreborn.core.state.TeleportContext;
 public final class CavernTravelBridge {
     private final CavernDimensionTravelPlanner travelPlanner;
     private final CavernPlacementResolver placementResolver;
+    private final CavernArrivalPlacementResolver arrivalPlacementResolver;
 
     public CavernTravelBridge(CavernDimensionTravelPlanner travelPlanner) {
-        this(travelPlanner, new CavernPlacementResolver());
+        this(travelPlanner, new CavernPlacementResolver(), new CavernArrivalPlacementResolver());
     }
 
     public CavernTravelBridge(CavernDimensionTravelPlanner travelPlanner, CavernPlacementResolver placementResolver) {
+        this(travelPlanner, placementResolver, new CavernArrivalPlacementResolver());
+    }
+
+    public CavernTravelBridge(
+        CavernDimensionTravelPlanner travelPlanner,
+        CavernPlacementResolver placementResolver,
+        CavernArrivalPlacementResolver arrivalPlacementResolver
+    ) {
         this.travelPlanner = Objects.requireNonNull(travelPlanner, "travelPlanner");
         this.placementResolver = Objects.requireNonNull(placementResolver, "placementResolver");
+        this.arrivalPlacementResolver = Objects.requireNonNull(arrivalPlacementResolver, "arrivalPlacementResolver");
     }
 
     public Optional<CavernTravelPlan> travelToCavern(
@@ -53,6 +64,10 @@ public final class CavernTravelBridge {
         Objects.requireNonNull(player, "player");
         Objects.requireNonNull(plan, "plan");
         CavernPlacementTarget placementTarget = placementResolver.resolve(plan);
+
+        if (plan.isEnterCavern() && player instanceof CavernArrivalPlacementProbe arrivalPlacementProbe) {
+            placementTarget = arrivalPlacementResolver.resolve(placementTarget, arrivalPlacementProbe);
+        }
 
         player.teleportTo(
             placementTarget.dimensionId(),

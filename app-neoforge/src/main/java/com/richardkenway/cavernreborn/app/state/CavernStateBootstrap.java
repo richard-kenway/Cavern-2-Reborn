@@ -57,6 +57,6 @@ public final class CavernStateBootstrap {
     }
 
     public String describe() {
-        return CavernProject.PROJECT_NAME + " return-state, portal block flow and CAVERN dimension travel bridge ready";
+        return CavernProject.PROJECT_NAME + " return-state, portal block flow, safe-arrival checks and CAVERN dimension travel bridge ready";
     }
 }
