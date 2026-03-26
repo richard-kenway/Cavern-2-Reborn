@@ -32,7 +32,7 @@ class CavernPortalInteractionServiceTest {
             "north",
             90.0F,
             30.0F,
-            Set.of(64)
+            Set.of(new SafeArrival(0, 64, 0))
         );
 
         Optional<CavernTravelPlan> plan = service.use(context);
@@ -65,7 +65,7 @@ class CavernPortalInteractionServiceTest {
             "north",
             90.0F,
             30.0F,
-            Set.of(64)
+            Set.of(new SafeArrival(0, 64, 0))
         );
         service.use(entryContext);
 
@@ -82,7 +82,7 @@ class CavernPortalInteractionServiceTest {
             "south",
             45.0F,
             15.0F,
-            Set.of(64)
+            Set.of(new SafeArrival(0, 64, 0))
         );
 
         Optional<CavernTravelPlan> plan = service.use(cavernContext);
@@ -113,7 +113,7 @@ class CavernPortalInteractionServiceTest {
             "north",
             90.0F,
             30.0F,
-            Set.of(64)
+            Set.of(new SafeArrival(0, 64, 0))
         );
 
         assertFalse(service.use(context).isPresent());
@@ -137,7 +137,7 @@ class CavernPortalInteractionServiceTest {
             "south",
             45.0F,
             15.0F,
-            Set.of(64)
+            Set.of(new SafeArrival(0, 64, 0))
         );
 
         assertFalse(service.use(context).isPresent());
@@ -163,7 +163,7 @@ class CavernPortalInteractionServiceTest {
             "north",
             90.0F,
             30.0F,
-            Set.of(64)
+            Set.of(new SafeArrival(0, 64, 0))
         ));
         service.use(new FakePortalInteractionContext(
             playerId,
@@ -178,7 +178,7 @@ class CavernPortalInteractionServiceTest {
             "north",
             90.0F,
             30.0F,
-            Set.of(64)
+            Set.of(new SafeArrival(0, 64, 0))
         ));
 
         FakePortalInteractionContext returnContext = new FakePortalInteractionContext(
@@ -194,7 +194,7 @@ class CavernPortalInteractionServiceTest {
             "south",
             45.0F,
             15.0F,
-            Set.of(64)
+            Set.of(new SafeArrival(0, 64, 0))
         );
 
         Optional<CavernTravelPlan> plan = service.use(returnContext);
@@ -219,7 +219,7 @@ class CavernPortalInteractionServiceTest {
         private final String approachFacing;
         private final float yaw;
         private final float pitch;
-        private final Set<Integer> safeArrivalYs;
+        private final Set<SafeArrival> safeArrivals;
         private String lastTargetDimensionId;
         private double lastX;
         private double lastY;
@@ -240,7 +240,7 @@ class CavernPortalInteractionServiceTest {
             String approachFacing,
             float yaw,
             float pitch,
-            Set<Integer> safeArrivalYs
+            Set<SafeArrival> safeArrivals
         ) {
             this.playerId = playerId;
             this.clientSide = clientSide;
@@ -254,7 +254,7 @@ class CavernPortalInteractionServiceTest {
             this.approachFacing = approachFacing;
             this.yaw = yaw;
             this.pitch = pitch;
-            this.safeArrivalYs = safeArrivalYs;
+            this.safeArrivals = safeArrivals;
         }
 
         @Override
@@ -330,7 +330,10 @@ class CavernPortalInteractionServiceTest {
         @Override
         public boolean isSafeArrivalAt(String targetDimensionId, int x, int y, int z) {
             return CavernDimensions.CAVERN_DIMENSION_ID.equals(targetDimensionId)
-                && safeArrivalYs.contains(y);
+                && safeArrivals.contains(new SafeArrival(x, y, z));
         }
+    }
+
+    private record SafeArrival(int x, int y, int z) {
     }
 }
