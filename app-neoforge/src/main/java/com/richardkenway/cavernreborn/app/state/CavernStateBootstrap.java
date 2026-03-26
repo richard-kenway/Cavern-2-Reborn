@@ -1,6 +1,7 @@
 package com.richardkenway.cavernreborn.app.state;
 
 import com.richardkenway.cavernreborn.core.CavernProject;
+import com.richardkenway.cavernreborn.core.state.CavernDimensionTravelPlanner;
 import com.richardkenway.cavernreborn.core.state.PlayerReturnStateStore;
 import com.richardkenway.cavernreborn.core.state.PortalLoopService;
 import com.richardkenway.cavernreborn.core.state.WorldPortalIndexStore;
@@ -9,6 +10,7 @@ public final class CavernStateBootstrap {
     private final PlayerReturnStateStore playerReturnStateStore;
     private final WorldPortalIndexStore worldPortalIndexStore;
     private final PortalLoopService portalLoopService;
+    private final CavernDimensionTravelPlanner cavernDimensionTravelPlanner;
 
     public CavernStateBootstrap() {
         this(new InMemoryPlayerReturnStateRepository(), new InMemoryWorldPortalIndexRepository());
@@ -21,6 +23,7 @@ public final class CavernStateBootstrap {
         this.playerReturnStateStore = playerReturnStateStore;
         this.worldPortalIndexStore = worldPortalIndexStore;
         this.portalLoopService = new PortalLoopService(playerReturnStateStore, worldPortalIndexStore);
+        this.cavernDimensionTravelPlanner = new CavernDimensionTravelPlanner(portalLoopService);
     }
 
     public PlayerReturnStateStore playerReturnStateStore() {
@@ -35,7 +38,11 @@ public final class CavernStateBootstrap {
         return portalLoopService;
     }
 
+    public CavernDimensionTravelPlanner cavernDimensionTravelPlanner() {
+        return cavernDimensionTravelPlanner;
+    }
+
     public String describe() {
-        return CavernProject.PROJECT_NAME + " return-state and portal wiring ready";
+        return CavernProject.PROJECT_NAME + " return-state, portal wiring and CAVERN travel skeleton ready";
     }
 }
