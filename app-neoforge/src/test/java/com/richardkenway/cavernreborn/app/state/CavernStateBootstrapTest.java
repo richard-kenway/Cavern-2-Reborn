@@ -14,6 +14,7 @@ class CavernStateBootstrapTest {
         assertNotNull(bootstrap.worldPortalIndexStore());
         assertNotNull(bootstrap.portalLoopService());
         assertNotNull(bootstrap.cavernDimensionTravelPlanner());
-        assertEquals("Cavern Reborn return-state, portal wiring and CAVERN travel skeleton ready", bootstrap.describe());
+        assertNotNull(bootstrap.cavernTravelBridge());
+        assertEquals("Cavern Reborn return-state, portal wiring and CAVERN dimension travel bridge ready", bootstrap.describe());
     }
 }
