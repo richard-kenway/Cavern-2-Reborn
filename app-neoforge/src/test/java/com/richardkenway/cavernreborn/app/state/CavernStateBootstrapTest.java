@@ -10,9 +10,9 @@ class CavernStateBootstrapTest {
     void bootstrapExposesStateRepositories() {
         CavernStateBootstrap bootstrap = new CavernStateBootstrap();
 
-        assertNotNull(bootstrap.playerReturnStateRepository());
-        assertNotNull(bootstrap.worldPortalIndexRepository());
-        assertNotNull(bootstrap.portalLoopCoordinator());
+        assertNotNull(bootstrap.playerReturnStateStore());
+        assertNotNull(bootstrap.worldPortalIndexStore());
+        assertNotNull(bootstrap.portalLoopService());
         assertEquals("Cavern Reborn return-state and portal wiring ready", bootstrap.describe());
     }
 }

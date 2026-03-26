@@ -1,11 +1,9 @@
-package com.richardkenway.cavernreborn.app.state;
+package com.richardkenway.cavernreborn.core.state;
 
 import java.util.Optional;
 import java.util.UUID;
 
-import com.richardkenway.cavernreborn.core.state.PortalReturnState;
-
-public interface PlayerReturnStateRepository {
+public interface PlayerReturnStateStore {
     Optional<PortalReturnState> load(UUID playerId);
 
     void save(UUID playerId, PortalReturnState returnState);

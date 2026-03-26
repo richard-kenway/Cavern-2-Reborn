@@ -12,7 +12,7 @@ This repository currently contains the project skeleton and a minimal content re
 - a bootstrap block, `BlockItem` and creative tab used to validate registry wiring
 - a return-state and portal wiring skeleton for the first `CAVERN` architecture phase
 
-No worldgen, portal logic, dimension content or gameplay systems are implemented yet.
+No worldgen, real dimension travel, dimension content or player-facing gameplay systems are implemented yet.
 
 ## Structure
 

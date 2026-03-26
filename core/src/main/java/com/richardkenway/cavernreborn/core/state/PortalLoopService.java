@@ -1,25 +1,19 @@
-package com.richardkenway.cavernreborn.app.state;
+package com.richardkenway.cavernreborn.core.state;
 
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.richardkenway.cavernreborn.core.state.PortalEntryReceipt;
-import com.richardkenway.cavernreborn.core.state.PortalReturnOperation;
-import com.richardkenway.cavernreborn.core.state.PortalReturnState;
-import com.richardkenway.cavernreborn.core.state.PortalWorldIndex;
-import com.richardkenway.cavernreborn.core.state.TeleportContext;
+public final class PortalLoopService {
+    private final PlayerReturnStateStore playerReturnStateStore;
+    private final WorldPortalIndexStore worldPortalIndexStore;
 
-public final class PortalLoopCoordinator {
-    private final PlayerReturnStateRepository playerReturnStateRepository;
-    private final WorldPortalIndexRepository worldPortalIndexRepository;
-
-    public PortalLoopCoordinator(
-        PlayerReturnStateRepository playerReturnStateRepository,
-        WorldPortalIndexRepository worldPortalIndexRepository
+    public PortalLoopService(
+        PlayerReturnStateStore playerReturnStateStore,
+        WorldPortalIndexStore worldPortalIndexStore
     ) {
-        this.playerReturnStateRepository = Objects.requireNonNull(playerReturnStateRepository, "playerReturnStateRepository");
-        this.worldPortalIndexRepository = Objects.requireNonNull(worldPortalIndexRepository, "worldPortalIndexRepository");
+        this.playerReturnStateStore = Objects.requireNonNull(playerReturnStateStore, "playerReturnStateStore");
+        this.worldPortalIndexStore = Objects.requireNonNull(worldPortalIndexStore, "worldPortalIndexStore");
     }
 
     public PortalEntryReceipt captureEntry(
@@ -33,7 +27,11 @@ public final class PortalLoopCoordinator {
         Objects.requireNonNull(teleportContext, "teleportContext");
         Objects.requireNonNull(portalPlacement, "portalPlacement");
 
-        playerReturnStateRepository.save(playerId, returnState);
+        if (!returnState.portalKey().equals(teleportContext.portalKey())) {
+            throw new IllegalArgumentException("returnState and teleportContext must use the same portalKey");
+        }
+
+        playerReturnStateStore.save(playerId, returnState);
         registerPortal(returnState.returnDimensionId(), returnState.portalKey(), portalPlacement);
 
         return new PortalEntryReceipt(returnState, teleportContext);
@@ -43,16 +41,17 @@ public final class PortalLoopCoordinator {
         String normalizedWorldKey = requireText(worldKey, "worldKey");
         String normalizedPortalKey = requireText(portalKey, "portalKey");
         Objects.requireNonNull(placement, "placement");
-        PortalWorldIndex currentIndex = worldPortalIndexRepository.load(normalizedWorldKey);
-        worldPortalIndexRepository.save(normalizedWorldKey, currentIndex.withPortal(normalizedPortalKey, placement));
+
+        PortalWorldIndex currentIndex = worldPortalIndexStore.load(normalizedWorldKey);
+        worldPortalIndexStore.save(normalizedWorldKey, currentIndex.withPortal(normalizedPortalKey, placement));
     }
 
     public Optional<PortalReturnOperation> planReturn(UUID playerId) {
         Objects.requireNonNull(playerId, "playerId");
 
-        return playerReturnStateRepository.load(playerId)
+        return playerReturnStateStore.load(playerId)
             .map(returnState -> {
-                PortalWorldIndex worldIndex = worldPortalIndexRepository.load(returnState.returnDimensionId());
+                PortalWorldIndex worldIndex = worldPortalIndexStore.load(returnState.returnDimensionId());
                 return new PortalReturnOperation(returnState, worldIndex.firstPlacementFor(returnState.portalKey()));
             });
     }

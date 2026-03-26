@@ -5,9 +5,10 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.richardkenway.cavernreborn.core.state.PlayerReturnStateStore;
 import com.richardkenway.cavernreborn.core.state.PortalReturnState;
 
-public final class InMemoryPlayerReturnStateRepository implements PlayerReturnStateRepository {
+public final class InMemoryPlayerReturnStateRepository implements PlayerReturnStateStore {
     private final Map<UUID, PortalReturnState> states = new ConcurrentHashMap<>();
 
     @Override

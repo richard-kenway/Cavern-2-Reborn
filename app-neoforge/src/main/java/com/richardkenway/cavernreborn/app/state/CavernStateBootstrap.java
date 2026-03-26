@@ -1,35 +1,38 @@
 package com.richardkenway.cavernreborn.app.state;
 
 import com.richardkenway.cavernreborn.core.CavernProject;
+import com.richardkenway.cavernreborn.core.state.PlayerReturnStateStore;
+import com.richardkenway.cavernreborn.core.state.PortalLoopService;
+import com.richardkenway.cavernreborn.core.state.WorldPortalIndexStore;
 
 public final class CavernStateBootstrap {
-    private final PlayerReturnStateRepository playerReturnStateRepository;
-    private final WorldPortalIndexRepository worldPortalIndexRepository;
-    private final PortalLoopCoordinator portalLoopCoordinator;
+    private final PlayerReturnStateStore playerReturnStateStore;
+    private final WorldPortalIndexStore worldPortalIndexStore;
+    private final PortalLoopService portalLoopService;
 
     public CavernStateBootstrap() {
         this(new InMemoryPlayerReturnStateRepository(), new InMemoryWorldPortalIndexRepository());
     }
 
     public CavernStateBootstrap(
-        PlayerReturnStateRepository playerReturnStateRepository,
-        WorldPortalIndexRepository worldPortalIndexRepository
+        PlayerReturnStateStore playerReturnStateStore,
+        WorldPortalIndexStore worldPortalIndexStore
     ) {
-        this.playerReturnStateRepository = playerReturnStateRepository;
-        this.worldPortalIndexRepository = worldPortalIndexRepository;
-        this.portalLoopCoordinator = new PortalLoopCoordinator(playerReturnStateRepository, worldPortalIndexRepository);
+        this.playerReturnStateStore = playerReturnStateStore;
+        this.worldPortalIndexStore = worldPortalIndexStore;
+        this.portalLoopService = new PortalLoopService(playerReturnStateStore, worldPortalIndexStore);
     }
 
-    public PlayerReturnStateRepository playerReturnStateRepository() {
-        return playerReturnStateRepository;
+    public PlayerReturnStateStore playerReturnStateStore() {
+        return playerReturnStateStore;
     }
 
-    public WorldPortalIndexRepository worldPortalIndexRepository() {
-        return worldPortalIndexRepository;
+    public WorldPortalIndexStore worldPortalIndexStore() {
+        return worldPortalIndexStore;
     }
 
-    public PortalLoopCoordinator portalLoopCoordinator() {
-        return portalLoopCoordinator;
+    public PortalLoopService portalLoopService() {
+        return portalLoopService;
     }
 
     public String describe() {

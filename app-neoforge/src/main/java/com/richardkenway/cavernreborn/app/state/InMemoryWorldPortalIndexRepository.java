@@ -4,8 +4,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.richardkenway.cavernreborn.core.state.PortalWorldIndex;
+import com.richardkenway.cavernreborn.core.state.WorldPortalIndexStore;
 
-public final class InMemoryWorldPortalIndexRepository implements WorldPortalIndexRepository {
+public final class InMemoryWorldPortalIndexRepository implements WorldPortalIndexStore {
     private final Map<String, PortalWorldIndex> indices = new ConcurrentHashMap<>();
 
     @Override
