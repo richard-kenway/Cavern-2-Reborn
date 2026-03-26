@@ -1,9 +1,9 @@
 package com.richardkenway.cavernreborn.app.state;
 
-import com.richardkenway.cavernreborn.data.state.PortalWorldIndexData;
+import com.richardkenway.cavernreborn.core.state.PortalWorldIndex;
 
 public interface WorldPortalIndexRepository {
-    PortalWorldIndexData load(String worldKey);
+    PortalWorldIndex load(String worldKey);
 
-    void save(String worldKey, PortalWorldIndexData worldIndex);
+    void save(String worldKey, PortalWorldIndex worldIndex);
 }

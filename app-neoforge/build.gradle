@@ -4,7 +4,6 @@ plugins {
 
 dependencies {
     implementation project(':core')
-    implementation project(':data')
     implementation "net.neoforged:neoforge:${neo_version}"
 }
 

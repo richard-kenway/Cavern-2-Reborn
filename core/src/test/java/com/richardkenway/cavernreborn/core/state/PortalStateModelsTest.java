@@ -13,15 +13,13 @@ class PortalStateModelsTest {
 
     @Test
     void teleportContextKeepsTransientPlacementData() {
-        TeleportContext context = new TeleportContext("cavern", "minecraft:overworld", 1, 2, 3, 90.0F, 15.0F);
+        TeleportContext context = new TeleportContext("cavern", 0.25D, 0.5D, 0.75D, "north");
 
         assertEquals("cavern", context.portalKey());
-        assertEquals("minecraft:overworld", context.sourceDimensionId());
-        assertEquals(1, context.sourceX());
-        assertEquals(2, context.sourceY());
-        assertEquals(3, context.sourceZ());
-        assertEquals(90.0F, context.entryYaw());
-        assertEquals(15.0F, context.entryPitch());
+        assertEquals(0.25D, context.entryOffsetX());
+        assertEquals(0.5D, context.entryOffsetY());
+        assertEquals(0.75D, context.entryOffsetZ());
+        assertEquals("north", context.approachFacing());
     }
 
     @Test

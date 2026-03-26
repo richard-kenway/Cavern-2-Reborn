@@ -20,7 +20,7 @@ class CavernStateMappersTest {
 
     @Test
     void teleportContextRoundTripPreservesFields() {
-        TeleportContext original = new TeleportContext("cavern", "minecraft:overworld", 1, 2, 3, 180.0F, 45.0F);
+        TeleportContext original = new TeleportContext("cavern", 0.125D, 0.5D, 0.875D, "west");
 
         TeleportContext restored = CavernStateMappers.fromData(CavernStateMappers.toData(original));
 

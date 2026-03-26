@@ -24,24 +24,20 @@ public final class CavernStateMappers {
     public static TeleportContextData toData(TeleportContext context) {
         return new TeleportContextData(
             context.portalKey(),
-            context.sourceDimensionId(),
-            context.sourceX(),
-            context.sourceY(),
-            context.sourceZ(),
-            context.entryYaw(),
-            context.entryPitch()
+            context.entryOffsetX(),
+            context.entryOffsetY(),
+            context.entryOffsetZ(),
+            context.approachFacing()
         );
     }
 
     public static TeleportContext fromData(TeleportContextData data) {
         return new TeleportContext(
             data.portalKey(),
-            data.sourceDimensionId(),
-            data.sourceX(),
-            data.sourceY(),
-            data.sourceZ(),
-            data.entryYaw(),
-            data.entryPitch()
+            data.entryOffsetX(),
+            data.entryOffsetY(),
+            data.entryOffsetZ(),
+            data.approachFacing()
         );
     }
 

@@ -4,16 +4,14 @@ import java.util.Objects;
 
 public record TeleportContext(
     String portalKey,
-    String sourceDimensionId,
-    int sourceX,
-    int sourceY,
-    int sourceZ,
-    float entryYaw,
-    float entryPitch
+    double entryOffsetX,
+    double entryOffsetY,
+    double entryOffsetZ,
+    String approachFacing
 ) {
     public TeleportContext {
         portalKey = requireText(portalKey, "portalKey");
-        sourceDimensionId = requireText(sourceDimensionId, "sourceDimensionId");
+        approachFacing = requireText(approachFacing, "approachFacing");
     }
 
     private static String requireText(String value, String fieldName) {
