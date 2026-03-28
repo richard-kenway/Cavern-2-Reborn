@@ -6,6 +6,8 @@ import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.world.phys.Vec3;
 
 public final class CavernDimensionSpecialEffects extends DimensionSpecialEffects {
+    private static final Vec3 CAVERN_FOG_COLOR = new Vec3(0.02D, 0.025D, 0.035D);
+
     public CavernDimensionSpecialEffects() {
         super(Float.NaN, true, SkyType.NONE, false, false);
     }
@@ -18,9 +20,7 @@ public final class CavernDimensionSpecialEffects extends DimensionSpecialEffects
 
     @Override
     public Vec3 getBrightnessDependentFogColor(Vec3 fogColor, float brightness) {
-        double redGreenScale = brightness * 0.18F + 0.04F;
-        double blueScale = brightness * 0.2F + 0.05F;
-        return fogColor.multiply(redGreenScale, redGreenScale, blueScale);
+        return CAVERN_FOG_COLOR;
     }
 
     @Override
