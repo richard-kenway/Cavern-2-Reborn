@@ -1,5 +1,6 @@
 package com.richardkenway.cavernreborn.app.dimension;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -8,19 +9,27 @@ import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Test;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 class CavernWorldgenResourcesTest {
     @Test
     void cavernDimensionUsesCaveOrientedBaselineProfile() throws IOException {
-        String cavernDimension = readResource("data/cavernreborn/dimension/cavern.json");
-        String cavernDimensionType = readResource("data/cavernreborn/dimension_type/cavern.json");
+        JsonObject cavernDimension = readJsonResource("data/cavernreborn/dimension/cavern.json");
+        JsonObject cavernDimensionType = readJsonResource("data/cavernreborn/dimension_type/cavern.json");
+        JsonObject generator = cavernDimension.getAsJsonObject("generator");
+        JsonObject biomeSource = generator.getAsJsonObject("biome_source");
 
-        assertTrue(cavernDimension.contains("\"settings\": \"minecraft:caves\""));
-        assertTrue(cavernDimension.contains("\"biome\": \"minecraft:dripstone_caves\""));
-        assertTrue(cavernDimensionType.contains("\"height\": 192"));
-        assertTrue(cavernDimensionType.contains("\"min_y\": -64"));
+        assertEquals("minecraft:noise", generator.get("type").getAsString());
+        assertEquals("minecraft:caves", generator.get("settings").getAsString());
+        assertEquals("minecraft:fixed", biomeSource.get("type").getAsString());
+        assertEquals("minecraft:dripstone_caves", biomeSource.get("biome").getAsString());
+        assertEquals(192, cavernDimensionType.get("height").getAsInt());
+        assertEquals(-64, cavernDimensionType.get("min_y").getAsInt());
+        assertTrue(cavernDimensionType.get("logical_height").getAsInt() <= cavernDimensionType.get("height").getAsInt());
     }
 
-    private static String readResource(String resourcePath) throws IOException {
+    private static JsonObject readJsonResource(String resourcePath) throws IOException {
         ClassLoader classLoader = CavernWorldgenResourcesTest.class.getClassLoader();
         InputStream inputStream = classLoader.getResourceAsStream(resourcePath);
 
@@ -29,7 +38,8 @@ class CavernWorldgenResourcesTest {
         }
 
         try (InputStream stream = inputStream) {
-            return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+            String json = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+            return JsonParser.parseString(json).getAsJsonObject();
         }
     }
 }
