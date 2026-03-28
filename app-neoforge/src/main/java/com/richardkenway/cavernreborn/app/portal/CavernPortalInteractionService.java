@@ -12,6 +12,7 @@ import com.richardkenway.cavernreborn.core.state.TeleportContext;
 
 public final class CavernPortalInteractionService {
     public static final String PORTAL_KEY_PREFIX = "cavern_portal";
+    public static final String PORTAL_ENTRY_FAILED_MESSAGE_KEY = "message.cavernreborn.portal_entry_failed";
 
     private final CavernTravelBridge travelBridge;
 
@@ -51,7 +52,12 @@ public final class CavernPortalInteractionService {
             context.portalZ()
         );
 
-        return travelBridge.travelToCavern(context, returnState, teleportContext, portalPlacement);
+        Optional<CavernTravelPlan> travelPlan = travelBridge.travelToCavern(context, returnState, teleportContext, portalPlacement);
+        if (travelPlan.isEmpty()) {
+            context.showPortalFeedback(PORTAL_ENTRY_FAILED_MESSAGE_KEY);
+        }
+
+        return travelPlan;
     }
 
     private static String portalKeyFor(CavernPortalInteractionContext context) {

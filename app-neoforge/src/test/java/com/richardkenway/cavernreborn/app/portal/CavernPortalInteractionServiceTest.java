@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
 
@@ -39,6 +40,7 @@ class CavernPortalInteractionServiceTest {
         Optional<CavernTravelPlan> plan = service.use(context);
 
         assertTrue(plan.isPresent());
+        assertTrue(context.feedbackKeys.isEmpty());
         assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, context.lastTargetDimensionId);
         assertEquals((double) CavernDimensions.CAVERN_ENTRY_X, context.lastX);
         assertEquals(64.0D, context.lastY);
@@ -69,6 +71,8 @@ class CavernPortalInteractionServiceTest {
 
         assertTrue(service.use(context).isEmpty());
         assertNull(context.lastTargetDimensionId);
+        assertEquals(1, context.feedbackKeys.size());
+        assertEquals(CavernPortalInteractionService.PORTAL_ENTRY_FAILED_MESSAGE_KEY, context.feedbackKeys.get(0));
         assertTrue(bootstrap.cavernTravelBridge().returnHome(context).isEmpty());
     }
 
@@ -114,6 +118,7 @@ class CavernPortalInteractionServiceTest {
         Optional<CavernTravelPlan> plan = service.use(cavernContext);
 
         assertTrue(plan.isPresent());
+        assertTrue(cavernContext.feedbackKeys.isEmpty());
         assertEquals(CavernDimensions.OVERWORLD_DIMENSION_ID, cavernContext.lastTargetDimensionId);
         assertEquals(11.0D, cavernContext.lastX);
         assertEquals(70.0D, cavernContext.lastY);
@@ -144,6 +149,7 @@ class CavernPortalInteractionServiceTest {
 
         assertFalse(service.use(context).isPresent());
         assertEquals(0.0D, context.lastX);
+        assertTrue(context.feedbackKeys.isEmpty());
     }
 
     @Test
@@ -168,6 +174,7 @@ class CavernPortalInteractionServiceTest {
 
         assertFalse(service.use(context).isPresent());
         assertEquals(0.0D, context.lastX);
+        assertTrue(context.feedbackKeys.isEmpty());
     }
 
     @Test
@@ -226,6 +233,7 @@ class CavernPortalInteractionServiceTest {
         Optional<CavernTravelPlan> plan = service.use(returnContext);
 
         assertTrue(plan.isPresent());
+        assertTrue(returnContext.feedbackKeys.isEmpty());
         assertEquals(CavernDimensions.OVERWORLD_DIMENSION_ID, returnContext.lastTargetDimensionId);
         assertEquals(25.0D, returnContext.lastX);
         assertEquals(72.0D, returnContext.lastY);
@@ -246,6 +254,7 @@ class CavernPortalInteractionServiceTest {
         private final float yaw;
         private final float pitch;
         private final Set<SafeArrival> safeArrivals;
+        private final ArrayList<String> feedbackKeys = new ArrayList<>();
         private String lastTargetDimensionId;
         private double lastX;
         private double lastY;
@@ -286,6 +295,11 @@ class CavernPortalInteractionServiceTest {
         @Override
         public boolean isClientSide() {
             return clientSide;
+        }
+
+        @Override
+        public void showPortalFeedback(String translationKey) {
+            feedbackKeys.add(translationKey);
         }
 
         @Override

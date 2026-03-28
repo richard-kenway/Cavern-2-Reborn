@@ -8,6 +8,7 @@ import com.richardkenway.cavernreborn.app.dimension.CavernNeoForgeDimensions;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -38,6 +39,11 @@ public final class NeoForgeCavernPortalInteractionContext implements CavernPorta
     @Override
     public boolean isClientSide() {
         return level.isClientSide();
+    }
+
+    @Override
+    public void showPortalFeedback(String translationKey) {
+        serverPlayer.sendSystemMessage(Component.translatable(translationKey));
     }
 
     @Override
