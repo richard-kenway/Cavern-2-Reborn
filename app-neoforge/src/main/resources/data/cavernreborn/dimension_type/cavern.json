@@ -18,5 +18,5 @@
   "piglin_safe": false,
   "respawn_anchor_works": false,
   "ultrawarm": false,
-  "infiniburn": "minecraft:infiniburn_overworld"
+  "infiniburn": "#minecraft:infiniburn_overworld"
 }
