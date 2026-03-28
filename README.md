@@ -12,6 +12,7 @@ This repository currently contains the project skeleton and a minimal content re
 - a bootstrap block, `BlockItem` and creative tab used to validate registry wiring
 - a return-state, portal block flow and `CAVERN` travel skeleton for the first `CAVERN` architecture phase
 - a registered `CAVERN` target dimension with a data-driven cave-biome family and the first real safe-arrival check on top of that skeleton
+- custom cave-like dimension effects for `CAVERN`, used to reduce visible sky and sun leakage in large open cavities
 - basic portal UX feedback for `cooldown`, failed cavern entry and missing return-state denial cases
 
 No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
@@ -20,6 +21,7 @@ No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 
 - `CAVERN` still uses a first baseline cave profile rather than full legacy-parity worldgen.
 - The new data-driven cave-biome family still needs manual in-game validation on a real generated world after the move away from the fixed biome stub.
+- Large open cavities may still appear in the current baseline; custom cave-like dimension effects now handle sky/sun leakage, but the overall visual result still needs manual in-game validation.
 - The current cave-biome family is intentionally minimal and does not yet cover ore veins, structures or a broader biome set.
 - Safe arrival currently relies on a bounded local search around the target column and may cancel entry if no safe point is found nearby.
 - Portal denial feedback currently uses short overlay messages only; there is no broader notification policy yet.

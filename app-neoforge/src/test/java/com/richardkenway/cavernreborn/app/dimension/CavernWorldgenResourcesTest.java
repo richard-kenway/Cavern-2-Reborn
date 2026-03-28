@@ -2,6 +2,7 @@ package com.richardkenway.cavernreborn.app.dimension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -16,7 +17,7 @@ import com.google.gson.JsonParser;
 
 class CavernWorldgenResourcesTest {
     @Test
-    void cavernDimensionUsesDataDrivenCaveBiomeFamily() throws IOException {
+    void cavernDimensionUsesCaveLikeDimensionTypeSettings() throws IOException {
         JsonObject cavernDimension = readJsonResource("data/cavernreborn/dimension/cavern.json");
         JsonObject cavernDimensionType = readJsonResource("data/cavernreborn/dimension_type/cavern.json");
         JsonObject generator = cavernDimension.getAsJsonObject("generator");
@@ -32,8 +33,12 @@ class CavernWorldgenResourcesTest {
         assertBiomeFamilyEntry(biomes.get(1).getAsJsonObject(), "minecraft:lush_caves");
         assertEquals(192, cavernDimensionType.get("height").getAsInt());
         assertEquals(-64, cavernDimensionType.get("min_y").getAsInt());
-        assertTrue(cavernDimensionType.has("has_skylight"));
-        assertTrue(cavernDimensionType.has("has_ceiling"));
+        assertEquals("cavernreborn:cavern", cavernDimensionType.get("effects").getAsString());
+        assertFalse(cavernDimensionType.get("has_skylight").getAsBoolean());
+        assertFalse(cavernDimensionType.get("has_ceiling").getAsBoolean());
+        assertFalse(cavernDimensionType.get("piglin_safe").getAsBoolean());
+        assertFalse(cavernDimensionType.get("respawn_anchor_works").getAsBoolean());
+        assertFalse(cavernDimensionType.get("ultrawarm").getAsBoolean());
         assertTrue(cavernDimensionType.get("infiniburn").getAsString().startsWith("#"));
         assertTrue(cavernDimensionType.get("logical_height").getAsInt() <= cavernDimensionType.get("height").getAsInt());
     }
