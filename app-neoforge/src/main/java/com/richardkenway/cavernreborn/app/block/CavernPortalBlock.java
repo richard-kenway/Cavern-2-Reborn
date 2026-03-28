@@ -38,7 +38,12 @@ public final class CavernPortalBlock extends Block {
         }
 
         CavernPortalInteractionContext context = new NeoForgeCavernPortalInteractionContext(serverPlayer, level, pos, hitResult);
-        Optional<CavernTravelPlan> plan = interactionServiceSupplier.get().use(context);
+        CavernPortalInteractionService interactionService = interactionServiceSupplier.get();
+        if (interactionService.isOnCooldown(context)) {
+            return InteractionResult.CONSUME;
+        }
+
+        Optional<CavernTravelPlan> plan = interactionService.use(context);
         return plan.isPresent() ? InteractionResult.CONSUME : InteractionResult.PASS;
     }
 }

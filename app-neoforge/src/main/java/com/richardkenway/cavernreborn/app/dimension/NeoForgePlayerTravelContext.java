@@ -25,6 +25,11 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
     }
 
     @Override
+    public long gameTime() {
+        return serverPlayer.level().getGameTime();
+    }
+
+    @Override
     public float yaw() {
         return serverPlayer.getYRot();
     }

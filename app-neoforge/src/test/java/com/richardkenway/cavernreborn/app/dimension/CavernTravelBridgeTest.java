@@ -23,7 +23,7 @@ class CavernTravelBridgeTest {
     @Test
     void travelToCavernAdjustsUnsafePlacementUsingWorldProbe() {
         CavernStateBootstrap bootstrap = new CavernStateBootstrap();
-        FakePlayerTravelContext player = new FakePlayerTravelContext(UUID.randomUUID(), 90.0F, 30.0F, Set.of(new SafeArrival(0, 64, 0)));
+        FakePlayerTravelContext player = new FakePlayerTravelContext(UUID.randomUUID(), 100L, 90.0F, 30.0F, Set.of(new SafeArrival(0, 64, 0)));
 
         Optional<CavernTravelPlan> plan = bootstrap.cavernTravelBridge().travelToCavern(
             player,
@@ -45,7 +45,7 @@ class CavernTravelBridgeTest {
     void travelToCavernCancelsWhenNoSafeArrivalExists() {
         CavernStateBootstrap bootstrap = new CavernStateBootstrap();
         UUID playerId = UUID.randomUUID();
-        FakePlayerTravelContext player = new FakePlayerTravelContext(playerId, 90.0F, 30.0F, Set.of());
+        FakePlayerTravelContext player = new FakePlayerTravelContext(playerId, 200L, 90.0F, 30.0F, Set.of());
 
         Optional<CavernTravelPlan> plan = bootstrap.cavernTravelBridge().travelToCavern(
             player,
@@ -62,7 +62,7 @@ class CavernTravelBridgeTest {
     @Test
     void travelToCavernSearchesNeighboringColumnsWhenTargetColumnIsUnsafe() {
         CavernStateBootstrap bootstrap = new CavernStateBootstrap();
-        FakePlayerTravelContext player = new FakePlayerTravelContext(UUID.randomUUID(), 90.0F, 30.0F, Set.of(new SafeArrival(1, 80, 0)));
+        FakePlayerTravelContext player = new FakePlayerTravelContext(UUID.randomUUID(), 300L, 90.0F, 30.0F, Set.of(new SafeArrival(1, 80, 0)));
 
         Optional<CavernTravelPlan> plan = bootstrap.cavernTravelBridge().travelToCavern(
             player,
@@ -81,7 +81,7 @@ class CavernTravelBridgeTest {
     @Test
     void returnHomeExecutesSavedWorldIndexPlacement() {
         CavernStateBootstrap bootstrap = new CavernStateBootstrap();
-        FakePlayerTravelContext player = new FakePlayerTravelContext(UUID.randomUUID(), 45.0F, 15.0F, Set.of(new SafeArrival(0, 64, 0)));
+        FakePlayerTravelContext player = new FakePlayerTravelContext(UUID.randomUUID(), 400L, 45.0F, 15.0F, Set.of(new SafeArrival(0, 64, 0)));
 
         bootstrap.cavernTravelBridge().travelToCavern(
             player,
@@ -104,7 +104,7 @@ class CavernTravelBridgeTest {
     @Test
     void returnHomeWithoutSavedStateDoesNothing() {
         CavernStateBootstrap bootstrap = new CavernStateBootstrap();
-        FakePlayerTravelContext player = new FakePlayerTravelContext(UUID.randomUUID(), 45.0F, 15.0F, Set.of(new SafeArrival(0, 64, 0)));
+        FakePlayerTravelContext player = new FakePlayerTravelContext(UUID.randomUUID(), 500L, 45.0F, 15.0F, Set.of(new SafeArrival(0, 64, 0)));
 
         assertFalse(bootstrap.cavernTravelBridge().returnHome(player).isPresent());
         assertNull(player.lastTargetDimensionId);
@@ -112,6 +112,7 @@ class CavernTravelBridgeTest {
 
     private static final class FakePlayerTravelContext implements PlayerTravelContext, CavernArrivalPlacementProbe {
         private final UUID playerId;
+        private final long gameTime;
         private final float yaw;
         private final float pitch;
         private final Set<SafeArrival> safeArrivals;
@@ -122,8 +123,9 @@ class CavernTravelBridgeTest {
         private float lastYaw;
         private float lastPitch;
 
-        private FakePlayerTravelContext(UUID playerId, float yaw, float pitch, Set<SafeArrival> safeArrivals) {
+        private FakePlayerTravelContext(UUID playerId, long gameTime, float yaw, float pitch, Set<SafeArrival> safeArrivals) {
             this.playerId = playerId;
+            this.gameTime = gameTime;
             this.yaw = yaw;
             this.pitch = pitch;
             this.safeArrivals = safeArrivals;
@@ -132,6 +134,11 @@ class CavernTravelBridgeTest {
         @Override
         public UUID playerId() {
             return playerId;
+        }
+
+        @Override
+        public long gameTime() {
+            return gameTime;
         }
 
         @Override

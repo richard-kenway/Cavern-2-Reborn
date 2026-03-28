@@ -42,6 +42,11 @@ public final class NeoForgeCavernPortalInteractionContext implements CavernPorta
     }
 
     @Override
+    public long gameTime() {
+        return level.getGameTime();
+    }
+
+    @Override
     public void showPortalFeedback(String translationKey) {
         serverPlayer.displayClientMessage(Component.translatable(translationKey), true);
     }

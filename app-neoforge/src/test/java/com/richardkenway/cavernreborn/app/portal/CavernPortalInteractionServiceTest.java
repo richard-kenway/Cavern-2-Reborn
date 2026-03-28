@@ -18,13 +18,14 @@ import com.richardkenway.cavernreborn.core.state.CavernTravelPlan;
 
 class CavernPortalInteractionServiceTest {
     @Test
-    void useOutsideCavernSendsPlayerIntoCavern() {
+    void useOutsideCavernSendsPlayerIntoCavernAndAppliesCooldown() {
         CavernStateBootstrap bootstrap = new CavernStateBootstrap();
         CavernPortalInteractionService service = bootstrap.cavernPortalInteractionService();
         FakePortalInteractionContext context = new FakePortalInteractionContext(
             UUID.randomUUID(),
             false,
             CavernDimensions.OVERWORLD_DIMENSION_ID,
+            100L,
             11,
             70,
             11,
@@ -41,6 +42,7 @@ class CavernPortalInteractionServiceTest {
 
         assertTrue(plan.isPresent());
         assertTrue(context.feedbackKeys.isEmpty());
+        assertTrue(service.isOnCooldown(context));
         assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, context.lastTargetDimensionId);
         assertEquals((double) CavernDimensions.CAVERN_ENTRY_X, context.lastX);
         assertEquals(64.0D, context.lastY);
@@ -50,13 +52,14 @@ class CavernPortalInteractionServiceTest {
     }
 
     @Test
-    void useOutsideCavernCancelsWhenNoSafeArrivalExists() {
+    void useOutsideCavernCancelsWhenNoSafeArrivalExistsAndSuppressesRepeatFeedback() {
         CavernStateBootstrap bootstrap = new CavernStateBootstrap();
         CavernPortalInteractionService service = bootstrap.cavernPortalInteractionService();
         FakePortalInteractionContext context = new FakePortalInteractionContext(
             UUID.randomUUID(),
             false,
             CavernDimensions.OVERWORLD_DIMENSION_ID,
+            200L,
             11,
             70,
             11,
@@ -73,7 +76,10 @@ class CavernPortalInteractionServiceTest {
         assertNull(context.lastTargetDimensionId);
         assertEquals(1, context.feedbackKeys.size());
         assertEquals(CavernPortalInteractionService.PORTAL_ENTRY_FAILED_MESSAGE_KEY, context.feedbackKeys.get(0));
-        assertTrue(bootstrap.cavernTravelBridge().returnHome(context).isEmpty());
+        assertTrue(service.isOnCooldown(context));
+
+        assertTrue(service.use(context).isEmpty());
+        assertEquals(1, context.feedbackKeys.size());
     }
 
     @Test
@@ -86,6 +92,7 @@ class CavernPortalInteractionServiceTest {
             playerId,
             false,
             CavernDimensions.OVERWORLD_DIMENSION_ID,
+            300L,
             11,
             70,
             11,
@@ -103,6 +110,7 @@ class CavernPortalInteractionServiceTest {
             playerId,
             false,
             CavernDimensions.CAVERN_DIMENSION_ID,
+            320L,
             0,
             80,
             0,
@@ -119,6 +127,7 @@ class CavernPortalInteractionServiceTest {
 
         assertTrue(plan.isPresent());
         assertTrue(cavernContext.feedbackKeys.isEmpty());
+        assertTrue(service.isOnCooldown(cavernContext));
         assertEquals(CavernDimensions.OVERWORLD_DIMENSION_ID, cavernContext.lastTargetDimensionId);
         assertEquals(11.0D, cavernContext.lastX);
         assertEquals(70.0D, cavernContext.lastY);
@@ -135,6 +144,7 @@ class CavernPortalInteractionServiceTest {
             UUID.randomUUID(),
             true,
             CavernDimensions.OVERWORLD_DIMENSION_ID,
+            400L,
             11,
             70,
             11,
@@ -160,6 +170,7 @@ class CavernPortalInteractionServiceTest {
             UUID.randomUUID(),
             false,
             CavernDimensions.CAVERN_DIMENSION_ID,
+            500L,
             0,
             80,
             0,
@@ -175,6 +186,7 @@ class CavernPortalInteractionServiceTest {
         assertFalse(service.use(context).isPresent());
         assertEquals(0.0D, context.lastX);
         assertTrue(context.feedbackKeys.isEmpty());
+        assertFalse(service.isOnCooldown(context));
     }
 
     @Test
@@ -187,6 +199,7 @@ class CavernPortalInteractionServiceTest {
             playerId,
             false,
             CavernDimensions.OVERWORLD_DIMENSION_ID,
+            600L,
             11,
             70,
             11,
@@ -202,6 +215,7 @@ class CavernPortalInteractionServiceTest {
             playerId,
             false,
             CavernDimensions.OVERWORLD_DIMENSION_ID,
+            620L,
             25,
             72,
             25,
@@ -218,6 +232,7 @@ class CavernPortalInteractionServiceTest {
             playerId,
             false,
             CavernDimensions.CAVERN_DIMENSION_ID,
+            630L,
             0,
             80,
             0,
@@ -234,16 +249,85 @@ class CavernPortalInteractionServiceTest {
 
         assertTrue(plan.isPresent());
         assertTrue(returnContext.feedbackKeys.isEmpty());
+        assertTrue(service.isOnCooldown(returnContext));
         assertEquals(CavernDimensions.OVERWORLD_DIMENSION_ID, returnContext.lastTargetDimensionId);
         assertEquals(25.0D, returnContext.lastX);
         assertEquals(72.0D, returnContext.lastY);
         assertEquals(25.0D, returnContext.lastZ);
     }
 
+    @Test
+    void useOutsideCavernWorksAgainAfterCooldownExpires() {
+        CavernStateBootstrap bootstrap = new CavernStateBootstrap();
+        CavernPortalInteractionService service = bootstrap.cavernPortalInteractionService();
+        UUID playerId = UUID.randomUUID();
+
+        FakePortalInteractionContext firstContext = new FakePortalInteractionContext(
+            playerId,
+            false,
+            CavernDimensions.OVERWORLD_DIMENSION_ID,
+            700L,
+            11,
+            70,
+            11,
+            0.25D,
+            0.5D,
+            0.75D,
+            "north",
+            90.0F,
+            30.0F,
+            Set.of(new SafeArrival(0, 64, 0))
+        );
+        assertTrue(service.use(firstContext).isPresent());
+        assertTrue(service.isOnCooldown(firstContext));
+
+        FakePortalInteractionContext cooledContext = new FakePortalInteractionContext(
+            playerId,
+            false,
+            CavernDimensions.OVERWORLD_DIMENSION_ID,
+            710L,
+            11,
+            70,
+            11,
+            0.25D,
+            0.5D,
+            0.75D,
+            "north",
+            90.0F,
+            30.0F,
+            Set.of(new SafeArrival(0, 64, 0))
+        );
+        assertTrue(service.use(cooledContext).isEmpty());
+        assertNull(cooledContext.lastTargetDimensionId);
+        assertTrue(cooledContext.feedbackKeys.isEmpty());
+
+        FakePortalInteractionContext laterContext = new FakePortalInteractionContext(
+            playerId,
+            false,
+            CavernDimensions.OVERWORLD_DIMENSION_ID,
+            721L,
+            11,
+            70,
+            11,
+            0.25D,
+            0.5D,
+            0.75D,
+            "north",
+            90.0F,
+            30.0F,
+            Set.of(new SafeArrival(0, 64, 0))
+        );
+
+        assertTrue(service.use(laterContext).isPresent());
+        assertTrue(laterContext.feedbackKeys.isEmpty());
+        assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, laterContext.lastTargetDimensionId);
+    }
+
     private static final class FakePortalInteractionContext implements CavernPortalInteractionContext, CavernArrivalPlacementProbe {
         private final UUID playerId;
         private final boolean clientSide;
         private final String currentDimensionId;
+        private final long gameTime;
         private final int portalX;
         private final int portalY;
         private final int portalZ;
@@ -266,6 +350,7 @@ class CavernPortalInteractionServiceTest {
             UUID playerId,
             boolean clientSide,
             String currentDimensionId,
+            long gameTime,
             int portalX,
             int portalY,
             int portalZ,
@@ -280,6 +365,7 @@ class CavernPortalInteractionServiceTest {
             this.playerId = playerId;
             this.clientSide = clientSide;
             this.currentDimensionId = currentDimensionId;
+            this.gameTime = gameTime;
             this.portalX = portalX;
             this.portalY = portalY;
             this.portalZ = portalZ;
@@ -345,6 +431,11 @@ class CavernPortalInteractionServiceTest {
         @Override
         public UUID playerId() {
             return playerId;
+        }
+
+        @Override
+        public long gameTime() {
+            return gameTime;
         }
 
         @Override

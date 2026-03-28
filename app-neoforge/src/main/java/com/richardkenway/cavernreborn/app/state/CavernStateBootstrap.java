@@ -2,6 +2,7 @@ package com.richardkenway.cavernreborn.app.state;
 
 import com.richardkenway.cavernreborn.app.dimension.CavernTravelBridge;
 import com.richardkenway.cavernreborn.app.portal.CavernPortalInteractionService;
+import com.richardkenway.cavernreborn.app.portal.PortalInteractionCooldowns;
 import com.richardkenway.cavernreborn.core.CavernProject;
 import com.richardkenway.cavernreborn.core.state.CavernDimensionTravelPlanner;
 import com.richardkenway.cavernreborn.core.state.PlayerReturnStateStore;
@@ -14,6 +15,7 @@ public final class CavernStateBootstrap {
     private final PortalLoopService portalLoopService;
     private final CavernDimensionTravelPlanner cavernDimensionTravelPlanner;
     private final CavernTravelBridge cavernTravelBridge;
+    private final PortalInteractionCooldowns portalInteractionCooldowns;
     private final CavernPortalInteractionService cavernPortalInteractionService;
 
     public CavernStateBootstrap() {
@@ -26,10 +28,11 @@ public final class CavernStateBootstrap {
     ) {
         this.playerReturnStateStore = playerReturnStateStore;
         this.worldPortalIndexStore = worldPortalIndexStore;
+        this.portalInteractionCooldowns = new PortalInteractionCooldowns();
         this.portalLoopService = new PortalLoopService(playerReturnStateStore, worldPortalIndexStore);
         this.cavernDimensionTravelPlanner = new CavernDimensionTravelPlanner(portalLoopService);
         this.cavernTravelBridge = new CavernTravelBridge(cavernDimensionTravelPlanner);
-        this.cavernPortalInteractionService = new CavernPortalInteractionService(cavernTravelBridge);
+        this.cavernPortalInteractionService = new CavernPortalInteractionService(cavernTravelBridge, portalInteractionCooldowns);
     }
 
     public PlayerReturnStateStore playerReturnStateStore() {
@@ -50,6 +53,10 @@ public final class CavernStateBootstrap {
 
     public CavernTravelBridge cavernTravelBridge() {
         return cavernTravelBridge;
+    }
+
+    public PortalInteractionCooldowns portalInteractionCooldowns() {
+        return portalInteractionCooldowns;
     }
 
     public CavernPortalInteractionService cavernPortalInteractionService() {
