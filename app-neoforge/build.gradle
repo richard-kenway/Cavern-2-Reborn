@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
     implementation project(':core')
+    implementation project(':data')
     implementation "net.neoforged:neoforge:${neo_version}"
 }
 
@@ -57,4 +58,12 @@ tasks.withType(ProcessResources).configureEach {
     filesMatching(['META-INF/neoforge.mods.toml']) {
         expand replaceProperties
     }
+}
+
+tasks.named('jar', Jar).configure {
+    dependsOn project(':core').tasks.named('classes')
+    dependsOn project(':data').tasks.named('classes')
+    from project(':core').sourceSets.main.output
+    from project(':data').sourceSets.main.output
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
