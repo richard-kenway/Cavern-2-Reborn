@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Optional;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
@@ -38,9 +37,10 @@ class CavernPortalInteractionServiceTest {
             Set.of(new SafeArrival(0, 64, 0))
         );
 
-        Optional<CavernTravelPlan> plan = service.use(context);
+        CavernPortalInteractionOutcome outcome = service.use(context);
 
-        assertTrue(plan.isPresent());
+        assertTrue(outcome.handled());
+        assertTrue(outcome.travelPlan().isPresent());
         assertTrue(context.feedbackKeys.isEmpty());
         assertTrue(service.isOnCooldown(context));
         assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, context.lastTargetDimensionId);
@@ -72,13 +72,22 @@ class CavernPortalInteractionServiceTest {
             Set.of()
         );
 
-        assertTrue(service.use(context).isEmpty());
+        CavernPortalInteractionOutcome firstOutcome = service.use(context);
+        assertTrue(firstOutcome.handled());
+        assertTrue(firstOutcome.travelPlan().isEmpty());
         assertNull(context.lastTargetDimensionId);
         assertEquals(1, context.feedbackKeys.size());
         assertEquals(CavernPortalInteractionService.PORTAL_ENTRY_FAILED_MESSAGE_KEY, context.feedbackKeys.get(0));
         assertTrue(service.isOnCooldown(context));
 
-        assertTrue(service.use(context).isEmpty());
+        CavernPortalInteractionOutcome secondOutcome = service.use(context);
+        assertTrue(secondOutcome.handled());
+        assertTrue(secondOutcome.travelPlan().isEmpty());
+        assertEquals(1, context.feedbackKeys.size());
+
+        CavernPortalInteractionOutcome thirdOutcome = service.use(context);
+        assertTrue(thirdOutcome.handled());
+        assertTrue(thirdOutcome.travelPlan().isEmpty());
         assertEquals(1, context.feedbackKeys.size());
     }
 
@@ -104,7 +113,9 @@ class CavernPortalInteractionServiceTest {
             30.0F,
             Set.of(new SafeArrival(0, 64, 0))
         );
-        service.use(entryContext);
+        CavernPortalInteractionOutcome entryOutcome = service.use(entryContext);
+        assertTrue(entryOutcome.handled());
+        assertTrue(entryOutcome.travelPlan().isPresent());
 
         FakePortalInteractionContext cavernContext = new FakePortalInteractionContext(
             playerId,
@@ -123,9 +134,10 @@ class CavernPortalInteractionServiceTest {
             Set.of(new SafeArrival(0, 64, 0))
         );
 
-        Optional<CavernTravelPlan> plan = service.use(cavernContext);
+        CavernPortalInteractionOutcome outcome = service.use(cavernContext);
 
-        assertTrue(plan.isPresent());
+        assertTrue(outcome.handled());
+        assertTrue(outcome.travelPlan().isPresent());
         assertTrue(cavernContext.feedbackKeys.isEmpty());
         assertTrue(service.isOnCooldown(cavernContext));
         assertEquals(CavernDimensions.OVERWORLD_DIMENSION_ID, cavernContext.lastTargetDimensionId);
@@ -157,13 +169,16 @@ class CavernPortalInteractionServiceTest {
             Set.of(new SafeArrival(0, 64, 0))
         );
 
-        assertFalse(service.use(context).isPresent());
+        CavernPortalInteractionOutcome outcome = service.use(context);
+
+        assertFalse(outcome.handled());
+        assertTrue(outcome.travelPlan().isEmpty());
         assertEquals(0.0D, context.lastX);
         assertTrue(context.feedbackKeys.isEmpty());
     }
 
     @Test
-    void useInsideCavernWithoutSavedReturnStateDoesNothing() {
+    void useInsideCavernWithoutSavedReturnStateShowsMissingReturnFeedbackOnce() {
         CavernStateBootstrap bootstrap = new CavernStateBootstrap();
         CavernPortalInteractionService service = bootstrap.cavernPortalInteractionService();
         FakePortalInteractionContext context = new FakePortalInteractionContext(
@@ -183,10 +198,18 @@ class CavernPortalInteractionServiceTest {
             Set.of(new SafeArrival(0, 64, 0))
         );
 
-        assertFalse(service.use(context).isPresent());
+        CavernPortalInteractionOutcome firstOutcome = service.use(context);
+        assertTrue(firstOutcome.handled());
+        assertTrue(firstOutcome.travelPlan().isEmpty());
         assertEquals(0.0D, context.lastX);
-        assertTrue(context.feedbackKeys.isEmpty());
+        assertEquals(1, context.feedbackKeys.size());
+        assertEquals(CavernPortalInteractionService.PORTAL_RETURN_MISSING_MESSAGE_KEY, context.feedbackKeys.get(0));
         assertFalse(service.isOnCooldown(context));
+
+        CavernPortalInteractionOutcome secondOutcome = service.use(context);
+        assertTrue(secondOutcome.handled());
+        assertTrue(secondOutcome.travelPlan().isEmpty());
+        assertEquals(1, context.feedbackKeys.size());
     }
 
     @Test
@@ -195,7 +218,7 @@ class CavernPortalInteractionServiceTest {
         CavernPortalInteractionService service = bootstrap.cavernPortalInteractionService();
         UUID playerId = UUID.randomUUID();
 
-        service.use(new FakePortalInteractionContext(
+        CavernPortalInteractionOutcome firstEntry = service.use(new FakePortalInteractionContext(
             playerId,
             false,
             CavernDimensions.OVERWORLD_DIMENSION_ID,
@@ -211,7 +234,10 @@ class CavernPortalInteractionServiceTest {
             30.0F,
             Set.of(new SafeArrival(0, 64, 0))
         ));
-        service.use(new FakePortalInteractionContext(
+        assertTrue(firstEntry.handled());
+        assertTrue(firstEntry.travelPlan().isPresent());
+
+        CavernPortalInteractionOutcome secondEntry = service.use(new FakePortalInteractionContext(
             playerId,
             false,
             CavernDimensions.OVERWORLD_DIMENSION_ID,
@@ -227,6 +253,8 @@ class CavernPortalInteractionServiceTest {
             30.0F,
             Set.of(new SafeArrival(0, 64, 0))
         ));
+        assertTrue(secondEntry.handled());
+        assertTrue(secondEntry.travelPlan().isPresent());
 
         FakePortalInteractionContext returnContext = new FakePortalInteractionContext(
             playerId,
@@ -245,9 +273,10 @@ class CavernPortalInteractionServiceTest {
             Set.of(new SafeArrival(0, 64, 0))
         );
 
-        Optional<CavernTravelPlan> plan = service.use(returnContext);
+        CavernPortalInteractionOutcome outcome = service.use(returnContext);
 
-        assertTrue(plan.isPresent());
+        assertTrue(outcome.handled());
+        assertTrue(outcome.travelPlan().isPresent());
         assertTrue(returnContext.feedbackKeys.isEmpty());
         assertTrue(service.isOnCooldown(returnContext));
         assertEquals(CavernDimensions.OVERWORLD_DIMENSION_ID, returnContext.lastTargetDimensionId);
@@ -278,7 +307,9 @@ class CavernPortalInteractionServiceTest {
             30.0F,
             Set.of(new SafeArrival(0, 64, 0))
         );
-        assertTrue(service.use(firstContext).isPresent());
+        CavernPortalInteractionOutcome firstOutcome = service.use(firstContext);
+        assertTrue(firstOutcome.handled());
+        assertTrue(firstOutcome.travelPlan().isPresent());
         assertTrue(service.isOnCooldown(firstContext));
 
         FakePortalInteractionContext cooledContext = new FakePortalInteractionContext(
@@ -297,9 +328,12 @@ class CavernPortalInteractionServiceTest {
             30.0F,
             Set.of(new SafeArrival(0, 64, 0))
         );
-        assertTrue(service.use(cooledContext).isEmpty());
+        CavernPortalInteractionOutcome cooledOutcome = service.use(cooledContext);
+        assertTrue(cooledOutcome.handled());
+        assertTrue(cooledOutcome.travelPlan().isEmpty());
         assertNull(cooledContext.lastTargetDimensionId);
-        assertTrue(cooledContext.feedbackKeys.isEmpty());
+        assertEquals(1, cooledContext.feedbackKeys.size());
+        assertEquals(CavernPortalInteractionService.PORTAL_COOLDOWN_MESSAGE_KEY, cooledContext.feedbackKeys.get(0));
 
         FakePortalInteractionContext laterContext = new FakePortalInteractionContext(
             playerId,
@@ -318,7 +352,9 @@ class CavernPortalInteractionServiceTest {
             Set.of(new SafeArrival(0, 64, 0))
         );
 
-        assertTrue(service.use(laterContext).isPresent());
+        CavernPortalInteractionOutcome laterOutcome = service.use(laterContext);
+        assertTrue(laterOutcome.handled());
+        assertTrue(laterOutcome.travelPlan().isPresent());
         assertTrue(laterContext.feedbackKeys.isEmpty());
         assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, laterContext.lastTargetDimensionId);
     }

@@ -1,13 +1,12 @@
 package com.richardkenway.cavernreborn.app.block;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.richardkenway.cavernreborn.app.portal.CavernPortalInteractionContext;
+import com.richardkenway.cavernreborn.app.portal.CavernPortalInteractionOutcome;
 import com.richardkenway.cavernreborn.app.portal.CavernPortalInteractionService;
 import com.richardkenway.cavernreborn.app.portal.NeoForgeCavernPortalInteractionContext;
-import com.richardkenway.cavernreborn.core.state.CavernTravelPlan;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
@@ -38,12 +37,7 @@ public final class CavernPortalBlock extends Block {
         }
 
         CavernPortalInteractionContext context = new NeoForgeCavernPortalInteractionContext(serverPlayer, level, pos, hitResult);
-        CavernPortalInteractionService interactionService = interactionServiceSupplier.get();
-        if (interactionService.isOnCooldown(context)) {
-            return InteractionResult.CONSUME;
-        }
-
-        Optional<CavernTravelPlan> plan = interactionService.use(context);
-        return plan.isPresent() ? InteractionResult.CONSUME : InteractionResult.PASS;
+        CavernPortalInteractionOutcome outcome = interactionServiceSupplier.get().use(context);
+        return outcome.handled() ? InteractionResult.CONSUME : InteractionResult.PASS;
     }
 }
