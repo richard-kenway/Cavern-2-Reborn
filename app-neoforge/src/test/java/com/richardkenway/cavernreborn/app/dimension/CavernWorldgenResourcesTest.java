@@ -26,6 +26,8 @@ class CavernWorldgenResourcesTest {
         assertEquals("minecraft:dripstone_caves", biomeSource.get("biome").getAsString());
         assertEquals(192, cavernDimensionType.get("height").getAsInt());
         assertEquals(-64, cavernDimensionType.get("min_y").getAsInt());
+        assertTrue(cavernDimensionType.has("has_skylight"));
+        assertTrue(cavernDimensionType.has("has_ceiling"));
         assertTrue(cavernDimensionType.get("logical_height").getAsInt() <= cavernDimensionType.get("height").getAsInt());
     }
 
