@@ -36,17 +36,17 @@ class CavernArrivalPlacementResolverTest {
     }
 
     @Test
-    void resolveSearchesNeighboringColumnsDeterministically() {
+    void resolveSearchesWiderNeighboringColumnsDeterministically() {
         CavernArrivalPlacementResolver resolver = new CavernArrivalPlacementResolver();
         CavernPlacementTarget placementTarget = new CavernPlacementTarget(CavernDimensions.CAVERN_DIMENSION_ID, 0, 80, 0);
 
         Optional<CavernPlacementTarget> resolvedTarget = resolver.resolve(
             placementTarget,
-            new FakeArrivalProbe(Set.of(new SafeArrival(1, 80, 0)))
+            new FakeArrivalProbe(Set.of(new SafeArrival(4, 80, 0)))
         );
 
         assertTrue(resolvedTarget.isPresent());
-        assertEquals(new CavernPlacementTarget(CavernDimensions.CAVERN_DIMENSION_ID, 1, 80, 0), resolvedTarget.get());
+        assertEquals(new CavernPlacementTarget(CavernDimensions.CAVERN_DIMENSION_ID, 4, 80, 0), resolvedTarget.get());
     }
 
     @Test

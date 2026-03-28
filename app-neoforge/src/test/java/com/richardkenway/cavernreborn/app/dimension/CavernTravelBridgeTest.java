@@ -60,9 +60,9 @@ class CavernTravelBridgeTest {
     }
 
     @Test
-    void travelToCavernSearchesNeighboringColumnsWhenTargetColumnIsUnsafe() {
+    void travelToCavernSearchesWiderNeighboringColumnsWhenTargetColumnIsUnsafe() {
         CavernStateBootstrap bootstrap = new CavernStateBootstrap();
-        FakePlayerTravelContext player = new FakePlayerTravelContext(UUID.randomUUID(), 300L, 90.0F, 30.0F, Set.of(new SafeArrival(1, 80, 0)));
+        FakePlayerTravelContext player = new FakePlayerTravelContext(UUID.randomUUID(), 300L, 90.0F, 30.0F, Set.of(new SafeArrival(4, 80, 0)));
 
         Optional<CavernTravelPlan> plan = bootstrap.cavernTravelBridge().travelToCavern(
             player,
@@ -73,7 +73,7 @@ class CavernTravelBridgeTest {
 
         assertTrue(plan.isPresent());
         assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, player.lastTargetDimensionId);
-        assertEquals(1.0D, player.lastX);
+        assertEquals(4.0D, player.lastX);
         assertEquals((double) CavernDimensions.CAVERN_ENTRY_Y, player.lastY);
         assertEquals((double) CavernDimensions.CAVERN_ENTRY_Z, player.lastZ);
     }

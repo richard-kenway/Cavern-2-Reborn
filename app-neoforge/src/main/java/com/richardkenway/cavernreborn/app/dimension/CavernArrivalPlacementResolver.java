@@ -8,8 +8,8 @@ import com.richardkenway.cavernreborn.core.state.CavernDimensions;
 import com.richardkenway.cavernreborn.core.state.CavernPlacementTarget;
 
 public final class CavernArrivalPlacementResolver {
-    private static final int VERTICAL_SEARCH_WINDOW = 24;
-    private static final int HORIZONTAL_SEARCH_RADIUS = 1;
+    private static final int VERTICAL_SEARCH_WINDOW = 64;
+    private static final int HORIZONTAL_SEARCH_RADIUS = 16;
 
     public Optional<CavernPlacementTarget> resolve(CavernPlacementTarget placementTarget, CavernArrivalPlacementProbe arrivalProbe) {
         Objects.requireNonNull(placementTarget, "placementTarget");
