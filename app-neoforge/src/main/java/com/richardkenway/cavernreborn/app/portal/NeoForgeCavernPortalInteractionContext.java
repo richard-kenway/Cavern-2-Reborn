@@ -43,7 +43,7 @@ public final class NeoForgeCavernPortalInteractionContext implements CavernPorta
 
     @Override
     public void showPortalFeedback(String translationKey) {
-        serverPlayer.sendSystemMessage(Component.translatable(translationKey));
+        serverPlayer.displayClientMessage(Component.translatable(translationKey), true);
     }
 
     @Override
