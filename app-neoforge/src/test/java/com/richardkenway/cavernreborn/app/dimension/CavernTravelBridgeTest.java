@@ -42,6 +42,24 @@ class CavernTravelBridgeTest {
     }
 
     @Test
+    void travelToCavernCancelsWhenNoSafeArrivalExists() {
+        CavernStateBootstrap bootstrap = new CavernStateBootstrap();
+        UUID playerId = UUID.randomUUID();
+        FakePlayerTravelContext player = new FakePlayerTravelContext(playerId, 90.0F, 30.0F, Set.of());
+
+        Optional<CavernTravelPlan> plan = bootstrap.cavernTravelBridge().travelToCavern(
+            player,
+            new PortalReturnState("cavern", CavernDimensions.OVERWORLD_DIMENSION_ID, 12, 64, 12),
+            new TeleportContext("cavern", 0.25D, 0.5D, 0.75D, "north"),
+            new PortalWorldIndex.PortalPlacement(8, 70, 8)
+        );
+
+        assertTrue(plan.isEmpty());
+        assertNull(player.lastTargetDimensionId);
+        assertFalse(bootstrap.cavernTravelBridge().returnHome(player).isPresent());
+    }
+
+    @Test
     void travelToCavernSearchesNeighboringColumnsWhenTargetColumnIsUnsafe() {
         CavernStateBootstrap bootstrap = new CavernStateBootstrap();
         FakePlayerTravelContext player = new FakePlayerTravelContext(UUID.randomUUID(), 90.0F, 30.0F, Set.of(new SafeArrival(1, 80, 0)));

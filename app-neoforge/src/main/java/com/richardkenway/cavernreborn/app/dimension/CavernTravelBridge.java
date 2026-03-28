@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import com.richardkenway.cavernreborn.app.portal.CavernArrivalPlacementProbe;
+import com.richardkenway.cavernreborn.core.state.CavernDimensions;
 import com.richardkenway.cavernreborn.core.state.CavernPlacementResolver;
 import com.richardkenway.cavernreborn.core.state.CavernPlacementTarget;
 import com.richardkenway.cavernreborn.core.state.CavernDimensionTravelPlanner;
@@ -46,10 +47,22 @@ public final class CavernTravelBridge {
         Objects.requireNonNull(teleportContext, "teleportContext");
         Objects.requireNonNull(portalPlacement, "portalPlacement");
 
+        if (!(player instanceof CavernArrivalPlacementProbe arrivalPlacementProbe)) {
+            return Optional.empty();
+        }
+
+        Optional<CavernPlacementTarget> resolvedArrivalTarget = arrivalPlacementResolver.resolve(
+            cavernEntryTarget(),
+            arrivalPlacementProbe
+        );
+        if (resolvedArrivalTarget.isEmpty()) {
+            return Optional.empty();
+        }
+
         CavernTravelPlan plan = travelPlanner.planEntry(player.playerId(), returnState, teleportContext, portalPlacement);
 
-        travel(player, plan);
-        return Optional.of(plan);
+        Optional<CavernTravelPlan> resolvedPlan = travel(player, plan);
+        return resolvedPlan;
     }
 
     public Optional<CavernTravelPlan> returnHome(PlayerTravelContext player) {
@@ -60,13 +73,22 @@ public final class CavernTravelBridge {
         return plan;
     }
 
-    public void travel(PlayerTravelContext player, CavernTravelPlan plan) {
+    public Optional<CavernTravelPlan> travel(PlayerTravelContext player, CavernTravelPlan plan) {
         Objects.requireNonNull(player, "player");
         Objects.requireNonNull(plan, "plan");
         CavernPlacementTarget placementTarget = placementResolver.resolve(plan);
 
-        if (plan.isEnterCavern() && player instanceof CavernArrivalPlacementProbe arrivalPlacementProbe) {
-            placementTarget = arrivalPlacementResolver.resolve(placementTarget, arrivalPlacementProbe);
+        if (plan.isEnterCavern()) {
+            if (!(player instanceof CavernArrivalPlacementProbe arrivalPlacementProbe)) {
+                return Optional.empty();
+            }
+
+            Optional<CavernPlacementTarget> resolvedArrivalTarget = arrivalPlacementResolver.resolve(placementTarget, arrivalPlacementProbe);
+            if (resolvedArrivalTarget.isEmpty()) {
+                return Optional.empty();
+            }
+
+            placementTarget = resolvedArrivalTarget.get();
         }
 
         player.teleportTo(
@@ -76,6 +98,17 @@ public final class CavernTravelBridge {
             placementTarget.z(),
             player.yaw(),
             player.pitch()
+        );
+
+        return Optional.of(plan);
+    }
+
+    private static CavernPlacementTarget cavernEntryTarget() {
+        return new CavernPlacementTarget(
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            CavernDimensions.CAVERN_ENTRY_X,
+            CavernDimensions.CAVERN_ENTRY_Y,
+            CavernDimensions.CAVERN_ENTRY_Z
         );
     }
 }

@@ -1,7 +1,9 @@
 package com.richardkenway.cavernreborn.app.dimension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -16,9 +18,10 @@ class CavernArrivalPlacementResolverTest {
         CavernArrivalPlacementResolver resolver = new CavernArrivalPlacementResolver();
         CavernPlacementTarget placementTarget = new CavernPlacementTarget(CavernDimensions.CAVERN_DIMENSION_ID, 0, 80, 0);
 
-        CavernPlacementTarget resolvedTarget = resolver.resolve(placementTarget, new FakeArrivalProbe(Set.of(new SafeArrival(0, 80, 0))));
+        Optional<CavernPlacementTarget> resolvedTarget = resolver.resolve(placementTarget, new FakeArrivalProbe(Set.of(new SafeArrival(0, 80, 0))));
 
-        assertEquals(placementTarget, resolvedTarget);
+        assertTrue(resolvedTarget.isPresent());
+        assertEquals(placementTarget, resolvedTarget.get());
     }
 
     @Test
@@ -26,9 +29,10 @@ class CavernArrivalPlacementResolverTest {
         CavernArrivalPlacementResolver resolver = new CavernArrivalPlacementResolver();
         CavernPlacementTarget placementTarget = new CavernPlacementTarget(CavernDimensions.CAVERN_DIMENSION_ID, 0, 80, 0);
 
-        CavernPlacementTarget resolvedTarget = resolver.resolve(placementTarget, new FakeArrivalProbe(Set.of(new SafeArrival(0, 64, 0))));
+        Optional<CavernPlacementTarget> resolvedTarget = resolver.resolve(placementTarget, new FakeArrivalProbe(Set.of(new SafeArrival(0, 64, 0))));
 
-        assertEquals(new CavernPlacementTarget(CavernDimensions.CAVERN_DIMENSION_ID, 0, 64, 0), resolvedTarget);
+        assertTrue(resolvedTarget.isPresent());
+        assertEquals(new CavernPlacementTarget(CavernDimensions.CAVERN_DIMENSION_ID, 0, 64, 0), resolvedTarget.get());
     }
 
     @Test
@@ -36,22 +40,23 @@ class CavernArrivalPlacementResolverTest {
         CavernArrivalPlacementResolver resolver = new CavernArrivalPlacementResolver();
         CavernPlacementTarget placementTarget = new CavernPlacementTarget(CavernDimensions.CAVERN_DIMENSION_ID, 0, 80, 0);
 
-        CavernPlacementTarget resolvedTarget = resolver.resolve(
+        Optional<CavernPlacementTarget> resolvedTarget = resolver.resolve(
             placementTarget,
             new FakeArrivalProbe(Set.of(new SafeArrival(1, 80, 0)))
         );
 
-        assertEquals(new CavernPlacementTarget(CavernDimensions.CAVERN_DIMENSION_ID, 1, 80, 0), resolvedTarget);
+        assertTrue(resolvedTarget.isPresent());
+        assertEquals(new CavernPlacementTarget(CavernDimensions.CAVERN_DIMENSION_ID, 1, 80, 0), resolvedTarget.get());
     }
 
     @Test
-    void resolveFallsBackToOriginalTargetWhenNoSafeArrivalFound() {
+    void resolveReturnsEmptyWhenNoSafeArrivalFound() {
         CavernArrivalPlacementResolver resolver = new CavernArrivalPlacementResolver();
         CavernPlacementTarget placementTarget = new CavernPlacementTarget(CavernDimensions.CAVERN_DIMENSION_ID, 0, 80, 0);
 
-        CavernPlacementTarget resolvedTarget = resolver.resolve(placementTarget, new FakeArrivalProbe(Set.of()));
+        Optional<CavernPlacementTarget> resolvedTarget = resolver.resolve(placementTarget, new FakeArrivalProbe(Set.of()));
 
-        assertEquals(placementTarget, resolvedTarget);
+        assertTrue(resolvedTarget.isEmpty());
     }
 
     private static final class FakeArrivalProbe implements CavernArrivalPlacementProbe {

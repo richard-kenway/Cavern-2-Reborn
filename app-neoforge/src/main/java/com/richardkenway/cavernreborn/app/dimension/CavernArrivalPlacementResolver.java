@@ -1,6 +1,7 @@
 package com.richardkenway.cavernreborn.app.dimension;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import com.richardkenway.cavernreborn.app.portal.CavernArrivalPlacementProbe;
 import com.richardkenway.cavernreborn.core.state.CavernDimensions;
@@ -10,17 +11,17 @@ public final class CavernArrivalPlacementResolver {
     private static final int VERTICAL_SEARCH_WINDOW = 24;
     private static final int HORIZONTAL_SEARCH_RADIUS = 1;
 
-    public CavernPlacementTarget resolve(CavernPlacementTarget placementTarget, CavernArrivalPlacementProbe arrivalProbe) {
+    public Optional<CavernPlacementTarget> resolve(CavernPlacementTarget placementTarget, CavernArrivalPlacementProbe arrivalProbe) {
         Objects.requireNonNull(placementTarget, "placementTarget");
         Objects.requireNonNull(arrivalProbe, "arrivalProbe");
 
         if (!CavernDimensions.isCavern(placementTarget.dimensionId())) {
-            return placementTarget;
+            return Optional.of(placementTarget);
         }
 
         CavernPlacementTarget resolvedTarget = resolveColumn(placementTarget, arrivalProbe, (int) placementTarget.x(), (int) placementTarget.z());
         if (resolvedTarget != null) {
-            return resolvedTarget;
+            return Optional.of(resolvedTarget);
         }
 
         for (int horizontalOffset = 1; horizontalOffset <= HORIZONTAL_SEARCH_RADIUS; horizontalOffset++) {
@@ -37,13 +38,13 @@ public final class CavernArrivalPlacementResolver {
                         (int) placementTarget.z() + deltaZ
                     );
                     if (resolvedTarget != null) {
-                        return resolvedTarget;
+                        return Optional.of(resolvedTarget);
                     }
                 }
             }
         }
 
-        return placementTarget;
+        return Optional.empty();
     }
 
     private CavernPlacementTarget resolveColumn(

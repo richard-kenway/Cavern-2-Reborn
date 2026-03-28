@@ -2,6 +2,7 @@ package com.richardkenway.cavernreborn.app.portal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
@@ -44,6 +45,31 @@ class CavernPortalInteractionServiceTest {
         assertEquals((double) CavernDimensions.CAVERN_ENTRY_Z, context.lastZ);
         assertEquals(90.0F, context.lastYaw);
         assertEquals(30.0F, context.lastPitch);
+    }
+
+    @Test
+    void useOutsideCavernCancelsWhenNoSafeArrivalExists() {
+        CavernStateBootstrap bootstrap = new CavernStateBootstrap();
+        CavernPortalInteractionService service = bootstrap.cavernPortalInteractionService();
+        FakePortalInteractionContext context = new FakePortalInteractionContext(
+            UUID.randomUUID(),
+            false,
+            CavernDimensions.OVERWORLD_DIMENSION_ID,
+            11,
+            70,
+            11,
+            0.25D,
+            0.5D,
+            0.75D,
+            "north",
+            90.0F,
+            30.0F,
+            Set.of()
+        );
+
+        assertTrue(service.use(context).isEmpty());
+        assertNull(context.lastTargetDimensionId);
+        assertTrue(bootstrap.cavernTravelBridge().returnHome(context).isEmpty());
     }
 
     @Test
