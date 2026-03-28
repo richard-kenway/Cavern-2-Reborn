@@ -19,6 +19,8 @@ No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 ## Current Limitations
 
 - `CAVERN` still uses a first baseline cave profile rather than full legacy-parity worldgen.
+- The new data-driven cave-biome family still needs manual in-game validation on a real generated world after the move away from the fixed biome stub.
+- The current cave-biome family is intentionally minimal and does not yet cover ore veins, structures or a broader biome set.
 - Safe arrival currently relies on a bounded local search around the target column and may cancel entry if no safe point is found nearby.
 - Portal denial feedback currently uses short overlay messages only; there is no broader notification policy yet.
 - Cooldown and feedback suppression windows are fixed tick-based values and may need tuning after manual playtesting.
