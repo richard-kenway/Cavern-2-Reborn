@@ -1,6 +1,7 @@
 package com.richardkenway.cavernreborn.app.dimension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -9,27 +10,47 @@ import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Test;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 class CavernWorldgenResourcesTest {
     @Test
-    void cavernDimensionUsesCaveOrientedBaselineProfile() throws IOException {
+    void cavernDimensionUsesDataDrivenCaveBiomeFamily() throws IOException {
         JsonObject cavernDimension = readJsonResource("data/cavernreborn/dimension/cavern.json");
         JsonObject cavernDimensionType = readJsonResource("data/cavernreborn/dimension_type/cavern.json");
         JsonObject generator = cavernDimension.getAsJsonObject("generator");
         JsonObject biomeSource = generator.getAsJsonObject("biome_source");
+        JsonArray biomes = biomeSource.getAsJsonArray("biomes");
 
+        assertEquals("cavernreborn:cavern", cavernDimension.get("type").getAsString());
         assertEquals("minecraft:noise", generator.get("type").getAsString());
         assertEquals("minecraft:caves", generator.get("settings").getAsString());
-        assertEquals("minecraft:fixed", biomeSource.get("type").getAsString());
-        assertEquals("minecraft:dripstone_caves", biomeSource.get("biome").getAsString());
+        assertEquals("minecraft:multi_noise", biomeSource.get("type").getAsString());
+        assertEquals(2, biomes.size());
+        assertBiomeFamilyEntry(biomes.get(0).getAsJsonObject(), "minecraft:dripstone_caves");
+        assertBiomeFamilyEntry(biomes.get(1).getAsJsonObject(), "minecraft:lush_caves");
         assertEquals(192, cavernDimensionType.get("height").getAsInt());
         assertEquals(-64, cavernDimensionType.get("min_y").getAsInt());
         assertTrue(cavernDimensionType.has("has_skylight"));
         assertTrue(cavernDimensionType.has("has_ceiling"));
         assertTrue(cavernDimensionType.get("infiniburn").getAsString().startsWith("#"));
         assertTrue(cavernDimensionType.get("logical_height").getAsInt() <= cavernDimensionType.get("height").getAsInt());
+    }
+
+    private static void assertBiomeFamilyEntry(JsonObject biomeEntry, String expectedBiome) {
+        assertNotNull(biomeEntry);
+        assertEquals(expectedBiome, biomeEntry.get("biome").getAsString());
+
+        JsonObject parameters = biomeEntry.getAsJsonObject("parameters");
+        assertNotNull(parameters);
+        assertTrue(parameters.has("temperature"));
+        assertTrue(parameters.has("humidity"));
+        assertTrue(parameters.has("continentalness"));
+        assertTrue(parameters.has("erosion"));
+        assertTrue(parameters.has("depth"));
+        assertTrue(parameters.has("weirdness"));
+        assertTrue(parameters.has("offset"));
     }
 
     private static JsonObject readJsonResource(String resourcePath) throws IOException {
