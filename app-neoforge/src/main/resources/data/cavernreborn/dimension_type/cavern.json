@@ -5,9 +5,9 @@
   "effects": "minecraft:overworld",
   "has_ceiling": false,
   "has_raids": false,
-  "height": 128,
-  "logical_height": 128,
-  "min_y": 0,
+  "height": 192,
+  "logical_height": 192,
+  "min_y": -64,
   "monster_spawn_block_light_limit": 0,
   "monster_spawn_light_level": {
     "type": "minecraft:constant",
