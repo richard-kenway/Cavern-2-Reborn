@@ -12,8 +12,17 @@ This repository currently contains the project skeleton and a minimal content re
 - a bootstrap block, `BlockItem` and creative tab used to validate registry wiring
 - a return-state, portal block flow and `CAVERN` travel skeleton for the first `CAVERN` architecture phase
 - a registered `CAVERN` target dimension, a minimal world stub and the first real safe-arrival check on top of that skeleton
+- basic portal UX feedback for `cooldown`, failed cavern entry and missing return-state denial cases
 
 No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
+
+## Current Limitations
+
+- `CAVERN` still uses a world stub rather than the first real baseline worldgen profile.
+- Safe arrival currently relies on a bounded local search around the target column and may cancel entry if no safe point is found nearby.
+- Portal denial feedback currently uses short overlay messages only; there is no broader notification policy yet.
+- Cooldown and feedback suppression windows are fixed tick-based values and may need tuning after manual playtesting.
+- Legacy portal branches such as `portalMenu`, shop flow and rank gating are intentionally not part of the current MVP slice.
 
 ## Structure
 
