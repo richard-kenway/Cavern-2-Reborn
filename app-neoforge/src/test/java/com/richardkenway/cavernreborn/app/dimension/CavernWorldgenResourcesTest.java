@@ -137,18 +137,33 @@ class CavernWorldgenResourcesTest {
 
     private static void assertCaveRavineNetwork(JsonObject ravineNetwork) {
         assertNotNull(ravineNetwork);
-        assertEquals("minecraft:add", ravineNetwork.get("type").getAsString());
-        assertEquals(0.45, ravineNetwork.get("argument1").getAsDouble(), 0.0);
+        assertEquals("minecraft:range_choice", ravineNetwork.get("type").getAsString());
+        assertEquals(0.25, ravineNetwork.get("min_inclusive").getAsDouble(), 0.0);
+        assertEquals(0.75, ravineNetwork.get("max_exclusive").getAsDouble(), 0.0);
+        assertEquals(0.28, ravineNetwork.get("when_out_of_range").getAsDouble(), 0.0);
 
-        JsonObject weightedLayer = ravineNetwork.getAsJsonObject("argument2");
+        JsonObject input = ravineNetwork.getAsJsonObject("input");
+        assertNotNull(input);
+        assertEquals("minecraft:y_clamped_gradient", input.get("type").getAsString());
+        assertEquals(-16, input.get("from_y").getAsInt());
+        assertEquals(112, input.get("to_y").getAsInt());
+        assertEquals(0.0, input.get("from_value").getAsDouble(), 0.0);
+        assertEquals(1.0, input.get("to_value").getAsDouble(), 0.0);
+
+        JsonObject whenInRange = ravineNetwork.getAsJsonObject("when_in_range");
+        assertNotNull(whenInRange);
+        assertEquals("minecraft:add", whenInRange.get("type").getAsString());
+        assertEquals(-0.28, whenInRange.get("argument1").getAsDouble(), 0.0);
+
+        JsonObject weightedLayer = whenInRange.getAsJsonObject("argument2");
         assertNotNull(weightedLayer);
         assertEquals("minecraft:mul", weightedLayer.get("type").getAsString());
-        assertEquals(0.35, weightedLayer.get("argument1").getAsDouble(), 0.0);
+        assertEquals(0.58, weightedLayer.get("argument1").getAsDouble(), 0.0);
 
-        JsonObject cachedEntrances = weightedLayer.getAsJsonObject("argument2");
-        assertNotNull(cachedEntrances);
-        assertEquals("minecraft:cache_once", cachedEntrances.get("type").getAsString());
-        assertEquals("minecraft:overworld/caves/entrances", cachedEntrances.get("argument").getAsString());
+        JsonObject cachedSpaghetti = weightedLayer.getAsJsonObject("argument2");
+        assertNotNull(cachedSpaghetti);
+        assertEquals("minecraft:cache_once", cachedSpaghetti.get("type").getAsString());
+        assertEquals("minecraft:overworld/caves/spaghetti_2d", cachedSpaghetti.get("argument").getAsString());
     }
 
     private static void assertBiomeFamilyEntry(JsonObject biomeEntry, String expectedBiome) {

@@ -15,7 +15,7 @@ This repository currently contains the project skeleton and a minimal content re
 - custom cave-like dimension effects for `CAVERN`, used to reduce visible sky and sun leakage in large open cavities
 - a bounded `contained_caves` noise-settings fork of vanilla `minecraft:caves`, used to reduce oversized cavity formation without changing the overall cave-first direction of the baseline
 - a first weighted tunnel-network layer on top of `contained_caves`, used to improve underground connectedness without reopening the baseline too aggressively
-- a first weighted ravine-like layer on top of the tunnel baseline, used to add longer connector cuts without letting raw entrance carving dominate the whole profile
+- a first band-limited ravine-like layer on top of the tunnel baseline, used to add longer connector cuts without letting raw entrance carving dominate the whole profile
 - basic portal UX feedback for `cooldown`, failed cavern entry and missing return-state denial cases
 
 No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
@@ -28,6 +28,7 @@ No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 - The current dry-out pass keeps `sea_level` pinned to `min_y`, so the normal `CAVERN` baseline no longer has an operative flood-line inside its playable volume.
 - The new data-driven cave-biome family still needs manual in-game validation on a real generated world after the move away from the fixed biome stub.
 - Large open cavities may still appear in the current baseline; custom cave-like dimension effects now handle sky/sun leakage, but the overall visual result still needs manual in-game validation.
+- The current ravine-like pass is intentionally band-limited and connector-oriented after manual playtesting showed that a raw entrances-based layer mostly produced vertical shafts instead of longer horizontal cuts.
 - The current cave-biome family is intentionally minimal and does not yet cover ore veins, structures or a broader biome set.
 - Safe arrival currently relies on a bounded local search around the target column and may cancel entry if no safe point is found nearby.
 - Portal denial feedback currently uses short overlay messages only; there is no broader notification policy yet.
