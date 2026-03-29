@@ -1,9 +1,9 @@
 {
   "type": "minecraft:add",
-  "argument1": 0.30,
+  "argument1": 0.22,
   "argument2": {
     "type": "minecraft:mul",
-    "argument1": 0.52,
+    "argument1": 0.68,
     "argument2": {
       "type": "minecraft:add",
       "argument1": "minecraft:overworld/caves/spaghetti_2d",
