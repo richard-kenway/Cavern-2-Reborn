@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.world.phys.Vec3;
 
 public final class CavernDimensionSpecialEffects extends DimensionSpecialEffects {
-    private static final Vec3 CAVERN_FOG_COLOR = new Vec3(0.02D, 0.025D, 0.035D);
+    private static final Vec3 CAVERN_FOG_COLOR = new Vec3(0.02D, 0.022D, 0.024D);
 
     public CavernDimensionSpecialEffects() {
         super(Float.NaN, true, SkyType.NONE, false, false);

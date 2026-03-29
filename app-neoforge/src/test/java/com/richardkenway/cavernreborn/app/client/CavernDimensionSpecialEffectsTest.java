@@ -27,7 +27,7 @@ class CavernDimensionSpecialEffectsTest {
         Vec3 adjusted = effects.getBrightnessDependentFogColor(new Vec3(1.0D, 1.0D, 1.0D), 1.0F);
 
         assertEquals(0.02D, adjusted.x, 1.0E-9D);
-        assertEquals(0.025D, adjusted.y, 1.0E-9D);
-        assertEquals(0.035D, adjusted.z, 1.0E-9D);
+        assertEquals(0.022D, adjusted.y, 1.0E-9D);
+        assertEquals(0.024D, adjusted.z, 1.0E-9D);
     }
 }
