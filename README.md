@@ -23,7 +23,7 @@ No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 - `CAVERN` still uses a first baseline cave profile rather than full legacy-parity worldgen.
 - The current `contained_caves` preset is intentionally a narrow fork of vanilla `minecraft:caves`, not a new long-term worldgen direction.
 - The current containment pass now also shifts only a small pair of `final_density` bias values; this is still a bounded tuning step and not a worldgen redesign.
-- The current dry-out pass lowers the baseline waterline below the observed flooding band instead of turning the profile into a globally dry cave preset.
+- The current dry-out pass keeps `sea_level` pinned to `min_y`, so the normal `CAVERN` baseline no longer has an operative flood-line inside its playable volume.
 - The new data-driven cave-biome family still needs manual in-game validation on a real generated world after the move away from the fixed biome stub.
 - Large open cavities may still appear in the current baseline; custom cave-like dimension effects now handle sky/sun leakage, but the overall visual result still needs manual in-game validation.
 - The current cave-biome family is intentionally minimal and does not yet cover ore veins, structures or a broader biome set.

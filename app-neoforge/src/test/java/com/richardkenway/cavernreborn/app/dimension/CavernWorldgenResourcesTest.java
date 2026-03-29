@@ -52,7 +52,6 @@ class CavernWorldgenResourcesTest {
         assertFalse(noiseSettings.get("ore_veins_enabled").getAsBoolean());
         assertFalse(noiseSettings.get("disable_mob_generation").getAsBoolean());
         assertTrue(noiseSettings.get("legacy_random_source").getAsBoolean());
-        assertEquals(16, noiseSettings.get("sea_level").getAsInt());
 
         JsonObject noise = noiseSettings.getAsJsonObject("noise");
         assertNotNull(noise);
@@ -60,6 +59,7 @@ class CavernWorldgenResourcesTest {
         assertEquals(-64, noise.get("min_y").getAsInt());
         assertEquals(1, noise.get("size_horizontal").getAsInt());
         assertEquals(1, noise.get("size_vertical").getAsInt());
+        assertEquals(noise.get("min_y").getAsInt(), noiseSettings.get("sea_level").getAsInt());
 
         JsonObject defaultBlock = noiseSettings.getAsJsonObject("default_block");
         JsonObject defaultFluid = noiseSettings.getAsJsonObject("default_fluid");
