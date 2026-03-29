@@ -1,8 +1,8 @@
 package com.richardkenway.cavernreborn.app.dimension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -115,7 +115,6 @@ class CavernWorldgenResourcesTest {
         assertNotNull(verticalBias);
         assertEquals("minecraft:add", verticalBias.get("type").getAsString());
         assertEquals(-2.0, verticalBias.get("argument1").getAsDouble(), 0.0);
-
     }
 
     private static void assertCaveTunnelNetwork(JsonObject tunnelNetwork) {
@@ -145,10 +144,34 @@ class CavernWorldgenResourcesTest {
         assertEquals("minecraft:mul", weightedLayer.get("type").getAsString());
         assertEquals(0.35, weightedLayer.get("argument1").getAsDouble(), 0.0);
 
-        JsonObject cachedEntrances = weightedLayer.getAsJsonObject("argument2");
-        assertNotNull(cachedEntrances);
-        assertEquals("minecraft:cache_once", cachedEntrances.get("type").getAsString());
-        assertEquals("minecraft:overworld/caves/entrances", cachedEntrances.get("argument").getAsString());
+        JsonObject connectorField = weightedLayer.getAsJsonObject("argument2");
+        assertNotNull(connectorField);
+        assertEquals("minecraft:mul", connectorField.get("type").getAsString());
+
+        JsonObject cachedSpaghetti = connectorField.getAsJsonObject("argument1");
+        assertNotNull(cachedSpaghetti);
+        assertEquals("minecraft:cache_once", cachedSpaghetti.get("type").getAsString());
+        assertEquals("minecraft:overworld/caves/spaghetti_2d", cachedSpaghetti.get("argument").getAsString());
+
+        JsonObject heightBand = connectorField.getAsJsonObject("argument2");
+        assertNotNull(heightBand);
+        assertEquals("minecraft:mul", heightBand.get("type").getAsString());
+
+        JsonObject lowerBand = heightBand.getAsJsonObject("argument1");
+        assertNotNull(lowerBand);
+        assertEquals("minecraft:y_clamped_gradient", lowerBand.get("type").getAsString());
+        assertEquals(-64, lowerBand.get("from_y").getAsInt());
+        assertEquals(8, lowerBand.get("to_y").getAsInt());
+        assertEquals(0.0, lowerBand.get("from_value").getAsDouble(), 0.0);
+        assertEquals(1.0, lowerBand.get("to_value").getAsDouble(), 0.0);
+
+        JsonObject upperBand = heightBand.getAsJsonObject("argument2");
+        assertNotNull(upperBand);
+        assertEquals("minecraft:y_clamped_gradient", upperBand.get("type").getAsString());
+        assertEquals(8, upperBand.get("from_y").getAsInt());
+        assertEquals(40, upperBand.get("to_y").getAsInt());
+        assertEquals(1.0, upperBand.get("from_value").getAsDouble(), 0.0);
+        assertEquals(0.0, upperBand.get("to_value").getAsDouble(), 0.0);
     }
 
     private static void assertBiomeFamilyEntry(JsonObject biomeEntry, String expectedBiome) {
