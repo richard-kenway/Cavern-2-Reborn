@@ -1,25 +1,12 @@
 {
-  "type": "minecraft:range_choice",
-  "input": {
-    "type": "minecraft:y_clamped_gradient",
-    "from_value": 0.0,
-    "from_y": -16,
-    "to_value": 1.0,
-    "to_y": 112
-  },
-  "min_inclusive": 0.25,
-  "max_exclusive": 0.75,
-  "when_in_range": {
-    "type": "minecraft:add",
-    "argument1": -0.28,
+  "type": "minecraft:add",
+  "argument1": 0.45,
+  "argument2": {
+    "type": "minecraft:mul",
+    "argument1": 0.35,
     "argument2": {
-      "type": "minecraft:mul",
-      "argument1": 0.58,
-      "argument2": {
-        "type": "minecraft:cache_once",
-        "argument": "minecraft:overworld/caves/spaghetti_2d"
-      }
+      "type": "minecraft:cache_once",
+      "argument": "minecraft:overworld/caves/entrances"
     }
-  },
-  "when_out_of_range": 0.28
+  }
 }
