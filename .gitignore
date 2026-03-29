@@ -2,10 +2,13 @@
 .idea/
 build/
 **/build/
+runs/
+**/runs/
 out/
 run/
 logs/
 **/logs/
+dev-server/server/
 *.iml
 *.ipr
 *.iws

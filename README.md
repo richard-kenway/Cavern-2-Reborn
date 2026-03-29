@@ -58,3 +58,41 @@ This repository can be validated inside Docker without installing Java on the ho
   - `docker compose run --rm gradle ./gradlew --no-daemon :app-neoforge:runData`
 
 The container uses JDK 21 and the project Gradle wrapper.
+
+## Docker Dev Server
+
+For repeated `CAVERN` worldgen and portal checks, use the dedicated local dev server instead of rebuilding a fresh singleplayer world every time.
+
+- Start the server:
+  - `scripts/dev-server/up.sh`
+- Stop the server:
+  - `scripts/dev-server/down.sh`
+- Restart the server after server-side changes:
+  - `scripts/dev-server/restart.sh`
+- Tail server logs:
+  - `scripts/dev-server/logs.sh`
+- Reset only the generated `CAVERN` dimension:
+  - `scripts/dev-server/reset-cavern.sh`
+- Reset the full server world:
+  - `scripts/dev-server/reset-world.sh`
+- Build the server-side mod JAR and sync it into `dev-server/server/mods`:
+  - `scripts/dev-server/build-server-mod.sh`
+- Build and sync the mod JAR into both the dedicated server and the CurseForge client:
+  - `scripts/dev-server/build-mods.sh`
+- Build the client mod JAR and sync it into the CurseForge instance only:
+  - `scripts/dev-server/build-client-mod.sh`
+
+Practical workflow:
+
+1. Keep one persistent local multiplayer world on the dedicated dev server.
+2. If you change only server-side logic or worldgen resources, run `scripts/dev-server/build-server-mod.sh`, then restart the server and optionally reset just `CAVERN`.
+3. If you change shared or client-loaded code/resources, run `scripts/dev-server/build-mods.sh` and restart the client too.
+4. Connect the client to `localhost:25585` by default.
+
+Notes:
+
+- The dedicated dev server installs NeoForge into `dev-server/server` on first start and then loads `cavernreborn-0.1.0.jar` from `dev-server/server/mods`.
+- The first dedicated-server start can take a while because NeoForge server runtime is installed into `dev-server/server`.
+- The server world lives under `dev-server/server/world`.
+- The generated `runs/` directories are ignored by git, so resets and local test worlds do not dirty the repository.
+- If `25585` is busy too, set a different host port with `DEV_SERVER_PORT=<port> scripts/dev-server/up.sh`.

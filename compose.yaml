@@ -9,5 +9,18 @@ services:
       - gradle-cache:/gradle-cache
     command: ["./gradlew", "--no-daemon", "help"]
 
+  dev-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+      - gradle-cache:/gradle-cache
+    command: ["bash", "/workspace/scripts/dev-server/run-server.sh"]
+    ports:
+      - "${DEV_SERVER_PORT:-25585}:25565"
+    stop_grace_period: 20s
+
 volumes:
   gradle-cache:
