@@ -28,7 +28,7 @@ No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 - The current dry-out pass keeps `sea_level` pinned to `min_y`, so the normal `CAVERN` baseline no longer has an operative flood-line inside its playable volume.
 - The new data-driven cave-biome family still needs manual in-game validation on a real generated world after the move away from the fixed biome stub.
 - Large open cavities may still appear in the current baseline; custom cave-like dimension effects now handle sky/sun leakage, but the overall visual result still needs manual in-game validation.
-- The tunnel-network layer is now noticeably denser than before after repeated manual playtesting showed that players still had to dig too often; this remains a bounded tuning step rather than a new carve system.
+- The tunnel-network layer is now much denser than before after repeated manual playtesting showed that players still had to dig too often; this remains a bounded tuning step rather than a new carve system.
 - The current cave-biome family is intentionally minimal and does not yet cover ore veins, structures or a broader biome set.
 - Safe arrival currently relies on a bounded local search around the target column and may cancel entry if no safe point is found nearby.
 - Portal denial feedback currently uses short overlay messages only; there is no broader notification policy yet.
