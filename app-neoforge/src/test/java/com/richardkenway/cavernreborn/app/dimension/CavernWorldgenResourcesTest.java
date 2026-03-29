@@ -21,6 +21,7 @@ class CavernWorldgenResourcesTest {
         JsonObject cavernDimension = readJsonResource("data/cavernreborn/dimension/cavern.json");
         JsonObject cavernDimensionType = readJsonResource("data/cavernreborn/dimension_type/cavern.json");
         JsonObject containedCaves = readJsonResource("data/cavernreborn/worldgen/noise_settings/contained_caves.json");
+        JsonObject tunnelNetwork = readJsonResource("data/cavernreborn/worldgen/density_function/cave_tunnel_network.json");
         JsonObject generator = cavernDimension.getAsJsonObject("generator");
         JsonObject biomeSource = generator.getAsJsonObject("biome_source");
         JsonArray biomes = biomeSource.getAsJsonArray("biomes");
@@ -33,6 +34,7 @@ class CavernWorldgenResourcesTest {
         assertBiomeFamilyEntry(biomes.get(0).getAsJsonObject(), "minecraft:dripstone_caves");
         assertBiomeFamilyEntry(biomes.get(1).getAsJsonObject(), "minecraft:lush_caves");
         assertContainedCavesNoiseSettings(containedCaves);
+        assertCaveTunnelNetwork(tunnelNetwork);
         assertEquals(192, cavernDimensionType.get("height").getAsInt());
         assertEquals(-64, cavernDimensionType.get("min_y").getAsInt());
         assertEquals("cavernreborn:cavern", cavernDimensionType.get("effects").getAsString());
@@ -73,9 +75,13 @@ class CavernWorldgenResourcesTest {
         JsonObject finalDensity = noiseSettings.getAsJsonObject("noise_router").getAsJsonObject("final_density");
         assertNotNull(finalDensity);
 
-        JsonObject densityMul = finalDensity.getAsJsonObject("argument");
+        JsonObject baseDensity = finalDensity.getAsJsonObject("argument1");
+        assertNotNull(baseDensity);
+        assertEquals("minecraft:min", finalDensity.get("type").getAsString());
+        assertEquals("minecraft:squeeze", baseDensity.get("type").getAsString());
+
+        JsonObject densityMul = baseDensity.getAsJsonObject("argument");
         assertNotNull(densityMul);
-        assertEquals("minecraft:squeeze", finalDensity.get("type").getAsString());
         assertEquals("minecraft:mul", densityMul.get("type").getAsString());
         assertEquals(0.64, densityMul.get("argument1").getAsDouble(), 0.0);
 
@@ -100,6 +106,25 @@ class CavernWorldgenResourcesTest {
         assertNotNull(verticalBias);
         assertEquals("minecraft:add", verticalBias.get("type").getAsString());
         assertEquals(-2.0, verticalBias.get("argument1").getAsDouble(), 0.0);
+
+        assertEquals("cavernreborn:cave_tunnel_network", finalDensity.get("argument2").getAsString());
+    }
+
+    private static void assertCaveTunnelNetwork(JsonObject tunnelNetwork) {
+        assertNotNull(tunnelNetwork);
+        assertEquals("minecraft:add", tunnelNetwork.get("type").getAsString());
+        assertEquals(0.35, tunnelNetwork.get("argument1").getAsDouble(), 0.0);
+
+        JsonObject weightedLayer = tunnelNetwork.getAsJsonObject("argument2");
+        assertNotNull(weightedLayer);
+        assertEquals("minecraft:mul", weightedLayer.get("type").getAsString());
+        assertEquals(0.45, weightedLayer.get("argument1").getAsDouble(), 0.0);
+
+        JsonObject spaghettiLayer = weightedLayer.getAsJsonObject("argument2");
+        assertNotNull(spaghettiLayer);
+        assertEquals("minecraft:add", spaghettiLayer.get("type").getAsString());
+        assertEquals("minecraft:overworld/caves/spaghetti_2d", spaghettiLayer.get("argument1").getAsString());
+        assertEquals("minecraft:overworld/caves/spaghetti_roughness_function", spaghettiLayer.get("argument2").getAsString());
     }
 
     private static void assertBiomeFamilyEntry(JsonObject biomeEntry, String expectedBiome) {
