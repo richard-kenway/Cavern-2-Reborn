@@ -43,6 +43,7 @@ class CavernWorldgenResourcesTest {
         assertFalse(cavernDimensionType.get("ultrawarm").getAsBoolean());
         assertTrue(cavernDimensionType.get("infiniburn").getAsString().startsWith("#"));
         assertTrue(cavernDimensionType.get("logical_height").getAsInt() <= cavernDimensionType.get("height").getAsInt());
+        assertFinalDensityBias(containedCaves);
     }
 
     private static void assertContainedCavesNoiseSettings(JsonObject noiseSettings) {
@@ -66,6 +67,39 @@ class CavernWorldgenResourcesTest {
         assertNotNull(defaultFluid);
         assertEquals("minecraft:stone", defaultBlock.get("Name").getAsString());
         assertEquals("minecraft:water", defaultFluid.get("Name").getAsString());
+    }
+
+    private static void assertFinalDensityBias(JsonObject noiseSettings) {
+        JsonObject finalDensity = noiseSettings.getAsJsonObject("noise_router").getAsJsonObject("final_density");
+        assertNotNull(finalDensity);
+
+        JsonObject densityMul = finalDensity.getAsJsonObject("argument");
+        assertNotNull(densityMul);
+        assertEquals("minecraft:squeeze", finalDensity.get("type").getAsString());
+        assertEquals("minecraft:mul", densityMul.get("type").getAsString());
+        assertEquals(0.64, densityMul.get("argument1").getAsDouble(), 0.0);
+
+        JsonObject interpolated = densityMul.getAsJsonObject("argument2");
+        assertNotNull(interpolated);
+        assertEquals("minecraft:interpolated", interpolated.get("type").getAsString());
+
+        JsonObject blendedDensity = interpolated.getAsJsonObject("argument");
+        assertNotNull(blendedDensity);
+        assertEquals("minecraft:blend_density", blendedDensity.get("type").getAsString());
+
+        JsonObject densityAdd = blendedDensity.getAsJsonObject("argument");
+        assertNotNull(densityAdd);
+        assertEquals("minecraft:add", densityAdd.get("type").getAsString());
+        assertEquals(3.0, densityAdd.get("argument1").getAsDouble(), 0.0);
+
+        JsonObject densityMultiplier = densityAdd.getAsJsonObject("argument2");
+        assertNotNull(densityMultiplier);
+        assertEquals("minecraft:mul", densityMultiplier.get("type").getAsString());
+
+        JsonObject verticalBias = densityMultiplier.getAsJsonObject("argument2");
+        assertNotNull(verticalBias);
+        assertEquals("minecraft:add", verticalBias.get("type").getAsString());
+        assertEquals(-2.0, verticalBias.get("argument1").getAsDouble(), 0.0);
     }
 
     private static void assertBiomeFamilyEntry(JsonObject biomeEntry, String expectedBiome) {
