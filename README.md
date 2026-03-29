@@ -13,6 +13,7 @@ This repository currently contains the project skeleton and a minimal content re
 - a return-state, portal block flow and `CAVERN` travel skeleton for the first `CAVERN` architecture phase
 - a registered `CAVERN` target dimension with a data-driven cave-biome family and the first real safe-arrival check on top of that skeleton
 - custom cave-like dimension effects for `CAVERN`, used to reduce visible sky and sun leakage in large open cavities
+- a bounded `contained_caves` noise-settings fork of vanilla `minecraft:caves`, used to reduce oversized cavity formation without changing the overall cave-first direction of the baseline
 - basic portal UX feedback for `cooldown`, failed cavern entry and missing return-state denial cases
 
 No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
@@ -20,6 +21,7 @@ No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 ## Current Limitations
 
 - `CAVERN` still uses a first baseline cave profile rather than full legacy-parity worldgen.
+- The current `contained_caves` preset is intentionally a narrow fork of vanilla `minecraft:caves`, not a new long-term worldgen direction.
 - The new data-driven cave-biome family still needs manual in-game validation on a real generated world after the move away from the fixed biome stub.
 - Large open cavities may still appear in the current baseline; custom cave-like dimension effects now handle sky/sun leakage, but the overall visual result still needs manual in-game validation.
 - The current cave-biome family is intentionally minimal and does not yet cover ore veins, structures or a broader biome set.

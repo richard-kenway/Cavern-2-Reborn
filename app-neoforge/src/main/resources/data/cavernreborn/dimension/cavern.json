@@ -2,7 +2,7 @@
   "type": "cavernreborn:cavern",
   "generator": {
     "type": "minecraft:noise",
-    "settings": "minecraft:caves",
+    "settings": "cavernreborn:contained_caves",
     "biome_source": {
       "type": "minecraft:multi_noise",
       "biomes": [

@@ -17,20 +17,22 @@ import com.google.gson.JsonParser;
 
 class CavernWorldgenResourcesTest {
     @Test
-    void cavernDimensionUsesCaveLikeDimensionTypeSettings() throws IOException {
+    void cavernDimensionUsesContainedCavesNoiseSettings() throws IOException {
         JsonObject cavernDimension = readJsonResource("data/cavernreborn/dimension/cavern.json");
         JsonObject cavernDimensionType = readJsonResource("data/cavernreborn/dimension_type/cavern.json");
+        JsonObject containedCaves = readJsonResource("data/cavernreborn/worldgen/noise_settings/contained_caves.json");
         JsonObject generator = cavernDimension.getAsJsonObject("generator");
         JsonObject biomeSource = generator.getAsJsonObject("biome_source");
         JsonArray biomes = biomeSource.getAsJsonArray("biomes");
 
         assertEquals("cavernreborn:cavern", cavernDimension.get("type").getAsString());
         assertEquals("minecraft:noise", generator.get("type").getAsString());
-        assertEquals("minecraft:caves", generator.get("settings").getAsString());
+        assertEquals("cavernreborn:contained_caves", generator.get("settings").getAsString());
         assertEquals("minecraft:multi_noise", biomeSource.get("type").getAsString());
         assertEquals(2, biomes.size());
         assertBiomeFamilyEntry(biomes.get(0).getAsJsonObject(), "minecraft:dripstone_caves");
         assertBiomeFamilyEntry(biomes.get(1).getAsJsonObject(), "minecraft:lush_caves");
+        assertContainedCavesNoiseSettings(containedCaves);
         assertEquals(192, cavernDimensionType.get("height").getAsInt());
         assertEquals(-64, cavernDimensionType.get("min_y").getAsInt());
         assertEquals("cavernreborn:cavern", cavernDimensionType.get("effects").getAsString());
@@ -41,6 +43,29 @@ class CavernWorldgenResourcesTest {
         assertFalse(cavernDimensionType.get("ultrawarm").getAsBoolean());
         assertTrue(cavernDimensionType.get("infiniburn").getAsString().startsWith("#"));
         assertTrue(cavernDimensionType.get("logical_height").getAsInt() <= cavernDimensionType.get("height").getAsInt());
+    }
+
+    private static void assertContainedCavesNoiseSettings(JsonObject noiseSettings) {
+        assertNotNull(noiseSettings);
+        assertFalse(noiseSettings.get("aquifers_enabled").getAsBoolean());
+        assertFalse(noiseSettings.get("ore_veins_enabled").getAsBoolean());
+        assertFalse(noiseSettings.get("disable_mob_generation").getAsBoolean());
+        assertTrue(noiseSettings.get("legacy_random_source").getAsBoolean());
+        assertEquals(32, noiseSettings.get("sea_level").getAsInt());
+
+        JsonObject noise = noiseSettings.getAsJsonObject("noise");
+        assertNotNull(noise);
+        assertEquals(192, noise.get("height").getAsInt());
+        assertEquals(-64, noise.get("min_y").getAsInt());
+        assertEquals(1, noise.get("size_horizontal").getAsInt());
+        assertEquals(1, noise.get("size_vertical").getAsInt());
+
+        JsonObject defaultBlock = noiseSettings.getAsJsonObject("default_block");
+        JsonObject defaultFluid = noiseSettings.getAsJsonObject("default_fluid");
+        assertNotNull(defaultBlock);
+        assertNotNull(defaultFluid);
+        assertEquals("minecraft:stone", defaultBlock.get("Name").getAsString());
+        assertEquals("minecraft:water", defaultFluid.get("Name").getAsString());
     }
 
     private static void assertBiomeFamilyEntry(JsonObject biomeEntry, String expectedBiome) {
