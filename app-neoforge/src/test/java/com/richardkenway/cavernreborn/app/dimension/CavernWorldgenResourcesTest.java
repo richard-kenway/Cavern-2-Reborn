@@ -121,12 +121,12 @@ class CavernWorldgenResourcesTest {
     private static void assertCaveTunnelNetwork(JsonObject tunnelNetwork) {
         assertNotNull(tunnelNetwork);
         assertEquals("minecraft:add", tunnelNetwork.get("type").getAsString());
-        assertEquals(0.10, tunnelNetwork.get("argument1").getAsDouble(), 0.0);
+        assertEquals(0.06, tunnelNetwork.get("argument1").getAsDouble(), 0.0);
 
         JsonObject weightedLayer = tunnelNetwork.getAsJsonObject("argument2");
         assertNotNull(weightedLayer);
         assertEquals("minecraft:mul", weightedLayer.get("type").getAsString());
-        assertEquals(0.92, weightedLayer.get("argument1").getAsDouble(), 0.0);
+        assertEquals(1.00, weightedLayer.get("argument1").getAsDouble(), 0.0);
 
         JsonObject spaghettiLayer = weightedLayer.getAsJsonObject("argument2");
         assertNotNull(spaghettiLayer);
