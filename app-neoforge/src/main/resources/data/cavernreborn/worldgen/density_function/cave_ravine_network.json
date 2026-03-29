@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:add",
+  "argument1": 0.45,
+  "argument2": {
+    "type": "minecraft:mul",
+    "argument1": 0.35,
+    "argument2": {
+      "type": "minecraft:cache_once",
+      "argument": "minecraft:overworld/caves/entrances"
+    }
+  }
+}

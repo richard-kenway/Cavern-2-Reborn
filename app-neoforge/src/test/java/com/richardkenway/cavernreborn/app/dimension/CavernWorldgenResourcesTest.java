@@ -22,6 +22,7 @@ class CavernWorldgenResourcesTest {
         JsonObject cavernDimensionType = readJsonResource("data/cavernreborn/dimension_type/cavern.json");
         JsonObject containedCaves = readJsonResource("data/cavernreborn/worldgen/noise_settings/contained_caves.json");
         JsonObject tunnelNetwork = readJsonResource("data/cavernreborn/worldgen/density_function/cave_tunnel_network.json");
+        JsonObject ravineNetwork = readJsonResource("data/cavernreborn/worldgen/density_function/cave_ravine_network.json");
         JsonObject generator = cavernDimension.getAsJsonObject("generator");
         JsonObject biomeSource = generator.getAsJsonObject("biome_source");
         JsonArray biomes = biomeSource.getAsJsonArray("biomes");
@@ -35,6 +36,7 @@ class CavernWorldgenResourcesTest {
         assertBiomeFamilyEntry(biomes.get(1).getAsJsonObject(), "minecraft:lush_caves");
         assertContainedCavesNoiseSettings(containedCaves);
         assertCaveTunnelNetwork(tunnelNetwork);
+        assertCaveRavineNetwork(ravineNetwork);
         assertEquals(192, cavernDimensionType.get("height").getAsInt());
         assertEquals(-64, cavernDimensionType.get("min_y").getAsInt());
         assertEquals("cavernreborn:cavern", cavernDimensionType.get("effects").getAsString());
@@ -75,9 +77,16 @@ class CavernWorldgenResourcesTest {
         JsonObject finalDensity = noiseSettings.getAsJsonObject("noise_router").getAsJsonObject("final_density");
         assertNotNull(finalDensity);
 
-        JsonObject baseDensity = finalDensity.getAsJsonObject("argument1");
-        assertNotNull(baseDensity);
         assertEquals("minecraft:min", finalDensity.get("type").getAsString());
+        assertEquals("cavernreborn:cave_ravine_network", finalDensity.get("argument2").getAsString());
+
+        JsonObject outerMin = finalDensity.getAsJsonObject("argument1");
+        assertNotNull(outerMin);
+        assertEquals("minecraft:min", outerMin.get("type").getAsString());
+        assertEquals("cavernreborn:cave_tunnel_network", outerMin.get("argument2").getAsString());
+
+        JsonObject baseDensity = outerMin.getAsJsonObject("argument1");
+        assertNotNull(baseDensity);
         assertEquals("minecraft:squeeze", baseDensity.get("type").getAsString());
 
         JsonObject densityMul = baseDensity.getAsJsonObject("argument");
@@ -107,7 +116,6 @@ class CavernWorldgenResourcesTest {
         assertEquals("minecraft:add", verticalBias.get("type").getAsString());
         assertEquals(-2.0, verticalBias.get("argument1").getAsDouble(), 0.0);
 
-        assertEquals("cavernreborn:cave_tunnel_network", finalDensity.get("argument2").getAsString());
     }
 
     private static void assertCaveTunnelNetwork(JsonObject tunnelNetwork) {
@@ -125,6 +133,22 @@ class CavernWorldgenResourcesTest {
         assertEquals("minecraft:add", spaghettiLayer.get("type").getAsString());
         assertEquals("minecraft:overworld/caves/spaghetti_2d", spaghettiLayer.get("argument1").getAsString());
         assertEquals("minecraft:overworld/caves/spaghetti_roughness_function", spaghettiLayer.get("argument2").getAsString());
+    }
+
+    private static void assertCaveRavineNetwork(JsonObject ravineNetwork) {
+        assertNotNull(ravineNetwork);
+        assertEquals("minecraft:add", ravineNetwork.get("type").getAsString());
+        assertEquals(0.45, ravineNetwork.get("argument1").getAsDouble(), 0.0);
+
+        JsonObject weightedLayer = ravineNetwork.getAsJsonObject("argument2");
+        assertNotNull(weightedLayer);
+        assertEquals("minecraft:mul", weightedLayer.get("type").getAsString());
+        assertEquals(0.35, weightedLayer.get("argument1").getAsDouble(), 0.0);
+
+        JsonObject cachedEntrances = weightedLayer.getAsJsonObject("argument2");
+        assertNotNull(cachedEntrances);
+        assertEquals("minecraft:cache_once", cachedEntrances.get("type").getAsString());
+        assertEquals("minecraft:overworld/caves/entrances", cachedEntrances.get("argument").getAsString());
     }
 
     private static void assertBiomeFamilyEntry(JsonObject biomeEntry, String expectedBiome) {

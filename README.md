@@ -15,6 +15,7 @@ This repository currently contains the project skeleton and a minimal content re
 - custom cave-like dimension effects for `CAVERN`, used to reduce visible sky and sun leakage in large open cavities
 - a bounded `contained_caves` noise-settings fork of vanilla `minecraft:caves`, used to reduce oversized cavity formation without changing the overall cave-first direction of the baseline
 - a first weighted tunnel-network layer on top of `contained_caves`, used to improve underground connectedness without reopening the baseline too aggressively
+- a first weighted ravine-like layer on top of the tunnel baseline, used to add longer connector cuts without letting raw entrance carving dominate the whole profile
 - basic portal UX feedback for `cooldown`, failed cavern entry and missing return-state denial cases
 
 No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
