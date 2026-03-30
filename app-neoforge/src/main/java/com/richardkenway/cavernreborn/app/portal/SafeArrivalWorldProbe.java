@@ -1,10 +1,12 @@
 package com.richardkenway.cavernreborn.app.portal;
 
+import java.util.Objects;
 import java.util.Set;
 
 import com.richardkenway.cavernreborn.app.dimension.CavernNeoForgeDimensions;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -12,33 +14,25 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 
 final class SafeArrivalWorldProbe implements CavernArrivalPlacementProbe {
-    private static Set<net.minecraft.world.level.block.Block> dangerousBlocks;
+    private static final Set<String> DANGEROUS_BLOCK_IDS = Set.of(
+        "minecraft:lava",
+        "minecraft:magma_block",
+        "minecraft:cactus",
+        "minecraft:pointed_dripstone",
+        "minecraft:fire",
+        "minecraft:soul_fire",
+        "minecraft:campfire",
+        "minecraft:soul_campfire"
+    );
 
     private final ServerLevel level;
 
     SafeArrivalWorldProbe(ServerLevel level) {
-        this.level = level;
-    }
-
-    private static Set<net.minecraft.world.level.block.Block> dangerousBlocks() {
-        if (dangerousBlocks == null) {
-            dangerousBlocks = Set.of(
-                Blocks.LAVA,
-                Blocks.MAGMA_BLOCK,
-                Blocks.CACTUS,
-                Blocks.POINTED_DRIPSTONE,
-                Blocks.FIRE,
-                Blocks.SOUL_FIRE,
-                Blocks.CAMPFIRE,
-                Blocks.SOUL_CAMPFIRE
-            );
-        }
-        return dangerousBlocks;
+        this.level = Objects.requireNonNull(level, "level");
     }
 
     @Override
@@ -80,14 +74,13 @@ final class SafeArrivalWorldProbe implements CavernArrivalPlacementProbe {
     }
 
     static boolean isWithinBounds(int y, Level level) {
-        if (level == null) {
-            return false;
-        }
+        Objects.requireNonNull(level, "level");
         return y > level.getMinBuildHeight() && y + 1 < level.getMaxBuildHeight();
     }
 
     private static boolean isDangerousBlock(BlockState state) {
-        return dangerousBlocks().contains(state.getBlock());
+        ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(state.getBlock());
+        return blockId != null && DANGEROUS_BLOCK_IDS.contains(blockId.toString());
     }
 
     private static boolean hasDangerousFluid(BlockState state) {
