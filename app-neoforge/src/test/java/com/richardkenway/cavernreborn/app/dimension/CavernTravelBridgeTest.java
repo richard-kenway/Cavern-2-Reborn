@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import com.richardkenway.cavernreborn.app.portal.CavernArrivalPlacementProbe;
 import com.richardkenway.cavernreborn.app.state.CavernStateBootstrap;
 import com.richardkenway.cavernreborn.core.state.CavernDimensions;
+import com.richardkenway.cavernreborn.core.state.CavernPlacementTarget;
 import com.richardkenway.cavernreborn.core.state.CavernTravelPlan;
 import com.richardkenway.cavernreborn.core.state.PortalReturnState;
 import com.richardkenway.cavernreborn.core.state.PortalWorldIndex;
@@ -102,7 +103,28 @@ class CavernTravelBridgeTest {
     }
 
     @Test
-    void returnHomeWithoutSavedStateDoesNothing() {
+    void returnHomeWithoutSavedStateFallsBackToOverworldTarget() {
+        CavernStateBootstrap bootstrap = new CavernStateBootstrap();
+        FakePlayerTravelContext player = new FakePlayerTravelContext(
+            UUID.randomUUID(),
+            500L,
+            45.0F,
+            15.0F,
+            Set.of(new SafeArrival(0, 64, 0)),
+            Optional.of(new CavernPlacementTarget(CavernDimensions.OVERWORLD_DIMENSION_ID, 3.0D, 80.0D, 4.0D))
+        );
+
+        Optional<CavernTravelPlan> plan = bootstrap.cavernTravelBridge().returnHome(player);
+
+        assertTrue(plan.isPresent());
+        assertEquals(CavernDimensions.OVERWORLD_DIMENSION_ID, player.lastTargetDimensionId);
+        assertEquals(3.0D, player.lastX);
+        assertEquals(80.0D, player.lastY);
+        assertEquals(4.0D, player.lastZ);
+    }
+
+    @Test
+    void returnHomeWithoutSavedStateDoesNothingWhenFallbackIsUnavailable() {
         CavernStateBootstrap bootstrap = new CavernStateBootstrap();
         FakePlayerTravelContext player = new FakePlayerTravelContext(UUID.randomUUID(), 500L, 45.0F, 15.0F, Set.of(new SafeArrival(0, 64, 0)));
 
@@ -116,6 +138,7 @@ class CavernTravelBridgeTest {
         private final float yaw;
         private final float pitch;
         private final Set<SafeArrival> safeArrivals;
+        private final Optional<CavernPlacementTarget> fallbackReturnTarget;
         private String lastTargetDimensionId;
         private double lastX;
         private double lastY;
@@ -124,11 +147,23 @@ class CavernTravelBridgeTest {
         private float lastPitch;
 
         private FakePlayerTravelContext(UUID playerId, long gameTime, float yaw, float pitch, Set<SafeArrival> safeArrivals) {
+            this(playerId, gameTime, yaw, pitch, safeArrivals, Optional.empty());
+        }
+
+        private FakePlayerTravelContext(
+            UUID playerId,
+            long gameTime,
+            float yaw,
+            float pitch,
+            Set<SafeArrival> safeArrivals,
+            Optional<CavernPlacementTarget> fallbackReturnTarget
+        ) {
             this.playerId = playerId;
             this.gameTime = gameTime;
             this.yaw = yaw;
             this.pitch = pitch;
             this.safeArrivals = safeArrivals;
+            this.fallbackReturnTarget = fallbackReturnTarget;
         }
 
         @Override
@@ -149,6 +184,11 @@ class CavernTravelBridgeTest {
         @Override
         public float pitch() {
             return pitch;
+        }
+
+        @Override
+        public Optional<CavernPlacementTarget> fallbackReturnTarget() {
+            return fallbackReturnTarget;
         }
 
         @Override

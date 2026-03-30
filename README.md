@@ -16,7 +16,7 @@ This repository currently contains the project skeleton and a minimal content re
 - a bounded `contained_caves` noise-settings fork of vanilla `minecraft:caves`, used to reduce oversized cavity formation without changing the overall cave-first direction of the baseline
 - a first weighted tunnel-network layer on top of `contained_caves`, used to improve underground connectedness without reopening the baseline too aggressively
 - a first weighted ravine-like layer on top of the tunnel baseline, now rebuilt as a band-limited horizontal connector pass instead of raw entrance carving
-- basic portal UX feedback for `cooldown`, failed cavern entry and missing return-state denial cases
+- basic portal UX feedback for `cooldown`, failed cavern entry and missing return-state denial cases, plus an overworld fallback return target when no saved return-state exists
 
 No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 
@@ -32,6 +32,7 @@ No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 - The ravine-like layer no longer uses raw entrance carving; it now relies on a band-limited `spaghetti_2d` connector field to bias the pass toward longer horizontal links instead of narrow vertical shafts.
 - The current cave-biome family is intentionally minimal and does not yet cover ore veins, structures or a broader biome set.
 - Safe arrival currently relies on a bounded local search around the target column and may cancel entry if no safe point is found nearby.
+- Return-state is still stored in-memory in the current MVP slice, so a dedicated-server restart can lose the exact return target; when that happens, portal return now falls back to the shared overworld spawn instead of trapping the player in `CAVERN`.
 - Portal denial feedback currently uses short overlay messages only; there is no broader notification policy yet.
 - Cooldown and feedback suppression windows are fixed tick-based values and may need tuning after manual playtesting.
 - Legacy portal branches such as `portalMenu`, shop flow and rank gating are intentionally not part of the current MVP slice.

@@ -9,6 +9,7 @@ import com.richardkenway.cavernreborn.core.state.CavernPlacementResolver;
 import com.richardkenway.cavernreborn.core.state.CavernPlacementTarget;
 import com.richardkenway.cavernreborn.core.state.CavernDimensionTravelPlanner;
 import com.richardkenway.cavernreborn.core.state.CavernTravelPlan;
+import com.richardkenway.cavernreborn.core.state.PortalReturnOperation;
 import com.richardkenway.cavernreborn.core.state.PortalReturnState;
 import com.richardkenway.cavernreborn.core.state.PortalWorldIndex;
 import com.richardkenway.cavernreborn.core.state.TeleportContext;
@@ -69,8 +70,12 @@ public final class CavernTravelBridge {
         Objects.requireNonNull(player, "player");
 
         Optional<CavernTravelPlan> plan = travelPlanner.planReturn(player.playerId());
-        plan.ifPresent(cavernTravelPlan -> travel(player, cavernTravelPlan));
-        return plan;
+        if (plan.isPresent()) {
+            plan.ifPresent(cavernTravelPlan -> travel(player, cavernTravelPlan));
+            return plan;
+        }
+
+        return fallbackReturnHome(player);
     }
 
     public Optional<CavernTravelPlan> travel(PlayerTravelContext player, CavernTravelPlan plan) {
@@ -103,6 +108,12 @@ public final class CavernTravelBridge {
         return Optional.of(plan);
     }
 
+    private Optional<CavernTravelPlan> fallbackReturnHome(PlayerTravelContext player) {
+        return player.fallbackReturnTarget()
+            .map(CavernTravelBridge::fallbackReturnPlan)
+            .flatMap(plan -> travel(player, plan));
+    }
+
     private static CavernPlacementTarget cavernEntryTarget() {
         return new CavernPlacementTarget(
             CavernDimensions.CAVERN_DIMENSION_ID,
@@ -110,5 +121,21 @@ public final class CavernTravelBridge {
             CavernDimensions.CAVERN_ENTRY_Y,
             CavernDimensions.CAVERN_ENTRY_Z
         );
+    }
+
+    private static CavernTravelPlan fallbackReturnPlan(CavernPlacementTarget placementTarget) {
+        int targetX = (int) Math.floor(placementTarget.x());
+        int targetY = (int) Math.floor(placementTarget.y());
+        int targetZ = (int) Math.floor(placementTarget.z());
+
+        PortalReturnState fallbackState = new PortalReturnState(
+            "fallback_return",
+            placementTarget.dimensionId(),
+            targetX,
+            targetY,
+            targetZ
+        );
+
+        return CavernTravelPlan.returnHome(new PortalReturnOperation(fallbackState, Optional.empty()));
     }
 }

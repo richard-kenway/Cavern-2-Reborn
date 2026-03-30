@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import com.richardkenway.cavernreborn.app.state.CavernStateBootstrap;
 import com.richardkenway.cavernreborn.core.state.CavernDimensions;
+import com.richardkenway.cavernreborn.core.state.CavernPlacementTarget;
 import com.richardkenway.cavernreborn.core.state.CavernTravelPlan;
 
 class CavernPortalInteractionServiceTest {
@@ -178,7 +180,40 @@ class CavernPortalInteractionServiceTest {
     }
 
     @Test
-    void useInsideCavernWithoutSavedReturnStateShowsMissingReturnFeedbackOnce() {
+    void useInsideCavernWithoutSavedReturnStateFallsBackToOverworldTarget() {
+        CavernStateBootstrap bootstrap = new CavernStateBootstrap();
+        CavernPortalInteractionService service = bootstrap.cavernPortalInteractionService();
+        FakePortalInteractionContext context = new FakePortalInteractionContext(
+            UUID.randomUUID(),
+            false,
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            500L,
+            0,
+            80,
+            0,
+            0.25D,
+            0.5D,
+            0.75D,
+            "south",
+            45.0F,
+            15.0F,
+            Set.of(new SafeArrival(0, 64, 0)),
+            Optional.of(new CavernPlacementTarget(CavernDimensions.OVERWORLD_DIMENSION_ID, 2.0D, 90.0D, 3.0D))
+        );
+
+        CavernPortalInteractionOutcome firstOutcome = service.use(context);
+        assertTrue(firstOutcome.handled());
+        assertTrue(firstOutcome.travelPlan().isPresent());
+        assertEquals(CavernDimensions.OVERWORLD_DIMENSION_ID, context.lastTargetDimensionId);
+        assertEquals(2.0D, context.lastX);
+        assertEquals(90.0D, context.lastY);
+        assertEquals(3.0D, context.lastZ);
+        assertTrue(context.feedbackKeys.isEmpty());
+        assertTrue(service.isOnCooldown(context));
+    }
+
+    @Test
+    void useInsideCavernWithoutSavedReturnStateShowsMissingReturnFeedbackOnceWhenFallbackIsUnavailable() {
         CavernStateBootstrap bootstrap = new CavernStateBootstrap();
         CavernPortalInteractionService service = bootstrap.cavernPortalInteractionService();
         FakePortalInteractionContext context = new FakePortalInteractionContext(
@@ -374,6 +409,7 @@ class CavernPortalInteractionServiceTest {
         private final float yaw;
         private final float pitch;
         private final Set<SafeArrival> safeArrivals;
+        private final Optional<CavernPlacementTarget> fallbackReturnTarget;
         private final ArrayList<String> feedbackKeys = new ArrayList<>();
         private String lastTargetDimensionId;
         private double lastX;
@@ -398,6 +434,42 @@ class CavernPortalInteractionServiceTest {
             float pitch,
             Set<SafeArrival> safeArrivals
         ) {
+            this(
+                playerId,
+                clientSide,
+                currentDimensionId,
+                gameTime,
+                portalX,
+                portalY,
+                portalZ,
+                hitOffsetX,
+                hitOffsetY,
+                hitOffsetZ,
+                approachFacing,
+                yaw,
+                pitch,
+                safeArrivals,
+                Optional.empty()
+            );
+        }
+
+        private FakePortalInteractionContext(
+            UUID playerId,
+            boolean clientSide,
+            String currentDimensionId,
+            long gameTime,
+            int portalX,
+            int portalY,
+            int portalZ,
+            double hitOffsetX,
+            double hitOffsetY,
+            double hitOffsetZ,
+            String approachFacing,
+            float yaw,
+            float pitch,
+            Set<SafeArrival> safeArrivals,
+            Optional<CavernPlacementTarget> fallbackReturnTarget
+        ) {
             this.playerId = playerId;
             this.clientSide = clientSide;
             this.currentDimensionId = currentDimensionId;
@@ -412,6 +484,7 @@ class CavernPortalInteractionServiceTest {
             this.yaw = yaw;
             this.pitch = pitch;
             this.safeArrivals = safeArrivals;
+            this.fallbackReturnTarget = fallbackReturnTarget;
         }
 
         @Override
@@ -482,6 +555,11 @@ class CavernPortalInteractionServiceTest {
         @Override
         public float pitch() {
             return pitch;
+        }
+
+        @Override
+        public Optional<CavernPlacementTarget> fallbackReturnTarget() {
+            return fallbackReturnTarget;
         }
 
         @Override

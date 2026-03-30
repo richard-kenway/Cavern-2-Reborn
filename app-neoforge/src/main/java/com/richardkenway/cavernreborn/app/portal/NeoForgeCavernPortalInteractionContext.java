@@ -2,9 +2,12 @@ package com.richardkenway.cavernreborn.app.portal;
 
 import java.util.EnumSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.richardkenway.cavernreborn.app.dimension.CavernNeoForgeDimensions;
+import com.richardkenway.cavernreborn.app.dimension.OverworldFallbackReturnTargetResolver;
+import com.richardkenway.cavernreborn.core.state.CavernPlacementTarget;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -106,6 +109,11 @@ public final class NeoForgeCavernPortalInteractionContext implements CavernPorta
     @Override
     public float pitch() {
         return serverPlayer.getXRot();
+    }
+
+    @Override
+    public Optional<CavernPlacementTarget> fallbackReturnTarget() {
+        return new OverworldFallbackReturnTargetResolver(serverPlayer).resolve();
     }
 
     @Override

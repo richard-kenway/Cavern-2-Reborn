@@ -2,6 +2,7 @@ package com.richardkenway.cavernreborn.app.dimension;
 
 import java.util.EnumSet;
 import java.util.Objects;
+import java.util.Optional;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -11,6 +12,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
+
+import com.richardkenway.cavernreborn.core.state.CavernPlacementTarget;
 
 public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
     private final ServerPlayer serverPlayer;
@@ -37,6 +40,11 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
     @Override
     public float pitch() {
         return serverPlayer.getXRot();
+    }
+
+    @Override
+    public Optional<CavernPlacementTarget> fallbackReturnTarget() {
+        return new OverworldFallbackReturnTargetResolver(serverPlayer).resolve();
     }
 
     @Override
