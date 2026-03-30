@@ -10,6 +10,7 @@ import com.richardkenway.cavernreborn.app.portal.NeoForgeCavernPortalInteraction
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -39,5 +40,30 @@ public final class CavernPortalBlock extends Block {
         CavernPortalInteractionContext context = new NeoForgeCavernPortalInteractionContext(serverPlayer, level, pos, hitResult);
         CavernPortalInteractionOutcome outcome = interactionServiceSupplier.get().use(context);
         return outcome.handled() ? InteractionResult.CONSUME : InteractionResult.PASS;
+    }
+
+    @Override
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+        if (level.isClientSide()) {
+            return;
+        }
+
+        if (!(entity instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+
+        if (!serverPlayer.isAlive()
+            || serverPlayer.isSpectator()
+            || serverPlayer.isPassenger()
+            || serverPlayer.isVehicle()
+            || serverPlayer.isOnPortalCooldown()) {
+            return;
+        }
+
+        CavernPortalInteractionContext context = NeoForgeCavernPortalInteractionContext.forCollision(serverPlayer, level, pos);
+        CavernPortalInteractionOutcome outcome = interactionServiceSupplier.get().use(context);
+        if (outcome.handled()) {
+            serverPlayer.setPortalCooldown();
+        }
     }
 }

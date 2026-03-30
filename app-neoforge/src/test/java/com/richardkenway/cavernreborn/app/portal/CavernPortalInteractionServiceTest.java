@@ -54,6 +54,36 @@ class CavernPortalInteractionServiceTest {
     }
 
     @Test
+    void useOutsideCavernWorksWithCollisionStylePortalContact() {
+        CavernStateBootstrap bootstrap = new CavernStateBootstrap();
+        CavernPortalInteractionService service = bootstrap.cavernPortalInteractionService();
+        FakePortalInteractionContext context = new FakePortalInteractionContext(
+            UUID.randomUUID(),
+            false,
+            CavernDimensions.OVERWORLD_DIMENSION_ID,
+            120L,
+            11,
+            70,
+            11,
+            0.5D,
+            0.5D,
+            0.5D,
+            "south",
+            90.0F,
+            30.0F,
+            Set.of(new SafeArrival(0, 64, 0))
+        );
+
+        CavernPortalInteractionOutcome outcome = service.use(context);
+
+        assertTrue(outcome.handled());
+        assertTrue(outcome.travelPlan().isPresent());
+        assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, context.lastTargetDimensionId);
+        assertEquals(64.0D, context.lastY);
+        assertTrue(context.feedbackKeys.isEmpty());
+    }
+
+    @Test
     void useOutsideCavernCancelsWhenNoSafeArrivalExistsAndSuppressesRepeatFeedback() {
         CavernStateBootstrap bootstrap = new CavernStateBootstrap();
         CavernPortalInteractionService service = bootstrap.cavernPortalInteractionService();

@@ -18,6 +18,7 @@ This repository currently contains the project skeleton and a minimal content re
 - a first weighted ravine-like layer on top of the tunnel baseline, now rebuilt as a band-limited horizontal connector pass instead of raw entrance carving
 - basic portal UX feedback for `cooldown`, failed cavern entry and missing return-state denial cases, plus an overworld fallback return target when no saved return-state exists
 - a first legacy-like portal structure step: obsidian frames can now be activated with `cavern_portal_trigger` and fill the `cavern_portal` interior block
+- a first entity-inside portal flow step: walking into the `cavern_portal` interior block now triggers the same transfer loop as the earlier right-click path
 
 No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 
@@ -34,7 +35,7 @@ No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 - The current cave-biome family is intentionally minimal and does not yet cover ore veins, structures or a broader biome set.
 - Safe arrival currently relies on a bounded local search around the target column and may cancel entry if no safe point is found nearby.
 - Return-state is still stored in-memory in the current MVP slice, so a dedicated-server restart can lose the exact return target; when that happens, portal return now falls back to the shared overworld spawn instead of trapping the player in `CAVERN`.
-- The first legacy-like portal stage covers obsidian frame detection and trigger activation only; teleport still happens by interacting with the `cavern_portal` interior block, not by walking into it.
+- The current portal flow now supports walking into the `cavern_portal` interior block, but it still keeps the older right-click path as a fallback/debug route and does not yet implement full legacy portal collision semantics.
 - Portal denial feedback currently uses short overlay messages only; there is no broader notification policy yet.
 - Cooldown and feedback suppression windows are fixed tick-based values and may need tuning after manual playtesting.
 - Legacy portal branches such as `portalMenu`, shop flow and rank gating are intentionally not part of the current MVP slice.

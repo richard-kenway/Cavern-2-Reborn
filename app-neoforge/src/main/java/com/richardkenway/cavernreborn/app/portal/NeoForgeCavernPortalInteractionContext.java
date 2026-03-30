@@ -10,6 +10,7 @@ import com.richardkenway.cavernreborn.app.dimension.OverworldFallbackReturnTarge
 import com.richardkenway.cavernreborn.core.state.CavernPlacementTarget;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -19,13 +20,17 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.Level;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.BlockHitResult;
 
 public final class NeoForgeCavernPortalInteractionContext implements CavernPortalInteractionContext, CavernArrivalPlacementProbe {
     private final ServerPlayer serverPlayer;
     private final Level level;
     private final BlockPos portalPosition;
-    private final BlockHitResult hitResult;
+    private final double hitOffsetX;
+    private final double hitOffsetY;
+    private final double hitOffsetZ;
+    private final String approachFacing;
     private final SafeArrivalWorldProbe safeArrivalWorldProbe;
 
     public NeoForgeCavernPortalInteractionContext(
@@ -37,7 +42,55 @@ public final class NeoForgeCavernPortalInteractionContext implements CavernPorta
         this.serverPlayer = Objects.requireNonNull(serverPlayer, "serverPlayer");
         this.level = Objects.requireNonNull(level, "level");
         this.portalPosition = Objects.requireNonNull(portalPosition, "portalPosition");
-        this.hitResult = Objects.requireNonNull(hitResult, "hitResult");
+        BlockHitResult safeHitResult = Objects.requireNonNull(hitResult, "hitResult");
+        this.hitOffsetX = safeHitResult.getLocation().x - portalPosition.getX();
+        this.hitOffsetY = safeHitResult.getLocation().y - portalPosition.getY();
+        this.hitOffsetZ = safeHitResult.getLocation().z - portalPosition.getZ();
+        this.approachFacing = safeHitResult.getDirection().getName();
+        this.safeArrivalWorldProbe = new SafeArrivalWorldProbe(serverPlayer.serverLevel());
+    }
+
+    public static NeoForgeCavernPortalInteractionContext forCollision(
+        ServerPlayer serverPlayer,
+        Level level,
+        BlockPos portalPosition
+    ) {
+        Objects.requireNonNull(serverPlayer, "serverPlayer");
+        Objects.requireNonNull(level, "level");
+        Objects.requireNonNull(portalPosition, "portalPosition");
+
+        double offsetX = Mth.clamp(serverPlayer.getX() - portalPosition.getX(), 0.0D, 1.0D);
+        double offsetY = Mth.clamp(serverPlayer.getY() - portalPosition.getY(), 0.0D, 1.0D);
+        double offsetZ = Mth.clamp(serverPlayer.getZ() - portalPosition.getZ(), 0.0D, 1.0D);
+        Direction approachDirection = serverPlayer.getDirection().getOpposite();
+
+        return new NeoForgeCavernPortalInteractionContext(
+            serverPlayer,
+            level,
+            portalPosition,
+            offsetX,
+            offsetY,
+            offsetZ,
+            approachDirection.getName()
+        );
+    }
+
+    private NeoForgeCavernPortalInteractionContext(
+        ServerPlayer serverPlayer,
+        Level level,
+        BlockPos portalPosition,
+        double hitOffsetX,
+        double hitOffsetY,
+        double hitOffsetZ,
+        String approachFacing
+    ) {
+        this.serverPlayer = Objects.requireNonNull(serverPlayer, "serverPlayer");
+        this.level = Objects.requireNonNull(level, "level");
+        this.portalPosition = Objects.requireNonNull(portalPosition, "portalPosition");
+        this.hitOffsetX = hitOffsetX;
+        this.hitOffsetY = hitOffsetY;
+        this.hitOffsetZ = hitOffsetZ;
+        this.approachFacing = Objects.requireNonNull(approachFacing, "approachFacing");
         this.safeArrivalWorldProbe = new SafeArrivalWorldProbe(serverPlayer.serverLevel());
     }
 
@@ -78,22 +131,22 @@ public final class NeoForgeCavernPortalInteractionContext implements CavernPorta
 
     @Override
     public double hitOffsetX() {
-        return hitResult.getLocation().x - portalPosition.getX();
+        return hitOffsetX;
     }
 
     @Override
     public double hitOffsetY() {
-        return hitResult.getLocation().y - portalPosition.getY();
+        return hitOffsetY;
     }
 
     @Override
     public double hitOffsetZ() {
-        return hitResult.getLocation().z - portalPosition.getZ();
+        return hitOffsetZ;
     }
 
     @Override
     public String approachFacing() {
-        return hitResult.getDirection().getName();
+        return approachFacing;
     }
 
     @Override
