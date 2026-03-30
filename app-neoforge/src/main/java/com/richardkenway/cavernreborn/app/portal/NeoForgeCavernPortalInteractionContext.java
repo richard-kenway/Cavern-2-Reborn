@@ -23,6 +23,7 @@ public final class NeoForgeCavernPortalInteractionContext implements CavernPorta
     private final Level level;
     private final BlockPos portalPosition;
     private final BlockHitResult hitResult;
+    private final SafeArrivalWorldProbe safeArrivalWorldProbe;
 
     public NeoForgeCavernPortalInteractionContext(
         ServerPlayer serverPlayer,
@@ -34,6 +35,7 @@ public final class NeoForgeCavernPortalInteractionContext implements CavernPorta
         this.level = Objects.requireNonNull(level, "level");
         this.portalPosition = Objects.requireNonNull(portalPosition, "portalPosition");
         this.hitResult = Objects.requireNonNull(hitResult, "hitResult");
+        this.safeArrivalWorldProbe = new SafeArrivalWorldProbe(serverPlayer.serverLevel());
     }
 
     @Override
@@ -114,16 +116,7 @@ public final class NeoForgeCavernPortalInteractionContext implements CavernPorta
 
     @Override
     public boolean isSafeArrivalAt(String targetDimensionId, int x, int y, int z) {
-        ServerLevel targetLevel = resolveLevel(targetDimensionId);
-        BlockPos feetPos = new BlockPos(x, y, z);
-
-        if (y <= targetLevel.getMinBuildHeight() || y + 1 >= targetLevel.getMaxBuildHeight()) {
-            return false;
-        }
-
-        return targetLevel.getBlockState(feetPos.below()).blocksMotion()
-            && targetLevel.isEmptyBlock(feetPos)
-            && targetLevel.isEmptyBlock(feetPos.above());
+        return safeArrivalWorldProbe.isSafeArrivalAt(targetDimensionId, x, y, z);
     }
 
     private ServerLevel resolveLevel(String targetDimensionId) {
