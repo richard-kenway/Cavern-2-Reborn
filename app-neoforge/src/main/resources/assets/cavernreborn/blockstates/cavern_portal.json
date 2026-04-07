@@ -1,7 +1,11 @@
 {
   "variants": {
-    "": {
+    "axis=x": {
       "model": "cavernreborn:block/cavern_portal"
+    },
+    "axis=z": {
+      "model": "cavernreborn:block/cavern_portal",
+      "y": 90
     }
   }
 }

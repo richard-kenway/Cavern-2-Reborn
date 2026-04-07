@@ -27,7 +27,7 @@ public final class ModRegistries {
         () -> new Block(BlockBehaviour.Properties.of().strength(1.5F).sound(SoundType.STONE)));
     public static final DeferredBlock<Block> CAVERN_PORTAL_BLOCK = BLOCKS.register("cavern_portal",
         () -> new CavernPortalBlock(
-            BlockBehaviour.Properties.of().strength(2.0F).sound(SoundType.STONE).noOcclusion(),
+            BlockBehaviour.Properties.of().strength(2.0F).sound(SoundType.GLASS).noCollission().noOcclusion(),
             () -> CavernReborn.cavernStateBootstrap().cavernPortalInteractionService()));
     public static final DeferredItem<BlockItem> BOOTSTRAP_BLOCK_ITEM = ITEMS.registerSimpleBlockItem(BOOTSTRAP_BLOCK);
     public static final DeferredItem<BlockItem> CAVERN_PORTAL_BLOCK_ITEM = ITEMS.registerSimpleBlockItem(CAVERN_PORTAL_BLOCK);

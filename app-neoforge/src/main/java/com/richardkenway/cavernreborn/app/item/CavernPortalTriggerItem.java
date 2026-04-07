@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import com.richardkenway.cavernreborn.app.portal.CavernPortalFrameActivator;
 import com.richardkenway.cavernreborn.app.portal.CavernPortalFrameDetector;
+import com.richardkenway.cavernreborn.app.portal.WorldPortalFrameAccess;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
@@ -15,8 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 
 public final class CavernPortalTriggerItem extends Item {
     private final Supplier<Block> portalBlockSupplier;
@@ -31,7 +30,7 @@ public final class CavernPortalTriggerItem extends Item {
         Level level = context.getLevel();
         BlockPos origin = context.getClickedPos().relative(context.getClickedFace());
 
-        CavernPortalFrameActivator activator = new CavernPortalFrameActivator(new WorldPortalAccess(level, portalBlockSupplier.get()));
+        CavernPortalFrameActivator activator = new CavernPortalFrameActivator(new WorldPortalFrameAccess(level, portalBlockSupplier.get()));
         return activator.activate(origin)
             .map(frame -> activatePortal(level, frame, context))
             .orElse(InteractionResult.PASS);
@@ -53,28 +52,5 @@ public final class CavernPortalTriggerItem extends Item {
         }
 
         return InteractionResult.sidedSuccess(level.isClientSide());
-    }
-
-    private record WorldPortalAccess(Level level, Block portalBlock) implements CavernPortalFrameActivator.PortalAccess {
-        @Override
-        public boolean isFrame(BlockPos pos) {
-            return level.getBlockState(pos).is(Blocks.OBSIDIAN);
-        }
-
-        @Override
-        public boolean isInterior(BlockPos pos) {
-            BlockState state = level.getBlockState(pos);
-            return state.isAir() || state.is(portalBlock);
-        }
-
-        @Override
-        public boolean isPortal(BlockPos pos) {
-            return level.getBlockState(pos).is(portalBlock);
-        }
-
-        @Override
-        public void setPortal(BlockPos pos) {
-            level.setBlock(pos, portalBlock.defaultBlockState(), 2);
-        }
     }
 }

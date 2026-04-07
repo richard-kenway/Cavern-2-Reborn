@@ -38,12 +38,12 @@ public final class CavernPortalFrameActivator {
         for (int dx = 0; dx < frame.width(); dx++) {
             for (int dy = 0; dy < frame.height(); dy++) {
                 BlockPos fillPos = frame.bottomLeft().relative(right, dx).above(dy);
-                portalAccess.setPortal(fillPos);
+                portalAccess.setPortal(fillPos, frame.axis());
             }
         }
     }
 
     public interface PortalAccess extends CavernPortalFrameDetector.FrameAccess {
-        void setPortal(BlockPos pos);
+        void setPortal(BlockPos pos, Direction.Axis axis);
     }
 }

@@ -1,6 +1,23 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/block",
   "textures": {
-    "all": "minecraft:block/obsidian"
-  }
+    "portal": "minecraft:block/nether_portal",
+    "particle": "minecraft:block/nether_portal"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 6],
+      "to": [16, 16, 10],
+      "faces": {
+        "north": {
+          "texture": "#portal",
+          "uv": [0, 0, 16, 16]
+        },
+        "south": {
+          "texture": "#portal",
+          "uv": [16, 0, 0, 16]
+        }
+      }
+    }
+  ]
 }

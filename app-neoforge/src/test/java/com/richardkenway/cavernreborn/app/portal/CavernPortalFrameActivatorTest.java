@@ -4,16 +4,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 
 class CavernPortalFrameActivatorTest {
     @Test
-    void activateFillsInteriorForEmptyFrame() {
+    void activateFillsInteriorForEmptyXAxisFrame() {
         SetPortalAccess access = new SetPortalAccess();
         access.addXAxisFrame(new BlockPos(0, 0, 0), 2, 3);
 
@@ -27,24 +29,44 @@ class CavernPortalFrameActivatorTest {
             new BlockPos(2, 2, 0),
             new BlockPos(1, 3, 0),
             new BlockPos(2, 3, 0)
-        ), access.portals);
+        ), access.portals.keySet());
+        assertTrue(access.portals.values().stream().allMatch(axis -> axis == Direction.Axis.X));
+    }
+
+    @Test
+    void activateFillsInteriorForEmptyZAxisFrame() {
+        SetPortalAccess access = new SetPortalAccess();
+        access.addZAxisFrame(new BlockPos(0, 0, 0), 2, 3);
+
+        Optional<CavernPortalFrameDetector.PortalFrame> frame = new CavernPortalFrameActivator(access).activate(new BlockPos(0, 2, 1));
+
+        assertTrue(frame.isPresent());
+        assertEquals(Set.of(
+            new BlockPos(0, 1, 1),
+            new BlockPos(0, 1, 2),
+            new BlockPos(0, 2, 1),
+            new BlockPos(0, 2, 2),
+            new BlockPos(0, 3, 1),
+            new BlockPos(0, 3, 2)
+        ), access.portals.keySet());
+        assertTrue(access.portals.values().stream().allMatch(axis -> axis == Direction.Axis.Z));
     }
 
     @Test
     void activateDoesNothingForAlreadyFilledFrame() {
         SetPortalAccess access = new SetPortalAccess();
         access.addXAxisFrame(new BlockPos(0, 0, 0), 2, 3);
-        access.portals.add(new BlockPos(1, 1, 0));
+        access.portals.put(new BlockPos(1, 1, 0), Direction.Axis.X);
 
         Optional<CavernPortalFrameDetector.PortalFrame> frame = new CavernPortalFrameActivator(access).activate(new BlockPos(1, 2, 0));
 
         assertTrue(frame.isEmpty());
-        assertEquals(Set.of(new BlockPos(1, 1, 0)), access.portals);
+        assertEquals(Map.of(new BlockPos(1, 1, 0), Direction.Axis.X), access.portals);
     }
 
     private static final class SetPortalAccess implements CavernPortalFrameActivator.PortalAccess {
         private final Set<BlockPos> frames = new HashSet<>();
-        private final Set<BlockPos> portals = new HashSet<>();
+        private final java.util.Map<BlockPos, Direction.Axis> portals = new java.util.HashMap<>();
 
         private void addXAxisFrame(BlockPos frameMin, int innerWidth, int innerHeight) {
             int leftX = frameMin.getX();
@@ -63,6 +85,23 @@ class CavernPortalFrameActivatorTest {
             }
         }
 
+        private void addZAxisFrame(BlockPos frameMin, int innerWidth, int innerHeight) {
+            int x = frameMin.getX();
+            int nearZ = frameMin.getZ();
+            int farZ = nearZ + innerWidth + 1;
+            int minY = frameMin.getY();
+            int maxY = minY + innerHeight + 1;
+
+            for (int z = nearZ; z <= farZ; z++) {
+                frames.add(new BlockPos(x, minY, z));
+                frames.add(new BlockPos(x, maxY, z));
+            }
+            for (int y = minY + 1; y < maxY; y++) {
+                frames.add(new BlockPos(x, y, nearZ));
+                frames.add(new BlockPos(x, y, farZ));
+            }
+        }
+
         @Override
         public boolean isFrame(BlockPos pos) {
             return frames.contains(pos);
@@ -75,12 +114,12 @@ class CavernPortalFrameActivatorTest {
 
         @Override
         public boolean isPortal(BlockPos pos) {
-            return portals.contains(pos);
+            return portals.containsKey(pos);
         }
 
         @Override
-        public void setPortal(BlockPos pos) {
-            portals.add(pos);
+        public void setPortal(BlockPos pos, Direction.Axis axis) {
+            portals.put(pos, axis);
         }
     }
 }
