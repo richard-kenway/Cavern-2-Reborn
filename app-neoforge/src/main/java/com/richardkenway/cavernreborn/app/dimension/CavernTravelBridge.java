@@ -13,26 +13,34 @@ import com.richardkenway.cavernreborn.core.state.PortalReturnOperation;
 import com.richardkenway.cavernreborn.core.state.PortalReturnState;
 import com.richardkenway.cavernreborn.core.state.PortalWorldIndex;
 import com.richardkenway.cavernreborn.core.state.TeleportContext;
+import com.richardkenway.cavernreborn.core.state.WorldPortalIndexStore;
 
 public final class CavernTravelBridge {
     private final CavernDimensionTravelPlanner travelPlanner;
+    private final WorldPortalIndexStore worldPortalIndexStore;
     private final CavernPlacementResolver placementResolver;
     private final CavernArrivalPlacementResolver arrivalPlacementResolver;
 
-    public CavernTravelBridge(CavernDimensionTravelPlanner travelPlanner) {
-        this(travelPlanner, new CavernPlacementResolver(), new CavernArrivalPlacementResolver());
-    }
-
-    public CavernTravelBridge(CavernDimensionTravelPlanner travelPlanner, CavernPlacementResolver placementResolver) {
-        this(travelPlanner, placementResolver, new CavernArrivalPlacementResolver());
+    public CavernTravelBridge(CavernDimensionTravelPlanner travelPlanner, WorldPortalIndexStore worldPortalIndexStore) {
+        this(travelPlanner, worldPortalIndexStore, new CavernPlacementResolver(), new CavernArrivalPlacementResolver());
     }
 
     public CavernTravelBridge(
         CavernDimensionTravelPlanner travelPlanner,
+        WorldPortalIndexStore worldPortalIndexStore,
+        CavernPlacementResolver placementResolver
+    ) {
+        this(travelPlanner, worldPortalIndexStore, placementResolver, new CavernArrivalPlacementResolver());
+    }
+
+    public CavernTravelBridge(
+        CavernDimensionTravelPlanner travelPlanner,
+        WorldPortalIndexStore worldPortalIndexStore,
         CavernPlacementResolver placementResolver,
         CavernArrivalPlacementResolver arrivalPlacementResolver
     ) {
         this.travelPlanner = Objects.requireNonNull(travelPlanner, "travelPlanner");
+        this.worldPortalIndexStore = Objects.requireNonNull(worldPortalIndexStore, "worldPortalIndexStore");
         this.placementResolver = Objects.requireNonNull(placementResolver, "placementResolver");
         this.arrivalPlacementResolver = Objects.requireNonNull(arrivalPlacementResolver, "arrivalPlacementResolver");
     }
@@ -96,6 +104,8 @@ public final class CavernTravelBridge {
             placementTarget = resolvedArrivalTarget.get();
         }
 
+        placementTarget = resolveDestinationPortalTarget(player, plan, placementTarget).orElse(placementTarget);
+
         player.teleportTo(
             placementTarget.dimensionId(),
             placementTarget.x(),
@@ -106,6 +116,43 @@ public final class CavernTravelBridge {
         );
 
         return Optional.of(plan);
+    }
+
+    private Optional<CavernPlacementTarget> resolveDestinationPortalTarget(
+        PlayerTravelContext player,
+        CavernTravelPlan plan,
+        CavernPlacementTarget preferredTarget
+    ) {
+        Optional<String> portalKey = portalKeyFor(plan);
+        if (portalKey.isEmpty()) {
+            return Optional.empty();
+        }
+
+        String targetDimensionId = preferredTarget.dimensionId();
+        String resolvedPortalKey = portalKey.get();
+        PortalWorldIndex worldIndex = worldPortalIndexStore.load(targetDimensionId);
+        Optional<PortalWorldIndex.PortalPlacement> indexedPlacement = worldIndex.firstPlacementFor(resolvedPortalKey);
+
+        if (indexedPlacement.isPresent()) {
+            PortalWorldIndex.PortalPlacement placement = indexedPlacement.get();
+            if (player.hasPortalAt(targetDimensionId, placement.x(), placement.y(), placement.z())) {
+                return Optional.of(toPlacementTarget(targetDimensionId, placement));
+            }
+
+            worldPortalIndexStore.save(targetDimensionId, worldIndex.withoutPortal(resolvedPortalKey, placement));
+        }
+
+        return player.createPortalAt(
+                targetDimensionId,
+                (int) Math.floor(preferredTarget.x()),
+                (int) Math.floor(preferredTarget.y()),
+                (int) Math.floor(preferredTarget.z())
+            )
+            .map(placement -> {
+                PortalWorldIndex refreshedIndex = worldPortalIndexStore.load(targetDimensionId).withPortal(resolvedPortalKey, placement);
+                worldPortalIndexStore.save(targetDimensionId, refreshedIndex);
+                return toPlacementTarget(targetDimensionId, placement);
+            });
     }
 
     private Optional<CavernTravelPlan> fallbackReturnHome(PlayerTravelContext player) {
@@ -137,5 +184,15 @@ public final class CavernTravelBridge {
         );
 
         return CavernTravelPlan.returnHome(new PortalReturnOperation(fallbackState, Optional.empty()));
+    }
+
+    private static Optional<String> portalKeyFor(CavernTravelPlan plan) {
+        return plan.entryReceipt()
+            .map(receipt -> receipt.returnState().portalKey())
+            .or(() -> plan.returnOperation().map(operation -> operation.returnState().portalKey()));
+    }
+
+    private static CavernPlacementTarget toPlacementTarget(String dimensionId, PortalWorldIndex.PortalPlacement placement) {
+        return new CavernPlacementTarget(dimensionId, placement.x(), placement.y(), placement.z());
     }
 }

@@ -20,6 +20,7 @@ This repository currently contains the project skeleton and a minimal content re
 - a first legacy-like portal structure step: obsidian frames can now be activated with `cavern_portal_trigger` and fill the `cavern_portal` interior block
 - a first entity-inside portal flow step: walking into the `cavern_portal` interior block now triggers the same transfer loop as the earlier right-click path
 - an axis-aware `cavern_portal` interior plane with thin portal geometry and frame-integrity invalidation when the obsidian frame is broken
+- a first destination portal placement step: travel now uses a bounded find-or-create portal target in the destination dimension instead of requiring a second portal to be placed manually every time
 
 No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 
@@ -37,6 +38,7 @@ No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 - Safe arrival currently relies on a bounded local search around the target column and may cancel entry if no safe point is found nearby.
 - Return-state is still stored in-memory in the current MVP slice, so a dedicated-server restart can lose the exact return target; when that happens, portal return now falls back to the shared overworld spawn instead of trapping the player in `CAVERN`.
 - The current portal flow now supports an axis-aware thin interior portal plane with frame-integrity invalidation, but it still keeps the older right-click path as a fallback/debug route and does not yet implement full legacy portal collision semantics.
+- Destination portal placement is now automatic in a bounded find-or-create form, but it still does not implement full legacy cache, search radius and regeneration semantics.
 - Portal denial feedback currently uses short overlay messages only; there is no broader notification policy yet.
 - Cooldown and feedback suppression windows are fixed tick-based values and may need tuning after manual playtesting.
 - Legacy portal branches such as `portalMenu`, shop flow and rank gating are intentionally not part of the current MVP slice.

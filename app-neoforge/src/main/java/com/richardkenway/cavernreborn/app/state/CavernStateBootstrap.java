@@ -31,7 +31,7 @@ public final class CavernStateBootstrap {
         this.portalInteractionCooldowns = new PortalInteractionCooldowns();
         this.portalLoopService = new PortalLoopService(playerReturnStateStore, worldPortalIndexStore);
         this.cavernDimensionTravelPlanner = new CavernDimensionTravelPlanner(portalLoopService);
-        this.cavernTravelBridge = new CavernTravelBridge(cavernDimensionTravelPlanner);
+        this.cavernTravelBridge = new CavernTravelBridge(cavernDimensionTravelPlanner, worldPortalIndexStore);
         this.cavernPortalInteractionService = new CavernPortalInteractionService(cavernTravelBridge, portalInteractionCooldowns);
     }
 
