@@ -19,7 +19,7 @@ public final class CavernStateBootstrap {
     private final CavernPortalInteractionService cavernPortalInteractionService;
 
     public CavernStateBootstrap() {
-        this(new InMemoryPlayerReturnStateRepository(), new InMemoryWorldPortalIndexRepository());
+        this(new SavedDataBackedPlayerReturnStateRepository(), new SavedDataBackedWorldPortalIndexRepository());
     }
 
     public CavernStateBootstrap(
