@@ -25,6 +25,7 @@ This repository currently contains the project skeleton and a minimal content re
 - a bounded nearby portal relink step: travel now searches for an existing destination portal near the target and relinks stale index entries before creating a new frame
 - axis-aware portal placement semantics: destination portal indices now persist portal axis, and arrival is centered to the interior portal plane instead of the raw frame anchor
 - bounded placement-quality scoring for auto-created destination portals: creation now prefers closer and safer frame anchors instead of the first valid spot in the search window
+- bounded portal-relative exit semantics: destination arrival now preserves a clamped lateral offset from the source portal plane instead of always dropping the player into the exact portal center
 
 No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 
@@ -45,6 +46,7 @@ No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 - The current portal flow now supports an axis-aware thin interior portal plane with frame-integrity invalidation, but it still keeps the older right-click path as a fallback/debug route and does not yet implement full legacy portal collision semantics.
 - Destination portal placement is now automatic in a bounded search-relink-or-create form, but it still does not implement full legacy cache, wider radius search and regeneration semantics.
 - Destination portal arrival is now centered by stored portal axis, but this still needs manual in-game validation for both axes and for relinked/recreated portals after index churn.
+- Portal-relative exit placement now preserves only a bounded lateral offset inside the destination portal plane; full facing/orientation parity still needs manual validation, especially for cross-axis transfers.
 - Auto-created destination portals now use bounded placement-quality scoring, but the resulting anchor quality still needs manual validation in awkward terrain, near hazards and after repeated recreate/relink scenarios.
 - Portal denial feedback currently uses short overlay messages only; there is no broader notification policy yet.
 - Cooldown and feedback suppression windows are fixed tick-based values and may need tuning after manual playtesting.

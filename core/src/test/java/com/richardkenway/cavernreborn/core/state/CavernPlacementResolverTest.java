@@ -31,7 +31,8 @@ class CavernPlacementResolverTest {
         CavernTravelPlan travelPlan = CavernTravelPlan.enterCavern(
             new PortalEntryReceipt(
                 new PortalReturnState("cavern", CavernDimensions.OVERWORLD_DIMENSION_ID, 10, 12, 10),
-                new TeleportContext("cavern", 0.25D, 0.5D, 0.75D, "north")
+                new TeleportContext("cavern", 0.25D, 0.5D, 0.75D, "north"),
+                new PortalWorldIndex.PortalPlacement(10, 12, 10)
             )
         );
 

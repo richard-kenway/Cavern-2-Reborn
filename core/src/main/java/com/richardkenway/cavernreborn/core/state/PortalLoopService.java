@@ -34,7 +34,7 @@ public final class PortalLoopService {
         playerReturnStateStore.save(playerId, returnState);
         registerPortal(returnState.returnDimensionId(), returnState.portalKey(), portalPlacement);
 
-        return new PortalEntryReceipt(returnState, teleportContext);
+        return new PortalEntryReceipt(returnState, teleportContext, portalPlacement);
     }
 
     public void registerPortal(String worldKey, String portalKey, PortalWorldIndex.PortalPlacement placement) {

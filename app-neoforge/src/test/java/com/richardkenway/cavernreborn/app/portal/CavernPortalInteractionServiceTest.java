@@ -182,6 +182,66 @@ class CavernPortalInteractionServiceTest {
     }
 
     @Test
+    void useInsideCavernPreservesRelativeExitOffsetWhenIndexedPortalStillExists() {
+        CavernStateBootstrap bootstrap = new CavernStateBootstrap();
+        CavernPortalInteractionService service = bootstrap.cavernPortalInteractionService();
+        UUID playerId = UUID.randomUUID();
+
+        FakePortalInteractionContext entryContext = new FakePortalInteractionContext(
+            playerId,
+            false,
+            CavernDimensions.OVERWORLD_DIMENSION_ID,
+            305L,
+            11,
+            70,
+            11,
+            0.25D,
+            0.5D,
+            0.75D,
+            "north",
+            90.0F,
+            30.0F,
+            Set.of(new SafeArrival(0, 64, 0))
+        );
+        CavernPortalInteractionOutcome entryOutcome = service.use(entryContext);
+        assertTrue(entryOutcome.handled());
+        assertTrue(entryOutcome.travelPlan().isPresent());
+
+        FakePortalInteractionContext cavernContext = new FakePortalInteractionContext(
+            playerId,
+            false,
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            325L,
+            0,
+            80,
+            0,
+            0.25D,
+            0.5D,
+            0.75D,
+            "south",
+            45.0F,
+            15.0F,
+            Set.of(new SafeArrival(0, 64, 0))
+        );
+        cavernContext.existingPortals.add(new PortalLocation(
+            CavernDimensions.OVERWORLD_DIMENSION_ID,
+            11,
+            70,
+            11,
+            PortalWorldIndex.PortalPlacement.AXIS_X
+        ));
+
+        CavernPortalInteractionOutcome outcome = service.use(cavernContext);
+
+        assertTrue(outcome.handled());
+        assertTrue(outcome.travelPlan().isPresent());
+        assertEquals(CavernDimensions.OVERWORLD_DIMENSION_ID, cavernContext.lastTargetDimensionId);
+        assertEquals(11.75D, cavernContext.lastX);
+        assertEquals(70.0D, cavernContext.lastY);
+        assertEquals(11.5D, cavernContext.lastZ);
+    }
+
+    @Test
     void useOnClientSideDoesNothing() {
         CavernStateBootstrap bootstrap = new CavernStateBootstrap();
         CavernPortalInteractionService service = bootstrap.cavernPortalInteractionService();
@@ -441,6 +501,7 @@ class CavernPortalInteractionServiceTest {
         private final float pitch;
         private final Set<SafeArrival> safeArrivals;
         private final Optional<CavernPlacementTarget> fallbackReturnTarget;
+        private final Set<PortalLocation> existingPortals = new java.util.HashSet<>();
         private final ArrayList<String> feedbackKeys = new ArrayList<>();
         private String lastTargetDimensionId;
         private double lastX;
@@ -599,6 +660,26 @@ class CavernPortalInteractionServiceTest {
         }
 
         @Override
+        public boolean hasPortalAt(String targetDimensionId, int x, int y, int z) {
+            return existingPortals.stream()
+                .anyMatch(portal -> portal.dimensionId().equals(targetDimensionId)
+                    && portal.x() == x
+                    && portal.y() == y
+                    && portal.z() == z);
+        }
+
+        @Override
+        public Optional<PortalWorldIndex.PortalPlacement> findPortalNear(String targetDimensionId, int x, int y, int z) {
+            return existingPortals.stream()
+                .filter(portal -> portal.dimensionId().equals(targetDimensionId))
+                .filter(portal -> Math.abs(portal.x() - x) <= 8)
+                .filter(portal -> Math.abs(portal.y() - y) <= 6)
+                .filter(portal -> Math.abs(portal.z() - z) <= 8)
+                .findFirst()
+                .map(portal -> new PortalWorldIndex.PortalPlacement(portal.x(), portal.y(), portal.z(), portal.axis()));
+        }
+
+        @Override
         public void teleportTo(String targetDimensionId, double x, double y, double z, float yaw, float pitch) {
             this.lastTargetDimensionId = targetDimensionId;
             this.lastX = x;
@@ -616,5 +697,8 @@ class CavernPortalInteractionServiceTest {
     }
 
     private record SafeArrival(int x, int y, int z) {
+    }
+
+    private record PortalLocation(String dimensionId, int x, int y, int z, String axis) {
     }
 }

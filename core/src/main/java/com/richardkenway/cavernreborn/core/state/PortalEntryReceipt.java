@@ -1,4 +1,15 @@
 package com.richardkenway.cavernreborn.core.state;
 
-public record PortalEntryReceipt(PortalReturnState returnState, TeleportContext teleportContext) {
+import java.util.Objects;
+
+public record PortalEntryReceipt(
+    PortalReturnState returnState,
+    TeleportContext teleportContext,
+    PortalWorldIndex.PortalPlacement sourcePortalPlacement
+) {
+    public PortalEntryReceipt {
+        returnState = Objects.requireNonNull(returnState, "returnState");
+        teleportContext = Objects.requireNonNull(teleportContext, "teleportContext");
+        sourcePortalPlacement = Objects.requireNonNull(sourcePortalPlacement, "sourcePortalPlacement");
+    }
 }
