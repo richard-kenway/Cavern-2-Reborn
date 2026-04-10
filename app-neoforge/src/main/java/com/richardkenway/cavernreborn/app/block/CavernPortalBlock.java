@@ -48,6 +48,10 @@ public final class CavernPortalBlock extends Block {
 
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (player == null || !allowsRightClickDebugRoute(player.isCreative())) {
+            return InteractionResult.PASS;
+        }
+
         if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
@@ -137,5 +141,9 @@ public final class CavernPortalBlock extends Block {
 
     static VoxelShape shapeFor(Direction.Axis axis) {
         return axis == Direction.Axis.X ? X_AXIS_SHAPE : Z_AXIS_SHAPE;
+    }
+
+    static boolean allowsRightClickDebugRoute(boolean creativeMode) {
+        return creativeMode;
     }
 }

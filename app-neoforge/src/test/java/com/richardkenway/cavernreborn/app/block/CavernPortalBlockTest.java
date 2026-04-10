@@ -58,6 +58,12 @@ class CavernPortalBlockTest {
         assertFalse(valid);
     }
 
+    @Test
+    void allowsRightClickDebugRouteRequiresCreativeMode() {
+        assertTrue(CavernPortalBlock.allowsRightClickDebugRoute(true));
+        assertFalse(CavernPortalBlock.allowsRightClickDebugRoute(false));
+    }
+
     private static final class FrameAccess implements CavernPortalFrameDetector.FrameAccess {
         private final Set<BlockPos> frames = new HashSet<>();
         private final Set<BlockPos> portals = new HashSet<>();
