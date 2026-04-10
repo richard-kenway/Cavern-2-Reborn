@@ -21,6 +21,8 @@ import com.richardkenway.cavernreborn.core.state.PortalReturnState;
 import com.richardkenway.cavernreborn.core.state.PortalWorldIndex;
 import com.richardkenway.cavernreborn.core.state.TeleportContext;
 
+import net.minecraft.core.Direction;
+
 class CavernTravelBridgeTest {
     @Test
     void travelToCavernCreatesDestinationPortalAndRegistersItsPlacement() {
@@ -47,6 +49,7 @@ class CavernTravelBridgeTest {
         assertEquals(2.75D, player.lastX);
         assertEquals(64.0D, player.lastY);
         assertEquals(0.5D, player.lastZ);
+        assertEquals(Direction.SOUTH.toYRot(), player.lastYaw);
         assertEquals(1, player.createPortalCalls);
         assertTrue(bootstrap.worldPortalIndexStore().load(CavernDimensions.CAVERN_DIMENSION_ID).firstPlacementFor("cavern").isPresent());
     }
@@ -77,6 +80,7 @@ class CavernTravelBridgeTest {
         assertEquals(3.5D, player.lastX);
         assertEquals(64.0D, player.lastY);
         assertEquals(1.75D, player.lastZ);
+        assertEquals(Direction.EAST.toYRot(), player.lastYaw);
         assertEquals(0, player.createPortalCalls);
         assertEquals(
             new PortalWorldIndex.PortalPlacement(3, 64, 1, PortalWorldIndex.PortalPlacement.AXIS_Z),
@@ -114,6 +118,7 @@ class CavernTravelBridgeTest {
         assertEquals(2.75D, player.lastX);
         assertEquals(64.0D, player.lastY);
         assertEquals(0.5D, player.lastZ);
+        assertEquals(Direction.SOUTH.toYRot(), player.lastYaw);
         assertEquals(0, player.createPortalCalls);
         assertEquals(
             new PortalWorldIndex.PortalPlacement(2, 64, 0, PortalWorldIndex.PortalPlacement.AXIS_X),
@@ -173,6 +178,32 @@ class CavernTravelBridgeTest {
         assertEquals(3.45D, player.lastX);
         assertEquals(64.0D, player.lastY);
         assertEquals(0.5D, player.lastZ);
+        assertEquals(Direction.SOUTH.toYRot(), player.lastYaw);
+    }
+
+    @Test
+    void travelToCavernRotatesExitFacingAcrossPortalAxes() {
+        CavernStateBootstrap bootstrap = new CavernStateBootstrap();
+        FakePlayerTravelContext player = new FakePlayerTravelContext(
+            UUID.randomUUID(),
+            99L,
+            90.0F,
+            30.0F,
+            Set.of(new SafeArrival(0, 64, 0)),
+            Optional.empty(),
+            Optional.of(new PortalWorldIndex.PortalPlacement(3, 64, 1, PortalWorldIndex.PortalPlacement.AXIS_Z))
+        );
+
+        Optional<CavernTravelPlan> plan = bootstrap.cavernTravelBridge().travelToCavern(
+            player,
+            new PortalReturnState("cavern", CavernDimensions.OVERWORLD_DIMENSION_ID, 12, 64, 12),
+            new TeleportContext("cavern", 0.25D, 0.5D, 0.75D, "north"),
+            new PortalWorldIndex.PortalPlacement(8, 70, 8, PortalWorldIndex.PortalPlacement.AXIS_X)
+        );
+
+        assertTrue(plan.isPresent());
+        assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, player.lastTargetDimensionId);
+        assertEquals(Direction.EAST.toYRot(), player.lastYaw);
     }
 
     @Test

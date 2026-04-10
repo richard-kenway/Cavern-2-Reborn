@@ -18,6 +18,8 @@ import com.richardkenway.cavernreborn.core.state.CavernPlacementTarget;
 import com.richardkenway.cavernreborn.core.state.CavernTravelPlan;
 import com.richardkenway.cavernreborn.core.state.PortalWorldIndex;
 
+import net.minecraft.core.Direction;
+
 class CavernPortalInteractionServiceTest {
     @Test
     void useOutsideCavernSendsPlayerIntoCavernAndAppliesCooldown() {
@@ -239,6 +241,7 @@ class CavernPortalInteractionServiceTest {
         assertEquals(11.75D, cavernContext.lastX);
         assertEquals(70.0D, cavernContext.lastY);
         assertEquals(11.5D, cavernContext.lastZ);
+        assertEquals(Direction.NORTH.toYRot(), cavernContext.lastYaw);
     }
 
     @Test

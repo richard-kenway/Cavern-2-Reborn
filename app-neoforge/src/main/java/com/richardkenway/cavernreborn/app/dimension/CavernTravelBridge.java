@@ -17,6 +17,8 @@ import com.richardkenway.cavernreborn.core.state.PortalWorldIndex;
 import com.richardkenway.cavernreborn.core.state.TeleportContext;
 import com.richardkenway.cavernreborn.core.state.WorldPortalIndexStore;
 
+import net.minecraft.core.Direction;
+
 public final class CavernTravelBridge {
     private static final double PORTAL_CENTER_X_OFFSET = 0.5D;
     private static final double PORTAL_CENTER_Z_OFFSET = 0.5D;
@@ -98,6 +100,7 @@ public final class CavernTravelBridge {
         Objects.requireNonNull(plan, "plan");
         CavernPlacementTarget placementTarget = placementResolver.resolve(plan);
         Optional<RelativePortalExit> relativePortalExit = relativePortalExitFor(player, plan);
+        float targetYaw = player.yaw();
 
         if (plan.isEnterCavern()) {
             if (!(player instanceof CavernArrivalPlacementProbe arrivalPlacementProbe)) {
@@ -112,25 +115,36 @@ public final class CavernTravelBridge {
             placementTarget = resolvedArrivalTarget.get();
         }
 
-        placementTarget = resolveDestinationPortalTarget(player, plan, placementTarget, relativePortalExit).orElse(placementTarget);
+        Optional<ResolvedPortalDestination> resolvedPortalDestination = resolveDestinationPortalTarget(
+            player,
+            plan,
+            placementTarget,
+            relativePortalExit,
+            player.yaw()
+        );
+        if (resolvedPortalDestination.isPresent()) {
+            placementTarget = resolvedPortalDestination.get().placementTarget();
+            targetYaw = resolvedPortalDestination.get().yaw();
+        }
 
         player.teleportTo(
             placementTarget.dimensionId(),
             placementTarget.x(),
             placementTarget.y(),
             placementTarget.z(),
-            player.yaw(),
+            targetYaw,
             player.pitch()
         );
 
         return Optional.of(plan);
     }
 
-    private Optional<CavernPlacementTarget> resolveDestinationPortalTarget(
+    private Optional<ResolvedPortalDestination> resolveDestinationPortalTarget(
         PlayerTravelContext player,
         CavernTravelPlan plan,
         CavernPlacementTarget preferredTarget,
-        Optional<RelativePortalExit> relativePortalExit
+        Optional<RelativePortalExit> relativePortalExit,
+        float fallbackYaw
     ) {
         Optional<String> portalKey = portalKeyFor(plan);
         if (portalKey.isEmpty()) {
@@ -145,7 +159,7 @@ public final class CavernTravelBridge {
         if (indexedPlacement.isPresent()) {
             PortalWorldIndex.PortalPlacement placement = indexedPlacement.get();
             if (player.hasPortalAt(targetDimensionId, placement.x(), placement.y(), placement.z())) {
-                return Optional.of(toPlacementTarget(targetDimensionId, placement, relativePortalExit));
+                return Optional.of(toResolvedPortalDestination(targetDimensionId, placement, relativePortalExit, fallbackYaw));
             }
 
             Optional<PortalWorldIndex.PortalPlacement> relinkedPlacement = player.findPortalNear(
@@ -159,7 +173,7 @@ public final class CavernTravelBridge {
                     .withoutPortal(resolvedPortalKey, placement)
                     .withPortal(resolvedPortalKey, relinkedPlacement.get());
                 worldPortalIndexStore.save(targetDimensionId, refreshedIndex);
-                return Optional.of(toPlacementTarget(targetDimensionId, relinkedPlacement.get(), relativePortalExit));
+                return Optional.of(toResolvedPortalDestination(targetDimensionId, relinkedPlacement.get(), relativePortalExit, fallbackYaw));
             }
 
             worldPortalIndexStore.save(targetDimensionId, worldIndex.withoutPortal(resolvedPortalKey, placement));
@@ -174,7 +188,7 @@ public final class CavernTravelBridge {
         if (nearbyPortal.isPresent()) {
             PortalWorldIndex refreshedIndex = worldPortalIndexStore.load(targetDimensionId).withPortal(resolvedPortalKey, nearbyPortal.get());
             worldPortalIndexStore.save(targetDimensionId, refreshedIndex);
-            return Optional.of(toPlacementTarget(targetDimensionId, nearbyPortal.get(), relativePortalExit));
+            return Optional.of(toResolvedPortalDestination(targetDimensionId, nearbyPortal.get(), relativePortalExit, fallbackYaw));
         }
 
         return player.createPortalAt(
@@ -186,7 +200,7 @@ public final class CavernTravelBridge {
             .map(placement -> {
                 PortalWorldIndex refreshedIndex = worldPortalIndexStore.load(targetDimensionId).withPortal(resolvedPortalKey, placement);
                 worldPortalIndexStore.save(targetDimensionId, refreshedIndex);
-                return toPlacementTarget(targetDimensionId, placement, relativePortalExit);
+                return toResolvedPortalDestination(targetDimensionId, placement, relativePortalExit, fallbackYaw);
             });
     }
 
@@ -249,6 +263,17 @@ public final class CavernTravelBridge {
         return new CavernPlacementTarget(dimensionId, centeredX, placement.y(), centeredZ);
     }
 
+    private static ResolvedPortalDestination toResolvedPortalDestination(
+        String dimensionId,
+        PortalWorldIndex.PortalPlacement placement,
+        Optional<RelativePortalExit> relativePortalExit,
+        float fallbackYaw
+    ) {
+        CavernPlacementTarget placementTarget = toPlacementTarget(dimensionId, placement, relativePortalExit);
+        float targetYaw = resolveExitYaw(placement.axis(), relativePortalExit).orElse(fallbackYaw);
+        return new ResolvedPortalDestination(placementTarget, targetYaw);
+    }
+
     private static Optional<RelativePortalExit> relativePortalExitFor(PlayerTravelContext player, CavernTravelPlan plan) {
         if (plan.isEnterCavern()) {
             return plan.entryReceipt().map(CavernTravelBridge::relativePortalExitFromEntryReceipt);
@@ -292,10 +317,57 @@ public final class CavernTravelBridge {
         return Math.max(-MAX_LATERAL_PORTAL_OFFSET, Math.min(MAX_LATERAL_PORTAL_OFFSET, lateralOffset));
     }
 
+    private static Optional<Float> resolveExitYaw(String destinationAxis, Optional<RelativePortalExit> relativePortalExit) {
+        return relativePortalExit
+            .flatMap(relativeExit -> normalizeApproachFacing(relativeExit.sourceAxis(), relativeExit.approachFacing())
+                .map(approachFacing -> remapApproachFacing(relativeExit.sourceAxis(), destinationAxis, approachFacing)))
+            .map(Direction::getOpposite)
+            .map(Direction::toYRot);
+    }
+
+    private static Optional<Direction> normalizeApproachFacing(String sourceAxis, String approachFacing) {
+        Direction direction = Direction.byName(approachFacing);
+        if (direction == null || direction.getAxis().isVertical()) {
+            return Optional.empty();
+        }
+
+        if (PortalWorldIndex.PortalPlacement.AXIS_X.equals(sourceAxis) && direction.getAxis() == Direction.Axis.Z) {
+            return Optional.of(direction);
+        }
+
+        if (PortalWorldIndex.PortalPlacement.AXIS_Z.equals(sourceAxis) && direction.getAxis() == Direction.Axis.X) {
+            return Optional.of(direction);
+        }
+
+        return Optional.empty();
+    }
+
+    private static Direction remapApproachFacing(String sourceAxis, String destinationAxis, Direction approachFacing) {
+        if (sourceAxis.equals(destinationAxis)) {
+            return approachFacing;
+        }
+
+        int sign = PortalWorldIndex.PortalPlacement.AXIS_X.equals(sourceAxis)
+            ? Integer.signum(approachFacing.getStepZ())
+            : Integer.signum(approachFacing.getStepX());
+
+        if (PortalWorldIndex.PortalPlacement.AXIS_X.equals(destinationAxis)) {
+            return sign < 0 ? Direction.NORTH : Direction.SOUTH;
+        }
+
+        return sign < 0 ? Direction.WEST : Direction.EAST;
+    }
+
     private record RelativePortalExit(String sourceAxis, double lateralOffset, String approachFacing) {
         private RelativePortalExit {
             sourceAxis = Objects.requireNonNull(sourceAxis, "sourceAxis");
             approachFacing = Objects.requireNonNull(approachFacing, "approachFacing");
+        }
+    }
+
+    private record ResolvedPortalDestination(CavernPlacementTarget placementTarget, float yaw) {
+        private ResolvedPortalDestination {
+            placementTarget = Objects.requireNonNull(placementTarget, "placementTarget");
         }
     }
 }
