@@ -64,6 +64,14 @@ final class PortalPlacementQualityScorer {
     }
 
     static boolean isBetterCandidate(PortalPlacementCandidate candidate, PortalPlacementCandidate incumbent) {
+        return isBetterCandidate(candidate, incumbent, null);
+    }
+
+    static boolean isBetterCandidate(
+        PortalPlacementCandidate candidate,
+        PortalPlacementCandidate incumbent,
+        Direction.Axis preferredAxis
+    ) {
         if (incumbent == null) {
             return true;
         }
@@ -90,6 +98,10 @@ final class PortalPlacementQualityScorer {
 
         if (candidate.supportBlocks() != incumbent.supportBlocks()) {
             return candidate.supportBlocks() > incumbent.supportBlocks();
+        }
+
+        if (preferredAxis != null && candidate.axis() != incumbent.axis()) {
+            return candidate.axis() == preferredAxis;
         }
 
         if (candidate.axis() != incumbent.axis()) {

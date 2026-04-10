@@ -33,6 +33,8 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
     private static final int PORTAL_INNER_HEIGHT = 3;
     private static final int PORTAL_CREATE_SEARCH_RADIUS = 4;
     private static final int PORTAL_CREATE_SEARCH_HEIGHT = 2;
+    private static final int PORTAL_REGEN_SEARCH_RADIUS = 2;
+    private static final int PORTAL_REGEN_SEARCH_HEIGHT = 1;
     private static final int EXISTING_PORTAL_SEARCH_RADIUS = 8;
     private static final int EXISTING_PORTAL_SEARCH_HEIGHT = 6;
 
@@ -118,48 +120,44 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
     @Override
     public Optional<PortalWorldIndex.PortalPlacement> createPortalAt(String targetDimensionId, int x, int y, int z) {
         ServerLevel targetLevel = resolveLevel(targetDimensionId);
-        Block portalBlock = ModRegistries.CAVERN_PORTAL_BLOCK.get();
-        WorldPortalFrameAccess frameAccess = new WorldPortalFrameAccess(targetLevel, portalBlock);
-        CavernPortalFrameActivator activator = new CavernPortalFrameActivator(frameAccess);
-        PortalPlacementQualityScorer.PortalPlacementCandidate bestCandidate = null;
+        return searchBestPortalCandidate(
+            targetLevel,
+            x,
+            y,
+            z,
+            PORTAL_CREATE_SEARCH_RADIUS,
+            PORTAL_CREATE_SEARCH_HEIGHT,
+            Optional.empty()
+        ).flatMap(candidate -> tryCreatePortalAt(
+            candidate.bottomLeft(),
+            candidate.axis(),
+            targetLevel,
+            new CavernPortalFrameActivator(new WorldPortalFrameAccess(targetLevel, ModRegistries.CAVERN_PORTAL_BLOCK.get()))
+        ));
+    }
 
-        for (int dy = 0; dy <= PORTAL_CREATE_SEARCH_HEIGHT; dy++) {
-            for (int radius = 0; radius <= PORTAL_CREATE_SEARCH_RADIUS; radius++) {
-                for (int dx = -radius; dx <= radius; dx++) {
-                    for (int dz = -radius; dz <= radius; dz++) {
-                        if (radius > 0 && Math.max(Math.abs(dx), Math.abs(dz)) != radius) {
-                            continue;
-                        }
+    @Override
+    public Optional<PortalWorldIndex.PortalPlacement> createReplacementPortalAt(
+        String targetDimensionId,
+        PortalWorldIndex.PortalPlacement stalePlacement
+    ) {
+        Objects.requireNonNull(stalePlacement, "stalePlacement");
+        ServerLevel targetLevel = resolveLevel(targetDimensionId);
 
-                        BlockPos candidatePos = new BlockPos(x + dx, y + dy, z + dz);
-                        for (Direction.Axis axis : new Direction.Axis[] {Direction.Axis.X, Direction.Axis.Z}) {
-                            if (!canBuildPortalAt(targetLevel, portalBlock, candidatePos, axis)) {
-                                continue;
-                            }
-
-                            PortalPlacementQualityScorer.PortalPlacementCandidate scoredCandidate = PortalPlacementQualityScorer.evaluate(
-                                targetLevel,
-                                portalBlock,
-                                candidatePos,
-                                axis,
-                                x,
-                                y,
-                                z
-                            );
-                            if (PortalPlacementQualityScorer.isBetterCandidate(scoredCandidate, bestCandidate)) {
-                                bestCandidate = scoredCandidate;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        if (bestCandidate == null) {
-            return Optional.empty();
-        }
-
-        return tryCreatePortalAt(bestCandidate.bottomLeft(), bestCandidate.axis(), targetLevel, activator);
+        return searchBestPortalCandidate(
+            targetLevel,
+            stalePlacement.x(),
+            stalePlacement.y(),
+            stalePlacement.z(),
+            PORTAL_REGEN_SEARCH_RADIUS,
+            PORTAL_REGEN_SEARCH_HEIGHT,
+            axisFromId(stalePlacement.axis())
+        ).flatMap(candidate -> tryCreatePortalAt(
+            candidate.bottomLeft(),
+            candidate.axis(),
+            targetLevel,
+            new CavernPortalFrameActivator(new WorldPortalFrameAccess(targetLevel, ModRegistries.CAVERN_PORTAL_BLOCK.get()))
+        ));
     }
 
     private Optional<PortalWorldIndex.PortalPlacement> findPortalAtYOffset(
@@ -202,6 +200,57 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
         }
 
         return Optional.empty();
+    }
+
+    private Optional<PortalPlacementQualityScorer.PortalPlacementCandidate> searchBestPortalCandidate(
+        ServerLevel targetLevel,
+        int x,
+        int y,
+        int z,
+        int searchRadius,
+        int searchHeight,
+        Optional<Direction.Axis> preferredAxis
+    ) {
+        Block portalBlock = ModRegistries.CAVERN_PORTAL_BLOCK.get();
+        PortalPlacementQualityScorer.PortalPlacementCandidate bestCandidate = null;
+
+        for (int dy = 0; dy <= searchHeight; dy++) {
+            for (int radius = 0; radius <= searchRadius; radius++) {
+                for (int dx = -radius; dx <= radius; dx++) {
+                    for (int dz = -radius; dz <= radius; dz++) {
+                        if (radius > 0 && Math.max(Math.abs(dx), Math.abs(dz)) != radius) {
+                            continue;
+                        }
+
+                        BlockPos candidatePos = new BlockPos(x + dx, y + dy, z + dz);
+                        for (Direction.Axis axis : orderedAxes(preferredAxis)) {
+                            if (!canBuildPortalAt(targetLevel, portalBlock, candidatePos, axis)) {
+                                continue;
+                            }
+
+                            PortalPlacementQualityScorer.PortalPlacementCandidate scoredCandidate = PortalPlacementQualityScorer.evaluate(
+                                targetLevel,
+                                portalBlock,
+                                candidatePos,
+                                axis,
+                                x,
+                                y,
+                                z
+                            );
+                            if (PortalPlacementQualityScorer.isBetterCandidate(
+                                scoredCandidate,
+                                bestCandidate,
+                                preferredAxis.orElse(null)
+                            )) {
+                                bestCandidate = scoredCandidate;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return Optional.ofNullable(bestCandidate);
     }
 
     @Override
@@ -293,6 +342,29 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
         return axis == Direction.Axis.Z
             ? PortalWorldIndex.PortalPlacement.AXIS_Z
             : PortalWorldIndex.PortalPlacement.AXIS_X;
+    }
+
+    private static Optional<Direction.Axis> axisFromId(String axisId) {
+        if (PortalWorldIndex.PortalPlacement.AXIS_X.equals(axisId)) {
+            return Optional.of(Direction.Axis.X);
+        }
+
+        if (PortalWorldIndex.PortalPlacement.AXIS_Z.equals(axisId)) {
+            return Optional.of(Direction.Axis.Z);
+        }
+
+        return Optional.empty();
+    }
+
+    private static Direction.Axis[] orderedAxes(Optional<Direction.Axis> preferredAxis) {
+        if (preferredAxis.isPresent()) {
+            Direction.Axis axis = preferredAxis.get();
+            return axis == Direction.Axis.X
+                ? new Direction.Axis[] {Direction.Axis.X, Direction.Axis.Z}
+                : new Direction.Axis[] {Direction.Axis.Z, Direction.Axis.X};
+        }
+
+        return new Direction.Axis[] {Direction.Axis.X, Direction.Axis.Z};
     }
 
     private ServerLevel resolveLevel(String targetDimensionId) {

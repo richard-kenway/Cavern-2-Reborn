@@ -35,5 +35,12 @@ public interface PlayerTravelContext {
         return Optional.empty();
     }
 
+    default Optional<PortalWorldIndex.PortalPlacement> createReplacementPortalAt(
+        String targetDimensionId,
+        PortalWorldIndex.PortalPlacement stalePlacement
+    ) {
+        return Optional.empty();
+    }
+
     void teleportTo(String targetDimensionId, double x, double y, double z, float yaw, float pitch);
 }

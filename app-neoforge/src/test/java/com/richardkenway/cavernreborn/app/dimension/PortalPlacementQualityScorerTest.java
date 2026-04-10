@@ -83,4 +83,29 @@ class PortalPlacementQualityScorerTest {
         assertTrue(PortalPlacementQualityScorer.isBetterCandidate(cleaner, destructive));
         assertFalse(PortalPlacementQualityScorer.isBetterCandidate(destructive, cleaner));
     }
+
+    @Test
+    void prefersPreferredAxisWhenReplacementCandidatesAreOtherwiseEqual() {
+        PortalPlacementQualityScorer.PortalPlacementCandidate xAxis = new PortalPlacementQualityScorer.PortalPlacementCandidate(
+            new BlockPos(0, 64, 0),
+            Direction.Axis.X,
+            2,
+            0,
+            4,
+            0,
+            0
+        );
+        PortalPlacementQualityScorer.PortalPlacementCandidate zAxis = new PortalPlacementQualityScorer.PortalPlacementCandidate(
+            new BlockPos(0, 64, 0),
+            Direction.Axis.Z,
+            2,
+            0,
+            4,
+            0,
+            0
+        );
+
+        assertTrue(PortalPlacementQualityScorer.isBetterCandidate(zAxis, xAxis, Direction.Axis.Z));
+        assertFalse(PortalPlacementQualityScorer.isBetterCandidate(xAxis, zAxis, Direction.Axis.Z));
+    }
 }

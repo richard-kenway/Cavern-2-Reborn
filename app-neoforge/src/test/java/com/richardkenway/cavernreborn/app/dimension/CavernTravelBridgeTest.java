@@ -127,6 +127,45 @@ class CavernTravelBridgeTest {
     }
 
     @Test
+    void travelToCavernRegeneratesNearStaleIndexedPlacementBeforeGenericCreate() {
+        CavernStateBootstrap bootstrap = new CavernStateBootstrap();
+        bootstrap.worldPortalIndexStore().save(
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            PortalWorldIndex.empty().withPortal("cavern", new PortalWorldIndex.PortalPlacement(30, 70, 30, PortalWorldIndex.PortalPlacement.AXIS_Z))
+        );
+        FakePlayerTravelContext player = new FakePlayerTravelContext(
+            UUID.randomUUID(),
+            96L,
+            90.0F,
+            30.0F,
+            Set.of(new SafeArrival(0, 64, 0)),
+            Optional.empty(),
+            Optional.of(new PortalWorldIndex.PortalPlacement(2, 64, 0, PortalWorldIndex.PortalPlacement.AXIS_X)),
+            Optional.of(new PortalWorldIndex.PortalPlacement(29, 70, 30, PortalWorldIndex.PortalPlacement.AXIS_Z))
+        );
+
+        Optional<CavernTravelPlan> plan = bootstrap.cavernTravelBridge().travelToCavern(
+            player,
+            new PortalReturnState("cavern", CavernDimensions.OVERWORLD_DIMENSION_ID, 12, 64, 12),
+            new TeleportContext("cavern", 0.25D, 0.5D, 0.75D, "north"),
+            new PortalWorldIndex.PortalPlacement(8, 70, 8)
+        );
+
+        assertTrue(plan.isPresent());
+        assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, player.lastTargetDimensionId);
+        assertEquals(29.5D, player.lastX);
+        assertEquals(70.0D, player.lastY);
+        assertEquals(30.75D, player.lastZ);
+        assertEquals(Direction.EAST.toYRot(), player.lastYaw);
+        assertEquals(1, player.createReplacementPortalCalls);
+        assertEquals(0, player.createPortalCalls);
+        assertEquals(
+            new PortalWorldIndex.PortalPlacement(29, 70, 30, PortalWorldIndex.PortalPlacement.AXIS_Z),
+            bootstrap.worldPortalIndexStore().load(CavernDimensions.CAVERN_DIMENSION_ID).firstPlacementFor("cavern").orElseThrow()
+        );
+    }
+
+    @Test
     void travelToCavernRemapsLateralOffsetAcrossPortalAxes() {
         CavernStateBootstrap bootstrap = new CavernStateBootstrap();
         FakePlayerTravelContext player = new FakePlayerTravelContext(
@@ -334,8 +373,10 @@ class CavernTravelBridgeTest {
         private final Set<SafeArrival> safeArrivals;
         private final Optional<CavernPlacementTarget> fallbackReturnTarget;
         private final Optional<PortalWorldIndex.PortalPlacement> createdPortalPlacement;
+        private final Optional<PortalWorldIndex.PortalPlacement> replacementPortalPlacement;
         private final Set<PortalLocation> existingPortals = new HashSet<>();
         private int createPortalCalls;
+        private int createReplacementPortalCalls;
         private String lastTargetDimensionId;
         private double lastX;
         private double lastY;
@@ -344,7 +385,7 @@ class CavernTravelBridgeTest {
         private float lastPitch;
 
         private FakePlayerTravelContext(UUID playerId, long gameTime, float yaw, float pitch, Set<SafeArrival> safeArrivals) {
-            this(playerId, gameTime, yaw, pitch, safeArrivals, Optional.empty(), Optional.empty());
+            this(playerId, gameTime, yaw, pitch, safeArrivals, Optional.empty(), Optional.empty(), Optional.empty());
         }
 
         private FakePlayerTravelContext(
@@ -355,7 +396,7 @@ class CavernTravelBridgeTest {
             Set<SafeArrival> safeArrivals,
             Optional<CavernPlacementTarget> fallbackReturnTarget
         ) {
-            this(playerId, gameTime, yaw, pitch, safeArrivals, fallbackReturnTarget, Optional.empty());
+            this(playerId, gameTime, yaw, pitch, safeArrivals, fallbackReturnTarget, Optional.empty(), Optional.empty());
         }
 
         private FakePlayerTravelContext(
@@ -367,6 +408,19 @@ class CavernTravelBridgeTest {
             Optional<CavernPlacementTarget> fallbackReturnTarget,
             Optional<PortalWorldIndex.PortalPlacement> createdPortalPlacement
         ) {
+            this(playerId, gameTime, yaw, pitch, safeArrivals, fallbackReturnTarget, createdPortalPlacement, Optional.empty());
+        }
+
+        private FakePlayerTravelContext(
+            UUID playerId,
+            long gameTime,
+            float yaw,
+            float pitch,
+            Set<SafeArrival> safeArrivals,
+            Optional<CavernPlacementTarget> fallbackReturnTarget,
+            Optional<PortalWorldIndex.PortalPlacement> createdPortalPlacement,
+            Optional<PortalWorldIndex.PortalPlacement> replacementPortalPlacement
+        ) {
             this.playerId = playerId;
             this.gameTime = gameTime;
             this.yaw = yaw;
@@ -374,6 +428,7 @@ class CavernTravelBridgeTest {
             this.safeArrivals = safeArrivals;
             this.fallbackReturnTarget = fallbackReturnTarget;
             this.createdPortalPlacement = createdPortalPlacement;
+            this.replacementPortalPlacement = replacementPortalPlacement;
         }
 
         @Override
@@ -432,6 +487,22 @@ class CavernTravelBridgeTest {
                 placement.axis()
             )));
             return createdPortalPlacement;
+        }
+
+        @Override
+        public Optional<PortalWorldIndex.PortalPlacement> createReplacementPortalAt(
+            String targetDimensionId,
+            PortalWorldIndex.PortalPlacement stalePlacement
+        ) {
+            createReplacementPortalCalls++;
+            replacementPortalPlacement.ifPresent(placement -> existingPortals.add(new PortalLocation(
+                targetDimensionId,
+                placement.x(),
+                placement.y(),
+                placement.z(),
+                placement.axis()
+            )));
+            return replacementPortalPlacement;
         }
 
         @Override

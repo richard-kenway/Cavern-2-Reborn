@@ -177,6 +177,13 @@ public final class CavernTravelBridge {
             }
 
             worldPortalIndexStore.save(targetDimensionId, worldIndex.withoutPortal(resolvedPortalKey, placement));
+
+            Optional<PortalWorldIndex.PortalPlacement> regeneratedPlacement = player.createReplacementPortalAt(targetDimensionId, placement);
+            if (regeneratedPlacement.isPresent()) {
+                PortalWorldIndex refreshedIndex = worldPortalIndexStore.load(targetDimensionId).withPortal(resolvedPortalKey, regeneratedPlacement.get());
+                worldPortalIndexStore.save(targetDimensionId, refreshedIndex);
+                return Optional.of(toResolvedPortalDestination(targetDimensionId, regeneratedPlacement.get(), relativePortalExit, fallbackYaw));
+            }
         }
 
         Optional<PortalWorldIndex.PortalPlacement> nearbyPortal = player.findPortalNear(
