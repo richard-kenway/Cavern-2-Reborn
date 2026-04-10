@@ -2,6 +2,7 @@ package com.richardkenway.cavernreborn.app.dimension;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import com.richardkenway.cavernreborn.app.portal.CavernArrivalPlacementProbe;
 import com.richardkenway.cavernreborn.app.portal.CavernPortalInteractionContext;
@@ -154,14 +155,17 @@ public final class CavernTravelBridge {
         String targetDimensionId = preferredTarget.dimensionId();
         String resolvedPortalKey = portalKey.get();
         PortalWorldIndex worldIndex = worldPortalIndexStore.load(targetDimensionId);
-        Optional<PortalWorldIndex.PortalPlacement> indexedPlacement = worldIndex.firstPlacementFor(resolvedPortalKey);
+        Set<PortalWorldIndex.PortalPlacement> indexedPlacements = worldIndex.placementsFor(resolvedPortalKey);
 
-        if (indexedPlacement.isPresent()) {
-            PortalWorldIndex.PortalPlacement placement = indexedPlacement.get();
+        for (PortalWorldIndex.PortalPlacement placement : indexedPlacements) {
             if (player.hasPortalAt(targetDimensionId, placement.x(), placement.y(), placement.z())) {
                 return Optional.of(toResolvedPortalDestination(targetDimensionId, placement, relativePortalExit, fallbackYaw));
             }
+        }
 
+        PortalWorldIndex cleanedIndex = worldIndex;
+        PortalWorldIndex.PortalPlacement regenerationAnchor = null;
+        for (PortalWorldIndex.PortalPlacement placement : indexedPlacements) {
             Optional<PortalWorldIndex.PortalPlacement> relinkedPlacement = player.findPortalNear(
                 targetDimensionId,
                 placement.x(),
@@ -169,16 +173,27 @@ public final class CavernTravelBridge {
                 placement.z()
             );
             if (relinkedPlacement.isPresent()) {
-                PortalWorldIndex refreshedIndex = worldIndex
+                PortalWorldIndex refreshedIndex = cleanedIndex
                     .withoutPortal(resolvedPortalKey, placement)
                     .withPortal(resolvedPortalKey, relinkedPlacement.get());
                 worldPortalIndexStore.save(targetDimensionId, refreshedIndex);
                 return Optional.of(toResolvedPortalDestination(targetDimensionId, relinkedPlacement.get(), relativePortalExit, fallbackYaw));
             }
 
-            worldPortalIndexStore.save(targetDimensionId, worldIndex.withoutPortal(resolvedPortalKey, placement));
+            if (regenerationAnchor == null) {
+                regenerationAnchor = placement;
+            }
 
-            Optional<PortalWorldIndex.PortalPlacement> regeneratedPlacement = player.createReplacementPortalAt(targetDimensionId, placement);
+            cleanedIndex = cleanedIndex.withoutPortal(resolvedPortalKey, placement);
+        }
+
+        if (regenerationAnchor != null) {
+            worldPortalIndexStore.save(targetDimensionId, cleanedIndex);
+
+            Optional<PortalWorldIndex.PortalPlacement> regeneratedPlacement = player.createReplacementPortalAt(
+                targetDimensionId,
+                regenerationAnchor
+            );
             if (regeneratedPlacement.isPresent()) {
                 PortalWorldIndex refreshedIndex = worldPortalIndexStore.load(targetDimensionId).withPortal(resolvedPortalKey, regeneratedPlacement.get());
                 worldPortalIndexStore.save(targetDimensionId, refreshedIndex);

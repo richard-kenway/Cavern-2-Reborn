@@ -166,6 +166,79 @@ class CavernTravelBridgeTest {
     }
 
     @Test
+    void travelToCavernReusesSecondIndexedPortalBeforeRegeneratingFirstStalePlacement() {
+        CavernStateBootstrap bootstrap = new CavernStateBootstrap();
+        bootstrap.worldPortalIndexStore().save(
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            PortalWorldIndex.empty()
+                .withPortal("cavern", new PortalWorldIndex.PortalPlacement(30, 70, 30, PortalWorldIndex.PortalPlacement.AXIS_Z))
+                .withPortal("cavern", new PortalWorldIndex.PortalPlacement(2, 64, 0, PortalWorldIndex.PortalPlacement.AXIS_X))
+        );
+        FakePlayerTravelContext player = new FakePlayerTravelContext(
+            UUID.randomUUID(),
+            96L,
+            90.0F,
+            30.0F,
+            Set.of(new SafeArrival(0, 64, 0)),
+            Optional.empty(),
+            Optional.of(new PortalWorldIndex.PortalPlacement(8, 64, 8, PortalWorldIndex.PortalPlacement.AXIS_X)),
+            Optional.of(new PortalWorldIndex.PortalPlacement(29, 70, 30, PortalWorldIndex.PortalPlacement.AXIS_Z))
+        );
+        player.existingPortals.add(new PortalLocation(CavernDimensions.CAVERN_DIMENSION_ID, 2, 64, 0, PortalWorldIndex.PortalPlacement.AXIS_X));
+
+        Optional<CavernTravelPlan> plan = bootstrap.cavernTravelBridge().travelToCavern(
+            player,
+            new PortalReturnState("cavern", CavernDimensions.OVERWORLD_DIMENSION_ID, 12, 64, 12),
+            new TeleportContext("cavern", 0.25D, 0.5D, 0.75D, "north"),
+            new PortalWorldIndex.PortalPlacement(8, 70, 8)
+        );
+
+        assertTrue(plan.isPresent());
+        assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, player.lastTargetDimensionId);
+        assertEquals(2.75D, player.lastX);
+        assertEquals(64.0D, player.lastY);
+        assertEquals(0.5D, player.lastZ);
+        assertEquals(Direction.SOUTH.toYRot(), player.lastYaw);
+        assertEquals(0, player.createReplacementPortalCalls);
+        assertEquals(0, player.createPortalCalls);
+    }
+
+    @Test
+    void travelToCavernFallsBackToGenericCreateWhenReplacementRegenerationFails() {
+        CavernStateBootstrap bootstrap = new CavernStateBootstrap();
+        bootstrap.worldPortalIndexStore().save(
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            PortalWorldIndex.empty().withPortal("cavern", new PortalWorldIndex.PortalPlacement(30, 70, 30, PortalWorldIndex.PortalPlacement.AXIS_Z))
+        );
+        FakePlayerTravelContext player = new FakePlayerTravelContext(
+            UUID.randomUUID(),
+            96L,
+            90.0F,
+            30.0F,
+            Set.of(new SafeArrival(0, 64, 0)),
+            Optional.empty(),
+            Optional.of(new PortalWorldIndex.PortalPlacement(2, 64, 0, PortalWorldIndex.PortalPlacement.AXIS_X)),
+            Optional.empty()
+        );
+
+        Optional<CavernTravelPlan> plan = bootstrap.cavernTravelBridge().travelToCavern(
+            player,
+            new PortalReturnState("cavern", CavernDimensions.OVERWORLD_DIMENSION_ID, 12, 64, 12),
+            new TeleportContext("cavern", 0.25D, 0.5D, 0.75D, "north"),
+            new PortalWorldIndex.PortalPlacement(8, 70, 8)
+        );
+
+        assertTrue(plan.isPresent());
+        assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, player.lastTargetDimensionId);
+        assertEquals(2.75D, player.lastX);
+        assertEquals(64.0D, player.lastY);
+        assertEquals(0.5D, player.lastZ);
+        assertEquals(Direction.SOUTH.toYRot(), player.lastYaw);
+        assertEquals(1, player.createReplacementPortalCalls);
+        assertEquals(1, player.createPortalCalls);
+    }
+
+    @Test
     void travelToCavernRemapsLateralOffsetAcrossPortalAxes() {
         CavernStateBootstrap bootstrap = new CavernStateBootstrap();
         FakePlayerTravelContext player = new FakePlayerTravelContext(
