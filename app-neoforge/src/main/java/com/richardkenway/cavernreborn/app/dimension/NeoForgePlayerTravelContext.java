@@ -3,7 +3,10 @@ package com.richardkenway.cavernreborn.app.dimension;
 import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.LinkedHashSet;
 
+import com.richardkenway.cavernreborn.app.portal.CavernPortalFrameDetector;
 import com.richardkenway.cavernreborn.app.portal.CavernPortalFrameActivator;
 import com.richardkenway.cavernreborn.app.portal.WorldPortalFrameAccess;
 import com.richardkenway.cavernreborn.app.registry.ModRegistries;
@@ -28,8 +31,10 @@ import com.richardkenway.cavernreborn.core.state.CavernPlacementTarget;
 public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
     private static final int PORTAL_INNER_WIDTH = 2;
     private static final int PORTAL_INNER_HEIGHT = 3;
-    private static final int PORTAL_SEARCH_RADIUS = 4;
-    private static final int PORTAL_SEARCH_HEIGHT = 2;
+    private static final int PORTAL_CREATE_SEARCH_RADIUS = 4;
+    private static final int PORTAL_CREATE_SEARCH_HEIGHT = 2;
+    private static final int EXISTING_PORTAL_SEARCH_RADIUS = 8;
+    private static final int EXISTING_PORTAL_SEARCH_HEIGHT = 6;
 
     private final ServerPlayer serverPlayer;
 
@@ -69,14 +74,56 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
     }
 
     @Override
+    public Optional<PortalWorldIndex.PortalPlacement> findPortalNear(String targetDimensionId, int x, int y, int z) {
+        ServerLevel targetLevel = resolveLevel(targetDimensionId);
+        Block portalBlock = ModRegistries.CAVERN_PORTAL_BLOCK.get();
+        CavernPortalFrameDetector detector = new CavernPortalFrameDetector(new WorldPortalFrameAccess(targetLevel, portalBlock));
+        Set<BlockPos> checkedOrigins = new LinkedHashSet<>();
+
+        for (int dy = 0; dy <= EXISTING_PORTAL_SEARCH_HEIGHT; dy++) {
+            Optional<PortalWorldIndex.PortalPlacement> sameHeight = findPortalAtYOffset(
+                targetLevel,
+                detector,
+                portalBlock,
+                x,
+                y + dy,
+                z,
+                checkedOrigins
+            );
+            if (sameHeight.isPresent()) {
+                return sameHeight;
+            }
+
+            if (dy == 0) {
+                continue;
+            }
+
+            Optional<PortalWorldIndex.PortalPlacement> below = findPortalAtYOffset(
+                targetLevel,
+                detector,
+                portalBlock,
+                x,
+                y - dy,
+                z,
+                checkedOrigins
+            );
+            if (below.isPresent()) {
+                return below;
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<PortalWorldIndex.PortalPlacement> createPortalAt(String targetDimensionId, int x, int y, int z) {
         ServerLevel targetLevel = resolveLevel(targetDimensionId);
         Block portalBlock = ModRegistries.CAVERN_PORTAL_BLOCK.get();
         WorldPortalFrameAccess frameAccess = new WorldPortalFrameAccess(targetLevel, portalBlock);
         CavernPortalFrameActivator activator = new CavernPortalFrameActivator(frameAccess);
 
-        for (int dy = 0; dy <= PORTAL_SEARCH_HEIGHT; dy++) {
-            for (int radius = 0; radius <= PORTAL_SEARCH_RADIUS; radius++) {
+        for (int dy = 0; dy <= PORTAL_CREATE_SEARCH_HEIGHT; dy++) {
+            for (int radius = 0; radius <= PORTAL_CREATE_SEARCH_RADIUS; radius++) {
                 for (int dx = -radius; dx <= radius; dx++) {
                     for (int dz = -radius; dz <= radius; dz++) {
                         if (radius > 0 && Math.max(Math.abs(dx), Math.abs(dz)) != radius) {
@@ -88,6 +135,43 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
                         if (createdPortal.isPresent()) {
                             return createdPortal;
                         }
+                    }
+                }
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    private Optional<PortalWorldIndex.PortalPlacement> findPortalAtYOffset(
+        ServerLevel targetLevel,
+        CavernPortalFrameDetector detector,
+        Block portalBlock,
+        int centerX,
+        int centerY,
+        int centerZ,
+        Set<BlockPos> checkedOrigins
+    ) {
+        for (int radius = 0; radius <= EXISTING_PORTAL_SEARCH_RADIUS; radius++) {
+            for (int dx = -radius; dx <= radius; dx++) {
+                for (int dz = -radius; dz <= radius; dz++) {
+                    if (radius > 0 && Math.max(Math.abs(dx), Math.abs(dz)) != radius) {
+                        continue;
+                    }
+
+                    BlockPos candidate = new BlockPos(centerX + dx, centerY, centerZ + dz);
+                    if (!targetLevel.getBlockState(candidate).is(portalBlock)) {
+                        continue;
+                    }
+
+                    if (!checkedOrigins.add(candidate)) {
+                        continue;
+                    }
+
+                    Optional<CavernPortalFrameDetector.PortalFrame> frame = detector.detect(candidate);
+                    if (frame.isPresent() && !frame.get().isEmpty()) {
+                        BlockPos bottomLeft = frame.get().bottomLeft();
+                        return Optional.of(new PortalWorldIndex.PortalPlacement(bottomLeft.getX(), bottomLeft.getY(), bottomLeft.getZ()));
                     }
                 }
             }

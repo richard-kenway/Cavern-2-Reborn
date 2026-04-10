@@ -22,6 +22,7 @@ This repository currently contains the project skeleton and a minimal content re
 - an axis-aware `cavern_portal` interior plane with thin portal geometry and frame-integrity invalidation when the obsidian frame is broken
 - a first destination portal placement step: travel now uses a bounded find-or-create portal target in the destination dimension instead of requiring a second portal to be placed manually every time
 - a persistent control-plane state backend: player return-state and world portal indices now survive server restarts through overworld-level NeoForge `SavedData`
+- a bounded nearby portal relink step: travel now searches for an existing destination portal near the target and relinks stale index entries before creating a new frame
 
 No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 
@@ -40,7 +41,7 @@ No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 - Return-state and world portal indices now persist through an overworld-level `SavedData` control plane, but this is still a bounded MVP backend rather than full player/world attachment wiring.
 - The new persistent backend still needs manual restart validation on a real dedicated server, especially for `portal -> CAVERN -> restart -> return` and indexed destination-portal reuse after restart.
 - The current portal flow now supports an axis-aware thin interior portal plane with frame-integrity invalidation, but it still keeps the older right-click path as a fallback/debug route and does not yet implement full legacy portal collision semantics.
-- Destination portal placement is now automatic in a bounded find-or-create form, but it still does not implement full legacy cache, search radius and regeneration semantics.
+- Destination portal placement is now automatic in a bounded search-relink-or-create form, but it still does not implement full legacy cache, wider radius search and regeneration semantics.
 - Portal denial feedback currently uses short overlay messages only; there is no broader notification policy yet.
 - Cooldown and feedback suppression windows are fixed tick-based values and may need tuning after manual playtesting.
 - Legacy portal branches such as `portalMenu`, shop flow and rank gating are intentionally not part of the current MVP slice.

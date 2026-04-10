@@ -23,6 +23,10 @@ public interface PlayerTravelContext {
         return false;
     }
 
+    default Optional<PortalWorldIndex.PortalPlacement> findPortalNear(String targetDimensionId, int x, int y, int z) {
+        return Optional.empty();
+    }
+
     default Optional<PortalWorldIndex.PortalPlacement> createPortalAt(String targetDimensionId, int x, int y, int z) {
         return Optional.empty();
     }

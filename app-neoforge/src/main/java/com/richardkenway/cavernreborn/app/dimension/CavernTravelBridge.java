@@ -139,7 +139,33 @@ public final class CavernTravelBridge {
                 return Optional.of(toPlacementTarget(targetDimensionId, placement));
             }
 
+            Optional<PortalWorldIndex.PortalPlacement> relinkedPlacement = player.findPortalNear(
+                targetDimensionId,
+                placement.x(),
+                placement.y(),
+                placement.z()
+            );
+            if (relinkedPlacement.isPresent()) {
+                PortalWorldIndex refreshedIndex = worldIndex
+                    .withoutPortal(resolvedPortalKey, placement)
+                    .withPortal(resolvedPortalKey, relinkedPlacement.get());
+                worldPortalIndexStore.save(targetDimensionId, refreshedIndex);
+                return Optional.of(toPlacementTarget(targetDimensionId, relinkedPlacement.get()));
+            }
+
             worldPortalIndexStore.save(targetDimensionId, worldIndex.withoutPortal(resolvedPortalKey, placement));
+        }
+
+        Optional<PortalWorldIndex.PortalPlacement> nearbyPortal = player.findPortalNear(
+            targetDimensionId,
+            (int) Math.floor(preferredTarget.x()),
+            (int) Math.floor(preferredTarget.y()),
+            (int) Math.floor(preferredTarget.z())
+        );
+        if (nearbyPortal.isPresent()) {
+            PortalWorldIndex refreshedIndex = worldPortalIndexStore.load(targetDimensionId).withPortal(resolvedPortalKey, nearbyPortal.get());
+            worldPortalIndexStore.save(targetDimensionId, refreshedIndex);
+            return Optional.of(toPlacementTarget(targetDimensionId, nearbyPortal.get()));
         }
 
         return player.createPortalAt(

@@ -52,6 +52,70 @@ class CavernTravelBridgeTest {
     }
 
     @Test
+    void travelToCavernReusesNearbyExistingDestinationPortalBeforeCreatingNewOne() {
+        CavernStateBootstrap bootstrap = new CavernStateBootstrap();
+        FakePlayerTravelContext player = new FakePlayerTravelContext(
+            UUID.randomUUID(),
+            95L,
+            90.0F,
+            30.0F,
+            Set.of(new SafeArrival(0, 64, 0)),
+            Optional.empty(),
+            Optional.of(new PortalWorldIndex.PortalPlacement(2, 64, 0))
+        );
+        player.existingPortals.add(new PortalLocation(CavernDimensions.CAVERN_DIMENSION_ID, 3, 64, 1));
+
+        Optional<CavernTravelPlan> plan = bootstrap.cavernTravelBridge().travelToCavern(
+            player,
+            new PortalReturnState("cavern", CavernDimensions.OVERWORLD_DIMENSION_ID, 12, 64, 12),
+            new TeleportContext("cavern", 0.25D, 0.5D, 0.75D, "north"),
+            new PortalWorldIndex.PortalPlacement(8, 70, 8)
+        );
+
+        assertTrue(plan.isPresent());
+        assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, player.lastTargetDimensionId);
+        assertEquals(3.0D, player.lastX);
+        assertEquals(64.0D, player.lastY);
+        assertEquals(1.0D, player.lastZ);
+        assertEquals(0, player.createPortalCalls);
+        assertEquals(new PortalWorldIndex.PortalPlacement(3, 64, 1), bootstrap.worldPortalIndexStore().load(CavernDimensions.CAVERN_DIMENSION_ID).firstPlacementFor("cavern").orElseThrow());
+    }
+
+    @Test
+    void travelToCavernRelinksStaleIndexedPlacementToNearbyPortal() {
+        CavernStateBootstrap bootstrap = new CavernStateBootstrap();
+        bootstrap.worldPortalIndexStore().save(
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            PortalWorldIndex.empty().withPortal("cavern", new PortalWorldIndex.PortalPlacement(0, 64, 0))
+        );
+        FakePlayerTravelContext player = new FakePlayerTravelContext(
+            UUID.randomUUID(),
+            96L,
+            90.0F,
+            30.0F,
+            Set.of(new SafeArrival(0, 64, 0)),
+            Optional.empty(),
+            Optional.of(new PortalWorldIndex.PortalPlacement(8, 64, 8))
+        );
+        player.existingPortals.add(new PortalLocation(CavernDimensions.CAVERN_DIMENSION_ID, 2, 64, 0));
+
+        Optional<CavernTravelPlan> plan = bootstrap.cavernTravelBridge().travelToCavern(
+            player,
+            new PortalReturnState("cavern", CavernDimensions.OVERWORLD_DIMENSION_ID, 12, 64, 12),
+            new TeleportContext("cavern", 0.25D, 0.5D, 0.75D, "north"),
+            new PortalWorldIndex.PortalPlacement(8, 70, 8)
+        );
+
+        assertTrue(plan.isPresent());
+        assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, player.lastTargetDimensionId);
+        assertEquals(2.0D, player.lastX);
+        assertEquals(64.0D, player.lastY);
+        assertEquals(0.0D, player.lastZ);
+        assertEquals(0, player.createPortalCalls);
+        assertEquals(new PortalWorldIndex.PortalPlacement(2, 64, 0), bootstrap.worldPortalIndexStore().load(CavernDimensions.CAVERN_DIMENSION_ID).firstPlacementFor("cavern").orElseThrow());
+    }
+
+    @Test
     void travelToCavernAdjustsUnsafePlacementUsingWorldProbe() {
         CavernStateBootstrap bootstrap = new CavernStateBootstrap();
         FakePlayerTravelContext player = new FakePlayerTravelContext(UUID.randomUUID(), 100L, 90.0F, 30.0F, Set.of(new SafeArrival(0, 64, 0)));
@@ -249,6 +313,17 @@ class CavernTravelBridgeTest {
         @Override
         public boolean hasPortalAt(String targetDimensionId, int x, int y, int z) {
             return existingPortals.contains(new PortalLocation(targetDimensionId, x, y, z));
+        }
+
+        @Override
+        public Optional<PortalWorldIndex.PortalPlacement> findPortalNear(String targetDimensionId, int x, int y, int z) {
+            return existingPortals.stream()
+                .filter(portal -> portal.dimensionId().equals(targetDimensionId))
+                .filter(portal -> Math.abs(portal.x() - x) <= 8)
+                .filter(portal -> Math.abs(portal.y() - y) <= 6)
+                .filter(portal -> Math.abs(portal.z() - z) <= 8)
+                .findFirst()
+                .map(portal -> new PortalWorldIndex.PortalPlacement(portal.x(), portal.y(), portal.z()));
         }
 
         @Override
