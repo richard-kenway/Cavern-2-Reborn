@@ -46,7 +46,7 @@ public final class CavernStateMappers {
         index.portalsByKey().forEach((portalKey, placements) -> {
             Set<PortalWorldIndexData.PortalPlacementData> mappedPlacements = new LinkedHashSet<>();
             for (PortalWorldIndex.PortalPlacement placement : placements) {
-                mappedPlacements.add(new PortalWorldIndexData.PortalPlacementData(placement.x(), placement.y(), placement.z()));
+                mappedPlacements.add(new PortalWorldIndexData.PortalPlacementData(placement.x(), placement.y(), placement.z(), placement.axis()));
             }
             portalsByKey.put(portalKey, mappedPlacements);
         });
@@ -59,7 +59,7 @@ public final class CavernStateMappers {
         data.portalsByKey().forEach((portalKey, placements) -> {
             Set<PortalWorldIndex.PortalPlacement> mappedPlacements = new LinkedHashSet<>();
             for (PortalWorldIndexData.PortalPlacementData placement : placements) {
-                mappedPlacements.add(new PortalWorldIndex.PortalPlacement(placement.x(), placement.y(), placement.z()));
+                mappedPlacements.add(new PortalWorldIndex.PortalPlacement(placement.x(), placement.y(), placement.z(), placement.axis()));
             }
             portalsByKey.put(portalKey, mappedPlacements);
         });

@@ -30,8 +30,8 @@ class CavernStateMappersTest {
     @Test
     void portalWorldIndexRoundTripPreservesPlacements() {
         PortalWorldIndex original = PortalWorldIndex.empty()
-            .withPortal("cavern", new PortalWorldIndex.PortalPlacement(1, 2, 3))
-            .withPortal("cavern", new PortalWorldIndex.PortalPlacement(4, 5, 6));
+            .withPortal("cavern", new PortalWorldIndex.PortalPlacement(1, 2, 3, PortalWorldIndex.PortalPlacement.AXIS_X))
+            .withPortal("cavern", new PortalWorldIndex.PortalPlacement(4, 5, 6, PortalWorldIndex.PortalPlacement.AXIS_Z));
 
         PortalWorldIndex restored = CavernStateMappers.fromData(CavernStateMappers.toData(original));
 

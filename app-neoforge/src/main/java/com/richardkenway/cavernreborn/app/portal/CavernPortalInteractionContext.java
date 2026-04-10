@@ -15,6 +15,8 @@ public interface CavernPortalInteractionContext extends PlayerTravelContext {
 
     int portalZ();
 
+    String portalAxis();
+
     double hitOffsetX();
 
     double hitOffsetY();

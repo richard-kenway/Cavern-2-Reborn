@@ -74,6 +74,29 @@ public record PortalWorldIndex(Map<String, Set<PortalPlacement>> portalsByKey) {
         return value;
     }
 
-    public record PortalPlacement(int x, int y, int z) {
+    public record PortalPlacement(int x, int y, int z, String axis) {
+        public static final String AXIS_X = "x";
+        public static final String AXIS_Z = "z";
+
+        public PortalPlacement(int x, int y, int z) {
+            this(x, y, z, AXIS_X);
+        }
+
+        public PortalPlacement {
+            axis = normalizeAxis(axis);
+        }
+
+        public boolean isXAxis() {
+            return AXIS_X.equals(axis);
+        }
+
+        private static String normalizeAxis(String axis) {
+            String normalizedAxis = requireText(axis, "axis").toLowerCase(java.util.Locale.ROOT);
+            if (AXIS_X.equals(normalizedAxis) || AXIS_Z.equals(normalizedAxis)) {
+                return normalizedAxis;
+            }
+
+            throw new IllegalArgumentException("axis must be 'x' or 'z'");
+        }
     }
 }

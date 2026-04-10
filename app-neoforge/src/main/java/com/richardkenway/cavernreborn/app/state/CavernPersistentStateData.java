@@ -38,6 +38,7 @@ public final class CavernPersistentStateData extends SavedData {
     private static final String X_TAG = "X";
     private static final String Y_TAG = "Y";
     private static final String Z_TAG = "Z";
+    private static final String AXIS_TAG = "Axis";
 
     private final Map<UUID, PortalReturnState> playerReturnStates;
     private final Map<String, PortalWorldIndex> worldPortalIndices;
@@ -172,6 +173,7 @@ public final class CavernPersistentStateData extends SavedData {
                 placementTag.putInt(X_TAG, placement.x());
                 placementTag.putInt(Y_TAG, placement.y());
                 placementTag.putInt(Z_TAG, placement.z());
+                placementTag.putString(AXIS_TAG, placement.axis());
                 placementsTag.add(placementTag);
             }
 
@@ -204,7 +206,10 @@ public final class CavernPersistentStateData extends SavedData {
                     placements.add(new PortalWorldIndexData.PortalPlacementData(
                         placementTag.getInt(X_TAG),
                         placementTag.getInt(Y_TAG),
-                        placementTag.getInt(Z_TAG)
+                        placementTag.getInt(Z_TAG),
+                        placementTag.contains(AXIS_TAG, Tag.TAG_STRING)
+                            ? placementTag.getString(AXIS_TAG)
+                            : PortalWorldIndex.PortalPlacement.AXIS_X
                     ));
                 }
 

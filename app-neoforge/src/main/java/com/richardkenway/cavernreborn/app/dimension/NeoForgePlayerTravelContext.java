@@ -171,7 +171,12 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
                     Optional<CavernPortalFrameDetector.PortalFrame> frame = detector.detect(candidate);
                     if (frame.isPresent() && !frame.get().isEmpty()) {
                         BlockPos bottomLeft = frame.get().bottomLeft();
-                        return Optional.of(new PortalWorldIndex.PortalPlacement(bottomLeft.getX(), bottomLeft.getY(), bottomLeft.getZ()));
+                        return Optional.of(new PortalWorldIndex.PortalPlacement(
+                            bottomLeft.getX(),
+                            bottomLeft.getY(),
+                            bottomLeft.getZ(),
+                            axisId(frame.get().axis())
+                        ));
                     }
                 }
             }
@@ -200,7 +205,12 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
             placeFrame(targetLevel, bottomLeft, axis);
             Optional<com.richardkenway.cavernreborn.app.portal.CavernPortalFrameDetector.PortalFrame> activatedFrame = activator.activate(bottomLeft);
             if (activatedFrame.isPresent()) {
-                return Optional.of(new PortalWorldIndex.PortalPlacement(bottomLeft.getX(), bottomLeft.getY(), bottomLeft.getZ()));
+                return Optional.of(new PortalWorldIndex.PortalPlacement(
+                    bottomLeft.getX(),
+                    bottomLeft.getY(),
+                    bottomLeft.getZ(),
+                    axisId(activatedFrame.get().axis())
+                ));
             }
         }
 
@@ -264,6 +274,12 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
 
     private static boolean isFrameReplaceable(BlockState state) {
         return state.isAir() || state.is(Blocks.OBSIDIAN) || state.canBeReplaced();
+    }
+
+    private static String axisId(Direction.Axis axis) {
+        return axis == Direction.Axis.Z
+            ? PortalWorldIndex.PortalPlacement.AXIS_Z
+            : PortalWorldIndex.PortalPlacement.AXIS_X;
     }
 
     private ServerLevel resolveLevel(String targetDimensionId) {

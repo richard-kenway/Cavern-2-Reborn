@@ -16,6 +16,7 @@ import com.richardkenway.cavernreborn.app.state.CavernStateBootstrap;
 import com.richardkenway.cavernreborn.core.state.CavernDimensions;
 import com.richardkenway.cavernreborn.core.state.CavernPlacementTarget;
 import com.richardkenway.cavernreborn.core.state.CavernTravelPlan;
+import com.richardkenway.cavernreborn.core.state.PortalWorldIndex;
 
 class CavernPortalInteractionServiceTest {
     @Test
@@ -545,6 +546,11 @@ class CavernPortalInteractionServiceTest {
         @Override
         public int portalZ() {
             return portalZ;
+        }
+
+        @Override
+        public String portalAxis() {
+            return PortalWorldIndex.PortalPlacement.AXIS_X;
         }
 
         @Override

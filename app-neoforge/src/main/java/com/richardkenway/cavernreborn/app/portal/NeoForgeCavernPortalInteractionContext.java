@@ -7,7 +7,9 @@ import java.util.UUID;
 
 import com.richardkenway.cavernreborn.app.dimension.CavernNeoForgeDimensions;
 import com.richardkenway.cavernreborn.app.dimension.OverworldFallbackReturnTargetResolver;
+import com.richardkenway.cavernreborn.app.block.CavernPortalBlock;
 import com.richardkenway.cavernreborn.core.state.CavernPlacementTarget;
+import com.richardkenway.cavernreborn.core.state.PortalWorldIndex;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -130,6 +132,13 @@ public final class NeoForgeCavernPortalInteractionContext implements CavernPorta
     }
 
     @Override
+    public String portalAxis() {
+        return level.getBlockState(portalPosition).hasProperty(CavernPortalBlock.AXIS)
+            ? axisId(level.getBlockState(portalPosition).getValue(CavernPortalBlock.AXIS))
+            : PortalWorldIndex.PortalPlacement.AXIS_X;
+    }
+
+    @Override
     public double hitOffsetX() {
         return hitOffsetX;
     }
@@ -178,6 +187,12 @@ public final class NeoForgeCavernPortalInteractionContext implements CavernPorta
     @Override
     public boolean isSafeArrivalAt(String targetDimensionId, int x, int y, int z) {
         return safeArrivalWorldProbe.isSafeArrivalAt(targetDimensionId, x, y, z);
+    }
+
+    private static String axisId(Direction.Axis axis) {
+        return axis == Direction.Axis.Z
+            ? PortalWorldIndex.PortalPlacement.AXIS_Z
+            : PortalWorldIndex.PortalPlacement.AXIS_X;
     }
 
     private ServerLevel resolveLevel(String targetDimensionId) {

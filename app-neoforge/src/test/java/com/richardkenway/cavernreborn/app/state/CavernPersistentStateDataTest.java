@@ -12,6 +12,7 @@ import com.richardkenway.cavernreborn.core.state.PortalReturnState;
 import com.richardkenway.cavernreborn.core.state.PortalWorldIndex;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 
 class CavernPersistentStateDataTest {
     @Test
@@ -19,8 +20,8 @@ class CavernPersistentStateDataTest {
         UUID playerId = UUID.randomUUID();
         PortalReturnState returnState = new PortalReturnState("cavern_portal", "minecraft:overworld", 12, 70, 14);
         PortalWorldIndex worldIndex = PortalWorldIndex.empty()
-            .withPortal("cavern_portal", new PortalWorldIndex.PortalPlacement(1, 64, 2))
-            .withPortal("cavern_portal", new PortalWorldIndex.PortalPlacement(3, 65, 4));
+            .withPortal("cavern_portal", new PortalWorldIndex.PortalPlacement(1, 64, 2, PortalWorldIndex.PortalPlacement.AXIS_X))
+            .withPortal("cavern_portal", new PortalWorldIndex.PortalPlacement(3, 65, 4, PortalWorldIndex.PortalPlacement.AXIS_Z));
 
         CavernPersistentStateData savedData = new CavernPersistentStateData();
         savedData.savePlayerReturnState(playerId, returnState);
@@ -36,7 +37,10 @@ class CavernPersistentStateDataTest {
     @Test
     void saveWorldPortalIndexRemovesEmptyIndices() {
         CavernPersistentStateData savedData = new CavernPersistentStateData();
-        savedData.saveWorldPortalIndex("minecraft:overworld", PortalWorldIndex.empty().withPortal("portal", new PortalWorldIndex.PortalPlacement(1, 2, 3)));
+        savedData.saveWorldPortalIndex(
+            "minecraft:overworld",
+            PortalWorldIndex.empty().withPortal("portal", new PortalWorldIndex.PortalPlacement(1, 2, 3, PortalWorldIndex.PortalPlacement.AXIS_Z))
+        );
 
         savedData.saveWorldPortalIndex("minecraft:overworld", PortalWorldIndex.empty());
 
@@ -52,5 +56,39 @@ class CavernPersistentStateDataTest {
         savedData.clearPlayerReturnState(playerId);
 
         assertFalse(savedData.loadPlayerReturnState(playerId).isPresent());
+    }
+
+    @Test
+    void loadWorldPortalIndexDefaultsMissingAxisTagToXAxis() {
+        CompoundTag serialized = new CompoundTag();
+        ListTag worldIndices = new ListTag();
+        CompoundTag worldIndexTag = new CompoundTag();
+        worldIndexTag.putString("WorldKey", "cavernreborn:cavern");
+
+        CompoundTag portalTag = new CompoundTag();
+        portalTag.putString("PortalKey", "cavern_portal");
+
+        CompoundTag placementTag = new CompoundTag();
+        placementTag.putInt("X", 7);
+        placementTag.putInt("Y", 64);
+        placementTag.putInt("Z", 8);
+
+        ListTag placements = new ListTag();
+        placements.add(placementTag);
+        portalTag.put("Placements", placements);
+
+        ListTag portals = new ListTag();
+        portals.add(portalTag);
+        worldIndexTag.put("Portals", portals);
+        worldIndices.add(worldIndexTag);
+        serialized.put("WorldPortalIndices", worldIndices);
+        serialized.put("PlayerReturnStates", new ListTag());
+
+        CavernPersistentStateData restored = CavernPersistentStateData.load(serialized, null);
+
+        assertEquals(
+            PortalWorldIndex.empty().withPortal("cavern_portal", new PortalWorldIndex.PortalPlacement(7, 64, 8, PortalWorldIndex.PortalPlacement.AXIS_X)),
+            restored.loadWorldPortalIndex("cavernreborn:cavern")
+        );
     }
 }

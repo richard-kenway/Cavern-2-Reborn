@@ -73,7 +73,8 @@ public final class CavernPortalInteractionService {
         PortalWorldIndex.PortalPlacement portalPlacement = new PortalWorldIndex.PortalPlacement(
             context.portalX(),
             context.portalY(),
-            context.portalZ()
+            context.portalZ(),
+            context.portalAxis()
         );
 
         Optional<CavernTravelPlan> travelPlan = travelBridge.travelToCavern(context, returnState, teleportContext, portalPlacement);

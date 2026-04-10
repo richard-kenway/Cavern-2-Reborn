@@ -35,6 +35,30 @@ public record PortalWorldIndexData(Map<String, Set<PortalPlacementData>> portals
         return value;
     }
 
-    public record PortalPlacementData(int x, int y, int z) {
+    public record PortalPlacementData(int x, int y, int z, String axis) {
+        public PortalPlacementData(int x, int y, int z) {
+            this(x, y, z, PortalWorldIndexAxisDefaults.AXIS_X);
+        }
+
+        public PortalPlacementData {
+            axis = PortalWorldIndexAxisDefaults.normalize(axis);
+        }
+    }
+
+    private static final class PortalWorldIndexAxisDefaults {
+        private static final String AXIS_X = "x";
+        private static final String AXIS_Z = "z";
+
+        private PortalWorldIndexAxisDefaults() {
+        }
+
+        private static String normalize(String axis) {
+            String normalizedAxis = requireText(axis, "axis").toLowerCase(java.util.Locale.ROOT);
+            if (AXIS_X.equals(normalizedAxis) || AXIS_Z.equals(normalizedAxis)) {
+                return normalizedAxis;
+            }
+
+            throw new IllegalArgumentException("axis must be 'x' or 'z'");
+        }
     }
 }

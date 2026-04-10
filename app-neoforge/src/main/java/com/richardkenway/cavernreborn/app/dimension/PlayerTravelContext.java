@@ -19,6 +19,10 @@ public interface PlayerTravelContext {
         return Optional.empty();
     }
 
+    default String portalAxis() {
+        return PortalWorldIndex.PortalPlacement.AXIS_X;
+    }
+
     default boolean hasPortalAt(String targetDimensionId, int x, int y, int z) {
         return false;
     }

@@ -16,6 +16,10 @@ import com.richardkenway.cavernreborn.core.state.TeleportContext;
 import com.richardkenway.cavernreborn.core.state.WorldPortalIndexStore;
 
 public final class CavernTravelBridge {
+    private static final double PORTAL_CENTER_X_OFFSET = 0.5D;
+    private static final double PORTAL_CENTER_Z_OFFSET = 0.5D;
+    private static final double PORTAL_AXIS_CENTER_OFFSET = 1.0D;
+
     private final CavernDimensionTravelPlanner travelPlanner;
     private final WorldPortalIndexStore worldPortalIndexStore;
     private final CavernPlacementResolver placementResolver;
@@ -219,6 +223,13 @@ public final class CavernTravelBridge {
     }
 
     private static CavernPlacementTarget toPlacementTarget(String dimensionId, PortalWorldIndex.PortalPlacement placement) {
-        return new CavernPlacementTarget(dimensionId, placement.x(), placement.y(), placement.z());
+        double centeredX = placement.isXAxis()
+            ? placement.x() + PORTAL_AXIS_CENTER_OFFSET
+            : placement.x() + PORTAL_CENTER_X_OFFSET;
+        double centeredZ = placement.isXAxis()
+            ? placement.z() + PORTAL_CENTER_Z_OFFSET
+            : placement.z() + PORTAL_AXIS_CENTER_OFFSET;
+
+        return new CavernPlacementTarget(dimensionId, centeredX, placement.y(), centeredZ);
     }
 }
