@@ -121,6 +121,7 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
         Block portalBlock = ModRegistries.CAVERN_PORTAL_BLOCK.get();
         WorldPortalFrameAccess frameAccess = new WorldPortalFrameAccess(targetLevel, portalBlock);
         CavernPortalFrameActivator activator = new CavernPortalFrameActivator(frameAccess);
+        PortalPlacementQualityScorer.PortalPlacementCandidate bestCandidate = null;
 
         for (int dy = 0; dy <= PORTAL_CREATE_SEARCH_HEIGHT; dy++) {
             for (int radius = 0; radius <= PORTAL_CREATE_SEARCH_RADIUS; radius++) {
@@ -130,17 +131,35 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
                             continue;
                         }
 
-                        BlockPos candidate = new BlockPos(x + dx, y + dy, z + dz);
-                        Optional<PortalWorldIndex.PortalPlacement> createdPortal = tryCreatePortalAt(candidate, targetLevel, portalBlock, activator);
-                        if (createdPortal.isPresent()) {
-                            return createdPortal;
+                        BlockPos candidatePos = new BlockPos(x + dx, y + dy, z + dz);
+                        for (Direction.Axis axis : new Direction.Axis[] {Direction.Axis.X, Direction.Axis.Z}) {
+                            if (!canBuildPortalAt(targetLevel, portalBlock, candidatePos, axis)) {
+                                continue;
+                            }
+
+                            PortalPlacementQualityScorer.PortalPlacementCandidate scoredCandidate = PortalPlacementQualityScorer.evaluate(
+                                targetLevel,
+                                portalBlock,
+                                candidatePos,
+                                axis,
+                                x,
+                                y,
+                                z
+                            );
+                            if (PortalPlacementQualityScorer.isBetterCandidate(scoredCandidate, bestCandidate)) {
+                                bestCandidate = scoredCandidate;
+                            }
                         }
                     }
                 }
             }
         }
 
-        return Optional.empty();
+        if (bestCandidate == null) {
+            return Optional.empty();
+        }
+
+        return tryCreatePortalAt(bestCandidate.bottomLeft(), bestCandidate.axis(), targetLevel, activator);
     }
 
     private Optional<PortalWorldIndex.PortalPlacement> findPortalAtYOffset(
@@ -193,25 +212,19 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
 
     private Optional<PortalWorldIndex.PortalPlacement> tryCreatePortalAt(
         BlockPos bottomLeft,
+        Direction.Axis axis,
         ServerLevel targetLevel,
-        Block portalBlock,
         CavernPortalFrameActivator activator
     ) {
-        for (Direction.Axis axis : new Direction.Axis[] {Direction.Axis.X, Direction.Axis.Z}) {
-            if (!canBuildPortalAt(targetLevel, portalBlock, bottomLeft, axis)) {
-                continue;
-            }
-
-            placeFrame(targetLevel, bottomLeft, axis);
-            Optional<com.richardkenway.cavernreborn.app.portal.CavernPortalFrameDetector.PortalFrame> activatedFrame = activator.activate(bottomLeft);
-            if (activatedFrame.isPresent()) {
-                return Optional.of(new PortalWorldIndex.PortalPlacement(
-                    bottomLeft.getX(),
-                    bottomLeft.getY(),
-                    bottomLeft.getZ(),
-                    axisId(activatedFrame.get().axis())
-                ));
-            }
+        placeFrame(targetLevel, bottomLeft, axis);
+        Optional<com.richardkenway.cavernreborn.app.portal.CavernPortalFrameDetector.PortalFrame> activatedFrame = activator.activate(bottomLeft);
+        if (activatedFrame.isPresent()) {
+            return Optional.of(new PortalWorldIndex.PortalPlacement(
+                bottomLeft.getX(),
+                bottomLeft.getY(),
+                bottomLeft.getZ(),
+                axisId(activatedFrame.get().axis())
+            ));
         }
 
         return Optional.empty();
