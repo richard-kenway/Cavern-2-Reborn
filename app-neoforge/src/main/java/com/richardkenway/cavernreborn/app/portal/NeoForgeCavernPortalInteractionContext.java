@@ -5,9 +5,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.richardkenway.cavernreborn.app.block.CavernPortalBlock;
 import com.richardkenway.cavernreborn.app.dimension.CavernNeoForgeDimensions;
 import com.richardkenway.cavernreborn.app.dimension.OverworldFallbackReturnTargetResolver;
-import com.richardkenway.cavernreborn.app.block.CavernPortalBlock;
 import com.richardkenway.cavernreborn.core.state.CavernPlacementTarget;
 import com.richardkenway.cavernreborn.core.state.PortalWorldIndex;
 
@@ -22,7 +22,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.Level;
-import net.minecraft.util.Mth;
 import net.minecraft.world.phys.BlockHitResult;
 
 public final class NeoForgeCavernPortalInteractionContext implements CavernPortalInteractionContext, CavernArrivalPlacementProbe {
@@ -43,11 +42,20 @@ public final class NeoForgeCavernPortalInteractionContext implements CavernPorta
     ) {
         this.serverPlayer = Objects.requireNonNull(serverPlayer, "serverPlayer");
         this.level = Objects.requireNonNull(level, "level");
-        this.portalPosition = Objects.requireNonNull(portalPosition, "portalPosition");
+        BlockPos touchedPortalPosition = Objects.requireNonNull(portalPosition, "portalPosition");
         BlockHitResult safeHitResult = Objects.requireNonNull(hitResult, "hitResult");
-        this.hitOffsetX = safeHitResult.getLocation().x - portalPosition.getX();
-        this.hitOffsetY = safeHitResult.getLocation().y - portalPosition.getY();
-        this.hitOffsetZ = safeHitResult.getLocation().z - portalPosition.getZ();
+        PortalContactCanonicalizer.CanonicalPortalContact portalContact = PortalContactCanonicalizer.canonicalize(
+            new WorldPortalFrameAccess(level, level.getBlockState(touchedPortalPosition).getBlock()),
+            touchedPortalPosition,
+            safeHitResult.getLocation().x,
+            safeHitResult.getLocation().y,
+            safeHitResult.getLocation().z,
+            fallbackAxis(level, touchedPortalPosition)
+        );
+        this.portalPosition = portalContact.bottomLeft();
+        this.hitOffsetX = portalContact.hitOffsetX();
+        this.hitOffsetY = portalContact.hitOffsetY();
+        this.hitOffsetZ = portalContact.hitOffsetZ();
         this.approachFacing = safeHitResult.getDirection().getName();
         this.safeArrivalWorldProbe = new SafeArrivalWorldProbe(serverPlayer.serverLevel());
     }
@@ -61,18 +69,24 @@ public final class NeoForgeCavernPortalInteractionContext implements CavernPorta
         Objects.requireNonNull(level, "level");
         Objects.requireNonNull(portalPosition, "portalPosition");
 
-        double offsetX = Mth.clamp(serverPlayer.getX() - portalPosition.getX(), 0.0D, 1.0D);
-        double offsetY = Mth.clamp(serverPlayer.getY() - portalPosition.getY(), 0.0D, 1.0D);
-        double offsetZ = Mth.clamp(serverPlayer.getZ() - portalPosition.getZ(), 0.0D, 1.0D);
         Direction approachDirection = serverPlayer.getDirection().getOpposite();
+
+        PortalContactCanonicalizer.CanonicalPortalContact portalContact = PortalContactCanonicalizer.canonicalize(
+            new WorldPortalFrameAccess(level, level.getBlockState(portalPosition).getBlock()),
+            portalPosition,
+            serverPlayer.getX(),
+            serverPlayer.getY(),
+            serverPlayer.getZ(),
+            fallbackAxis(level, portalPosition)
+        );
 
         return new NeoForgeCavernPortalInteractionContext(
             serverPlayer,
             level,
-            portalPosition,
-            offsetX,
-            offsetY,
-            offsetZ,
+            portalContact.bottomLeft(),
+            portalContact.hitOffsetX(),
+            portalContact.hitOffsetY(),
+            portalContact.hitOffsetZ(),
             approachDirection.getName()
         );
     }
@@ -193,6 +207,12 @@ public final class NeoForgeCavernPortalInteractionContext implements CavernPorta
         return axis == Direction.Axis.Z
             ? PortalWorldIndex.PortalPlacement.AXIS_Z
             : PortalWorldIndex.PortalPlacement.AXIS_X;
+    }
+
+    private static Direction.Axis fallbackAxis(Level level, BlockPos portalPosition) {
+        return level.getBlockState(portalPosition).hasProperty(CavernPortalBlock.AXIS)
+            ? level.getBlockState(portalPosition).getValue(CavernPortalBlock.AXIS)
+            : Direction.Axis.X;
     }
 
     private ServerLevel resolveLevel(String targetDimensionId) {

@@ -238,7 +238,7 @@ class CavernPortalInteractionServiceTest {
         assertTrue(outcome.handled());
         assertTrue(outcome.travelPlan().isPresent());
         assertEquals(CavernDimensions.OVERWORLD_DIMENSION_ID, cavernContext.lastTargetDimensionId);
-        assertEquals(11.75D, cavernContext.lastX);
+        assertEquals(11.55D, cavernContext.lastX);
         assertEquals(70.0D, cavernContext.lastY);
         assertEquals(11.5D, cavernContext.lastZ);
         assertEquals(Direction.NORTH.toYRot(), cavernContext.lastYaw);

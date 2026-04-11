@@ -19,6 +19,7 @@ This repository currently contains the project skeleton and a minimal content re
 - basic portal UX feedback for `cooldown`, failed cavern entry and missing return-state denial cases, plus an overworld fallback return target when no saved return-state exists
 - a first legacy-like portal structure step: obsidian frames can now be activated with `cavern_portal_trigger` and fill the `cavern_portal` interior block
 - a first entity-inside portal flow step: walking into the `cavern_portal` interior block now triggers the main transfer loop, while the older right-click path is kept only as a creative-only debug route
+- frame-level portal identity semantics: interaction now canonicalizes a touched interior block to the portal frame anchor before building keys, cooldowns and portal placements
 - an axis-aware `cavern_portal` interior plane with thin portal geometry and frame-integrity invalidation when the obsidian frame is broken
 - a first destination portal placement step: travel now uses a bounded find-or-create portal target in the destination dimension instead of requiring a second portal to be placed manually every time
 - a persistent control-plane state backend: player return-state and world portal indices now survive server restarts through overworld-level NeoForge `SavedData`
@@ -46,6 +47,7 @@ No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 - Return-state and world portal indices now persist through an overworld-level `SavedData` control plane, but this is still a bounded MVP backend rather than full player/world attachment wiring.
 - The new persistent backend still needs manual restart validation on a real dedicated server, especially for `portal -> CAVERN -> restart -> return` and indexed destination-portal reuse after restart.
 - The current portal flow now supports an axis-aware thin interior portal plane with frame-integrity invalidation; the older right-click path is restricted to a creative-only debug route, but full legacy collision semantics still needs manual validation.
+- Portal interaction now canonicalizes touched interior blocks to a frame-level anchor, but this still needs manual validation across different interior blocks of the same portal and across the creative debug route.
 - Destination portal placement is now automatic in a bounded search-relink-regenerate-or-create form, but it still does not implement full legacy cache, wider radius search and broader regeneration semantics.
 - Destination portal arrival is now centered by stored portal axis, but this still needs manual in-game validation for both axes and for relinked/recreated portals after index churn.
 - Portal-relative exit placement now preserves only a bounded lateral offset inside the destination portal plane; full facing/orientation parity still needs manual validation, especially for cross-axis transfers.

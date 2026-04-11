@@ -330,8 +330,8 @@ public final class CavernTravelBridge {
 
     private static double normalizeLateralOffset(String axis, double hitOffsetX, double hitOffsetZ) {
         double rawOffset = PortalWorldIndex.PortalPlacement.AXIS_X.equals(axis)
-            ? hitOffsetX - PORTAL_CENTER_X_OFFSET
-            : hitOffsetZ - PORTAL_CENTER_Z_OFFSET;
+            ? hitOffsetX - PORTAL_AXIS_CENTER_OFFSET
+            : hitOffsetZ - PORTAL_AXIS_CENTER_OFFSET;
         return clampLateralOffset(rawOffset);
     }
 

@@ -46,7 +46,7 @@ class CavernTravelBridgeTest {
 
         assertTrue(plan.isPresent());
         assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, player.lastTargetDimensionId);
-        assertEquals(2.75D, player.lastX);
+        assertEquals(2.55D, player.lastX);
         assertEquals(64.0D, player.lastY);
         assertEquals(0.5D, player.lastZ);
         assertEquals(Direction.SOUTH.toYRot(), player.lastYaw);
@@ -79,7 +79,7 @@ class CavernTravelBridgeTest {
         assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, player.lastTargetDimensionId);
         assertEquals(3.5D, player.lastX);
         assertEquals(64.0D, player.lastY);
-        assertEquals(1.75D, player.lastZ);
+        assertEquals(1.55D, player.lastZ);
         assertEquals(Direction.EAST.toYRot(), player.lastYaw);
         assertEquals(0, player.createPortalCalls);
         assertEquals(
@@ -115,7 +115,7 @@ class CavernTravelBridgeTest {
 
         assertTrue(plan.isPresent());
         assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, player.lastTargetDimensionId);
-        assertEquals(2.75D, player.lastX);
+        assertEquals(2.55D, player.lastX);
         assertEquals(64.0D, player.lastY);
         assertEquals(0.5D, player.lastZ);
         assertEquals(Direction.SOUTH.toYRot(), player.lastYaw);
@@ -155,7 +155,7 @@ class CavernTravelBridgeTest {
         assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, player.lastTargetDimensionId);
         assertEquals(29.5D, player.lastX);
         assertEquals(70.0D, player.lastY);
-        assertEquals(30.75D, player.lastZ);
+        assertEquals(30.55D, player.lastZ);
         assertEquals(Direction.EAST.toYRot(), player.lastYaw);
         assertEquals(1, player.createReplacementPortalCalls);
         assertEquals(0, player.createPortalCalls);
@@ -195,7 +195,7 @@ class CavernTravelBridgeTest {
 
         assertTrue(plan.isPresent());
         assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, player.lastTargetDimensionId);
-        assertEquals(2.75D, player.lastX);
+        assertEquals(2.55D, player.lastX);
         assertEquals(64.0D, player.lastY);
         assertEquals(0.5D, player.lastZ);
         assertEquals(Direction.SOUTH.toYRot(), player.lastYaw);
@@ -230,7 +230,7 @@ class CavernTravelBridgeTest {
 
         assertTrue(plan.isPresent());
         assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, player.lastTargetDimensionId);
-        assertEquals(2.75D, player.lastX);
+        assertEquals(2.55D, player.lastX);
         assertEquals(64.0D, player.lastY);
         assertEquals(0.5D, player.lastZ);
         assertEquals(Direction.SOUTH.toYRot(), player.lastYaw);
@@ -260,7 +260,7 @@ class CavernTravelBridgeTest {
 
         assertTrue(plan.isPresent());
         assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, player.lastTargetDimensionId);
-        assertEquals(3.40D, player.lastX);
+        assertEquals(2.90D, player.lastX);
         assertEquals(64.0D, player.lastY);
         assertEquals(0.5D, player.lastZ);
     }
@@ -287,7 +287,7 @@ class CavernTravelBridgeTest {
 
         assertTrue(plan.isPresent());
         assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, player.lastTargetDimensionId);
-        assertEquals(3.45D, player.lastX);
+        assertEquals(2.99D, player.lastX);
         assertEquals(64.0D, player.lastY);
         assertEquals(0.5D, player.lastZ);
         assertEquals(Direction.SOUTH.toYRot(), player.lastYaw);
