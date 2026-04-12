@@ -22,8 +22,10 @@ public record PortalWorldIndex(Map<String, Set<PortalPlacement>> portalsByKey) {
         Objects.requireNonNull(placement, "placement");
 
         Map<String, Set<PortalPlacement>> updatedIndex = new LinkedHashMap<>(portalsByKey);
-        Set<PortalPlacement> placements = new LinkedHashSet<>(updatedIndex.getOrDefault(normalizedPortalKey, Set.of()));
-        placements.add(placement);
+        Set<PortalPlacement> placements = prioritizePlacement(
+            updatedIndex.getOrDefault(normalizedPortalKey, Set.of()),
+            placement
+        );
         updatedIndex.put(normalizedPortalKey, placements);
 
         return new PortalWorldIndex(updatedIndex);
@@ -53,6 +55,15 @@ public record PortalWorldIndex(Map<String, Set<PortalPlacement>> portalsByKey) {
     public Optional<PortalPlacement> firstPlacementFor(String portalKey) {
         Set<PortalPlacement> placements = placementsFor(portalKey);
         return placements.stream().findFirst();
+    }
+
+    private static Set<PortalPlacement> prioritizePlacement(Set<PortalPlacement> existingPlacements, PortalPlacement prioritizedPlacement) {
+        LinkedHashSet<PortalPlacement> prioritizedPlacements = new LinkedHashSet<>();
+        prioritizedPlacements.add(prioritizedPlacement);
+        existingPlacements.stream()
+            .filter(existingPlacement -> !existingPlacement.equals(prioritizedPlacement))
+            .forEach(prioritizedPlacements::add);
+        return prioritizedPlacements;
     }
 
     private static Map<String, Set<PortalPlacement>> copyIndex(Map<String, Set<PortalPlacement>> source) {

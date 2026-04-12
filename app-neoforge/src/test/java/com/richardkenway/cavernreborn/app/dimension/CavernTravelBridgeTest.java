@@ -201,6 +201,10 @@ class CavernTravelBridgeTest {
         assertEquals(Direction.SOUTH.toYRot(), player.lastYaw);
         assertEquals(0, player.createReplacementPortalCalls);
         assertEquals(0, player.createPortalCalls);
+        assertEquals(
+            new PortalWorldIndex.PortalPlacement(2, 64, 0, PortalWorldIndex.PortalPlacement.AXIS_X),
+            bootstrap.worldPortalIndexStore().load(CavernDimensions.CAVERN_DIMENSION_ID).firstPlacementFor("cavern").orElseThrow()
+        );
     }
 
     @Test

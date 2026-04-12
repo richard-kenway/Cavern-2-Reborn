@@ -30,4 +30,30 @@ class PortalStateModelsTest {
 
         assertEquals(1, index.placementsFor("cavern").size());
     }
+
+    @Test
+    void portalWorldIndexPromotesMostRecentPlacementToFront() {
+        PortalWorldIndex.PortalPlacement olderPlacement = new PortalWorldIndex.PortalPlacement(1, 2, 3);
+        PortalWorldIndex.PortalPlacement newerPlacement = new PortalWorldIndex.PortalPlacement(4, 5, 6);
+
+        PortalWorldIndex index = PortalWorldIndex.empty()
+            .withPortal("cavern", olderPlacement)
+            .withPortal("cavern", newerPlacement);
+
+        assertEquals(newerPlacement, index.firstPlacementFor("cavern").orElseThrow());
+    }
+
+    @Test
+    void portalWorldIndexReusingExistingPlacementPromotesItToFront() {
+        PortalWorldIndex.PortalPlacement firstPlacement = new PortalWorldIndex.PortalPlacement(1, 2, 3);
+        PortalWorldIndex.PortalPlacement secondPlacement = new PortalWorldIndex.PortalPlacement(4, 5, 6);
+
+        PortalWorldIndex index = PortalWorldIndex.empty()
+            .withPortal("cavern", firstPlacement)
+            .withPortal("cavern", secondPlacement)
+            .withPortal("cavern", firstPlacement);
+
+        assertEquals(firstPlacement, index.firstPlacementFor("cavern").orElseThrow());
+        assertEquals(2, index.placementsFor("cavern").size());
+    }
 }

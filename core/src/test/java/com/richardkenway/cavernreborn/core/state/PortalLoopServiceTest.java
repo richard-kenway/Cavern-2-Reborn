@@ -62,6 +62,25 @@ class PortalLoopServiceTest {
     }
 
     @Test
+    void registerPortalPromotesReusedPlacementToIndexFront() {
+        TestPlayerReturnStateStore playerStore = new TestPlayerReturnStateStore();
+        TestWorldPortalIndexStore worldStore = new TestWorldPortalIndexStore();
+        PortalLoopService service = new PortalLoopService(playerStore, worldStore);
+
+        PortalWorldIndex.PortalPlacement olderPlacement = new PortalWorldIndex.PortalPlacement(10, 64, 10);
+        PortalWorldIndex.PortalPlacement newerPlacement = new PortalWorldIndex.PortalPlacement(20, 70, 20);
+
+        service.registerPortal("minecraft:overworld", "cavern", olderPlacement);
+        service.registerPortal("minecraft:overworld", "cavern", newerPlacement);
+        service.registerPortal("minecraft:overworld", "cavern", olderPlacement);
+
+        assertEquals(
+            olderPlacement,
+            worldStore.load("minecraft:overworld").firstPlacementFor("cavern").orElseThrow()
+        );
+    }
+
+    @Test
     void planReturnFallsBackToSavedReturnStateWhenPortalMissing() {
         TestPlayerReturnStateStore playerStore = new TestPlayerReturnStateStore();
         TestWorldPortalIndexStore worldStore = new TestWorldPortalIndexStore();
