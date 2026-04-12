@@ -21,6 +21,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.RelativeMovement;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -69,8 +70,6 @@ public final class NeoForgeCavernPortalInteractionContext implements CavernPorta
         Objects.requireNonNull(level, "level");
         Objects.requireNonNull(portalPosition, "portalPosition");
 
-        Direction approachDirection = serverPlayer.getDirection().getOpposite();
-
         PortalContactCanonicalizer.CanonicalPortalContact portalContact = PortalContactCanonicalizer.canonicalize(
             new WorldPortalFrameAccess(level, level.getBlockState(portalPosition).getBlock()),
             portalPosition,
@@ -78,6 +77,13 @@ public final class NeoForgeCavernPortalInteractionContext implements CavernPorta
             serverPlayer.getY(),
             serverPlayer.getZ(),
             fallbackAxis(level, portalPosition)
+        );
+        Vec3 deltaMovement = serverPlayer.getDeltaMovement();
+        String approachFacing = CollisionApproachFacingResolver.resolve(
+            portalContact.axis(),
+            deltaMovement.x,
+            deltaMovement.z,
+            serverPlayer.getDirection()
         );
 
         return new NeoForgeCavernPortalInteractionContext(
@@ -87,7 +93,7 @@ public final class NeoForgeCavernPortalInteractionContext implements CavernPorta
             portalContact.hitOffsetX(),
             portalContact.hitOffsetY(),
             portalContact.hitOffsetZ(),
-            approachDirection.getName()
+            approachFacing
         );
     }
 

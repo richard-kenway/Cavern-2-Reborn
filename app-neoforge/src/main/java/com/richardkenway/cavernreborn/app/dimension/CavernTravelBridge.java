@@ -228,8 +228,18 @@ public final class CavernTravelBridge {
 
     private Optional<CavernTravelPlan> fallbackReturnHome(PlayerTravelContext player) {
         return player.fallbackReturnTarget()
-            .map(CavernTravelBridge::fallbackReturnPlan)
-            .flatMap(plan -> travel(player, plan));
+            .map(target -> {
+                CavernTravelPlan plan = fallbackReturnPlan(target);
+                player.teleportTo(
+                    target.dimensionId(),
+                    target.x(),
+                    target.y(),
+                    target.z(),
+                    player.yaw(),
+                    player.pitch()
+                );
+                return plan;
+            });
     }
 
     private static CavernPlacementTarget cavernEntryTarget() {

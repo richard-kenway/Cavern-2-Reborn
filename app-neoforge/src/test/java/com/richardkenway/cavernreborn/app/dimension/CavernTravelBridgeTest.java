@@ -427,6 +427,8 @@ class CavernTravelBridgeTest {
         assertEquals(3.0D, player.lastX);
         assertEquals(80.0D, player.lastY);
         assertEquals(4.0D, player.lastZ);
+        assertEquals(0, player.createPortalCalls);
+        assertEquals(0, player.createReplacementPortalCalls);
     }
 
     @Test
