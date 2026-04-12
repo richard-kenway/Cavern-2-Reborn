@@ -331,7 +331,7 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
     }
 
     private static boolean isInteriorReplaceable(BlockState state, Block portalBlock) {
-        return state.isAir() || state.is(portalBlock) || state.canBeReplaced();
+        return WorldPortalFrameAccess.isInteriorState(state, portalBlock);
     }
 
     private static boolean isFrameReplaceable(BlockState state) {

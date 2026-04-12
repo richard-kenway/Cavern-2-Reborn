@@ -24,8 +24,7 @@ public record WorldPortalFrameAccess(LevelAccessor level, Block portalBlock) imp
 
     @Override
     public boolean isInterior(BlockPos pos) {
-        BlockState state = level.getBlockState(pos);
-        return state.isAir() || state.is(portalBlock);
+        return isInteriorState(level.getBlockState(pos), portalBlock);
     }
 
     @Override
@@ -41,5 +40,11 @@ public record WorldPortalFrameAccess(LevelAccessor level, Block portalBlock) imp
         }
 
         level.setBlock(pos, portalState, 2);
+    }
+
+    public static boolean isInteriorState(BlockState state, Block portalBlock) {
+        Objects.requireNonNull(state, "state");
+        Objects.requireNonNull(portalBlock, "portalBlock");
+        return state.isAir() || state.is(portalBlock);
     }
 }

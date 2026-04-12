@@ -64,9 +64,22 @@ class CavernPortalFrameActivatorTest {
         assertEquals(Map.of(new BlockPos(1, 1, 0), Direction.Axis.X), access.portals);
     }
 
+    @Test
+    void activateDoesNothingWhenInteriorContainsBlockedCell() {
+        SetPortalAccess access = new SetPortalAccess();
+        access.addXAxisFrame(new BlockPos(0, 0, 0), 2, 3);
+        access.blockedInterior.add(new BlockPos(1, 2, 0));
+
+        Optional<CavernPortalFrameDetector.PortalFrame> frame = new CavernPortalFrameActivator(access).activate(new BlockPos(1, 2, 0));
+
+        assertTrue(frame.isEmpty());
+        assertTrue(access.portals.isEmpty());
+    }
+
     private static final class SetPortalAccess implements CavernPortalFrameActivator.PortalAccess {
         private final Set<BlockPos> frames = new HashSet<>();
         private final java.util.Map<BlockPos, Direction.Axis> portals = new java.util.HashMap<>();
+        private final Set<BlockPos> blockedInterior = new HashSet<>();
 
         private void addXAxisFrame(BlockPos frameMin, int innerWidth, int innerHeight) {
             int leftX = frameMin.getX();
@@ -109,7 +122,7 @@ class CavernPortalFrameActivatorTest {
 
         @Override
         public boolean isInterior(BlockPos pos) {
-            return !frames.contains(pos);
+            return !frames.contains(pos) && !blockedInterior.contains(pos);
         }
 
         @Override
