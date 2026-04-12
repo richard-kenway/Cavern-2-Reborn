@@ -32,6 +32,10 @@ class CavernPersistentStateDataTest {
 
         assertEquals(returnState, restored.loadPlayerReturnState(playerId).orElseThrow());
         assertEquals(worldIndex, restored.loadWorldPortalIndex("cavernreborn:cavern"));
+        assertEquals(
+            worldIndex.firstPlacementFor("cavern_portal"),
+            restored.loadWorldPortalIndex("cavernreborn:cavern").firstPlacementFor("cavern_portal")
+        );
     }
 
     @Test
@@ -89,6 +93,50 @@ class CavernPersistentStateDataTest {
         assertEquals(
             PortalWorldIndex.empty().withPortal("cavern_portal", new PortalWorldIndex.PortalPlacement(7, 64, 8, PortalWorldIndex.PortalPlacement.AXIS_X)),
             restored.loadWorldPortalIndex("cavernreborn:cavern")
+        );
+    }
+
+    @Test
+    void loadWorldPortalIndexSkipsInvalidPlacementButKeepsValidOnes() {
+        CompoundTag serialized = new CompoundTag();
+        ListTag worldIndices = new ListTag();
+        CompoundTag worldIndexTag = new CompoundTag();
+        worldIndexTag.putString("WorldKey", "cavernreborn:cavern");
+
+        CompoundTag portalTag = new CompoundTag();
+        portalTag.putString("PortalKey", "cavern_portal");
+
+        CompoundTag validPlacementTag = new CompoundTag();
+        validPlacementTag.putInt("X", 7);
+        validPlacementTag.putInt("Y", 64);
+        validPlacementTag.putInt("Z", 8);
+        validPlacementTag.putString("Axis", PortalWorldIndex.PortalPlacement.AXIS_Z);
+
+        CompoundTag invalidPlacementTag = new CompoundTag();
+        invalidPlacementTag.putInt("X", 1);
+        invalidPlacementTag.putInt("Y", 2);
+        invalidPlacementTag.putInt("Z", 3);
+        invalidPlacementTag.putString("Axis", "bad-axis");
+
+        ListTag placements = new ListTag();
+        placements.add(validPlacementTag);
+        placements.add(invalidPlacementTag);
+        portalTag.put("Placements", placements);
+
+        ListTag portals = new ListTag();
+        portals.add(portalTag);
+        worldIndexTag.put("Portals", portals);
+        worldIndices.add(worldIndexTag);
+        serialized.put("WorldPortalIndices", worldIndices);
+        serialized.put("PlayerReturnStates", new ListTag());
+
+        CavernPersistentStateData restored = CavernPersistentStateData.load(serialized, null);
+
+        PortalWorldIndex restoredIndex = restored.loadWorldPortalIndex("cavernreborn:cavern");
+        assertEquals(1, restoredIndex.placementsFor("cavern_portal").size());
+        assertEquals(
+            new PortalWorldIndex.PortalPlacement(7, 64, 8, PortalWorldIndex.PortalPlacement.AXIS_Z),
+            restoredIndex.firstPlacementFor("cavern_portal").orElseThrow()
         );
     }
 }

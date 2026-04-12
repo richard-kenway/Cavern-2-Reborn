@@ -36,5 +36,6 @@ class CavernStateMappersTest {
         PortalWorldIndex restored = CavernStateMappers.fromData(CavernStateMappers.toData(original));
 
         assertEquals(original, restored);
+        assertEquals(original.firstPlacementFor("cavern"), restored.firstPlacementFor("cavern"));
     }
 }

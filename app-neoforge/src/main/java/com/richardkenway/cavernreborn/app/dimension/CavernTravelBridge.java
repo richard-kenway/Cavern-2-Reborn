@@ -158,10 +158,16 @@ public final class CavernTravelBridge {
         Set<PortalWorldIndex.PortalPlacement> indexedPlacements = worldIndex.placementsFor(resolvedPortalKey);
 
         for (PortalWorldIndex.PortalPlacement placement : indexedPlacements) {
-            if (player.hasPortalAt(targetDimensionId, placement.x(), placement.y(), placement.z())) {
-                PortalWorldIndex refreshedIndex = worldIndex.withPortal(resolvedPortalKey, placement);
+            Optional<PortalWorldIndex.PortalPlacement> resolvedPlacement = player.resolvePortalAt(
+                targetDimensionId,
+                placement.x(),
+                placement.y(),
+                placement.z()
+            );
+            if (resolvedPlacement.isPresent()) {
+                PortalWorldIndex refreshedIndex = worldIndex.withPortal(resolvedPortalKey, resolvedPlacement.get());
                 worldPortalIndexStore.save(targetDimensionId, refreshedIndex);
-                return Optional.of(toResolvedPortalDestination(targetDimensionId, placement, relativePortalExit, fallbackYaw));
+                return Optional.of(toResolvedPortalDestination(targetDimensionId, resolvedPlacement.get(), relativePortalExit, fallbackYaw));
             }
         }
 

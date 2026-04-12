@@ -672,6 +672,17 @@ class CavernPortalInteractionServiceTest {
         }
 
         @Override
+        public Optional<PortalWorldIndex.PortalPlacement> resolvePortalAt(String targetDimensionId, int x, int y, int z) {
+            return existingPortals.stream()
+                .filter(portal -> portal.dimensionId().equals(targetDimensionId))
+                .filter(portal -> portal.x() == x)
+                .filter(portal -> portal.y() == y)
+                .filter(portal -> portal.z() == z)
+                .findFirst()
+                .map(portal -> new PortalWorldIndex.PortalPlacement(portal.x(), portal.y(), portal.z(), portal.axis()));
+        }
+
+        @Override
         public Optional<PortalWorldIndex.PortalPlacement> findPortalNear(String targetDimensionId, int x, int y, int z) {
             return existingPortals.stream()
                 .filter(portal -> portal.dimensionId().equals(targetDimensionId))

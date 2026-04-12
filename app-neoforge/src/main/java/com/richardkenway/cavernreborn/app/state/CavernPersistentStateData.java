@@ -188,7 +188,7 @@ public final class CavernPersistentStateData extends SavedData {
     private static Optional<WorldPortalIndexEntry> tryLoadWorldPortalIndex(CompoundTag tag) {
         try {
             String worldKey = tag.getString(WORLD_KEY_TAG);
-            Map<String, java.util.Set<PortalWorldIndexData.PortalPlacementData>> portalsByKey = new LinkedHashMap<>();
+            Map<String, java.util.Set<PortalWorldIndex.PortalPlacement>> portalsByKey = new LinkedHashMap<>();
             ListTag portalsTag = tag.getList(PORTALS_TAG, Tag.TAG_COMPOUND);
             for (Tag portalEntry : portalsTag) {
                 if (!(portalEntry instanceof CompoundTag portalTag)) {
@@ -196,32 +196,55 @@ public final class CavernPersistentStateData extends SavedData {
                 }
 
                 String portalKey = portalTag.getString(PORTAL_KEY_TAG);
-                java.util.Set<PortalWorldIndexData.PortalPlacementData> placements = new java.util.LinkedHashSet<>();
+                java.util.Set<PortalWorldIndex.PortalPlacement> placements = new java.util.LinkedHashSet<>();
                 ListTag placementsTag = portalTag.getList(PLACEMENTS_TAG, Tag.TAG_COMPOUND);
                 for (Tag placementEntry : placementsTag) {
                     if (!(placementEntry instanceof CompoundTag placementTag)) {
                         continue;
                     }
 
-                    placements.add(new PortalWorldIndexData.PortalPlacementData(
-                        placementTag.getInt(X_TAG),
-                        placementTag.getInt(Y_TAG),
-                        placementTag.getInt(Z_TAG),
-                        placementTag.contains(AXIS_TAG, Tag.TAG_STRING)
-                            ? placementTag.getString(AXIS_TAG)
-                            : PortalWorldIndex.PortalPlacement.AXIS_X
-                    ));
+                    tryLoadPortalPlacement(placementTag).ifPresent(placements::add);
                 }
 
-                portalsByKey.put(portalKey, placements);
+                try {
+                    String normalizedPortalKey = requireText(portalKey, PORTAL_KEY_TAG);
+                    if (!placements.isEmpty()) {
+                        portalsByKey.put(normalizedPortalKey, placements);
+                    }
+                } catch (RuntimeException exception) {
+                    LOGGER.warn("Skipping invalid persistent portal-key entry for world portal index", exception);
+                }
             }
 
-            PortalWorldIndexData indexData = new PortalWorldIndexData(portalsByKey);
-            return Optional.of(new WorldPortalIndexEntry(worldKey, CavernStateMappers.fromData(indexData)));
+            return Optional.of(new WorldPortalIndexEntry(requireText(worldKey, WORLD_KEY_TAG), new PortalWorldIndex(portalsByKey)));
         } catch (RuntimeException exception) {
             LOGGER.warn("Skipping invalid persistent world portal-index entry", exception);
             return Optional.empty();
         }
+    }
+
+    private static Optional<PortalWorldIndex.PortalPlacement> tryLoadPortalPlacement(CompoundTag placementTag) {
+        try {
+            return Optional.of(new PortalWorldIndex.PortalPlacement(
+                placementTag.getInt(X_TAG),
+                placementTag.getInt(Y_TAG),
+                placementTag.getInt(Z_TAG),
+                placementTag.contains(AXIS_TAG, Tag.TAG_STRING)
+                    ? placementTag.getString(AXIS_TAG)
+                    : PortalWorldIndex.PortalPlacement.AXIS_X
+            ));
+        } catch (RuntimeException exception) {
+            LOGGER.warn("Skipping invalid persistent portal placement entry", exception);
+            return Optional.empty();
+        }
+    }
+
+    private static String requireText(String value, String fieldName) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException(fieldName + " must not be blank");
+        }
+
+        return value;
     }
 
     private record PlayerReturnStateEntry(UUID playerId, PortalReturnState returnState) {

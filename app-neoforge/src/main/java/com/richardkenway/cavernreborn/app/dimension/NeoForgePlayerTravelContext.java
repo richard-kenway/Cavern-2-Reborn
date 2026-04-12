@@ -76,6 +76,26 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
     }
 
     @Override
+    public Optional<PortalWorldIndex.PortalPlacement> resolvePortalAt(String targetDimensionId, int x, int y, int z) {
+        ServerLevel targetLevel = resolveLevel(targetDimensionId);
+        Block portalBlock = ModRegistries.CAVERN_PORTAL_BLOCK.get();
+        BlockPos portalPos = new BlockPos(x, y, z);
+        if (!targetLevel.getBlockState(portalPos).is(portalBlock)) {
+            return Optional.empty();
+        }
+
+        CavernPortalFrameDetector detector = new CavernPortalFrameDetector(new WorldPortalFrameAccess(targetLevel, portalBlock));
+        return detector.detect(portalPos)
+            .filter(frame -> !frame.isEmpty())
+            .map(frame -> new PortalWorldIndex.PortalPlacement(
+                frame.bottomLeft().getX(),
+                frame.bottomLeft().getY(),
+                frame.bottomLeft().getZ(),
+                axisId(frame.axis())
+            ));
+    }
+
+    @Override
     public Optional<PortalWorldIndex.PortalPlacement> findPortalNear(String targetDimensionId, int x, int y, int z) {
         ServerLevel targetLevel = resolveLevel(targetDimensionId);
         Block portalBlock = ModRegistries.CAVERN_PORTAL_BLOCK.get();

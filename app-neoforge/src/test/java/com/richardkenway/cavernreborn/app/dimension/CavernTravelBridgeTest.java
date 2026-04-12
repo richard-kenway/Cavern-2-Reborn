@@ -127,6 +127,42 @@ class CavernTravelBridgeTest {
     }
 
     @Test
+    void travelToCavernExactIndexedReuseRefreshesAxisFromWorldPortal() {
+        CavernStateBootstrap bootstrap = new CavernStateBootstrap();
+        bootstrap.worldPortalIndexStore().save(
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            PortalWorldIndex.empty().withPortal("cavern", new PortalWorldIndex.PortalPlacement(2, 64, 0, PortalWorldIndex.PortalPlacement.AXIS_X))
+        );
+        FakePlayerTravelContext player = new FakePlayerTravelContext(
+            UUID.randomUUID(),
+            96L,
+            90.0F,
+            30.0F,
+            Set.of(new SafeArrival(0, 64, 0)),
+            Optional.empty(),
+            Optional.of(new PortalWorldIndex.PortalPlacement(8, 64, 8, PortalWorldIndex.PortalPlacement.AXIS_X))
+        );
+        player.existingPortals.add(new PortalLocation(CavernDimensions.CAVERN_DIMENSION_ID, 2, 64, 0, PortalWorldIndex.PortalPlacement.AXIS_Z));
+
+        Optional<CavernTravelPlan> plan = bootstrap.cavernTravelBridge().travelToCavern(
+            player,
+            new PortalReturnState("cavern", CavernDimensions.OVERWORLD_DIMENSION_ID, 12, 64, 12),
+            new TeleportContext("cavern", 0.25D, 0.5D, 0.75D, "north"),
+            new PortalWorldIndex.PortalPlacement(8, 70, 8, PortalWorldIndex.PortalPlacement.AXIS_X)
+        );
+
+        assertTrue(plan.isPresent());
+        assertEquals(2.5D, player.lastX);
+        assertEquals(64.0D, player.lastY);
+        assertEquals(0.55D, player.lastZ);
+        assertEquals(Direction.EAST.toYRot(), player.lastYaw);
+        assertEquals(
+            new PortalWorldIndex.PortalPlacement(2, 64, 0, PortalWorldIndex.PortalPlacement.AXIS_Z),
+            bootstrap.worldPortalIndexStore().load(CavernDimensions.CAVERN_DIMENSION_ID).firstPlacementFor("cavern").orElseThrow()
+        );
+    }
+
+    @Test
     void travelToCavernRegeneratesNearStaleIndexedPlacementBeforeGenericCreate() {
         CavernStateBootstrap bootstrap = new CavernStateBootstrap();
         bootstrap.worldPortalIndexStore().save(
@@ -542,6 +578,17 @@ class CavernTravelBridgeTest {
                     && portal.x() == x
                     && portal.y() == y
                     && portal.z() == z);
+        }
+
+        @Override
+        public Optional<PortalWorldIndex.PortalPlacement> resolvePortalAt(String targetDimensionId, int x, int y, int z) {
+            return existingPortals.stream()
+                .filter(portal -> portal.dimensionId().equals(targetDimensionId))
+                .filter(portal -> portal.x() == x)
+                .filter(portal -> portal.y() == y)
+                .filter(portal -> portal.z() == z)
+                .findFirst()
+                .map(portal -> new PortalWorldIndex.PortalPlacement(portal.x(), portal.y(), portal.z(), portal.axis()));
         }
 
         @Override
