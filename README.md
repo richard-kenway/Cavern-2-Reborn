@@ -17,7 +17,7 @@ This repository currently contains the project skeleton and a minimal content re
 - a first weighted tunnel-network layer on top of `contained_caves`, used to improve underground connectedness without reopening the baseline too aggressively
 - a first weighted ravine-like layer on top of the tunnel baseline, now rebuilt as a band-limited horizontal connector pass instead of raw entrance carving
 - basic portal UX feedback for `cooldown`, failed cavern entry and missing return-state denial cases, plus an overworld fallback return target when no saved return-state exists
-- a first legacy-like portal structure step: `mossy_cobblestone` frames can now be activated with `cavern_portal_trigger` and fill the `cavern_portal` interior block
+- a bounded legacy-like `CAVERN` ritual activation step: `mossy_cobblestone` frames can now be activated with `minecraft:emerald` via a server-side frame-click hook and fill the `cavern_portal` interior block
 - a first entity-inside portal flow step: walking into the `cavern_portal` interior block now triggers the main transfer loop, while the older right-click path is kept only as a creative-only debug route
 - frame-level portal identity semantics: interaction now canonicalizes a touched interior block to the portal frame anchor before building keys, cooldowns and portal placements
 - an axis-aware `cavern_portal` interior plane with thin portal geometry and frame-integrity invalidation when the mossy frame is broken
@@ -53,8 +53,8 @@ No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 - The current portal flow now supports an axis-aware thin interior portal plane with frame-integrity invalidation; the older right-click path is restricted to a creative-only debug route, but full legacy collision semantics still needs manual validation.
 - Portal interaction now canonicalizes touched interior blocks to a frame-level anchor, but this still needs manual validation across different interior blocks of the same portal and across the creative debug route.
 - Destination portal placement is now automatic in a bounded search-relink-regenerate-or-create form, but it still does not implement full legacy cache, wider radius search and broader regeneration semantics.
-- `CAVERN` now uses `minecraft:mossy_cobblestone` as the canonical frame material for validation, activation and bounded auto-create/regenerate flow, but trigger semantics still remain on the temporary universal `cavern_portal_trigger` path.
-- The temporary `cavern_portal_trigger` path now follows legacy-like item-on-frame semantics: activation only resolves when the player uses the trigger on a valid mossy frame block and points into the portal interior.
+- `CAVERN` now uses `minecraft:mossy_cobblestone` as the canonical frame material for validation, activation and bounded auto-create/regenerate flow.
+- Player-facing ritual activation for `CAVERN` now uses `minecraft:emerald` on a valid mossy frame block and points into the portal interior; the older `cavern_portal_trigger` item remains only as a non-player-facing transitional path and is no longer exposed through the main creative tab.
 - Portal index churn now prefers the most recently reused placement, but broader eviction and history policies for repeated portal churn still are not implemented.
 - Persistent world portal-index loading now skips invalid placement entries instead of dropping the entire world index, but broader corruption-repair tooling is still not implemented.
 - Destination portal arrival is now centered by stored portal axis, but this still needs manual in-game validation for both axes and for relinked/recreated portals after index churn.

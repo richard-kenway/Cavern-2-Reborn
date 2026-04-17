@@ -44,7 +44,6 @@ public final class ModRegistries {
             .displayItems((parameters, output) -> {
                 output.accept(BOOTSTRAP_BLOCK_ITEM.get());
                 output.accept(CAVERN_PORTAL_BLOCK_ITEM.get());
-                output.accept(CAVERN_PORTAL_TRIGGER_ITEM.get());
             })
             .build());
 
