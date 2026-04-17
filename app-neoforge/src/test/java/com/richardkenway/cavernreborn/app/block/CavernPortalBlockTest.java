@@ -10,6 +10,7 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 import com.richardkenway.cavernreborn.app.portal.CavernPortalFrameDetector;
+import com.richardkenway.cavernreborn.app.portal.PortalCollisionEligibilityPolicy;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -59,23 +60,32 @@ class CavernPortalBlockTest {
     }
 
     @Test
-    void shouldIgnoreCollisionEntryRejectsInvalidPlayerStates() {
-        assertTrue(CavernPortalBlock.shouldIgnoreCollisionEntry(false, false, false, false, false));
-        assertTrue(CavernPortalBlock.shouldIgnoreCollisionEntry(true, true, false, false, false));
-        assertTrue(CavernPortalBlock.shouldIgnoreCollisionEntry(true, false, true, false, false));
-        assertTrue(CavernPortalBlock.shouldIgnoreCollisionEntry(true, false, false, true, false));
-        assertTrue(CavernPortalBlock.shouldIgnoreCollisionEntry(true, false, false, false, true));
-    }
-
-    @Test
-    void shouldIgnoreCollisionEntryAllowsValidServerPlayerState() {
-        assertFalse(CavernPortalBlock.shouldIgnoreCollisionEntry(true, false, false, false, false));
-    }
-
-    @Test
     void shouldApplyPortalCooldownMatchesHandledOutcome() {
         assertTrue(CavernPortalBlock.shouldApplyPortalCooldown(true));
         assertFalse(CavernPortalBlock.shouldApplyPortalCooldown(false));
+    }
+
+    @Test
+    void shouldDispatchCollisionTransportOnlyForTransportEligibleServerPlayers() {
+        assertTrue(CavernPortalBlock.shouldDispatchCollisionTransport(
+            PortalCollisionEligibilityPolicy.PortalCollisionEligibility.ALLOW_PLAYER,
+            true
+        ));
+
+        assertFalse(CavernPortalBlock.shouldDispatchCollisionTransport(
+            PortalCollisionEligibilityPolicy.PortalCollisionEligibility.ALLOW_PLAYER,
+            false
+        ));
+
+        assertFalse(CavernPortalBlock.shouldDispatchCollisionTransport(
+            PortalCollisionEligibilityPolicy.PortalCollisionEligibility.ALLOW_NON_PLAYER,
+            true
+        ));
+
+        assertFalse(CavernPortalBlock.shouldDispatchCollisionTransport(
+            PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_CROUCHING,
+            true
+        ));
     }
 
     private static final class FrameAccess implements CavernPortalFrameDetector.FrameAccess {

@@ -7,6 +7,7 @@ import com.richardkenway.cavernreborn.app.portal.CavernPortalFrameDetector;
 import com.richardkenway.cavernreborn.app.portal.CavernPortalInteractionContext;
 import com.richardkenway.cavernreborn.app.portal.CavernPortalInteractionOutcome;
 import com.richardkenway.cavernreborn.app.portal.CavernPortalInteractionService;
+import com.richardkenway.cavernreborn.app.portal.PortalCollisionEligibilityPolicy;
 import com.richardkenway.cavernreborn.app.portal.NeoForgeCavernPortalInteractionContext;
 import com.richardkenway.cavernreborn.app.portal.WorldPortalFrameAccess;
 
@@ -49,17 +50,14 @@ public final class CavernPortalBlock extends Block {
             return;
         }
 
+        PortalCollisionEligibilityPolicy.PortalCollisionEligibility eligibility =
+            PortalCollisionEligibilityPolicy.classify(entity, entity.isOnPortalCooldown());
+
         if (!(entity instanceof ServerPlayer serverPlayer)) {
             return;
         }
 
-        if (shouldIgnoreCollisionEntry(
-            serverPlayer.isAlive(),
-            serverPlayer.isSpectator(),
-            serverPlayer.isPassenger(),
-            serverPlayer.isVehicle(),
-            serverPlayer.isOnPortalCooldown()
-        )) {
+        if (!shouldDispatchCollisionTransport(eligibility, true)) {
             return;
         }
 
@@ -123,21 +121,16 @@ public final class CavernPortalBlock extends Block {
         return axis == Direction.Axis.X ? X_AXIS_SHAPE : Z_AXIS_SHAPE;
     }
 
-    static boolean shouldIgnoreCollisionEntry(
-        boolean alive,
-        boolean spectator,
-        boolean passenger,
-        boolean vehicle,
-        boolean onPortalCooldown
-    ) {
-        return !alive
-            || spectator
-            || passenger
-            || vehicle
-            || onPortalCooldown;
-    }
-
     static boolean shouldApplyPortalCooldown(boolean handled) {
         return handled;
+    }
+
+    static boolean shouldDispatchCollisionTransport(
+        PortalCollisionEligibilityPolicy.PortalCollisionEligibility eligibility,
+        boolean serverPlayerEntity
+    ) {
+        return serverPlayerEntity
+            && eligibility.shouldTriggerPortalCollision()
+            && eligibility.shouldTransportPlayer();
     }
 }

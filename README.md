@@ -20,6 +20,7 @@ This repository currently contains the project skeleton and a minimal content re
 - a bounded legacy-like `CAVERN` ritual activation step: `mossy_cobblestone` frames can now be activated with `minecraft:emerald` via a server-side frame-click hook and fill the `cavern_portal` interior block
 - a first entity-inside portal flow step: walking into the `cavern_portal` interior block now triggers the main transfer loop; right-click interaction is disabled so runtime usage is now collision-only
 - frame-level portal identity semantics: interaction now canonicalizes a touched interior block to the portal frame anchor before building keys, cooldowns and portal placements
+- legacy-like portal collision eligibility policy is now applied at block level before travel dispatch; dead/crouching/spectator/passenger/vehicle/projectile/cooldown filters are explicit and test-covered, while actual movement still requires player transport eligibility
 - an axis-aware `cavern_portal` interior plane with thin portal geometry and frame-integrity invalidation when the mossy frame is broken
 - a first destination portal placement step: travel now uses a bounded find-or-create portal target in the destination dimension instead of requiring a second portal to be placed manually every time
 - a persistent control-plane state backend: player return-state and world portal indices now survive server restarts through overworld-level NeoForge `SavedData`
@@ -42,6 +43,7 @@ No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 - The current `contained_caves` preset is intentionally a narrow fork of vanilla `minecraft:caves`, not a new long-term worldgen direction.
 - The current containment pass now also shifts only a small pair of `final_density` bias values; this is still a bounded tuning step and not a worldgen redesign.
 - The current dry-out pass keeps `sea_level` pinned to `min_y`, so the normal `CAVERN` baseline no longer has an operative flood-line inside its playable volume.
+- Collision handling now applies a legacy-like eligibility filter matrix in the portal block, but actual transport remains player-only; non-player collision support is intentionally deferred.
 - The new data-driven cave-biome family still needs manual in-game validation on a real generated world after the move away from the fixed biome stub.
 - Large open cavities may still appear in the current baseline; custom cave-like dimension effects now handle sky/sun leakage, but the overall visual result still needs manual in-game validation.
 - The tunnel-network layer is now denser again after repeated manual playtesting showed that players still had to dig too often; this remains a bounded tuning step rather than a new carve system.
