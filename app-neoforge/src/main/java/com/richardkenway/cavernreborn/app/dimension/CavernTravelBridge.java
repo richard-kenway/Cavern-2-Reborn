@@ -157,50 +157,59 @@ public final class CavernTravelBridge {
         PortalWorldIndex worldIndex = worldPortalIndexStore.load(targetDimensionId);
         Set<PortalWorldIndex.PortalPlacement> indexedPlacements = worldIndex.placementsFor(resolvedPortalKey);
 
-        for (PortalWorldIndex.PortalPlacement placement : indexedPlacements) {
-            Optional<PortalWorldIndex.PortalPlacement> resolvedPlacement = player.resolvePortalAt(
-                targetDimensionId,
-                placement.x(),
-                placement.y(),
-                placement.z()
+        Optional<PortalPlacementSelectionPolicy.IndexedPlacementCandidate<PortalWorldIndex.PortalPlacement>> resolvedPlacement =
+            PortalPlacementSelectionPolicy.nearestCandidate(
+                indexedPlacements,
+                placement -> player.resolvePortalAt(targetDimensionId, placement.x(), placement.y(), placement.z()),
+                placement -> PortalPlacementSelectionPolicy.distanceFromPreferredTarget(preferredTarget, placement)
             );
-            if (resolvedPlacement.isPresent()) {
-                PortalWorldIndex refreshedIndex = worldIndex.withPortal(resolvedPortalKey, resolvedPlacement.get());
-                worldPortalIndexStore.save(targetDimensionId, refreshedIndex);
-                return Optional.of(toResolvedPortalDestination(targetDimensionId, resolvedPlacement.get(), relativePortalExit, fallbackYaw));
-            }
+
+        if (resolvedPlacement.isPresent()) {
+            PortalWorldIndex refreshedIndex = worldIndex.withPortal(resolvedPortalKey, resolvedPlacement.get().resolvedPlacement());
+            worldPortalIndexStore.save(targetDimensionId, refreshedIndex);
+            return Optional.of(
+                toResolvedPortalDestination(targetDimensionId, resolvedPlacement.get().resolvedPlacement(), relativePortalExit, fallbackYaw)
+            );
         }
 
-        PortalWorldIndex cleanedIndex = worldIndex;
-        PortalWorldIndex.PortalPlacement regenerationAnchor = null;
-        for (PortalWorldIndex.PortalPlacement placement : indexedPlacements) {
-            Optional<PortalWorldIndex.PortalPlacement> relinkedPlacement = player.findPortalNear(
-                targetDimensionId,
-                placement.x(),
-                placement.y(),
-                placement.z()
+        Optional<PortalPlacementSelectionPolicy.IndexedPlacementCandidate<PortalWorldIndex.PortalPlacement>> relinkedPlacement =
+            PortalPlacementSelectionPolicy.nearestCandidate(
+                indexedPlacements,
+                placement -> player.findPortalNear(
+                    targetDimensionId,
+                    placement.x(),
+                    placement.y(),
+                    placement.z()
+                ),
+                placement -> PortalPlacementSelectionPolicy.distanceFromPreferredTarget(preferredTarget, placement)
             );
-            if (relinkedPlacement.isPresent()) {
-                PortalWorldIndex refreshedIndex = cleanedIndex
-                    .withoutPortal(resolvedPortalKey, placement)
-                    .withPortal(resolvedPortalKey, relinkedPlacement.get());
-                worldPortalIndexStore.save(targetDimensionId, refreshedIndex);
-                return Optional.of(toResolvedPortalDestination(targetDimensionId, relinkedPlacement.get(), relativePortalExit, fallbackYaw));
-            }
+        PortalWorldIndex cleanedIndex = removeIndexedPlacements(worldIndex, resolvedPortalKey, indexedPlacements);
 
-            if (regenerationAnchor == null) {
-                regenerationAnchor = placement;
-            }
-
-            cleanedIndex = cleanedIndex.withoutPortal(resolvedPortalKey, placement);
+        if (relinkedPlacement.isPresent()) {
+            PortalWorldIndex refreshedIndex = cleanedIndex.withPortal(resolvedPortalKey, relinkedPlacement.get().resolvedPlacement());
+            worldPortalIndexStore.save(targetDimensionId, refreshedIndex);
+            return Optional.of(
+                toResolvedPortalDestination(
+                    targetDimensionId,
+                    relinkedPlacement.get().resolvedPlacement(),
+                    relativePortalExit,
+                    fallbackYaw
+                )
+            );
         }
 
-        if (regenerationAnchor != null) {
+        Optional<PortalWorldIndex.PortalPlacement> regenerationAnchor = PortalPlacementSelectionPolicy.nearestCandidate(
+            indexedPlacements,
+            Optional::of,
+            indexedPlacement -> PortalPlacementSelectionPolicy.distanceFromPreferredTarget(preferredTarget, indexedPlacement)
+        ).map(PortalPlacementSelectionPolicy.IndexedPlacementCandidate::indexedPlacement);
+
+        if (regenerationAnchor.isPresent()) {
             worldPortalIndexStore.save(targetDimensionId, cleanedIndex);
 
             Optional<PortalWorldIndex.PortalPlacement> regeneratedPlacement = player.createReplacementPortalAt(
                 targetDimensionId,
-                regenerationAnchor
+                regenerationAnchor.get()
             );
             if (regeneratedPlacement.isPresent()) {
                 PortalWorldIndex refreshedIndex = worldPortalIndexStore.load(targetDimensionId).withPortal(resolvedPortalKey, regeneratedPlacement.get());
@@ -232,6 +241,18 @@ public final class CavernTravelBridge {
                 worldPortalIndexStore.save(targetDimensionId, refreshedIndex);
                 return toResolvedPortalDestination(targetDimensionId, placement, relativePortalExit, fallbackYaw);
             });
+    }
+
+    private static PortalWorldIndex removeIndexedPlacements(
+        PortalWorldIndex worldIndex,
+        String portalKey,
+        Set<PortalWorldIndex.PortalPlacement> indexedPlacements
+    ) {
+        PortalWorldIndex cleanedIndex = worldIndex;
+        for (PortalWorldIndex.PortalPlacement indexedPlacement : indexedPlacements) {
+            cleanedIndex = cleanedIndex.withoutPortal(portalKey, indexedPlacement);
+        }
+        return cleanedIndex;
     }
 
     private Optional<CavernTravelPlan> fallbackReturnHome(PlayerTravelContext player) {
