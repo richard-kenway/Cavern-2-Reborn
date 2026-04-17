@@ -8,18 +8,26 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
-public record WorldPortalFrameAccess(LevelAccessor level, Block portalBlock) implements CavernPortalFrameActivator.PortalAccess {
+public record WorldPortalFrameAccess(
+    LevelAccessor level,
+    Block portalBlock,
+    PortalFrameMaterialPolicy frameMaterialPolicy
+) implements CavernPortalFrameActivator.PortalAccess {
     public WorldPortalFrameAccess {
         Objects.requireNonNull(level, "level");
         Objects.requireNonNull(portalBlock, "portalBlock");
+        Objects.requireNonNull(frameMaterialPolicy, "frameMaterialPolicy");
+    }
+
+    public WorldPortalFrameAccess(LevelAccessor level, Block portalBlock) {
+        this(level, portalBlock, PortalFrameMaterialPolicy.OBSIDIAN);
     }
 
     @Override
     public boolean isFrame(BlockPos pos) {
-        return level.getBlockState(pos).is(Blocks.OBSIDIAN);
+        return frameMaterialPolicy.isFrame(level.getBlockState(pos));
     }
 
     @Override

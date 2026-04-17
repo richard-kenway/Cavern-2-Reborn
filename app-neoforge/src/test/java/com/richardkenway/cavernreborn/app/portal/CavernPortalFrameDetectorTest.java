@@ -1,6 +1,7 @@
 package com.richardkenway.cavernreborn.app.portal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -54,6 +55,11 @@ class CavernPortalFrameDetectorTest {
         Optional<CavernPortalFrameDetector.PortalFrame> frame = new CavernPortalFrameDetector(access).detect(new BlockPos(1, 1, 0));
 
         assertTrue(frame.isEmpty());
+    }
+
+    @Test
+    void frameMaterialPolicyRejectsNullFrameMaterial() {
+        assertThrows(NullPointerException.class, () -> PortalFrameMaterialPolicy.of(null));
     }
 
     private static final class SetFrameAccess implements CavernPortalFrameDetector.FrameAccess {
