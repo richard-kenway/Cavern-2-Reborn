@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.Set;
 
 public record PortalWorldIndex(Map<String, Set<PortalPlacement>> portalsByKey) {
+    static final int MAX_PLACEMENTS_PER_PORTAL_KEY = 8;
+
     public PortalWorldIndex {
         portalsByKey = copyIndex(portalsByKey);
     }
@@ -26,6 +28,7 @@ public record PortalWorldIndex(Map<String, Set<PortalPlacement>> portalsByKey) {
             updatedIndex.getOrDefault(normalizedPortalKey, Set.of()),
             placement
         );
+        placements = trimToLimit(placements);
         updatedIndex.put(normalizedPortalKey, placements);
 
         return new PortalWorldIndex(updatedIndex);
@@ -40,12 +43,25 @@ public record PortalWorldIndex(Map<String, Set<PortalPlacement>> portalsByKey) {
         Objects.requireNonNull(stalePlacement, "stalePlacement");
         Objects.requireNonNull(replacementPlacement, "replacementPlacement");
 
-        PortalWorldIndex refreshedIndex = withPortal(normalizedPortalKey, replacementPlacement);
         if (stalePlacement.equals(replacementPlacement)) {
-            return refreshedIndex;
+            return withPortal(normalizedPortalKey, replacementPlacement);
         }
 
-        return refreshedIndex.withoutPortal(normalizedPortalKey, stalePlacement);
+        Map<String, Set<PortalPlacement>> updatedIndex = new LinkedHashMap<>(portalsByKey);
+        Set<PortalPlacement> placements = prioritizePlacement(
+            updatedIndex.getOrDefault(normalizedPortalKey, Set.of()),
+            replacementPlacement
+        );
+        placements.remove(stalePlacement);
+        placements = trimToLimit(placements);
+
+        if (placements.isEmpty()) {
+            updatedIndex.remove(normalizedPortalKey);
+        } else {
+            updatedIndex.put(normalizedPortalKey, placements);
+        }
+
+        return new PortalWorldIndex(updatedIndex);
     }
 
     public PortalWorldIndex withoutPortal(String portalKey, PortalPlacement placement) {
@@ -83,12 +99,31 @@ public record PortalWorldIndex(Map<String, Set<PortalPlacement>> portalsByKey) {
         return prioritizedPlacements;
     }
 
+    private static Set<PortalPlacement> trimToLimit(Set<PortalPlacement> placements) {
+        if (placements.size() <= MAX_PLACEMENTS_PER_PORTAL_KEY) {
+            return placements;
+        }
+
+        LinkedHashSet<PortalPlacement> trimmedPlacements = new LinkedHashSet<>();
+        int retainedPlacements = 0;
+        for (PortalPlacement placement : placements) {
+            if (retainedPlacements >= MAX_PLACEMENTS_PER_PORTAL_KEY) {
+                break;
+            }
+
+            trimmedPlacements.add(placement);
+            retainedPlacements += 1;
+        }
+
+        return trimmedPlacements;
+    }
+
     private static Map<String, Set<PortalPlacement>> copyIndex(Map<String, Set<PortalPlacement>> source) {
         Objects.requireNonNull(source, "portalsByKey");
         Map<String, Set<PortalPlacement>> copy = new LinkedHashMap<>();
         source.forEach((portalKey, placements) -> copy.put(
             requireText(portalKey, "portalKey"),
-            Collections.unmodifiableSet(new LinkedHashSet<>(Objects.requireNonNull(placements, "placements")))
+            Collections.unmodifiableSet(trimToLimit(new LinkedHashSet<>(Objects.requireNonNull(placements, "placements"))))
         ));
         return Collections.unmodifiableMap(copy);
     }

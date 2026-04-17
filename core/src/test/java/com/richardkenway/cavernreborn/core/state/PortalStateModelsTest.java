@@ -1,7 +1,14 @@
 package com.richardkenway.cavernreborn.core.state;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -86,5 +93,103 @@ class PortalStateModelsTest {
 
         assertEquals(1, index.placementsFor("cavern").size());
         assertEquals(firstPlacement, index.firstPlacementFor("cavern").orElseThrow());
+    }
+
+    @Test
+    void portalWorldIndexCapsHistoryToConfiguredMaximumAndDropsOldestEntries() {
+        int maxPlacementsPerPortalKey = PortalWorldIndex.MAX_PLACEMENTS_PER_PORTAL_KEY;
+        PortalWorldIndex index = PortalWorldIndex.empty();
+        for (int i = 0; i < maxPlacementsPerPortalKey + 3; i++) {
+            index = index.withPortal("cavern", new PortalWorldIndex.PortalPlacement(i, i, i));
+        }
+
+        assertEquals(maxPlacementsPerPortalKey, index.placementsFor("cavern").size());
+        assertEquals(
+            new PortalWorldIndex.PortalPlacement(maxPlacementsPerPortalKey + 2, maxPlacementsPerPortalKey + 2, maxPlacementsPerPortalKey + 2),
+            index.firstPlacementFor("cavern").orElseThrow()
+        );
+        assertFalse(index.placementsFor("cavern").contains(new PortalWorldIndex.PortalPlacement(0, 0, 0)));
+        assertFalse(index.placementsFor("cavern").contains(new PortalWorldIndex.PortalPlacement(1, 1, 1)));
+        assertFalse(index.placementsFor("cavern").contains(new PortalWorldIndex.PortalPlacement(2, 2, 2)));
+        assertEquals(
+            new PortalWorldIndex.PortalPlacement(3, 3, 3),
+            index.placementsFor("cavern").stream().skip(maxPlacementsPerPortalKey - 1).findFirst().orElseThrow()
+        );
+    }
+
+    @Test
+    void portalWorldIndexReplacingPlacementRespectsCapAndKeepsReplacementAtHead() {
+        int maxPlacementsPerPortalKey = PortalWorldIndex.MAX_PLACEMENTS_PER_PORTAL_KEY;
+        PortalWorldIndex index = PortalWorldIndex.empty();
+        for (int i = 0; i < maxPlacementsPerPortalKey; i++) {
+            index = index.withPortal("cavern", new PortalWorldIndex.PortalPlacement(i, 0, i));
+        }
+
+        PortalWorldIndex.PortalPlacement stalePlacement = new PortalWorldIndex.PortalPlacement(3, 0, 3);
+        PortalWorldIndex.PortalPlacement replacementPlacement = new PortalWorldIndex.PortalPlacement(99, 0, 99);
+        PortalWorldIndex replacedIndex = index.withReplacementPortal("cavern", stalePlacement, replacementPlacement);
+
+        assertEquals(replacementPlacement, replacedIndex.firstPlacementFor("cavern").orElseThrow());
+        assertEquals(maxPlacementsPerPortalKey, replacedIndex.placementsFor("cavern").size());
+        assertFalse(replacedIndex.placementsFor("cavern").contains(stalePlacement));
+        assertTrue(replacedIndex.placementsFor("cavern").contains(replacementPlacement));
+    }
+
+    @Test
+    void portalWorldIndexConstructorNormalizesOversizedPlacementHistory() {
+        int maxPlacementsPerPortalKey = PortalWorldIndex.MAX_PLACEMENTS_PER_PORTAL_KEY;
+        Set<PortalWorldIndex.PortalPlacement> oversizedPlacements = new LinkedHashSet<>();
+        for (int i = 0; i < maxPlacementsPerPortalKey + 3; i++) {
+            oversizedPlacements.add(new PortalWorldIndex.PortalPlacement(i, 64, i));
+        }
+
+        Map<String, Set<PortalWorldIndex.PortalPlacement>> portalsByKey = new LinkedHashMap<>();
+        portalsByKey.put("cavern", oversizedPlacements);
+
+        PortalWorldIndex index = new PortalWorldIndex(portalsByKey);
+
+        assertEquals(maxPlacementsPerPortalKey, index.placementsFor("cavern").size());
+        assertEquals(new PortalWorldIndex.PortalPlacement(0, 64, 0), index.firstPlacementFor("cavern").orElseThrow());
+        assertFalse(index.placementsFor("cavern").contains(new PortalWorldIndex.PortalPlacement(maxPlacementsPerPortalKey, 64, maxPlacementsPerPortalKey)));
+        assertFalse(index.placementsFor("cavern").contains(new PortalWorldIndex.PortalPlacement(maxPlacementsPerPortalKey + 1, 64, maxPlacementsPerPortalKey + 1)));
+        assertFalse(index.placementsFor("cavern").contains(new PortalWorldIndex.PortalPlacement(maxPlacementsPerPortalKey + 2, 64, maxPlacementsPerPortalKey + 2)));
+    }
+
+    @Test
+    void portalWorldIndexPreservesFreshPlacementsWhileChurningBeyondCap() {
+        int maxPlacementsPerPortalKey = PortalWorldIndex.MAX_PLACEMENTS_PER_PORTAL_KEY;
+        PortalWorldIndex index = PortalWorldIndex.empty()
+            .withPortal("cavern", new PortalWorldIndex.PortalPlacement(1, 64, 1))
+            .withPortal("cavern", new PortalWorldIndex.PortalPlacement(2, 64, 2))
+            .withPortal("cavern", new PortalWorldIndex.PortalPlacement(3, 64, 3))
+            .withPortal("cavern", new PortalWorldIndex.PortalPlacement(4, 64, 4))
+            .withPortal("cavern", new PortalWorldIndex.PortalPlacement(5, 64, 5))
+            .withPortal("cavern", new PortalWorldIndex.PortalPlacement(6, 64, 6))
+            .withPortal("cavern", new PortalWorldIndex.PortalPlacement(7, 64, 7))
+            .withPortal("cavern", new PortalWorldIndex.PortalPlacement(8, 64, 8));
+
+        index = index.withPortal("cavern", new PortalWorldIndex.PortalPlacement(3, 64, 3));
+        index = index.withPortal("cavern", new PortalWorldIndex.PortalPlacement(4, 64, 4));
+
+        PortalWorldIndex.PortalPlacement freshPlacementA = new PortalWorldIndex.PortalPlacement(3, 64, 3);
+        PortalWorldIndex.PortalPlacement freshPlacementB = new PortalWorldIndex.PortalPlacement(4, 64, 4);
+        for (int i = 100; i < 100 + maxPlacementsPerPortalKey + 12; i++) {
+            index = index.withPortal("cavern", new PortalWorldIndex.PortalPlacement(i, 64, i));
+            if (i % 3 == 0) {
+                index = index.withPortal("cavern", freshPlacementA);
+            }
+            if (i % 3 == 1) {
+                index = index.withPortal("cavern", freshPlacementB);
+            }
+        }
+        int lastCreatedPlacement = 100 + maxPlacementsPerPortalKey + 11;
+
+        assertEquals(maxPlacementsPerPortalKey, index.placementsFor("cavern").size());
+        assertTrue(index.placementsFor("cavern").contains(new PortalWorldIndex.PortalPlacement(3, 64, 3)));
+        assertTrue(index.placementsFor("cavern").contains(new PortalWorldIndex.PortalPlacement(4, 64, 4)));
+        assertEquals(
+            new PortalWorldIndex.PortalPlacement(lastCreatedPlacement, 64, lastCreatedPlacement),
+            index.firstPlacementFor("cavern").orElseThrow()
+        );
     }
 }
