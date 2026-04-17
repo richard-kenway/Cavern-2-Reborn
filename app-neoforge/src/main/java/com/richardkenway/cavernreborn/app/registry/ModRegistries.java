@@ -2,12 +2,10 @@ package com.richardkenway.cavernreborn.app.registry;
 
 import com.richardkenway.cavernreborn.CavernReborn;
 import com.richardkenway.cavernreborn.app.block.CavernPortalBlock;
-import com.richardkenway.cavernreborn.app.item.CavernPortalTriggerItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -31,11 +29,6 @@ public final class ModRegistries {
             () -> CavernReborn.cavernStateBootstrap().cavernPortalInteractionService()));
     public static final DeferredItem<BlockItem> BOOTSTRAP_BLOCK_ITEM = ITEMS.registerSimpleBlockItem(BOOTSTRAP_BLOCK);
     public static final DeferredItem<BlockItem> CAVERN_PORTAL_BLOCK_ITEM = ITEMS.registerSimpleBlockItem(CAVERN_PORTAL_BLOCK);
-    public static final DeferredItem<Item> CAVERN_PORTAL_TRIGGER_ITEM = ITEMS.register("cavern_portal_trigger",
-        () -> new CavernPortalTriggerItem(
-            new Item.Properties().stacksTo(1),
-            CAVERN_PORTAL_BLOCK::get
-        ));
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MAIN_TAB = CREATIVE_MODE_TABS.register("main",
         () -> CreativeModeTab.builder()

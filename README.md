@@ -18,7 +18,7 @@ This repository currently contains the project skeleton and a minimal content re
 - a first weighted ravine-like layer on top of the tunnel baseline, now rebuilt as a band-limited horizontal connector pass instead of raw entrance carving
 - basic portal UX feedback for `cooldown`, failed cavern entry and missing return-state denial cases, plus an overworld fallback return target when no saved return-state exists
 - a bounded legacy-like `CAVERN` ritual activation step: `mossy_cobblestone` frames can now be activated with `minecraft:emerald` via a server-side frame-click hook and fill the `cavern_portal` interior block
-- a first entity-inside portal flow step: walking into the `cavern_portal` interior block now triggers the main transfer loop, while the older right-click path is kept only as a creative-only debug route
+- a first entity-inside portal flow step: walking into the `cavern_portal` interior block now triggers the main transfer loop, while block right-click behavior is intentionally debug-only and limited to creative mode
 - frame-level portal identity semantics: interaction now canonicalizes a touched interior block to the portal frame anchor before building keys, cooldowns and portal placements
 - an axis-aware `cavern_portal` interior plane with thin portal geometry and frame-integrity invalidation when the mossy frame is broken
 - a first destination portal placement step: travel now uses a bounded find-or-create portal target in the destination dimension instead of requiring a second portal to be placed manually every time
@@ -50,11 +50,12 @@ No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 - Safe arrival currently relies on a bounded local search around the target column and may cancel entry if no safe point is found nearby.
 - Return-state and world portal indices now persist through an overworld-level `SavedData` control plane, but this is still a bounded MVP backend rather than full player/world attachment wiring.
 - The new persistent backend still needs manual restart validation on a real dedicated server, especially for `portal -> CAVERN -> restart -> return` and indexed destination-portal reuse after restart.
-- The current portal flow now supports an axis-aware thin interior portal plane with frame-integrity invalidation; the older right-click path is restricted to a creative-only debug route, but full legacy collision semantics still needs manual validation.
-- Portal interaction now canonicalizes touched interior blocks to a frame-level anchor, but this still needs manual validation across different interior blocks of the same portal and across the creative debug route.
+- The current portal flow now supports an axis-aware thin interior portal plane with frame-integrity invalidation; full legacy collision semantics still need manual validation.
+- Portal interaction now canonicalizes touched interior blocks to a frame-level anchor, but this still needs manual validation across different interior blocks of the same portal.
 - Destination portal placement is now automatic in a bounded search-relink-regenerate-or-create form, but it still does not implement full legacy cache, wider radius search and broader regeneration semantics.
 - `CAVERN` now uses `minecraft:mossy_cobblestone` as the canonical frame material for validation, activation and bounded auto-create/regenerate flow.
-- Player-facing ritual activation for `CAVERN` now uses `minecraft:emerald` on a valid mossy frame block and points into the portal interior; the older `cavern_portal_trigger` item remains only as a non-player-facing transitional path and is no longer exposed through the main creative tab.
+- Player-facing ritual activation for `CAVERN` now uses `minecraft:emerald` on a valid mossy frame block and points into the portal interior.
+- The older `cavern_portal_trigger` runtime path has been removed; older worlds or inventories that still contained that item may now surface it as an unknown/removed item until they are cleaned up manually.
 - Portal index churn now prefers the most recently reused placement, but broader eviction and history policies for repeated portal churn still are not implemented.
 - Persistent world portal-index loading now skips invalid placement entries instead of dropping the entire world index, but broader corruption-repair tooling is still not implemented.
 - Destination portal arrival is now centered by stored portal axis, but this still needs manual in-game validation for both axes and for relinked/recreated portals after index churn.

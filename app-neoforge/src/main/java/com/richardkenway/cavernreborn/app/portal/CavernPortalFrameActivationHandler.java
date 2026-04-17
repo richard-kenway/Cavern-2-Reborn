@@ -12,7 +12,7 @@ public final class CavernPortalFrameActivationHandler {
     public Optional<ActivationOutcome> handle(
         boolean clientSide,
         boolean creativeMode,
-        boolean hasValidTriggerItem,
+        boolean hasValidActivatorItem,
         BlockPos clickedPos,
         @Nullable Direction clickedFace,
         FrameMaterialGate frameMaterialGate,
@@ -24,7 +24,7 @@ public final class CavernPortalFrameActivationHandler {
         Objects.requireNonNull(activationAttempt, "activationAttempt");
         Objects.requireNonNull(itemConsumption, "itemConsumption");
 
-        if (clientSide || !hasValidTriggerItem || !frameMaterialGate.allows(clickedPos)) {
+        if (clientSide || !hasValidActivatorItem || !frameMaterialGate.allows(clickedPos)) {
             return Optional.empty();
         }
 

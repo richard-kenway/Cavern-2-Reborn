@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
-class CavernPortalTriggerActivationResolverTest {
+class CavernPortalFrameActivationResolverTest {
     @Test
     void resolvesActivationForValidFrameClick() {
         SetPortalAccess access = new SetPortalAccess();

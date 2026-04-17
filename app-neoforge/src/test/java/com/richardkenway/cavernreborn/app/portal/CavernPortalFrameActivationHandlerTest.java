@@ -149,4 +149,38 @@ class CavernPortalFrameActivationHandlerTest {
         assertFalse(outcome.isPresent());
         assertEquals(2, remaining.get());
     }
+
+    @Test
+    void supportsEmeraldOnlyActivationPath() {
+        CavernPortalFrameActivationHandler handler = new CavernPortalFrameActivationHandler();
+        AtomicInteger remaining = new AtomicInteger(5);
+
+        Optional<CavernPortalFrameActivationHandler.ActivationOutcome> outcome = handler.handle(
+            false,
+            false,
+            true,
+            CLICKED_POS,
+            Direction.WEST,
+            clickedPos -> clickedPos.equals(CLICKED_POS),
+            (clickedPos, clickedFace) -> Optional.of(FRAME),
+            remaining::decrementAndGet
+        );
+
+        assertTrue(outcome.isPresent());
+        assertEquals(4, remaining.get());
+
+        Optional<CavernPortalFrameActivationHandler.ActivationOutcome> blockedByFrameMaterial = handler.handle(
+            false,
+            false,
+            true,
+            new BlockPos(99, 99, 99),
+            Direction.WEST,
+            clickedPos -> false,
+            (clickedPos, clickedFace) -> Optional.of(FRAME),
+            remaining::decrementAndGet
+        );
+
+        assertFalse(blockedByFrameMaterial.isPresent());
+        assertEquals(4, remaining.get());
+    }
 }
