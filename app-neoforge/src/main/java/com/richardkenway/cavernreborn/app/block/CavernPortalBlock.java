@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import com.richardkenway.cavernreborn.app.portal.CavernPortalFrameDetector;
 import com.richardkenway.cavernreborn.app.portal.CavernPortalInteractionContext;
 import com.richardkenway.cavernreborn.app.portal.CavernPortalInteractionOutcome;
+import com.richardkenway.cavernreborn.app.portal.NonPlayerPortalInteractionContext;
 import com.richardkenway.cavernreborn.app.portal.CavernPortalInteractionService;
 import com.richardkenway.cavernreborn.app.portal.CavernNonPlayerPortalInteractionService;
 import com.richardkenway.cavernreborn.app.portal.PortalCollisionEligibilityPolicy;
@@ -58,29 +59,102 @@ public final class CavernPortalBlock extends Block {
             return;
         }
 
-        PortalCollisionEligibilityPolicy.PortalCollisionEligibility eligibility =
-            PortalCollisionEligibilityPolicy.classify(entity, entity.isOnPortalCooldown());
-
-        if (entity instanceof ServerPlayer serverPlayer) {
-            if (shouldDispatchCollisionTransport(eligibility, true)) {
-                CavernPortalInteractionContext context = NeoForgeCavernPortalInteractionContext.forCollision(serverPlayer, level, pos);
-                CavernPortalInteractionOutcome outcome = interactionServiceSupplier.get().use(context);
-                if (shouldApplyPortalCooldown(outcome.handled())) {
-                    serverPlayer.setPortalCooldown();
-                }
-            }
-            return;
-        }
-
-        if (!shouldDispatchCollisionTransport(eligibility, false)) {
-            return;
-        }
-
-        CavernPortalInteractionOutcome outcome = nonPlayerInteractionServiceSupplier.get().use(
-            NeoForgeNonPlayerPortalInteractionContext.forCollision(entity, level, pos)
+        CollisionContract contract = CollisionContract.from(entity);
+        CavernPortalInteractionOutcome outcome = contract.dispatch(
+            level,
+            pos,
+            entity,
+            this::runPlayerCollisionTransport,
+            this::runNonPlayerCollisionTransport
         );
-        if (shouldApplyPortalCooldown(outcome.handled())) {
+
+        if (contract.shouldApplyPortalCooldown(outcome)) {
             entity.setPortalCooldown();
+        }
+    }
+
+    private CavernPortalInteractionOutcome runPlayerCollisionTransport(Level level, BlockPos pos, Entity entity) {
+        ServerPlayer serverPlayer = (ServerPlayer) entity;
+        CavernPortalInteractionContext context = NeoForgeCavernPortalInteractionContext.forCollision(serverPlayer, level, pos);
+        return interactionServiceSupplier.get().use(context);
+    }
+
+    private CavernPortalInteractionOutcome runNonPlayerCollisionTransport(Level level, BlockPos pos, Entity entity) {
+        NonPlayerPortalInteractionContext context = NeoForgeNonPlayerPortalInteractionContext.forCollision(entity, level, pos);
+        return nonPlayerInteractionServiceSupplier.get().use(context);
+    }
+
+    @FunctionalInterface
+    interface CollisionDispatcher {
+        CavernPortalInteractionOutcome dispatch(Level level, BlockPos pos, Entity entity);
+    }
+
+    static final class CollisionContract {
+        enum CollisionType {
+            IGNORE,
+            PLAYER,
+            NON_PLAYER
+        }
+
+        private final CollisionType collisionType;
+
+        private CollisionContract(CollisionType collisionType) {
+            this.collisionType = collisionType;
+        }
+
+        static CollisionContract from(Entity entity) {
+            PortalCollisionEligibilityPolicy.PortalCollisionEligibility eligibility =
+                PortalCollisionEligibilityPolicy.classify(entity, entity.isOnPortalCooldown());
+            return from(eligibility, entity instanceof ServerPlayer);
+        }
+
+        static CollisionContract from(
+            PortalCollisionEligibilityPolicy.PortalCollisionEligibility eligibility,
+            boolean serverPlayerEntity
+        ) {
+            if (!eligibility.shouldTriggerPortalCollision()) {
+                return new CollisionContract(CollisionType.IGNORE);
+            }
+
+            if (serverPlayerEntity && eligibility.shouldTransportPlayer()) {
+                return new CollisionContract(CollisionType.PLAYER);
+            }
+
+            if (!serverPlayerEntity && eligibility.shouldTransportNonPlayer()) {
+                return new CollisionContract(CollisionType.NON_PLAYER);
+            }
+
+            return new CollisionContract(CollisionType.IGNORE);
+        }
+
+        CavernPortalInteractionOutcome dispatch(
+            Level level,
+            BlockPos pos,
+            Entity entity,
+            CollisionDispatcher playerDispatcher,
+            CollisionDispatcher nonPlayerDispatcher
+        ) {
+            return switch (collisionType) {
+                case IGNORE -> CavernPortalInteractionOutcome.unhandled();
+                case PLAYER -> playerDispatcher.dispatch(level, pos, entity);
+                case NON_PLAYER -> nonPlayerDispatcher.dispatch(level, pos, entity);
+            };
+        }
+
+        boolean shouldApplyPortalCooldown(CavernPortalInteractionOutcome outcome) {
+            return outcome.handled();
+        }
+
+        boolean isPlayerDispatch() {
+            return collisionType == CollisionType.PLAYER;
+        }
+
+        boolean isNonPlayerDispatch() {
+            return collisionType == CollisionType.NON_PLAYER;
+        }
+
+        boolean isIgnoreDispatch() {
+            return collisionType == CollisionType.IGNORE;
         }
     }
 
@@ -135,17 +209,5 @@ public final class CavernPortalBlock extends Block {
 
     static VoxelShape shapeFor(Direction.Axis axis) {
         return axis == Direction.Axis.X ? X_AXIS_SHAPE : Z_AXIS_SHAPE;
-    }
-
-    static boolean shouldApplyPortalCooldown(boolean handled) {
-        return handled;
-    }
-
-    static boolean shouldDispatchCollisionTransport(
-        PortalCollisionEligibilityPolicy.PortalCollisionEligibility eligibility,
-        boolean serverPlayerEntity
-    ) {
-        return eligibility.shouldTriggerPortalCollision()
-            && (serverPlayerEntity ? eligibility.shouldTransportPlayer() : eligibility.shouldTransportNonPlayer());
     }
 }

@@ -5,10 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 
+import com.richardkenway.cavernreborn.app.portal.CavernPortalInteractionOutcome;
 import com.richardkenway.cavernreborn.app.portal.CavernPortalFrameDetector;
 import com.richardkenway.cavernreborn.app.portal.PortalCollisionEligibilityPolicy;
 
@@ -60,52 +64,152 @@ class CavernPortalBlockTest {
     }
 
     @Test
-    void shouldApplyPortalCooldownMatchesHandledOutcome() {
-        assertTrue(CavernPortalBlock.shouldApplyPortalCooldown(true));
-        assertFalse(CavernPortalBlock.shouldApplyPortalCooldown(false));
+    void collisionContractDispatchesPlayerWhenPlayerEntityIsAllowed() {
+        CavernPortalBlock.CollisionContract contract = CavernPortalBlock.CollisionContract.from(
+            PortalCollisionEligibilityPolicy.PortalCollisionEligibility.ALLOW_PLAYER,
+            true
+        );
+        AtomicInteger playerDispatches = new AtomicInteger();
+        AtomicInteger nonPlayerDispatches = new AtomicInteger();
+
+        CavernPortalInteractionOutcome outcome = contract.dispatch(
+            null,
+            null,
+            null,
+            (level, pos, entity) -> {
+                playerDispatches.incrementAndGet();
+                return CavernPortalInteractionOutcome.handled(Optional.empty());
+            },
+            (level, pos, entity) -> {
+                nonPlayerDispatches.incrementAndGet();
+                return CavernPortalInteractionOutcome.handled(Optional.empty());
+            }
+        );
+
+        assertTrue(contract.isPlayerDispatch());
+        assertFalse(contract.isNonPlayerDispatch());
+        assertFalse(contract.isIgnoreDispatch());
+        assertEquals(1, playerDispatches.get());
+        assertEquals(0, nonPlayerDispatches.get());
+        assertTrue(contract.shouldApplyPortalCooldown(outcome));
     }
 
     @Test
-    void shouldDispatchCollisionTransportRespectsPlayerAndNonPlayerEligibility() {
-        assertTrue(CavernPortalBlock.shouldDispatchCollisionTransport(
-            PortalCollisionEligibilityPolicy.PortalCollisionEligibility.ALLOW_PLAYER,
-            true
-        ));
-
-        assertFalse(CavernPortalBlock.shouldDispatchCollisionTransport(
-            PortalCollisionEligibilityPolicy.PortalCollisionEligibility.ALLOW_PLAYER,
-            false
-        ));
-
-        assertFalse(CavernPortalBlock.shouldDispatchCollisionTransport(
-            PortalCollisionEligibilityPolicy.PortalCollisionEligibility.ALLOW_NON_PLAYER,
-            true
-        ));
-
-        assertTrue(CavernPortalBlock.shouldDispatchCollisionTransport(
+    void collisionContractDispatchesNonPlayerWhenNonPlayerEntityIsAllowed() {
+        CavernPortalBlock.CollisionContract contract = CavernPortalBlock.CollisionContract.from(
             PortalCollisionEligibilityPolicy.PortalCollisionEligibility.ALLOW_NON_PLAYER,
             false
-        ));
+        );
+        AtomicInteger playerDispatches = new AtomicInteger();
+        AtomicInteger nonPlayerDispatches = new AtomicInteger();
 
-        assertFalse(CavernPortalBlock.shouldDispatchCollisionTransport(
+        CavernPortalInteractionOutcome outcome = contract.dispatch(
+            null,
+            null,
+            null,
+            (level, pos, entity) -> {
+                playerDispatches.incrementAndGet();
+                return CavernPortalInteractionOutcome.handled(Optional.empty());
+            },
+            (level, pos, entity) -> {
+                nonPlayerDispatches.incrementAndGet();
+                return CavernPortalInteractionOutcome.unhandled();
+            }
+        );
+
+        assertFalse(contract.isPlayerDispatch());
+        assertTrue(contract.isNonPlayerDispatch());
+        assertFalse(contract.isIgnoreDispatch());
+        assertEquals(0, playerDispatches.get());
+        assertEquals(1, nonPlayerDispatches.get());
+        assertFalse(contract.shouldApplyPortalCooldown(outcome));
+    }
+
+    @Test
+    void collisionContractSuppressesDispatchForIgnoreEligibilityStates() {
+        List<PortalCollisionEligibilityPolicy.PortalCollisionEligibility> ignoreStates = List.of(
+            PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_DEAD,
+            PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_SPECTATOR,
             PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_CROUCHING,
-            true
-        ));
-
-        assertFalse(CavernPortalBlock.shouldDispatchCollisionTransport(
-            PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_CROUCHING,
-            false
-        ));
-
-        assertFalse(CavernPortalBlock.shouldDispatchCollisionTransport(
+            PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_PASSENGER,
+            PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_VEHICLE,
+            PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_PROJECTILE,
             PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_PORTAL_INELIGIBLE,
-            true
-        ));
+            PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_PORTAL_COOLDOWN
+        );
 
-        assertFalse(CavernPortalBlock.shouldDispatchCollisionTransport(
-            PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_PORTAL_INELIGIBLE,
+        for (PortalCollisionEligibilityPolicy.PortalCollisionEligibility eligibility : ignoreStates) {
+            CavernPortalBlock.CollisionContract contract = CavernPortalBlock.CollisionContract.from(eligibility, true);
+            AtomicInteger playerDispatches = new AtomicInteger();
+            AtomicInteger nonPlayerDispatches = new AtomicInteger();
+
+            CavernPortalInteractionOutcome outcome = contract.dispatch(
+                null,
+                null,
+                null,
+                (level, pos, entity) -> {
+                    playerDispatches.incrementAndGet();
+                    return CavernPortalInteractionOutcome.handled(Optional.empty());
+                },
+                (level, pos, entity) -> {
+                    nonPlayerDispatches.incrementAndGet();
+                    return CavernPortalInteractionOutcome.handled(Optional.empty());
+                }
+            );
+
+            assertFalse(contract.isPlayerDispatch(), "contract should not use player dispatch for %s".formatted(eligibility.name()));
+            assertFalse(contract.isNonPlayerDispatch(), "contract should not use non-player dispatch for %s".formatted(eligibility.name()));
+            assertTrue(contract.isIgnoreDispatch(), "contract should ignore for %s".formatted(eligibility.name()));
+            assertEquals(0, playerDispatches.get(), "player dispatch calls for %s".formatted(eligibility.name()));
+            assertEquals(0, nonPlayerDispatches.get(), "non-player dispatch calls for %s".formatted(eligibility.name()));
+            assertFalse(outcome.handled());
+        }
+
+        for (PortalCollisionEligibilityPolicy.PortalCollisionEligibility eligibility : ignoreStates) {
+            CavernPortalBlock.CollisionContract contract = CavernPortalBlock.CollisionContract.from(eligibility, false);
+            AtomicInteger playerDispatches = new AtomicInteger();
+            AtomicInteger nonPlayerDispatches = new AtomicInteger();
+
+            CavernPortalInteractionOutcome outcome = contract.dispatch(
+                null,
+                null,
+                null,
+                (level, pos, entity) -> {
+                    playerDispatches.incrementAndGet();
+                    return CavernPortalInteractionOutcome.handled(Optional.empty());
+                },
+                (level, pos, entity) -> {
+                    nonPlayerDispatches.incrementAndGet();
+                    return CavernPortalInteractionOutcome.handled(Optional.empty());
+                }
+            );
+
+            assertFalse(contract.isPlayerDispatch(), "contract should not use player dispatch for %s".formatted(eligibility.name()));
+            assertFalse(contract.isNonPlayerDispatch(), "contract should not use non-player dispatch for %s".formatted(eligibility.name()));
+            assertTrue(contract.isIgnoreDispatch(), "contract should ignore for %s".formatted(eligibility.name()));
+            assertEquals(0, playerDispatches.get(), "player dispatch calls for %s".formatted(eligibility.name()));
+            assertEquals(0, nonPlayerDispatches.get(), "non-player dispatch calls for %s".formatted(eligibility.name()));
+            assertFalse(outcome.handled());
+        }
+    }
+
+    @Test
+    void collisionContractAppliesCooldownOnlyWhenOutcomeHandled() {
+        CavernPortalBlock.CollisionContract playerContract = CavernPortalBlock.CollisionContract.from(
+            PortalCollisionEligibilityPolicy.PortalCollisionEligibility.ALLOW_PLAYER,
+            true
+        );
+        CavernPortalBlock.CollisionContract nonPlayerContract = CavernPortalBlock.CollisionContract.from(
+            PortalCollisionEligibilityPolicy.PortalCollisionEligibility.ALLOW_NON_PLAYER,
             false
-        ));
+        );
+        CavernPortalInteractionOutcome handledOutcome = CavernPortalInteractionOutcome.handled(Optional.empty());
+        CavernPortalInteractionOutcome unhandledOutcome = CavernPortalInteractionOutcome.unhandled();
+
+        assertTrue(playerContract.shouldApplyPortalCooldown(handledOutcome));
+        assertFalse(playerContract.shouldApplyPortalCooldown(unhandledOutcome));
+        assertTrue(nonPlayerContract.shouldApplyPortalCooldown(handledOutcome));
+        assertFalse(nonPlayerContract.shouldApplyPortalCooldown(unhandledOutcome));
     }
 
     private static final class FrameAccess implements CavernPortalFrameDetector.FrameAccess {
