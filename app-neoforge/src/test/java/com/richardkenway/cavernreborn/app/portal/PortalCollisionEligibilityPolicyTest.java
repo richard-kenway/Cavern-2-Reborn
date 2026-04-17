@@ -21,28 +21,31 @@ class PortalCollisionEligibilityPolicyTest {
             boolean vehicle,
             boolean projectile,
             boolean cooldown,
+            boolean canUsePortal,
             boolean player,
             PortalCollisionEligibilityPolicy.PortalCollisionEligibility expected
         ) {}
 
         List<Case> cases = new ArrayList<>();
-        cases.add(new Case("dead", false, false, false, false, false, false, false, true,
+        cases.add(new Case("dead", false, false, false, false, false, false, false, true, true,
             PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_DEAD));
-        cases.add(new Case("spectator", true, true, false, false, false, false, false, true,
+        cases.add(new Case("spectator", true, true, false, false, false, false, false, true, true,
             PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_SPECTATOR));
-        cases.add(new Case("crouching", true, false, true, false, false, false, false, true,
+        cases.add(new Case("crouching", true, false, true, false, false, false, false, true, true,
             PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_CROUCHING));
-        cases.add(new Case("passenger", true, false, false, true, false, false, false, true,
+        cases.add(new Case("passenger", true, false, false, true, false, false, false, true, true,
             PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_PASSENGER));
-        cases.add(new Case("vehicle", true, false, false, false, true, false, false, true,
+        cases.add(new Case("vehicle", true, false, false, false, true, false, false, true, true,
             PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_VEHICLE));
-        cases.add(new Case("projectile", true, false, false, false, false, true, false, false,
+        cases.add(new Case("projectile", true, false, false, false, false, true, false, true, false,
             PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_PROJECTILE));
-        cases.add(new Case("cooldown", true, false, false, false, false, false, true, true,
+        cases.add(new Case("cooldown", true, false, false, false, false, false, true, true, true,
             PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_PORTAL_COOLDOWN));
-        cases.add(new Case("player valid", true, false, false, false, false, false, false, true,
+        cases.add(new Case("portal ineligible", true, false, false, false, false, false, false, false, false,
+            PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_PORTAL_INELIGIBLE));
+        cases.add(new Case("player valid", true, false, false, false, false, false, false, true, true,
             PortalCollisionEligibilityPolicy.PortalCollisionEligibility.ALLOW_PLAYER));
-        cases.add(new Case("non-player valid", true, false, false, false, false, false, false, false,
+        cases.add(new Case("non-player valid", true, false, false, false, false, false, false, true, false,
             PortalCollisionEligibilityPolicy.PortalCollisionEligibility.ALLOW_NON_PLAYER));
 
         for (Case scenario : cases) {
@@ -56,6 +59,7 @@ class PortalCollisionEligibilityPolicyTest {
                     scenario.vehicle(),
                     scenario.projectile(),
                     scenario.cooldown(),
+                    scenario.canUsePortal(),
                     scenario.player()
                 ),
                 scenario.label()
@@ -86,11 +90,13 @@ class PortalCollisionEligibilityPolicyTest {
                 PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_PASSENGER,
                 PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_VEHICLE,
                 PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_PROJECTILE,
+                PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_PORTAL_INELIGIBLE,
                 PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_PORTAL_COOLDOWN
             )
         ) {
             assertFalse(eligibility.shouldTriggerPortalCollision());
             assertFalse(eligibility.shouldTransportPlayer());
+            assertFalse(eligibility.shouldTransportNonPlayer());
         }
     }
 }

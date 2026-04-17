@@ -8,22 +8,25 @@ import net.minecraft.world.entity.projectile.Projectile;
 
 public final class PortalCollisionEligibilityPolicy {
     public enum PortalCollisionEligibility {
-        IGNORE_DEAD(true, false),
-        IGNORE_SPECTATOR(true, false),
-        IGNORE_CROUCHING(true, false),
-        IGNORE_PASSENGER(true, false),
-        IGNORE_VEHICLE(true, false),
-        IGNORE_PROJECTILE(true, false),
-        IGNORE_PORTAL_COOLDOWN(true, false),
-        ALLOW_NON_PLAYER(false, false),
-        ALLOW_PLAYER(false, true);
+        IGNORE_DEAD(true, false, false),
+        IGNORE_SPECTATOR(true, false, false),
+        IGNORE_CROUCHING(true, false, false),
+        IGNORE_PORTAL_INELIGIBLE(true, false, false),
+        IGNORE_PASSENGER(true, false, false),
+        IGNORE_VEHICLE(true, false, false),
+        IGNORE_PROJECTILE(true, false, false),
+        IGNORE_PORTAL_COOLDOWN(true, false, false),
+        ALLOW_NON_PLAYER(false, false, true),
+        ALLOW_PLAYER(false, true, false);
 
         private final boolean ignorePortalCollision;
         private final boolean allowPlayerTransport;
+        private final boolean allowNonPlayerTransport;
 
-        PortalCollisionEligibility(boolean ignorePortalCollision, boolean allowPlayerTransport) {
+        PortalCollisionEligibility(boolean ignorePortalCollision, boolean allowPlayerTransport, boolean allowNonPlayerTransport) {
             this.ignorePortalCollision = ignorePortalCollision;
             this.allowPlayerTransport = allowPlayerTransport;
+            this.allowNonPlayerTransport = allowNonPlayerTransport;
         }
 
         public boolean shouldTriggerPortalCollision() {
@@ -32,6 +35,10 @@ public final class PortalCollisionEligibilityPolicy {
 
         public boolean shouldTransportPlayer() {
             return allowPlayerTransport;
+        }
+
+        public boolean shouldTransportNonPlayer() {
+            return allowNonPlayerTransport;
         }
     }
 
@@ -49,6 +56,7 @@ public final class PortalCollisionEligibilityPolicy {
             entity.isVehicle(),
             entity instanceof Projectile,
             portalCooldown,
+            entity.canUsePortal(false),
             entity instanceof ServerPlayer
         );
     }
@@ -61,10 +69,15 @@ public final class PortalCollisionEligibilityPolicy {
         boolean vehicle,
         boolean projectile,
         boolean portalCooldown,
+        boolean canUsePortal,
         boolean player
     ) {
         if (!alive) {
             return PortalCollisionEligibility.IGNORE_DEAD;
+        }
+
+        if (!canUsePortal) {
+            return PortalCollisionEligibility.IGNORE_PORTAL_INELIGIBLE;
         }
 
         if (spectator) {

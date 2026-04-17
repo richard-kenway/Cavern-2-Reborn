@@ -146,6 +146,6 @@ public final class CavernPortalBlock extends Block {
         boolean serverPlayerEntity
     ) {
         return eligibility.shouldTriggerPortalCollision()
-            && (serverPlayerEntity ? eligibility.shouldTransportPlayer() : eligibility == PortalCollisionEligibilityPolicy.PortalCollisionEligibility.ALLOW_NON_PLAYER);
+            && (serverPlayerEntity ? eligibility.shouldTransportPlayer() : eligibility.shouldTransportNonPlayer());
     }
 }

@@ -96,6 +96,16 @@ class CavernPortalBlockTest {
             PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_CROUCHING,
             false
         ));
+
+        assertFalse(CavernPortalBlock.shouldDispatchCollisionTransport(
+            PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_PORTAL_INELIGIBLE,
+            true
+        ));
+
+        assertFalse(CavernPortalBlock.shouldDispatchCollisionTransport(
+            PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_PORTAL_INELIGIBLE,
+            false
+        ));
     }
 
     private static final class FrameAccess implements CavernPortalFrameDetector.FrameAccess {
