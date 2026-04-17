@@ -133,6 +133,7 @@ class CavernPortalBlockTest {
             PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_CROUCHING,
             PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_PASSENGER,
             PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_VEHICLE,
+            PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_BOSS,
             PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_PROJECTILE,
             PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_PORTAL_INELIGIBLE,
             PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_PORTAL_COOLDOWN

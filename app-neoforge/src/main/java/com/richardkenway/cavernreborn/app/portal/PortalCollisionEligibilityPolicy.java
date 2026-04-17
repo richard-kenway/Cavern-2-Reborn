@@ -5,6 +5,7 @@ import java.util.Objects;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.neoforged.neoforge.common.Tags;
 
 public final class PortalCollisionEligibilityPolicy {
     public enum PortalCollisionEligibility {
@@ -12,6 +13,7 @@ public final class PortalCollisionEligibilityPolicy {
         IGNORE_SPECTATOR(true, false, false),
         IGNORE_CROUCHING(true, false, false),
         IGNORE_PORTAL_INELIGIBLE(true, false, false),
+        IGNORE_BOSS(true, false, false),
         IGNORE_PASSENGER(true, false, false),
         IGNORE_VEHICLE(true, false, false),
         IGNORE_PROJECTILE(true, false, false),
@@ -57,6 +59,7 @@ public final class PortalCollisionEligibilityPolicy {
             entity instanceof Projectile,
             portalCooldown,
             entity.canUsePortal(false),
+            entity.getType().is(Tags.EntityTypes.BOSSES),
             entity instanceof ServerPlayer
         );
     }
@@ -70,6 +73,7 @@ public final class PortalCollisionEligibilityPolicy {
         boolean projectile,
         boolean portalCooldown,
         boolean canUsePortal,
+        boolean isBoss,
         boolean player
     ) {
         if (!alive) {
@@ -94,6 +98,10 @@ public final class PortalCollisionEligibilityPolicy {
 
         if (vehicle) {
             return PortalCollisionEligibility.IGNORE_VEHICLE;
+        }
+
+        if (isBoss) {
+            return PortalCollisionEligibility.IGNORE_BOSS;
         }
 
         if (projectile) {
