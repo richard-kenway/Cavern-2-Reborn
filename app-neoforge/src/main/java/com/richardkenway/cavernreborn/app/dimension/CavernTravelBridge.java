@@ -156,12 +156,14 @@ public final class CavernTravelBridge {
         String resolvedPortalKey = portalKey.get();
         PortalWorldIndex worldIndex = worldPortalIndexStore.load(targetDimensionId);
         Set<PortalWorldIndex.PortalPlacement> indexedPlacements = worldIndex.placementsFor(resolvedPortalKey);
+        Optional<String> preferredSourceAxis = relativePortalExit.map(RelativePortalExit::sourceAxis);
 
         Optional<PortalPlacementSelectionPolicy.IndexedPlacementCandidate<PortalWorldIndex.PortalPlacement>> resolvedPlacement =
             PortalPlacementSelectionPolicy.nearestCandidate(
                 indexedPlacements,
                 placement -> player.resolvePortalAt(targetDimensionId, placement.x(), placement.y(), placement.z()),
-                placement -> PortalPlacementSelectionPolicy.distanceFromPreferredTarget(preferredTarget, placement)
+                placement -> PortalPlacementSelectionPolicy.distanceFromPreferredTarget(preferredTarget, placement),
+                preferredSourceAxis
             );
 
         if (resolvedPlacement.isPresent()) {
@@ -181,7 +183,8 @@ public final class CavernTravelBridge {
                     placement.y(),
                     placement.z()
                 ),
-                    placement -> PortalPlacementSelectionPolicy.distanceFromPreferredTarget(preferredTarget, placement)
+                placement -> PortalPlacementSelectionPolicy.distanceFromPreferredTarget(preferredTarget, placement),
+                preferredSourceAxis
             );
         if (relinkedPlacement.isPresent()) {
             PortalWorldIndex refreshedIndex = worldIndex.withReplacementPortal(
@@ -203,7 +206,8 @@ public final class CavernTravelBridge {
         Optional<PortalWorldIndex.PortalPlacement> regenerationAnchor = PortalPlacementSelectionPolicy.nearestCandidate(
             indexedPlacements,
             Optional::of,
-            indexedPlacement -> PortalPlacementSelectionPolicy.distanceFromPreferredTarget(preferredTarget, indexedPlacement)
+            indexedPlacement -> PortalPlacementSelectionPolicy.distanceFromPreferredTarget(preferredTarget, indexedPlacement),
+            preferredSourceAxis
         ).map(PortalPlacementSelectionPolicy.IndexedPlacementCandidate::indexedPlacement);
 
         if (regenerationAnchor.isPresent()) {

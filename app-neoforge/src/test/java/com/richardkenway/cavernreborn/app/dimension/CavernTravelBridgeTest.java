@@ -205,6 +205,46 @@ class CavernTravelBridgeTest {
     }
 
     @Test
+    void travelToCavernExactIndexedReusePrefersAxisAlignedCandidateWithinDistanceBand() {
+        CavernStateBootstrap bootstrap = new CavernStateBootstrap();
+        bootstrap.worldPortalIndexStore().save(
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            PortalWorldIndex.empty()
+                .withPortal("cavern", new PortalWorldIndex.PortalPlacement(0, 64, -1, PortalWorldIndex.PortalPlacement.AXIS_X))
+                .withPortal("cavern", new PortalWorldIndex.PortalPlacement(0, 64, 0, PortalWorldIndex.PortalPlacement.AXIS_Z))
+        );
+        FakePlayerTravelContext player = new FakePlayerTravelContext(
+            UUID.randomUUID(),
+            96L,
+            90.0F,
+            30.0F,
+            Set.of(new SafeArrival(0, 64, 0)),
+            Optional.empty(),
+            Optional.empty()
+        );
+        player.existingPortals.add(new PortalLocation(CavernDimensions.CAVERN_DIMENSION_ID, 0, 64, 0, PortalWorldIndex.PortalPlacement.AXIS_Z));
+        player.existingPortals.add(new PortalLocation(CavernDimensions.CAVERN_DIMENSION_ID, 0, 64, -1, PortalWorldIndex.PortalPlacement.AXIS_X));
+
+        Optional<CavernTravelPlan> plan = bootstrap.cavernTravelBridge().travelToCavern(
+            player,
+            new PortalReturnState("cavern", CavernDimensions.OVERWORLD_DIMENSION_ID, 12, 64, 12),
+            new TeleportContext("cavern", 0.25D, 0.5D, 0.75D, "north"),
+            new PortalWorldIndex.PortalPlacement(8, 70, 8, PortalWorldIndex.PortalPlacement.AXIS_X)
+        );
+
+        assertTrue(plan.isPresent());
+        assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, player.lastTargetDimensionId);
+        assertEquals(0.55D, player.lastX);
+        assertEquals(64.0D, player.lastY);
+        assertEquals(-0.5D, player.lastZ);
+        assertEquals(Direction.SOUTH.toYRot(), player.lastYaw);
+        assertEquals(
+            new PortalWorldIndex.PortalPlacement(0, 64, -1, PortalWorldIndex.PortalPlacement.AXIS_X),
+            bootstrap.worldPortalIndexStore().load(CavernDimensions.CAVERN_DIMENSION_ID).firstPlacementFor("cavern").orElseThrow()
+        );
+    }
+
+    @Test
     void travelToCavernRegeneratesNearStaleIndexedPlacementBeforeGenericCreate() {
         CavernStateBootstrap bootstrap = new CavernStateBootstrap();
         bootstrap.worldPortalIndexStore().save(
