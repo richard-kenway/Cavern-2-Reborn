@@ -22,7 +22,7 @@ public record WorldPortalFrameAccess(
     }
 
     public WorldPortalFrameAccess(LevelAccessor level, Block portalBlock) {
-        this(level, portalBlock, PortalFrameMaterialPolicy.OBSIDIAN);
+        this(level, portalBlock, PortalFrameMaterialPolicy.MOSSY_COBBLESTONE);
     }
 
     @Override

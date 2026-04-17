@@ -1,12 +1,17 @@
 package com.richardkenway.cavernreborn.app.dimension;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.lang.reflect.Method;
 
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 class PortalPlacementQualityScorerTest {
     @Test
@@ -107,5 +112,17 @@ class PortalPlacementQualityScorerTest {
 
         assertTrue(PortalPlacementQualityScorer.isBetterCandidate(zAxis, xAxis, Direction.Axis.Z));
         assertFalse(PortalPlacementQualityScorer.isBetterCandidate(xAxis, zAxis, Direction.Axis.Z));
+    }
+
+    @Test
+    void requiresReplacementContractIncludesExplicitFrameBlockParameter() throws Exception {
+        Method requiresReplacement = PortalPlacementQualityScorer.class.getDeclaredMethod(
+            "requiresReplacement",
+            BlockState.class,
+            Block.class,
+            Block.class
+        );
+
+        assertNotNull(requiresReplacement);
     }
 }

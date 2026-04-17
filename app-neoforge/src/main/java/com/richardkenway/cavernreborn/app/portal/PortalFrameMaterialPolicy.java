@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public interface PortalFrameMaterialPolicy {
     boolean isFrame(BlockState state);
 
-    PortalFrameMaterialPolicy OBSIDIAN = state -> state.is(Blocks.OBSIDIAN);
+    PortalFrameMaterialPolicy MOSSY_COBBLESTONE = state -> state.is(Blocks.MOSSY_COBBLESTONE);
 
     static PortalFrameMaterialPolicy of(Block frameMaterial) {
         Objects.requireNonNull(frameMaterial, "frameMaterial");

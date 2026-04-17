@@ -8,6 +8,7 @@ import java.util.LinkedHashSet;
 
 import com.richardkenway.cavernreborn.app.portal.CavernPortalFrameDetector;
 import com.richardkenway.cavernreborn.app.portal.CavernPortalFrameActivator;
+import com.richardkenway.cavernreborn.app.portal.PortalFrameMaterialPolicy;
 import com.richardkenway.cavernreborn.app.portal.WorldPortalFrameAccess;
 import com.richardkenway.cavernreborn.app.registry.ModRegistries;
 import com.richardkenway.cavernreborn.core.state.PortalWorldIndex;
@@ -29,6 +30,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import com.richardkenway.cavernreborn.core.state.CavernPlacementTarget;
 
 public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
+    private static final Block PORTAL_FRAME_BLOCK = Blocks.MOSSY_COBBLESTONE;
     private static final int PORTAL_INNER_WIDTH = 2;
     private static final int PORTAL_INNER_HEIGHT = 3;
     private static final int PORTAL_CREATE_SEARCH_RADIUS = 4;
@@ -84,7 +86,12 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
             return Optional.empty();
         }
 
-        CavernPortalFrameDetector detector = new CavernPortalFrameDetector(new WorldPortalFrameAccess(targetLevel, portalBlock));
+        WorldPortalFrameAccess portalFrameAccess = new WorldPortalFrameAccess(
+            targetLevel,
+            portalBlock,
+            PortalFrameMaterialPolicy.of(PORTAL_FRAME_BLOCK)
+        );
+        CavernPortalFrameDetector detector = new CavernPortalFrameDetector(portalFrameAccess);
         return detector.detect(portalPos)
             .filter(frame -> !frame.isEmpty())
             .map(frame -> new PortalWorldIndex.PortalPlacement(
@@ -99,7 +106,12 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
     public Optional<PortalWorldIndex.PortalPlacement> findPortalNear(String targetDimensionId, int x, int y, int z) {
         ServerLevel targetLevel = resolveLevel(targetDimensionId);
         Block portalBlock = ModRegistries.CAVERN_PORTAL_BLOCK.get();
-        CavernPortalFrameDetector detector = new CavernPortalFrameDetector(new WorldPortalFrameAccess(targetLevel, portalBlock));
+        WorldPortalFrameAccess portalFrameAccess = new WorldPortalFrameAccess(
+            targetLevel,
+            portalBlock,
+            PortalFrameMaterialPolicy.of(PORTAL_FRAME_BLOCK)
+        );
+        CavernPortalFrameDetector detector = new CavernPortalFrameDetector(portalFrameAccess);
         Set<BlockPos> checkedOrigins = new LinkedHashSet<>();
 
         for (int dy = 0; dy <= EXISTING_PORTAL_SEARCH_HEIGHT; dy++) {
@@ -152,7 +164,13 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
             candidate.bottomLeft(),
             candidate.axis(),
             targetLevel,
-            new CavernPortalFrameActivator(new WorldPortalFrameAccess(targetLevel, ModRegistries.CAVERN_PORTAL_BLOCK.get()))
+            new CavernPortalFrameActivator(
+                new WorldPortalFrameAccess(
+                    targetLevel,
+                    ModRegistries.CAVERN_PORTAL_BLOCK.get(),
+                    PortalFrameMaterialPolicy.of(PORTAL_FRAME_BLOCK)
+                )
+            )
         ));
     }
 
@@ -176,7 +194,13 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
             candidate.bottomLeft(),
             candidate.axis(),
             targetLevel,
-            new CavernPortalFrameActivator(new WorldPortalFrameAccess(targetLevel, ModRegistries.CAVERN_PORTAL_BLOCK.get()))
+            new CavernPortalFrameActivator(
+                new WorldPortalFrameAccess(
+                    targetLevel,
+                    ModRegistries.CAVERN_PORTAL_BLOCK.get(),
+                    PortalFrameMaterialPolicy.of(PORTAL_FRAME_BLOCK)
+                )
+            )
         ));
     }
 
@@ -250,6 +274,7 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
 
                             PortalPlacementQualityScorer.PortalPlacementCandidate scoredCandidate = PortalPlacementQualityScorer.evaluate(
                                 targetLevel,
+                                PORTAL_FRAME_BLOCK,
                                 portalBlock,
                                 candidatePos,
                                 axis,
@@ -340,13 +365,13 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
         Direction left = right.getOpposite();
 
         for (int dx = -1; dx <= PORTAL_INNER_WIDTH; dx++) {
-            level.setBlock(bottomLeft.relative(right, dx).below(), Blocks.OBSIDIAN.defaultBlockState(), 3);
-            level.setBlock(bottomLeft.relative(right, dx).above(PORTAL_INNER_HEIGHT), Blocks.OBSIDIAN.defaultBlockState(), 3);
+            level.setBlock(bottomLeft.relative(right, dx).below(), PORTAL_FRAME_BLOCK.defaultBlockState(), 3);
+            level.setBlock(bottomLeft.relative(right, dx).above(PORTAL_INNER_HEIGHT), PORTAL_FRAME_BLOCK.defaultBlockState(), 3);
         }
 
         for (int dy = 0; dy < PORTAL_INNER_HEIGHT; dy++) {
-            level.setBlock(bottomLeft.relative(left).above(dy), Blocks.OBSIDIAN.defaultBlockState(), 3);
-            level.setBlock(bottomLeft.relative(right, PORTAL_INNER_WIDTH).above(dy), Blocks.OBSIDIAN.defaultBlockState(), 3);
+            level.setBlock(bottomLeft.relative(left).above(dy), PORTAL_FRAME_BLOCK.defaultBlockState(), 3);
+            level.setBlock(bottomLeft.relative(right, PORTAL_INNER_WIDTH).above(dy), PORTAL_FRAME_BLOCK.defaultBlockState(), 3);
         }
     }
 
@@ -355,7 +380,7 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
     }
 
     private static boolean isFrameReplaceable(BlockState state) {
-        return state.isAir() || state.is(Blocks.OBSIDIAN) || state.canBeReplaced();
+        return state.isAir() || state.is(PORTAL_FRAME_BLOCK) || state.canBeReplaced();
     }
 
     private static String axisId(Direction.Axis axis) {

@@ -17,10 +17,10 @@ This repository currently contains the project skeleton and a minimal content re
 - a first weighted tunnel-network layer on top of `contained_caves`, used to improve underground connectedness without reopening the baseline too aggressively
 - a first weighted ravine-like layer on top of the tunnel baseline, now rebuilt as a band-limited horizontal connector pass instead of raw entrance carving
 - basic portal UX feedback for `cooldown`, failed cavern entry and missing return-state denial cases, plus an overworld fallback return target when no saved return-state exists
-- a first legacy-like portal structure step: obsidian frames can now be activated with `cavern_portal_trigger` and fill the `cavern_portal` interior block
+- a first legacy-like portal structure step: `mossy_cobblestone` frames can now be activated with `cavern_portal_trigger` and fill the `cavern_portal` interior block
 - a first entity-inside portal flow step: walking into the `cavern_portal` interior block now triggers the main transfer loop, while the older right-click path is kept only as a creative-only debug route
 - frame-level portal identity semantics: interaction now canonicalizes a touched interior block to the portal frame anchor before building keys, cooldowns and portal placements
-- an axis-aware `cavern_portal` interior plane with thin portal geometry and frame-integrity invalidation when the obsidian frame is broken
+- an axis-aware `cavern_portal` interior plane with thin portal geometry and frame-integrity invalidation when the mossy frame is broken
 - a first destination portal placement step: travel now uses a bounded find-or-create portal target in the destination dimension instead of requiring a second portal to be placed manually every time
 - a persistent control-plane state backend: player return-state and world portal indices now survive server restarts through overworld-level NeoForge `SavedData`
 - a bounded nearby portal relink step: travel now searches for an existing destination portal near the target and relinks stale index entries before creating a new frame
@@ -29,7 +29,7 @@ This repository currently contains the project skeleton and a minimal content re
 - exact indexed portal reuse now rehydrates the actual placement from the world before promoting it, so stale stored axis values do not keep reinforcing themselves
 - axis-aware portal placement semantics: destination portal indices now persist portal axis, and arrival is centered to the interior portal plane instead of the raw frame anchor
 - bounded placement-quality scoring for auto-created destination portals: creation now prefers closer and safer frame anchors instead of the first valid spot in the search window
-- aligned portal creation and activation semantics: auto-create and regeneration now accept only interiors that the activator can actually fill, avoiding naked obsidian frames from activation mismatches
+- aligned portal creation and activation semantics: auto-create and regeneration now accept only interiors that the activator can actually fill, avoiding naked mossy frames from activation mismatches
 - fallback return now teleports directly to the bounded overworld fallback target instead of running destination-portal creation logic near shared spawn
 - bounded portal-relative exit semantics: destination arrival now preserves a clamped lateral offset from the source portal plane instead of always dropping the player into the exact portal center
 - bounded portal-relative facing semantics: destination exit yaw now remaps stored approach-facing by portal axis instead of always preserving the pre-teleport player yaw
@@ -53,6 +53,7 @@ No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 - The current portal flow now supports an axis-aware thin interior portal plane with frame-integrity invalidation; the older right-click path is restricted to a creative-only debug route, but full legacy collision semantics still needs manual validation.
 - Portal interaction now canonicalizes touched interior blocks to a frame-level anchor, but this still needs manual validation across different interior blocks of the same portal and across the creative debug route.
 - Destination portal placement is now automatic in a bounded search-relink-regenerate-or-create form, but it still does not implement full legacy cache, wider radius search and broader regeneration semantics.
+- `CAVERN` now uses `minecraft:mossy_cobblestone` as the canonical frame material for validation, activation and bounded auto-create/regenerate flow, but trigger semantics still remain on the temporary universal `cavern_portal_trigger` path.
 - Portal index churn now prefers the most recently reused placement, but broader eviction and history policies for repeated portal churn still are not implemented.
 - Persistent world portal-index loading now skips invalid placement entries instead of dropping the entire world index, but broader corruption-repair tooling is still not implemented.
 - Destination portal arrival is now centered by stored portal axis, but this still needs manual in-game validation for both axes and for relinked/recreated portals after index churn.
@@ -60,7 +61,7 @@ No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 - Portal-relative facing now remaps yaw in a bounded way for same-axis and cross-axis transfers, but full legacy orientation parity still needs manual validation before the older fallback path can be retired.
 - Collision-triggered portal entry now derives `approachFacing` from real motion across the portal plane before falling back to look direction, but this still needs manual validation for backpedal and strafe entry cases.
 - Auto-created destination portals now use bounded placement-quality scoring, but the resulting anchor quality still needs manual validation in awkward terrain, near hazards and after repeated recreate/relink scenarios.
-- Portal create/regenerate now uses the same interior contract as activation, but this still needs manual validation in terrain with replaceable non-air filler to confirm that failed activation no longer leaves naked obsidian frames behind.
+- Portal create/regenerate now uses the same interior contract as activation, but this still needs manual validation in terrain with replaceable non-air filler to confirm that failed activation no longer leaves naked mossy frames behind.
 - Portal denial feedback currently uses short overlay messages only; there is no broader notification policy yet.
 - Cooldown and feedback suppression windows are fixed tick-based values and may need tuning after manual playtesting.
 - Legacy portal branches such as `portalMenu`, shop flow and rank gating are intentionally not part of the current MVP slice.
