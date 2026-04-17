@@ -18,7 +18,7 @@ This repository currently contains the project skeleton and a minimal content re
 - a first weighted ravine-like layer on top of the tunnel baseline, now rebuilt as a band-limited horizontal connector pass instead of raw entrance carving
 - basic portal UX feedback for `cooldown`, failed cavern entry and missing return-state denial cases, plus an overworld fallback return target when no saved return-state exists
 - a bounded legacy-like `CAVERN` ritual activation step: `mossy_cobblestone` frames can now be activated with `minecraft:emerald` via a server-side frame-click hook and fill the `cavern_portal` interior block
-- a first entity-inside portal flow step: walking into the `cavern_portal` interior block now triggers the main transfer loop, while block right-click behavior is intentionally debug-only and limited to creative mode
+- a first entity-inside portal flow step: walking into the `cavern_portal` interior block now triggers the main transfer loop; right-click interaction is disabled so runtime usage is now collision-only
 - frame-level portal identity semantics: interaction now canonicalizes a touched interior block to the portal frame anchor before building keys, cooldowns and portal placements
 - an axis-aware `cavern_portal` interior plane with thin portal geometry and frame-integrity invalidation when the mossy frame is broken
 - a first destination portal placement step: travel now uses a bounded find-or-create portal target in the destination dimension instead of requiring a second portal to be placed manually every time

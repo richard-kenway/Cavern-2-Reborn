@@ -59,9 +59,23 @@ class CavernPortalBlockTest {
     }
 
     @Test
-    void allowsRightClickDebugRouteRequiresCreativeMode() {
-        assertTrue(CavernPortalBlock.allowsRightClickDebugRoute(true));
-        assertFalse(CavernPortalBlock.allowsRightClickDebugRoute(false));
+    void shouldIgnoreCollisionEntryRejectsInvalidPlayerStates() {
+        assertTrue(CavernPortalBlock.shouldIgnoreCollisionEntry(false, false, false, false, false));
+        assertTrue(CavernPortalBlock.shouldIgnoreCollisionEntry(true, true, false, false, false));
+        assertTrue(CavernPortalBlock.shouldIgnoreCollisionEntry(true, false, true, false, false));
+        assertTrue(CavernPortalBlock.shouldIgnoreCollisionEntry(true, false, false, true, false));
+        assertTrue(CavernPortalBlock.shouldIgnoreCollisionEntry(true, false, false, false, true));
+    }
+
+    @Test
+    void shouldIgnoreCollisionEntryAllowsValidServerPlayerState() {
+        assertFalse(CavernPortalBlock.shouldIgnoreCollisionEntry(true, false, false, false, false));
+    }
+
+    @Test
+    void shouldApplyPortalCooldownMatchesHandledOutcome() {
+        assertTrue(CavernPortalBlock.shouldApplyPortalCooldown(true));
+        assertFalse(CavernPortalBlock.shouldApplyPortalCooldown(false));
     }
 
     private static final class FrameAccess implements CavernPortalFrameDetector.FrameAccess {

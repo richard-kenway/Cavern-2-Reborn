@@ -12,9 +12,8 @@ import com.richardkenway.cavernreborn.app.portal.WorldPortalFrameAccess;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -27,10 +26,8 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.server.level.ServerPlayer;
 
 public final class CavernPortalBlock extends Block {
     public static final EnumProperty<Direction.Axis> AXIS = EnumProperty.create("axis", Direction.Axis.class, Direction.Axis.X, Direction.Axis.Z);
@@ -47,25 +44,6 @@ public final class CavernPortalBlock extends Block {
     }
 
     @Override
-    public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if (player == null || !allowsRightClickDebugRoute(player.isCreative())) {
-            return InteractionResult.PASS;
-        }
-
-        if (level.isClientSide()) {
-            return InteractionResult.SUCCESS;
-        }
-
-        if (!(player instanceof ServerPlayer serverPlayer)) {
-            return InteractionResult.PASS;
-        }
-
-        CavernPortalInteractionContext context = new NeoForgeCavernPortalInteractionContext(serverPlayer, level, pos, hitResult);
-        CavernPortalInteractionOutcome outcome = interactionServiceSupplier.get().use(context);
-        return outcome.handled() ? InteractionResult.CONSUME : InteractionResult.PASS;
-    }
-
-    @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         if (level.isClientSide()) {
             return;
@@ -75,17 +53,19 @@ public final class CavernPortalBlock extends Block {
             return;
         }
 
-        if (!serverPlayer.isAlive()
-            || serverPlayer.isSpectator()
-            || serverPlayer.isPassenger()
-            || serverPlayer.isVehicle()
-            || serverPlayer.isOnPortalCooldown()) {
+        if (shouldIgnoreCollisionEntry(
+            serverPlayer.isAlive(),
+            serverPlayer.isSpectator(),
+            serverPlayer.isPassenger(),
+            serverPlayer.isVehicle(),
+            serverPlayer.isOnPortalCooldown()
+        )) {
             return;
         }
 
         CavernPortalInteractionContext context = NeoForgeCavernPortalInteractionContext.forCollision(serverPlayer, level, pos);
         CavernPortalInteractionOutcome outcome = interactionServiceSupplier.get().use(context);
-        if (outcome.handled()) {
+        if (shouldApplyPortalCooldown(outcome.handled())) {
             serverPlayer.setPortalCooldown();
         }
     }
@@ -143,7 +123,21 @@ public final class CavernPortalBlock extends Block {
         return axis == Direction.Axis.X ? X_AXIS_SHAPE : Z_AXIS_SHAPE;
     }
 
-    static boolean allowsRightClickDebugRoute(boolean creativeMode) {
-        return creativeMode;
+    static boolean shouldIgnoreCollisionEntry(
+        boolean alive,
+        boolean spectator,
+        boolean passenger,
+        boolean vehicle,
+        boolean onPortalCooldown
+    ) {
+        return !alive
+            || spectator
+            || passenger
+            || vehicle
+            || onPortalCooldown;
+    }
+
+    static boolean shouldApplyPortalCooldown(boolean handled) {
+        return handled;
     }
 }
