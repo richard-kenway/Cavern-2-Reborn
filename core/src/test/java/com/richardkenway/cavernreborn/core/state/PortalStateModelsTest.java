@@ -56,4 +56,35 @@ class PortalStateModelsTest {
         assertEquals(firstPlacement, index.firstPlacementFor("cavern").orElseThrow());
         assertEquals(2, index.placementsFor("cavern").size());
     }
+
+    @Test
+    void portalWorldIndexReplacingIndexedPlacementRetainsCompetingEntries() {
+        PortalWorldIndex.PortalPlacement stalePlacement = new PortalWorldIndex.PortalPlacement(1, 2, 3);
+        PortalWorldIndex.PortalPlacement replacementPlacement = new PortalWorldIndex.PortalPlacement(4, 5, 6);
+        PortalWorldIndex.PortalPlacement competingPlacement = new PortalWorldIndex.PortalPlacement(7, 8, 9);
+
+        PortalWorldIndex index = PortalWorldIndex.empty()
+            .withPortal("cavern", stalePlacement)
+            .withPortal("cavern", competingPlacement)
+            .withReplacementPortal("cavern", stalePlacement, replacementPlacement);
+
+        assertEquals(replacementPlacement, index.firstPlacementFor("cavern").orElseThrow());
+        assertEquals(2, index.placementsFor("cavern").size());
+        assertEquals(
+            competingPlacement,
+            index.placementsFor("cavern").stream().skip(1).findFirst().orElseThrow()
+        );
+    }
+
+    @Test
+    void portalWorldIndexReplacingWithSamePlacementDoesNotDropHistory() {
+        PortalWorldIndex.PortalPlacement firstPlacement = new PortalWorldIndex.PortalPlacement(1, 2, 3);
+
+        PortalWorldIndex index = PortalWorldIndex.empty()
+            .withPortal("cavern", firstPlacement)
+            .withReplacementPortal("cavern", firstPlacement, firstPlacement);
+
+        assertEquals(1, index.placementsFor("cavern").size());
+        assertEquals(firstPlacement, index.firstPlacementFor("cavern").orElseThrow());
+    }
 }

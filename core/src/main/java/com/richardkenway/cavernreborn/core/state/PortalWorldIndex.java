@@ -31,6 +31,23 @@ public record PortalWorldIndex(Map<String, Set<PortalPlacement>> portalsByKey) {
         return new PortalWorldIndex(updatedIndex);
     }
 
+    public PortalWorldIndex withReplacementPortal(
+        String portalKey,
+        PortalPlacement stalePlacement,
+        PortalPlacement replacementPlacement
+    ) {
+        String normalizedPortalKey = requireText(portalKey, "portalKey");
+        Objects.requireNonNull(stalePlacement, "stalePlacement");
+        Objects.requireNonNull(replacementPlacement, "replacementPlacement");
+
+        PortalWorldIndex refreshedIndex = withPortal(normalizedPortalKey, replacementPlacement);
+        if (stalePlacement.equals(replacementPlacement)) {
+            return refreshedIndex;
+        }
+
+        return refreshedIndex.withoutPortal(normalizedPortalKey, stalePlacement);
+    }
+
     public PortalWorldIndex withoutPortal(String portalKey, PortalPlacement placement) {
         String normalizedPortalKey = requireText(portalKey, "portalKey");
         Objects.requireNonNull(placement, "placement");
