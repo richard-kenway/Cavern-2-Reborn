@@ -7,8 +7,10 @@ import com.richardkenway.cavernreborn.app.portal.CavernPortalFrameDetector;
 import com.richardkenway.cavernreborn.app.portal.CavernPortalInteractionContext;
 import com.richardkenway.cavernreborn.app.portal.CavernPortalInteractionOutcome;
 import com.richardkenway.cavernreborn.app.portal.CavernPortalInteractionService;
+import com.richardkenway.cavernreborn.app.portal.CavernNonPlayerPortalInteractionService;
 import com.richardkenway.cavernreborn.app.portal.PortalCollisionEligibilityPolicy;
 import com.richardkenway.cavernreborn.app.portal.NeoForgeCavernPortalInteractionContext;
+import com.richardkenway.cavernreborn.app.portal.NeoForgeNonPlayerPortalInteractionContext;
 import com.richardkenway.cavernreborn.app.portal.WorldPortalFrameAccess;
 
 import net.minecraft.core.BlockPos;
@@ -37,10 +39,16 @@ public final class CavernPortalBlock extends Block {
     private static final VoxelShape Z_AXIS_SHAPE = Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 16.0D);
 
     private final Supplier<CavernPortalInteractionService> interactionServiceSupplier;
+    private final Supplier<CavernNonPlayerPortalInteractionService> nonPlayerInteractionServiceSupplier;
 
-    public CavernPortalBlock(BlockBehaviour.Properties properties, Supplier<CavernPortalInteractionService> interactionServiceSupplier) {
+    public CavernPortalBlock(
+        BlockBehaviour.Properties properties,
+        Supplier<CavernPortalInteractionService> interactionServiceSupplier,
+        Supplier<CavernNonPlayerPortalInteractionService> nonPlayerInteractionServiceSupplier
+    ) {
         super(properties);
         this.interactionServiceSupplier = Objects.requireNonNull(interactionServiceSupplier, "interactionServiceSupplier");
+        this.nonPlayerInteractionServiceSupplier = Objects.requireNonNull(nonPlayerInteractionServiceSupplier, "nonPlayerInteractionServiceSupplier");
         registerDefaultState(stateDefinition.any().setValue(AXIS, Direction.Axis.X));
     }
 
@@ -53,18 +61,26 @@ public final class CavernPortalBlock extends Block {
         PortalCollisionEligibilityPolicy.PortalCollisionEligibility eligibility =
             PortalCollisionEligibilityPolicy.classify(entity, entity.isOnPortalCooldown());
 
-        if (!(entity instanceof ServerPlayer serverPlayer)) {
+        if (entity instanceof ServerPlayer serverPlayer) {
+            if (shouldDispatchCollisionTransport(eligibility, true)) {
+                CavernPortalInteractionContext context = NeoForgeCavernPortalInteractionContext.forCollision(serverPlayer, level, pos);
+                CavernPortalInteractionOutcome outcome = interactionServiceSupplier.get().use(context);
+                if (shouldApplyPortalCooldown(outcome.handled())) {
+                    serverPlayer.setPortalCooldown();
+                }
+            }
             return;
         }
 
-        if (!shouldDispatchCollisionTransport(eligibility, true)) {
+        if (!shouldDispatchCollisionTransport(eligibility, false)) {
             return;
         }
 
-        CavernPortalInteractionContext context = NeoForgeCavernPortalInteractionContext.forCollision(serverPlayer, level, pos);
-        CavernPortalInteractionOutcome outcome = interactionServiceSupplier.get().use(context);
+        CavernPortalInteractionOutcome outcome = nonPlayerInteractionServiceSupplier.get().use(
+            NeoForgeNonPlayerPortalInteractionContext.forCollision(entity, level, pos)
+        );
         if (shouldApplyPortalCooldown(outcome.handled())) {
-            serverPlayer.setPortalCooldown();
+            entity.setPortalCooldown();
         }
     }
 
@@ -129,8 +145,7 @@ public final class CavernPortalBlock extends Block {
         PortalCollisionEligibilityPolicy.PortalCollisionEligibility eligibility,
         boolean serverPlayerEntity
     ) {
-        return serverPlayerEntity
-            && eligibility.shouldTriggerPortalCollision()
-            && eligibility.shouldTransportPlayer();
+        return eligibility.shouldTriggerPortalCollision()
+            && (serverPlayerEntity ? eligibility.shouldTransportPlayer() : eligibility == PortalCollisionEligibilityPolicy.PortalCollisionEligibility.ALLOW_NON_PLAYER);
     }
 }

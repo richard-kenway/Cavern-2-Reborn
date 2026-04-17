@@ -2,6 +2,7 @@ package com.richardkenway.cavernreborn.app.state;
 
 import com.richardkenway.cavernreborn.app.dimension.CavernTravelBridge;
 import com.richardkenway.cavernreborn.app.portal.CavernPortalInteractionService;
+import com.richardkenway.cavernreborn.app.portal.CavernNonPlayerPortalInteractionService;
 import com.richardkenway.cavernreborn.app.portal.PortalInteractionCooldowns;
 import com.richardkenway.cavernreborn.core.CavernProject;
 import com.richardkenway.cavernreborn.core.state.CavernDimensionTravelPlanner;
@@ -17,6 +18,7 @@ public final class CavernStateBootstrap {
     private final CavernTravelBridge cavernTravelBridge;
     private final PortalInteractionCooldowns portalInteractionCooldowns;
     private final CavernPortalInteractionService cavernPortalInteractionService;
+    private final CavernNonPlayerPortalInteractionService nonPlayerPortalInteractionService;
 
     public CavernStateBootstrap() {
         this(new SavedDataBackedPlayerReturnStateRepository(), new SavedDataBackedWorldPortalIndexRepository());
@@ -33,6 +35,11 @@ public final class CavernStateBootstrap {
         this.cavernDimensionTravelPlanner = new CavernDimensionTravelPlanner(portalLoopService);
         this.cavernTravelBridge = new CavernTravelBridge(cavernDimensionTravelPlanner, worldPortalIndexStore);
         this.cavernPortalInteractionService = new CavernPortalInteractionService(cavernTravelBridge, portalInteractionCooldowns);
+        this.nonPlayerPortalInteractionService = new CavernNonPlayerPortalInteractionService(
+            cavernTravelBridge,
+            portalLoopService,
+            worldPortalIndexStore
+        );
     }
 
     public PlayerReturnStateStore playerReturnStateStore() {
@@ -61,6 +68,10 @@ public final class CavernStateBootstrap {
 
     public CavernPortalInteractionService cavernPortalInteractionService() {
         return cavernPortalInteractionService;
+    }
+
+    public CavernNonPlayerPortalInteractionService nonPlayerPortalInteractionService() {
+        return nonPlayerPortalInteractionService;
     }
 
     public String describe() {

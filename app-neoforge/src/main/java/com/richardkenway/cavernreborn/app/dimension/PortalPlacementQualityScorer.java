@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 
-final class PortalPlacementQualityScorer {
+public final class PortalPlacementQualityScorer {
     private static final Set<String> DANGEROUS_BLOCK_IDS = Set.of(
         "minecraft:lava",
         "minecraft:magma_block",
@@ -37,7 +37,7 @@ final class PortalPlacementQualityScorer {
     private PortalPlacementQualityScorer() {
     }
 
-    static PortalPlacementCandidate evaluate(
+    public static PortalPlacementCandidate evaluate(
         ServerLevel level,
         Block frameBlock,
         Block portalBlock,
@@ -64,11 +64,11 @@ final class PortalPlacementQualityScorer {
         );
     }
 
-    static boolean isBetterCandidate(PortalPlacementCandidate candidate, PortalPlacementCandidate incumbent) {
+    public static boolean isBetterCandidate(PortalPlacementCandidate candidate, PortalPlacementCandidate incumbent) {
         return isBetterCandidate(candidate, incumbent, null);
     }
 
-    static boolean isBetterCandidate(
+    public static boolean isBetterCandidate(
         PortalPlacementCandidate candidate,
         PortalPlacementCandidate incumbent,
         Direction.Axis preferredAxis
@@ -197,7 +197,7 @@ final class PortalPlacementQualityScorer {
         return replacementBlocks;
     }
 
-    static boolean requiresReplacement(BlockState state, Block frameBlock, Block portalBlock) {
+    public static boolean requiresReplacement(BlockState state, Block frameBlock, Block portalBlock) {
         return !state.isAir() && !state.is(frameBlock) && !state.is(portalBlock);
     }
 
@@ -219,7 +219,7 @@ final class PortalPlacementQualityScorer {
         return fluidState.is(FluidTags.LAVA) || fluidState.is(FluidTags.WATER);
     }
 
-    record PortalPlacementCandidate(
+    public record PortalPlacementCandidate(
         BlockPos bottomLeft,
         Direction.Axis axis,
         int horizontalDistance,

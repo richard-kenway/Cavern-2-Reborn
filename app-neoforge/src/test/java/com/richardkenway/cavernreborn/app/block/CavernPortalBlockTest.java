@@ -66,7 +66,7 @@ class CavernPortalBlockTest {
     }
 
     @Test
-    void shouldDispatchCollisionTransportOnlyForTransportEligibleServerPlayers() {
+    void shouldDispatchCollisionTransportRespectsPlayerAndNonPlayerEligibility() {
         assertTrue(CavernPortalBlock.shouldDispatchCollisionTransport(
             PortalCollisionEligibilityPolicy.PortalCollisionEligibility.ALLOW_PLAYER,
             true
@@ -82,9 +82,19 @@ class CavernPortalBlockTest {
             true
         ));
 
+        assertTrue(CavernPortalBlock.shouldDispatchCollisionTransport(
+            PortalCollisionEligibilityPolicy.PortalCollisionEligibility.ALLOW_NON_PLAYER,
+            false
+        ));
+
         assertFalse(CavernPortalBlock.shouldDispatchCollisionTransport(
             PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_CROUCHING,
             true
+        ));
+
+        assertFalse(CavernPortalBlock.shouldDispatchCollisionTransport(
+            PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_CROUCHING,
+            false
         ));
     }
 
