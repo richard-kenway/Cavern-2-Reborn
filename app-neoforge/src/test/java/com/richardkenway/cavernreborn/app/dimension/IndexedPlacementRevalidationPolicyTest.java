@@ -128,20 +128,30 @@ class IndexedPlacementRevalidationPolicyTest {
     }
 
     @Test
-    void retainedPortalUpdatePreservesDisplacedIndexedPlacements() {
-        PortalWorldIndex.PortalPlacement displacedPlacement = new PortalWorldIndex.PortalPlacement(30, 70, 30, PortalWorldIndex.PortalPlacement.AXIS_X);
+    void retainedPortalUpdateLimitsDisplacedIndexedPlacements() {
         PortalWorldIndex.PortalPlacement resolvedPlacement = new PortalWorldIndex.PortalPlacement(2, 64, 0, PortalWorldIndex.PortalPlacement.AXIS_X);
         PortalWorldIndex.PortalPlacement competingPlacement = new PortalWorldIndex.PortalPlacement(10, 64, 10, PortalWorldIndex.PortalPlacement.AXIS_X);
+        PortalWorldIndex.PortalPlacement displacedPlacementA = new PortalWorldIndex.PortalPlacement(30, 70, 30, PortalWorldIndex.PortalPlacement.AXIS_X);
+        PortalWorldIndex.PortalPlacement displacedPlacementB = new PortalWorldIndex.PortalPlacement(60, 70, 60, PortalWorldIndex.PortalPlacement.AXIS_X);
+        PortalWorldIndex.PortalPlacement displacedPlacementC = new PortalWorldIndex.PortalPlacement(90, 70, 90, PortalWorldIndex.PortalPlacement.AXIS_X);
+        PortalWorldIndex.PortalPlacement displacedPlacementD = new PortalWorldIndex.PortalPlacement(120, 70, 120, PortalWorldIndex.PortalPlacement.AXIS_X);
 
-        PortalWorldIndex worldIndex = PortalWorldIndex.empty()
-            .withPortal("cavern", displacedPlacement)
-            .withPortal("cavern", resolvedPlacement)
-            .withPortal("cavern", competingPlacement);
+        Map<String, Set<PortalWorldIndex.PortalPlacement>> portalsByKey = new LinkedHashMap<>();
+        Set<PortalWorldIndex.PortalPlacement> placements = new LinkedHashSet<>();
+        placements.add(resolvedPlacement);
+        placements.add(competingPlacement);
+        placements.add(displacedPlacementA);
+        placements.add(displacedPlacementB);
+        placements.add(displacedPlacementC);
+        placements.add(displacedPlacementD);
+        portalsByKey.put("cavern", placements);
+
+        PortalWorldIndex worldIndex = new PortalWorldIndex(portalsByKey);
         IndexedPlacementRevalidationPolicy.IndexedPlacementRevalidationSnapshot snapshot =
             new IndexedPlacementRevalidationPolicy.IndexedPlacementRevalidationSnapshot(
                 Set.of(resolvedPlacement),
                 Set.of(),
-                Set.of(displacedPlacement),
+                Set.of(displacedPlacementA, displacedPlacementB, displacedPlacementC, displacedPlacementD),
                 Set.of(),
                 Map.of(),
                 Map.of()
@@ -150,14 +160,18 @@ class IndexedPlacementRevalidationPolicyTest {
         PortalWorldIndex refreshedIndex = snapshot.withRetainedPortal(
             "cavern",
             worldIndex,
-            resolvedPlacement
+            resolvedPlacement,
+            Set.of(displacedPlacementA, displacedPlacementB, displacedPlacementC, displacedPlacementD)
         );
 
         Set<PortalWorldIndex.PortalPlacement> refreshedPlacements = refreshedIndex.placementsFor("cavern");
-        assertEquals(3, refreshedPlacements.size());
-        assertTrue(refreshedPlacements.contains(displacedPlacement));
+        assertEquals(4, refreshedPlacements.size());
         assertTrue(refreshedPlacements.contains(resolvedPlacement));
         assertTrue(refreshedPlacements.contains(competingPlacement));
+        assertTrue(refreshedPlacements.contains(displacedPlacementA));
+        assertTrue(refreshedPlacements.contains(displacedPlacementB));
+        assertFalse(refreshedPlacements.contains(displacedPlacementC));
+        assertFalse(refreshedPlacements.contains(displacedPlacementD));
         assertEquals(resolvedPlacement, refreshedIndex.firstPlacementFor("cavern").orElseThrow());
     }
 
@@ -228,21 +242,33 @@ class IndexedPlacementRevalidationPolicyTest {
     }
 
     @Test
-    void retainedReplacementUpdateDropsDeadIndexedPlacementsBeforeSwappingStalePlacement() {
+    void retainedReplacementUpdateLimitsDisplacedIndexedPlacementsBeforeSwappingStalePlacement() {
         PortalWorldIndex.PortalPlacement stalePlacement = new PortalWorldIndex.PortalPlacement(30, 70, 30, PortalWorldIndex.PortalPlacement.AXIS_Z);
         PortalWorldIndex.PortalPlacement replacementPlacement = new PortalWorldIndex.PortalPlacement(31, 70, 30, PortalWorldIndex.PortalPlacement.AXIS_Z);
         PortalWorldIndex.PortalPlacement survivingPlacement = new PortalWorldIndex.PortalPlacement(10, 70, 10, PortalWorldIndex.PortalPlacement.AXIS_X);
+        PortalWorldIndex.PortalPlacement displacedPlacementA = new PortalWorldIndex.PortalPlacement(40, 70, 40, PortalWorldIndex.PortalPlacement.AXIS_X);
+        PortalWorldIndex.PortalPlacement displacedPlacementB = new PortalWorldIndex.PortalPlacement(60, 70, 60, PortalWorldIndex.PortalPlacement.AXIS_X);
+        PortalWorldIndex.PortalPlacement displacedPlacementC = new PortalWorldIndex.PortalPlacement(80, 70, 80, PortalWorldIndex.PortalPlacement.AXIS_Z);
+        PortalWorldIndex.PortalPlacement displacedPlacementD = new PortalWorldIndex.PortalPlacement(100, 70, 100, PortalWorldIndex.PortalPlacement.AXIS_Z);
         PortalWorldIndex.PortalPlacement deadPlacement = new PortalWorldIndex.PortalPlacement(90, 70, 90, PortalWorldIndex.PortalPlacement.AXIS_X);
 
-        PortalWorldIndex worldIndex = PortalWorldIndex.empty()
-            .withPortal("cavern", stalePlacement)
-            .withPortal("cavern", survivingPlacement)
-            .withPortal("cavern", deadPlacement);
+        Map<String, Set<PortalWorldIndex.PortalPlacement>> portalsByKey = new LinkedHashMap<>();
+        Set<PortalWorldIndex.PortalPlacement> placements = new LinkedHashSet<>();
+        placements.add(stalePlacement);
+        placements.add(survivingPlacement);
+        placements.add(displacedPlacementA);
+        placements.add(displacedPlacementB);
+        placements.add(displacedPlacementC);
+        placements.add(displacedPlacementD);
+        placements.add(deadPlacement);
+        portalsByKey.put("cavern", placements);
+
+        PortalWorldIndex worldIndex = new PortalWorldIndex(portalsByKey);
         IndexedPlacementRevalidationPolicy.IndexedPlacementRevalidationSnapshot snapshot =
             new IndexedPlacementRevalidationPolicy.IndexedPlacementRevalidationSnapshot(
                 Set.of(),
                 Set.of(stalePlacement),
-                Set.of(),
+                Set.of(displacedPlacementA, displacedPlacementB, displacedPlacementC, displacedPlacementD),
                 Set.of(deadPlacement),
                 Map.of(),
                 Map.of(stalePlacement, replacementPlacement)
@@ -252,15 +278,20 @@ class IndexedPlacementRevalidationPolicyTest {
             "cavern",
             worldIndex,
             stalePlacement,
-            replacementPlacement
+            replacementPlacement,
+            Set.of(displacedPlacementA, displacedPlacementB, displacedPlacementC, displacedPlacementD)
         );
 
         Set<PortalWorldIndex.PortalPlacement> refreshedPlacements = refreshedIndex.placementsFor("cavern");
-        assertEquals(2, refreshedPlacements.size());
+        assertEquals(4, refreshedPlacements.size());
         assertFalse(refreshedPlacements.contains(deadPlacement));
         assertFalse(refreshedPlacements.contains(stalePlacement));
         assertTrue(refreshedPlacements.contains(replacementPlacement));
         assertTrue(refreshedPlacements.contains(survivingPlacement));
+        assertTrue(refreshedPlacements.contains(displacedPlacementA));
+        assertTrue(refreshedPlacements.contains(displacedPlacementB));
+        assertFalse(refreshedPlacements.contains(displacedPlacementC));
+        assertFalse(refreshedPlacements.contains(displacedPlacementD));
         assertEquals(replacementPlacement, refreshedIndex.firstPlacementFor("cavern").orElseThrow());
     }
 

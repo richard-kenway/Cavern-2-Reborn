@@ -137,16 +137,16 @@ class PortalStateModelsTest {
     }
 
     @Test
-    void portalWorldIndexPromotesFreshPlacementsAheadOfLowerPriorityHistoryUnderCapPressure() {
+    void portalWorldIndexLimitsLowerPriorityHistoryWhilePromotingFreshPlacementsUnderCapPressure() {
         int maxPlacementsPerPortalKey = PortalWorldIndex.MAX_PLACEMENTS_PER_PORTAL_KEY;
         PortalWorldIndex.PortalPlacement livePlacementA = new PortalWorldIndex.PortalPlacement(1, 64, 1);
         PortalWorldIndex.PortalPlacement livePlacementB = new PortalWorldIndex.PortalPlacement(2, 64, 2);
         PortalWorldIndex.PortalPlacement livePlacementC = new PortalWorldIndex.PortalPlacement(3, 64, 3);
         PortalWorldIndex.PortalPlacement livePlacementD = new PortalWorldIndex.PortalPlacement(4, 64, 4);
-        PortalWorldIndex.PortalPlacement livePlacementE = new PortalWorldIndex.PortalPlacement(5, 64, 5);
-        PortalWorldIndex.PortalPlacement livePlacementF = new PortalWorldIndex.PortalPlacement(6, 64, 6);
         PortalWorldIndex.PortalPlacement displacedPlacementA = new PortalWorldIndex.PortalPlacement(30, 70, 30, PortalWorldIndex.PortalPlacement.AXIS_Z);
-        PortalWorldIndex.PortalPlacement displacedPlacementB = new PortalWorldIndex.PortalPlacement(90, 70, 90, PortalWorldIndex.PortalPlacement.AXIS_X);
+        PortalWorldIndex.PortalPlacement displacedPlacementB = new PortalWorldIndex.PortalPlacement(60, 70, 60, PortalWorldIndex.PortalPlacement.AXIS_X);
+        PortalWorldIndex.PortalPlacement displacedPlacementC = new PortalWorldIndex.PortalPlacement(90, 70, 90, PortalWorldIndex.PortalPlacement.AXIS_X);
+        PortalWorldIndex.PortalPlacement displacedPlacementD = new PortalWorldIndex.PortalPlacement(120, 70, 120, PortalWorldIndex.PortalPlacement.AXIS_Z);
         PortalWorldIndex.PortalPlacement freshPlacement = new PortalWorldIndex.PortalPlacement(99, 70, 99, PortalWorldIndex.PortalPlacement.AXIS_X);
 
         Set<PortalWorldIndex.PortalPlacement> placements = new LinkedHashSet<>();
@@ -154,10 +154,10 @@ class PortalStateModelsTest {
         placements.add(livePlacementB);
         placements.add(livePlacementC);
         placements.add(livePlacementD);
-        placements.add(livePlacementE);
-        placements.add(livePlacementF);
         placements.add(displacedPlacementA);
         placements.add(displacedPlacementB);
+        placements.add(displacedPlacementC);
+        placements.add(displacedPlacementD);
 
         Map<String, Set<PortalWorldIndex.PortalPlacement>> portalsByKey = new LinkedHashMap<>();
         portalsByKey.put("cavern", placements);
@@ -166,10 +166,9 @@ class PortalStateModelsTest {
         PortalWorldIndex refreshedIndex = index.withPortal(
             "cavern",
             freshPlacement,
-            Set.of(displacedPlacementA, displacedPlacementB)
+            Set.of(displacedPlacementA, displacedPlacementB, displacedPlacementC, displacedPlacementD)
         );
 
-        assertEquals(maxPlacementsPerPortalKey, refreshedIndex.placementsFor("cavern").size());
         assertEquals(freshPlacement, refreshedIndex.firstPlacementFor("cavern").orElseThrow());
         assertEquals(
             List.of(
@@ -178,16 +177,18 @@ class PortalStateModelsTest {
                 livePlacementB,
                 livePlacementC,
                 livePlacementD,
-                livePlacementE,
-                livePlacementF,
-                displacedPlacementA
+                displacedPlacementA,
+                displacedPlacementB
             ),
             List.copyOf(refreshedIndex.placementsFor("cavern"))
         );
         assertTrue(refreshedIndex.placementsFor("cavern").contains(livePlacementA));
-        assertTrue(refreshedIndex.placementsFor("cavern").contains(livePlacementF));
         assertTrue(refreshedIndex.placementsFor("cavern").contains(displacedPlacementA));
-        assertFalse(refreshedIndex.placementsFor("cavern").contains(displacedPlacementB));
+        assertTrue(refreshedIndex.placementsFor("cavern").contains(displacedPlacementB));
+        assertFalse(refreshedIndex.placementsFor("cavern").contains(displacedPlacementC));
+        assertFalse(refreshedIndex.placementsFor("cavern").contains(displacedPlacementD));
+        assertEquals(7, refreshedIndex.placementsFor("cavern").size());
+        assertTrue(refreshedIndex.placementsFor("cavern").size() <= maxPlacementsPerPortalKey);
     }
 
     @Test

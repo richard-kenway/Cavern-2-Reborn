@@ -10,6 +10,7 @@ import java.util.Set;
 
 public record PortalWorldIndex(Map<String, Set<PortalPlacement>> portalsByKey) {
     static final int MAX_PLACEMENTS_PER_PORTAL_KEY = 8;
+    private static final int MAX_DISPLACED_PLACEMENTS_PER_PORTAL_KEY = 2;
 
     public PortalWorldIndex {
         portalsByKey = copyIndex(portalsByKey);
@@ -122,10 +123,21 @@ public record PortalWorldIndex(Map<String, Set<PortalPlacement>> portalsByKey) {
             .filter(existingPlacement -> !existingPlacement.equals(prioritizedPlacement))
             .filter(existingPlacement -> !lowerPriorityPlacements.contains(existingPlacement))
             .forEach(prioritizedPlacements::add);
-        existingPlacements.stream()
-            .filter(existingPlacement -> !existingPlacement.equals(prioritizedPlacement))
-            .filter(lowerPriorityPlacements::contains)
-            .forEach(prioritizedPlacements::add);
+        int retainedLowerPriorityPlacements = 0;
+        for (PortalPlacement existingPlacement : existingPlacements) {
+            if (existingPlacement.equals(prioritizedPlacement)) {
+                continue;
+            }
+            if (!lowerPriorityPlacements.contains(existingPlacement)) {
+                continue;
+            }
+            if (retainedLowerPriorityPlacements >= MAX_DISPLACED_PLACEMENTS_PER_PORTAL_KEY) {
+                break;
+            }
+
+            prioritizedPlacements.add(existingPlacement);
+            retainedLowerPriorityPlacements += 1;
+        }
         return prioritizedPlacements;
     }
 
