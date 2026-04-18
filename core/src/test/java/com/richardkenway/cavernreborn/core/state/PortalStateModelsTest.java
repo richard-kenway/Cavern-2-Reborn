@@ -128,11 +128,12 @@ class PortalStateModelsTest {
 
         PortalWorldIndex.PortalPlacement stalePlacement = new PortalWorldIndex.PortalPlacement(3, 0, 3);
         PortalWorldIndex.PortalPlacement replacementPlacement = new PortalWorldIndex.PortalPlacement(99, 0, 99);
+        PortalWorldIndex.DisplacedPortalRetention retentionHint = PortalWorldIndex.DisplacedPortalRetention.none();
         PortalWorldIndex replacedIndex = index.withRetainedReplacementPortal(
             "cavern",
             stalePlacement,
             replacementPlacement,
-            Set.of()
+            retentionHint
         );
 
         assertEquals(replacementPlacement, replacedIndex.firstPlacementFor("cavern").orElseThrow());
@@ -168,10 +169,14 @@ class PortalStateModelsTest {
         portalsByKey.put("cavern", placements);
 
         PortalWorldIndex index = new PortalWorldIndex(portalsByKey);
+        PortalWorldIndex.DisplacedPortalRetention retentionHint =
+            PortalWorldIndex.DisplacedPortalRetention.withDisplacedPlacements(
+                Set.of(displacedPlacementA, displacedPlacementB, displacedPlacementC, displacedPlacementD)
+            );
         PortalWorldIndex refreshedIndex = index.withRetainedPortal(
             "cavern",
             freshPlacement,
-            Set.of(displacedPlacementA, displacedPlacementB, displacedPlacementC, displacedPlacementD)
+            retentionHint
         );
 
         assertEquals(freshPlacement, refreshedIndex.firstPlacementFor("cavern").orElseThrow());

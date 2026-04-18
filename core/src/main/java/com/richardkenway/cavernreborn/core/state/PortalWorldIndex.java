@@ -21,23 +21,23 @@ public record PortalWorldIndex(Map<String, Set<PortalPlacement>> portalsByKey) {
     }
 
     public PortalWorldIndex withPortal(String portalKey, PortalPlacement placement) {
-        return withRetainedPortal(portalKey, placement, Set.of());
+        return withRetainedPortal(portalKey, placement, DisplacedPortalRetention.none());
     }
 
     public PortalWorldIndex withRetainedPortal(
         String portalKey,
         PortalPlacement placement,
-        Set<PortalPlacement> displacedPlacements
+        DisplacedPortalRetention retentionHint
     ) {
         String normalizedPortalKey = requireText(portalKey, "portalKey");
         Objects.requireNonNull(placement, "placement");
-        Objects.requireNonNull(displacedPlacements, "displacedPlacements");
+        Objects.requireNonNull(retentionHint, "retentionHint");
 
         Map<String, Set<PortalPlacement>> updatedIndex = new LinkedHashMap<>(portalsByKey);
         Set<PortalPlacement> placements = prioritizePlacement(
             updatedIndex.getOrDefault(normalizedPortalKey, Set.of()),
             placement,
-            displacedPlacements
+            retentionHint.displacedPlacements()
         );
         placements = trimToLimit(placements);
         updatedIndex.put(normalizedPortalKey, placements);
@@ -45,34 +45,46 @@ public record PortalWorldIndex(Map<String, Set<PortalPlacement>> portalsByKey) {
         return new PortalWorldIndex(updatedIndex);
     }
 
+    public PortalWorldIndex withRetainedPortal(
+        String portalKey,
+        PortalPlacement placement,
+        Set<PortalPlacement> displacedPlacements
+    ) {
+        return withRetainedPortal(
+            portalKey,
+            placement,
+            DisplacedPortalRetention.withDisplacedPlacements(displacedPlacements)
+        );
+    }
+
     public PortalWorldIndex withReplacementPortal(
         String portalKey,
         PortalPlacement stalePlacement,
         PortalPlacement replacementPlacement
     ) {
-        return withRetainedReplacementPortal(portalKey, stalePlacement, replacementPlacement, Set.of());
+        return withRetainedReplacementPortal(portalKey, stalePlacement, replacementPlacement, DisplacedPortalRetention.none());
     }
 
     public PortalWorldIndex withRetainedReplacementPortal(
         String portalKey,
         PortalPlacement stalePlacement,
         PortalPlacement replacementPlacement,
-        Set<PortalPlacement> displacedPlacements
+        DisplacedPortalRetention retentionHint
     ) {
         String normalizedPortalKey = requireText(portalKey, "portalKey");
         Objects.requireNonNull(stalePlacement, "stalePlacement");
         Objects.requireNonNull(replacementPlacement, "replacementPlacement");
-        Objects.requireNonNull(displacedPlacements, "displacedPlacements");
+        Objects.requireNonNull(retentionHint, "retentionHint");
 
         if (stalePlacement.equals(replacementPlacement)) {
-            return withRetainedPortal(normalizedPortalKey, replacementPlacement, displacedPlacements);
+            return withRetainedPortal(normalizedPortalKey, replacementPlacement, retentionHint);
         }
 
         Map<String, Set<PortalPlacement>> updatedIndex = new LinkedHashMap<>(portalsByKey);
         Set<PortalPlacement> placements = prioritizePlacement(
             updatedIndex.getOrDefault(normalizedPortalKey, Set.of()),
             replacementPlacement,
-            displacedPlacements
+            retentionHint.displacedPlacements()
         );
         placements.remove(stalePlacement);
         placements = trimToLimit(placements);
@@ -84,6 +96,20 @@ public record PortalWorldIndex(Map<String, Set<PortalPlacement>> portalsByKey) {
         }
 
         return new PortalWorldIndex(updatedIndex);
+    }
+
+    public PortalWorldIndex withRetainedReplacementPortal(
+        String portalKey,
+        PortalPlacement stalePlacement,
+        PortalPlacement replacementPlacement,
+        Set<PortalPlacement> displacedPlacements
+    ) {
+        return withRetainedReplacementPortal(
+            portalKey,
+            stalePlacement,
+            replacementPlacement,
+            DisplacedPortalRetention.withDisplacedPlacements(displacedPlacements)
+        );
     }
 
     public PortalWorldIndex withoutPortal(String portalKey, PortalPlacement placement) {
@@ -202,6 +228,20 @@ public record PortalWorldIndex(Map<String, Set<PortalPlacement>> portalsByKey) {
             }
 
             throw new IllegalArgumentException("axis must be 'x' or 'z'");
+        }
+    }
+
+    public record DisplacedPortalRetention(Set<PortalPlacement> displacedPlacements) {
+        public DisplacedPortalRetention {
+            displacedPlacements = Set.copyOf(Objects.requireNonNull(displacedPlacements, "displacedPlacements"));
+        }
+
+        public static DisplacedPortalRetention none() {
+            return new DisplacedPortalRetention(Set.of());
+        }
+
+        public static DisplacedPortalRetention withDisplacedPlacements(Set<PortalPlacement> displacedPlacements) {
+            return new DisplacedPortalRetention(displacedPlacements);
         }
     }
 }

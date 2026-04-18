@@ -102,13 +102,37 @@ final class IndexedPlacementRevalidationPolicy {
             return Optional.ofNullable(relinkableReplacements.get(indexedPlacement));
         }
 
+        private PortalWorldIndex.DisplacedPortalRetention retentionHint() {
+            return PortalWorldIndex.DisplacedPortalRetention.withDisplacedPlacements(displacedIndexedPlacements);
+        }
+
+        PortalWorldIndex withRetainedPortal(
+            String portalKey,
+            PortalWorldIndex worldIndex,
+            PortalWorldIndex.PortalPlacement resolvedPlacement,
+            PortalWorldIndex.DisplacedPortalRetention retentionHint
+        ) {
+            return removeDeadIndexedPlacements(portalKey, worldIndex)
+                .withRetainedPortal(portalKey, resolvedPlacement, retentionHint);
+        }
+
         PortalWorldIndex withRetainedPortal(
             String portalKey,
             PortalWorldIndex worldIndex,
             PortalWorldIndex.PortalPlacement resolvedPlacement
         ) {
+            return withRetainedPortal(portalKey, worldIndex, resolvedPlacement, retentionHint());
+        }
+
+        PortalWorldIndex withRetainedReplacementPortal(
+            String portalKey,
+            PortalWorldIndex worldIndex,
+            PortalWorldIndex.PortalPlacement stalePlacement,
+            PortalWorldIndex.PortalPlacement replacementPlacement,
+            PortalWorldIndex.DisplacedPortalRetention retentionHint
+        ) {
             return removeDeadIndexedPlacements(portalKey, worldIndex)
-                .withRetainedPortal(portalKey, resolvedPlacement, displacedIndexedPlacements);
+                .withRetainedReplacementPortal(portalKey, stalePlacement, replacementPlacement, retentionHint);
         }
 
         PortalWorldIndex withRetainedReplacementPortal(
@@ -117,8 +141,13 @@ final class IndexedPlacementRevalidationPolicy {
             PortalWorldIndex.PortalPlacement stalePlacement,
             PortalWorldIndex.PortalPlacement replacementPlacement
         ) {
-            return removeDeadIndexedPlacements(portalKey, worldIndex)
-                .withRetainedReplacementPortal(portalKey, stalePlacement, replacementPlacement, displacedIndexedPlacements);
+            return withRetainedReplacementPortal(
+                portalKey,
+                worldIndex,
+                stalePlacement,
+                replacementPlacement,
+                retentionHint()
+            );
         }
 
         private PortalWorldIndex removeDeadIndexedPlacements(String portalKey, PortalWorldIndex worldIndex) {

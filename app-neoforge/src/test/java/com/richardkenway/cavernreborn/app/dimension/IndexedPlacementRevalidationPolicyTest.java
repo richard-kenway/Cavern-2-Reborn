@@ -156,11 +156,16 @@ class IndexedPlacementRevalidationPolicyTest {
                 Map.of(),
                 Map.of()
             );
+        PortalWorldIndex.DisplacedPortalRetention retentionHint =
+            PortalWorldIndex.DisplacedPortalRetention.withDisplacedPlacements(
+                Set.of(displacedPlacementA, displacedPlacementB, displacedPlacementC, displacedPlacementD)
+            );
 
         PortalWorldIndex refreshedIndex = snapshot.withRetainedPortal(
             "cavern",
             worldIndex,
-            resolvedPlacement
+            resolvedPlacement,
+            retentionHint
         );
 
         Set<PortalWorldIndex.PortalPlacement> refreshedPlacements = refreshedIndex.placementsFor("cavern");
@@ -193,11 +198,14 @@ class IndexedPlacementRevalidationPolicyTest {
                 Map.of(resolvedPlacement, resolvedPlacement),
                 Map.of()
             );
+        PortalWorldIndex.DisplacedPortalRetention retentionHint =
+            PortalWorldIndex.DisplacedPortalRetention.withDisplacedPlacements(Set.of(displacedPlacement));
 
         PortalWorldIndex refreshedIndex = snapshot.withRetainedPortal(
             "cavern",
             worldIndex,
-            resolvedPlacement
+            resolvedPlacement,
+            retentionHint
         );
 
         Set<PortalWorldIndex.PortalPlacement> refreshedPlacements = refreshedIndex.placementsFor("cavern");
@@ -229,8 +237,14 @@ class IndexedPlacementRevalidationPolicyTest {
                 Map.of(oldPlacement, replacementPlacement),
                 Map.of()
             );
+        PortalWorldIndex.DisplacedPortalRetention retentionHint = PortalWorldIndex.DisplacedPortalRetention.none();
 
-        PortalWorldIndex refreshedIndex = snapshot.withRetainedPortal("cavern", worldIndex, replacementPlacement);
+        PortalWorldIndex refreshedIndex = snapshot.withRetainedPortal(
+            "cavern",
+            worldIndex,
+            replacementPlacement,
+            retentionHint
+        );
 
         Set<PortalWorldIndex.PortalPlacement> refreshedPlacements = refreshedIndex.placementsFor("cavern");
         assertEquals(3, refreshedPlacements.size());
@@ -272,12 +286,17 @@ class IndexedPlacementRevalidationPolicyTest {
                 Map.of(),
                 Map.of(stalePlacement, replacementPlacement)
             );
+        PortalWorldIndex.DisplacedPortalRetention retentionHint =
+            PortalWorldIndex.DisplacedPortalRetention.withDisplacedPlacements(
+                Set.of(displacedPlacementA, displacedPlacementB, displacedPlacementC, displacedPlacementD)
+            );
 
         PortalWorldIndex refreshedIndex = snapshot.withRetainedReplacementPortal(
             "cavern",
             worldIndex,
             stalePlacement,
-            replacementPlacement
+            replacementPlacement,
+            retentionHint
         );
 
         Set<PortalWorldIndex.PortalPlacement> refreshedPlacements = refreshedIndex.placementsFor("cavern");
