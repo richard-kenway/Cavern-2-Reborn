@@ -172,7 +172,8 @@ public final class CavernTravelBridge {
             PortalWorldIndex refreshedIndex = revalidationSnapshot.withRetainedPortal(
                 resolvedPortalKey,
                 worldIndex,
-                resolvedPlacement.get().resolvedPlacement()
+                resolvedPlacement.get().resolvedPlacement(),
+                revalidationSnapshot.displacedIndexedPlacements()
             );
             worldPortalIndexStore.save(targetDimensionId, refreshedIndex);
             return Optional.of(
@@ -192,7 +193,8 @@ public final class CavernTravelBridge {
                 resolvedPortalKey,
                 worldIndex,
                 relinkedPlacement.get().indexedPlacement(),
-                relinkedPlacement.get().resolvedPlacement()
+                relinkedPlacement.get().resolvedPlacement(),
+                revalidationSnapshot.displacedIndexedPlacements()
             );
             worldPortalIndexStore.save(targetDimensionId, refreshedIndex);
             return Optional.of(
@@ -222,7 +224,8 @@ public final class CavernTravelBridge {
                     resolvedPortalKey,
                     worldIndex,
                     regenerationAnchor.get(),
-                    regeneratedPlacement.get()
+                    regeneratedPlacement.get(),
+                    revalidationSnapshot.displacedIndexedPlacements()
                 );
                 worldPortalIndexStore.save(targetDimensionId, refreshedIndex);
                 return Optional.of(toResolvedPortalDestination(targetDimensionId, regeneratedPlacement.get(), relativePortalExit, fallbackYaw));
@@ -239,7 +242,8 @@ public final class CavernTravelBridge {
             PortalWorldIndex refreshedIndex = revalidationSnapshot.withRetainedPortal(
                 resolvedPortalKey,
                 worldIndex,
-                nearbyPortal.get()
+                nearbyPortal.get(),
+                revalidationSnapshot.displacedIndexedPlacements()
             );
             worldPortalIndexStore.save(targetDimensionId, refreshedIndex);
             return Optional.of(toResolvedPortalDestination(targetDimensionId, nearbyPortal.get(), relativePortalExit, fallbackYaw));
@@ -255,7 +259,8 @@ public final class CavernTravelBridge {
                 PortalWorldIndex refreshedIndex = revalidationSnapshot.withRetainedPortal(
                     resolvedPortalKey,
                     worldIndex,
-                    placement
+                    placement,
+                    revalidationSnapshot.displacedIndexedPlacements()
                 );
                 worldPortalIndexStore.save(targetDimensionId, refreshedIndex);
                 return toResolvedPortalDestination(targetDimensionId, placement, relativePortalExit, fallbackYaw);

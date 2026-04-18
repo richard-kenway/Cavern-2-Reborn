@@ -20,13 +20,23 @@ public record PortalWorldIndex(Map<String, Set<PortalPlacement>> portalsByKey) {
     }
 
     public PortalWorldIndex withPortal(String portalKey, PortalPlacement placement) {
+        return withPortal(portalKey, placement, Set.of());
+    }
+
+    public PortalWorldIndex withPortal(
+        String portalKey,
+        PortalPlacement placement,
+        Set<PortalPlacement> lowerPriorityPlacements
+    ) {
         String normalizedPortalKey = requireText(portalKey, "portalKey");
         Objects.requireNonNull(placement, "placement");
+        Objects.requireNonNull(lowerPriorityPlacements, "lowerPriorityPlacements");
 
         Map<String, Set<PortalPlacement>> updatedIndex = new LinkedHashMap<>(portalsByKey);
         Set<PortalPlacement> placements = prioritizePlacement(
             updatedIndex.getOrDefault(normalizedPortalKey, Set.of()),
-            placement
+            placement,
+            lowerPriorityPlacements
         );
         placements = trimToLimit(placements);
         updatedIndex.put(normalizedPortalKey, placements);
@@ -39,18 +49,29 @@ public record PortalWorldIndex(Map<String, Set<PortalPlacement>> portalsByKey) {
         PortalPlacement stalePlacement,
         PortalPlacement replacementPlacement
     ) {
+        return withReplacementPortal(portalKey, stalePlacement, replacementPlacement, Set.of());
+    }
+
+    public PortalWorldIndex withReplacementPortal(
+        String portalKey,
+        PortalPlacement stalePlacement,
+        PortalPlacement replacementPlacement,
+        Set<PortalPlacement> lowerPriorityPlacements
+    ) {
         String normalizedPortalKey = requireText(portalKey, "portalKey");
         Objects.requireNonNull(stalePlacement, "stalePlacement");
         Objects.requireNonNull(replacementPlacement, "replacementPlacement");
+        Objects.requireNonNull(lowerPriorityPlacements, "lowerPriorityPlacements");
 
         if (stalePlacement.equals(replacementPlacement)) {
-            return withPortal(normalizedPortalKey, replacementPlacement);
+            return withPortal(normalizedPortalKey, replacementPlacement, lowerPriorityPlacements);
         }
 
         Map<String, Set<PortalPlacement>> updatedIndex = new LinkedHashMap<>(portalsByKey);
         Set<PortalPlacement> placements = prioritizePlacement(
             updatedIndex.getOrDefault(normalizedPortalKey, Set.of()),
-            replacementPlacement
+            replacementPlacement,
+            lowerPriorityPlacements
         );
         placements.remove(stalePlacement);
         placements = trimToLimit(placements);
@@ -90,11 +111,20 @@ public record PortalWorldIndex(Map<String, Set<PortalPlacement>> portalsByKey) {
         return placements.stream().findFirst();
     }
 
-    private static Set<PortalPlacement> prioritizePlacement(Set<PortalPlacement> existingPlacements, PortalPlacement prioritizedPlacement) {
+    private static Set<PortalPlacement> prioritizePlacement(
+        Set<PortalPlacement> existingPlacements,
+        PortalPlacement prioritizedPlacement,
+        Set<PortalPlacement> lowerPriorityPlacements
+    ) {
         LinkedHashSet<PortalPlacement> prioritizedPlacements = new LinkedHashSet<>();
         prioritizedPlacements.add(prioritizedPlacement);
         existingPlacements.stream()
             .filter(existingPlacement -> !existingPlacement.equals(prioritizedPlacement))
+            .filter(existingPlacement -> !lowerPriorityPlacements.contains(existingPlacement))
+            .forEach(prioritizedPlacements::add);
+        existingPlacements.stream()
+            .filter(existingPlacement -> !existingPlacement.equals(prioritizedPlacement))
+            .filter(lowerPriorityPlacements::contains)
             .forEach(prioritizedPlacements::add);
         return prioritizedPlacements;
     }
