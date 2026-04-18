@@ -22,6 +22,41 @@ compose() {
     docker compose "$@"
 }
 
+dev_server_running() {
+    local container_id
+    container_id="$(compose ps -q dev-server 2>/dev/null || true)"
+    [[ -n "${container_id}" ]] && docker inspect -f '{{.State.Running}}' "${container_id}" 2>/dev/null | grep -q '^true$'
+}
+
+workspace_path_for_host_path() {
+    local host_path="$1"
+
+    case "${host_path}" in
+        "${ROOT_DIR}")
+            printf '/workspace\n'
+            ;;
+        "${ROOT_DIR}"/*)
+            printf '/workspace/%s\n' "${host_path#${ROOT_DIR}/}"
+            ;;
+        *)
+            echo "Path is outside of the repository: ${host_path}" >&2
+            return 1
+            ;;
+    esac
+}
+
+remove_repo_path() {
+    local host_path="$1"
+
+    if rm -rf "${host_path}" 2>/dev/null; then
+        return 0
+    fi
+
+    local workspace_path
+    workspace_path="$(workspace_path_for_host_path "${host_path}")"
+    compose run --rm --user root gradle bash -lc "rm -rf \"${workspace_path}\""
+}
+
 ensure_server_layout() {
     mkdir -p "${SERVER_RUN_DIR}"
     mkdir -p "${SERVER_MOD_DIR}"

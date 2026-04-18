@@ -50,7 +50,6 @@
       "minecraft:ore_andesite_upper",
       "minecraft:ore_andesite_lower",
       "minecraft:ore_tuff",
-      "minecraft:ore_coal_upper",
       "minecraft:ore_coal_lower",
       "cavernreborn:cavern_ore_coal_dense",
       "minecraft:ore_iron_upper",
@@ -67,11 +66,7 @@
       "minecraft:ore_diamond_buried",
       "minecraft:ore_lapis",
       "minecraft:ore_lapis_buried",
-      "minecraft:ore_copper",
-      "minecraft:underwater_magma",
-      "minecraft:disk_sand",
-      "minecraft:disk_clay",
-      "minecraft:disk_gravel"
+      "minecraft:ore_copper"
     ],
     [],
     [
@@ -83,11 +78,9 @@
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal"
     ],
-    [
-      "minecraft:freeze_top_layer"
-    ]
+    []
   ],
-  "has_precipitation": true,
+  "has_precipitation": false,
   "spawn_costs": {},
   "spawners": {
     "ambient": [

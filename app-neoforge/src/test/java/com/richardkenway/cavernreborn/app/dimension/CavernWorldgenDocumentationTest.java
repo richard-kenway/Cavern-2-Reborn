@@ -22,6 +22,8 @@ class CavernWorldgenDocumentationTest {
         assertTrue(readme.contains("highland_hollows"));
         assertTrue(readme.contains("ore veins"));
         assertTrue(readme.contains("mineshafts"));
+        assertTrue(readme.contains("dedicated-server smoke-check"));
+        assertTrue(readme.contains("setworldspawn 0 70 0"));
         assertTrue(readme.contains("docs/worldgen-baseline.md"));
     }
 
@@ -35,6 +37,11 @@ class CavernWorldgenDocumentationTest {
         assertTrue(doc.contains("dense coal and iron"));
         assertTrue(doc.contains("dripstone_grotto"));
         assertTrue(doc.contains("highland_hollows"));
+        assertTrue(doc.contains("2026-04-18"));
+        assertTrue(doc.contains("setworldspawn 0 70 0"));
+        assertTrue(doc.contains("Empty height range"));
+        assertTrue(doc.contains("ore_coal_upper"));
+        assertTrue(doc.contains("monster room"));
         assertTrue(doc.contains("Generate a fresh world and enter `CAVERN`"));
         assertTrue(doc.contains("Restart the server"));
     }

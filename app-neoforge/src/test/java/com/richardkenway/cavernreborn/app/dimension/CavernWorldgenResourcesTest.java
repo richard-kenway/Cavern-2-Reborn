@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.net.URL;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
@@ -34,14 +35,24 @@ class CavernWorldgenResourcesTest {
         assertEquals("minecraft:noise", generator.get("type").getAsString());
         assertEquals("cavernreborn:contained_caves", generator.get("settings").getAsString());
         assertEquals("minecraft:multi_noise", biomeSource.get("type").getAsString());
-        assertEquals(7, biomes.size());
+        assertEquals(10, biomes.size());
 
         long stoneDepthEntries = StreamSupport.stream(biomes.spliterator(), false)
             .map(JsonElement::getAsJsonObject)
             .filter(entry -> "cavernreborn:stone_depths".equals(entry.get("biome").getAsString()))
             .count();
+        long dripstoneEntries = StreamSupport.stream(biomes.spliterator(), false)
+            .map(JsonElement::getAsJsonObject)
+            .filter(entry -> "cavernreborn:dripstone_grotto".equals(entry.get("biome").getAsString()))
+            .count();
+        long highlandEntries = StreamSupport.stream(biomes.spliterator(), false)
+            .map(JsonElement::getAsJsonObject)
+            .filter(entry -> "cavernreborn:highland_hollows".equals(entry.get("biome").getAsString()))
+            .count();
 
         assertEquals(4, stoneDepthEntries);
+        assertEquals(2, dripstoneEntries);
+        assertEquals(3, highlandEntries);
         assertTrue(hasBiomeEntry(biomes, "cavernreborn:lush_grotto"));
         assertTrue(hasBiomeEntry(biomes, "cavernreborn:dripstone_grotto"));
         assertTrue(hasBiomeEntry(biomes, "cavernreborn:highland_hollows"));
@@ -79,6 +90,10 @@ class CavernWorldgenResourcesTest {
         assertTrue(flattenFeatures(lushGrotto).contains("minecraft:lush_caves_ceiling_vegetation"));
         assertTrue(flattenFeatures(dripstoneGrotto).contains("minecraft:pointed_dripstone"));
         assertTrue(flattenFeatures(highlandHollows).contains("cavernreborn:cavern_monster_room"));
+        assertBiomeOmitsVanillaBaggage(stoneDepths, false);
+        assertBiomeOmitsVanillaBaggage(lushGrotto, true);
+        assertBiomeOmitsVanillaBaggage(dripstoneGrotto, false);
+        assertBiomeOmitsVanillaBaggage(highlandHollows, false);
     }
 
     @Test
@@ -104,6 +119,17 @@ class CavernWorldgenResourcesTest {
         assertPlacedFeature(ironDense, "minecraft:ore_iron", 18, 104, -48);
         assertPlacedFeature(goldDry, "minecraft:ore_gold_buried", 6, 40, -56);
         assertPlacedFeature(emeraldHighlands, "minecraft:ore_emerald", 14, 120, 16);
+    }
+
+    @Test
+    void generatedWorldgenResourcesResolveFromRuntimeClasspath() {
+        URL stoneDepths = resourceUrl("data/cavernreborn/worldgen/biome/stone_depths.json");
+        URL highlandHollows = resourceUrl("data/cavernreborn/worldgen/biome/highland_hollows.json");
+        URL mineshaftTag = resourceUrl("data/minecraft/tags/worldgen/biome/has_structure/mineshaft.json");
+
+        assertClassPathOrigin(stoneDepths, "data/cavernreborn/worldgen/biome/stone_depths.json");
+        assertClassPathOrigin(highlandHollows, "data/cavernreborn/worldgen/biome/highland_hollows.json");
+        assertClassPathOrigin(mineshaftTag, "data/minecraft/tags/worldgen/biome/has_structure/mineshaft.json");
     }
 
     private static void assertContainedCavesNoiseSettings(JsonObject noiseSettings) {
@@ -230,6 +256,35 @@ class CavernWorldgenResourcesTest {
         assertTrue(flattenedFeatures.contains(anotherExpectedFeature) || readResourceFromJson(biome).contains(anotherExpectedFeature));
     }
 
+    private static void assertBiomeOmitsVanillaBaggage(JsonObject biome, boolean allowLushWaterFauna) {
+        assertFalse(biome.get("has_precipitation").getAsBoolean());
+
+        String serializedBiome = readResourceFromJson(biome);
+        assertFalse(serializedBiome.contains("minecraft:underwater_magma"));
+        assertFalse(serializedBiome.contains("minecraft:disk_sand"));
+        assertFalse(serializedBiome.contains("minecraft:disk_clay"));
+        assertFalse(serializedBiome.contains("minecraft:disk_gravel"));
+        assertFalse(serializedBiome.contains("minecraft:freeze_top_layer"));
+
+        if (allowLushWaterFauna) {
+            assertFalse(serializedBiome.contains("minecraft:tropical_fish"));
+            return;
+        }
+
+        assertFalse(serializedBiome.contains("minecraft:drowned"));
+    }
+
+    private static void assertClassPathOrigin(URL resourceUrl, String resourcePath) {
+        assertNotNull(resourceUrl, "Missing resource URL for " + resourcePath);
+        String normalized = resourceUrl.toString().replace('\\', '/');
+        assertTrue(
+            normalized.contains("/build/resources/main/")
+                || normalized.contains("/src/generated/resources/")
+                || normalized.contains(".jar!/"),
+            () -> "Unexpected resource origin for " + resourcePath + ": " + normalized
+        );
+    }
+
     private static void assertPlacedFeature(JsonObject placedFeature, String featureId, int count, int maxHeight, int minHeight) {
         assertEquals(featureId, placedFeature.get("feature").getAsString());
         JsonArray placement = placedFeature.getAsJsonArray("placement");
@@ -308,5 +363,9 @@ class CavernWorldgenResourcesTest {
         } catch (IOException exception) {
             throw new IllegalStateException("Failed to read resource: " + resourcePath, exception);
         }
+    }
+
+    private static URL resourceUrl(String resourcePath) {
+        return CavernWorldgenResourcesTest.class.getClassLoader().getResource(resourcePath);
     }
 }
