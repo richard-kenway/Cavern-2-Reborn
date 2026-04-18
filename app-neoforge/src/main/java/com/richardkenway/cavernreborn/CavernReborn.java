@@ -28,7 +28,12 @@ public final class CavernReborn {
         cavernStateBootstrap = new CavernStateBootstrap();
         NeoForge.EVENT_BUS.register(new CavernPortalFrameActivationEvents());
         NeoForge.EVENT_BUS.register(new CavernMiningProgressionEvents(cavernStateBootstrap.cavernProgressionService()));
-        NeoForge.EVENT_BUS.register(new CavernProgressionCommands(cavernStateBootstrap.cavernProgressionService()));
+        NeoForge.EVENT_BUS.register(
+            new CavernProgressionCommands(
+                cavernStateBootstrap.cavernProgressionService(),
+                cavernStateBootstrap.cavernRewardService()
+            )
+        );
         LOGGER.info("Bootstrapped {} with {}", CavernProject.PROJECT_NAME, cavernStateBootstrap().describe());
     }
 

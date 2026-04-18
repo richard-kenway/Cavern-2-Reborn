@@ -1,6 +1,6 @@
 # CAVERN Progression Baseline
 
-This document fixes the current `CAVERN` progression baseline on `main`: the narrow backend shell plus the first player-facing and gameplay-visible layer built on top of it.
+This document fixes the current `CAVERN` progression baseline on `main`: the narrow backend shell plus the first player-facing, gameplay-visible and reward-visible layers built on top of it.
 
 It is not a claim of full legacy gameplay parity. It documents the bounded progression slice that is currently implemented, persisted and test-covered.
 
@@ -26,12 +26,20 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
   - `veteran`: `175`
   - `master`: `325`
 - `/cavern rank` exposes the same persisted state through a compact player-facing summary, while `/cavern progression` remains the verbose developer/debug view.
+- `/cavern rewards` exposes the same persisted state through a compact reward summary, while `/cavern claim <reward>` is the current bounded claim path.
 - Threshold crossing sends a rank-up overlay for the affected player.
 - The first unlock is `Miner's Insight`.
   - source-of-truth: `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionUnlock.java`
   - unlock threshold: `apprentice`
   - gameplay consequence: counted ore breaks inside `CAVERN` grant `+1` bonus XP once the rank is unlocked
 - The threshold-crossing ore already receives the unlock, because the bonus check runs against the updated persisted snapshot for that same counted mining event.
+- The first reward is `apprentice_supply_cache`.
+  - source-of-truth: `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionReward.java`
+  - reward threshold: `apprentice`
+  - claim mode: one-time
+  - current grant bundle: `torch x16, bread x8`
+- Reward eligibility is derived from the same persisted score/rank as `/cavern rank`; the reward layer does not store a second rank or unlock field.
+- Only claimed reward ids are persisted. Eligibility and current status are recomputed from the stored progression score plus the claimed reward set.
 - Player state survives restart through the same overworld-level `SavedData` control plane already used by the portal baseline.
 - After restart, the same player continues from the stored score/counters instead of reinitializing.
 
@@ -45,17 +53,24 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
 - Threshold crossing shows player-facing rank-up feedback exactly once for that crossing event.
 - `/cavern rank` stays consistent with `/cavern progression` because both read the same persisted snapshot.
 - `Miner's Insight` remains active after restart because it is derived from the restored score/rank, not from a separate saved unlock flag.
+- A new player below `apprentice` sees `apprentice_supply_cache` as locked.
+- Reaching `apprentice` makes `apprentice_supply_cache` available without adding a second rank-state.
+- Claiming `apprentice_supply_cache` marks it as claimed exactly once and does not mutate the stored progression score/rank.
+- Repeated claim attempts stay safe and predictable by reporting that the reward is already claimed.
+- Claimed reward state survives restart and remains consistent with `/cavern rank`, `/cavern progression` and `/cavern rewards`.
 - Restart-safe persistence and continued progression after restart.
-- Minimal server-side inspection through `/cavern progression` / `/cavern progression <player>` and player-facing status through `/cavern rank` / `/cavern rank <player>`.
+- Minimal server-side inspection through `/cavern progression` / `/cavern progression <player>` and player-facing status through `/cavern rank`, `/cavern rewards` and `/cavern claim <reward>`.
 
 ## Runtime Inputs
 
 - Source-of-truth policy and thresholds:
   - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionPolicy.java`
   - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionRank.java`
+  - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionReward.java`
 - Persistent state model:
   - overworld-level `SavedData` file id: `cavernreborn_control_plane`
   - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernPlayerProgressionState.java`
+  - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernPlayerRewardState.java`
   - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/state/CavernPersistentStateData.java`
 - Runtime accounting hook:
   - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/progression/CavernMiningProgressionEvents.java`
@@ -63,10 +78,15 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
   - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/progression/CavernProgressionCommands.java`
 - Player-facing formatting and feedback:
   - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/progression/CavernPlayerProgressionStatusFormatter.java`
+  - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/progression/CavernPlayerRewardStatusFormatter.java`
+  - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/progression/CavernRewardClaimFeedbackFormatter.java`
   - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/progression/CavernProgressionRankUpFeedbackFormatter.java`
 - Gameplay consequence policy:
   - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionConsequences.java`
   - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionUnlock.java`
+- Reward policy and claim semantics:
+  - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernRewardService.java`
+  - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/progression/CavernRewardGranter.java`
 
 ## Intentional Compromises
 
@@ -76,12 +96,13 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
 - The baseline counts qualifying block breaks, not item drops, smelting output, trading, pickups or broader activity telemetry.
 - Rank is computed from score at read time and is not stored as a separate mutable field.
 - The first gameplay consequence is intentionally small: one unlock and one bounded XP bonus instead of a larger perks tree or reward graph.
+- The first reward surface is intentionally small: one one-time bundle and one claim path instead of a wider reward tree, currency or shop stack.
 - Progression still does not gate portal use, worldgen, loot or broader economy/menu systems.
 
 ## Out Of Scope
 
 - New dimensions, new content, progression UI, portal shop/menu and regeneration UI.
-- Economy, rewards, unlock trees, mining leaderboards or persistence migrations for future score-table changes.
+- Economy, broader rewards trees, unlock trees, mining leaderboards or persistence migrations for future score-table changes.
 - Broader non-ore activity tracking such as mob kills, exploration, crafting or item collection.
 - Full legacy parity for miner rank perks, the older menu-driven rank flow or a larger unlock/perks stack.
 
@@ -96,8 +117,11 @@ Run this before any larger progression or gameplay-shell change:
 5. Run `/cavern rank` and confirm the player-facing summary shows the current rank, score and next threshold.
 6. Continue mining until `apprentice` and confirm the rank-up overlay appears and the unlock message mentions `Miner's Insight`.
 7. Mine another counted ore in `CAVERN` and confirm the XP bar receives the extra `+1` bonus XP from `Miner's Insight`.
-8. Run `/cavern progression` and confirm the debug summary matches the same persisted score/rank.
-9. Mine the same ore outside `CAVERN` and confirm neither the bonus XP nor the cavern-specific progression state changes.
-10. Restart the server.
-11. Run `/cavern rank` or `/cavern progression` again and confirm the stored state survived restart.
-12. Mine another counted ore in `CAVERN` and confirm progression and `Miner's Insight` continue from the stored value instead of resetting.
+8. Run `/cavern rewards` and confirm `apprentice_supply_cache` is available.
+9. Run `/cavern claim apprentice_supply_cache` and confirm the reward is granted once.
+10. Repeat `/cavern claim apprentice_supply_cache` and confirm the command reports an already-claimed state instead of duplicating the reward.
+11. Run `/cavern progression` and confirm the debug summary still matches the same persisted score/rank.
+12. Mine the same ore outside `CAVERN` and confirm neither the bonus XP nor the cavern-specific progression state changes.
+13. Restart the server.
+14. Run `/cavern rank`, `/cavern progression` or `/cavern rewards` again and confirm the stored progression and claimed reward state survived restart.
+15. Mine another counted ore in `CAVERN` and confirm progression and `Miner's Insight` continue from the stored value instead of resetting.

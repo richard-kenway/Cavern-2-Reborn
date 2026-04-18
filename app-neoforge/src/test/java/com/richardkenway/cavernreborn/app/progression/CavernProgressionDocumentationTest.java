@@ -21,7 +21,11 @@ class CavernProgressionDocumentationTest {
         assertTrue(readme.contains("CavernProgressionPolicy.java"));
         assertTrue(readme.contains("/cavern progression"));
         assertTrue(readme.contains("/cavern rank"));
+        assertTrue(readme.contains("/cavern rewards"));
+        assertTrue(readme.contains("/cavern claim <reward>"));
         assertTrue(readme.contains("Miner's Insight"));
+        assertTrue(readme.contains("apprentice_supply_cache"));
+        assertTrue(readme.contains("CavernProgressionReward.java"));
         assertTrue(readme.contains("docs/progression-baseline.md"));
         assertTrue(readme.contains("uncanceled non-creative player block breaks"));
     }
@@ -35,7 +39,11 @@ class CavernProgressionDocumentationTest {
         assertTrue(doc.contains("CavernMiningProgressionEvents.java"));
         assertTrue(doc.contains("CavernProgressionCommands.java"));
         assertTrue(doc.contains("CavernProgressionUnlock.java"));
+        assertTrue(doc.contains("CavernProgressionReward.java"));
+        assertTrue(doc.contains("CavernRewardService.java"));
         assertTrue(doc.contains("Miner's Insight"));
+        assertTrue(doc.contains("apprentice_supply_cache"));
+        assertTrue(doc.contains("torch x16, bread x8"));
         assertTrue(doc.contains("apprentice"));
         assertTrue(doc.contains("journeyman"));
         assertTrue(doc.contains("veteran"));
@@ -43,6 +51,8 @@ class CavernProgressionDocumentationTest {
         assertTrue(doc.contains("Mine the same ore outside `CAVERN`"));
         assertTrue(doc.contains("Restart the server"));
         assertTrue(doc.contains("/cavern rank"));
+        assertTrue(doc.contains("/cavern rewards"));
+        assertTrue(doc.contains("/cavern claim apprentice_supply_cache"));
     }
 
     private static Path resolveProjectFile(String first, String... more) {

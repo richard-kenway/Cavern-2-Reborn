@@ -1,12 +1,15 @@
 package com.richardkenway.cavernreborn.app.state;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import com.mojang.logging.LogUtils;
 import com.richardkenway.cavernreborn.core.progression.CavernPlayerProgressionState;
+import com.richardkenway.cavernreborn.core.progression.CavernPlayerRewardState;
 import com.richardkenway.cavernreborn.core.state.PortalReturnState;
 import com.richardkenway.cavernreborn.core.state.PortalWorldIndex;
 import com.richardkenway.cavernreborn.data.state.CavernStateMappers;
@@ -27,6 +30,7 @@ public final class CavernPersistentStateData extends SavedData {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final String PLAYER_RETURN_STATES_TAG = "PlayerReturnStates";
     private static final String PLAYER_MINING_PROGRESSIONS_TAG = "PlayerMiningProgressions";
+    private static final String PLAYER_REWARD_STATES_TAG = "PlayerRewardStates";
     private static final String WORLD_PORTAL_INDICES_TAG = "WorldPortalIndices";
     private static final String PLAYER_ID_TAG = "PlayerId";
     private static final String WORLD_KEY_TAG = "WorldKey";
@@ -46,22 +50,27 @@ public final class CavernPersistentStateData extends SavedData {
     private static final String MINED_BLOCKS_TAG = "MinedBlocks";
     private static final String BLOCK_ID_TAG = "BlockId";
     private static final String COUNT_TAG = "Count";
+    private static final String CLAIMED_REWARDS_TAG = "ClaimedRewards";
+    private static final String REWARD_ID_TAG = "RewardId";
 
     private final Map<UUID, PortalReturnState> playerReturnStates;
     private final Map<UUID, CavernPlayerProgressionState> playerMiningProgressions;
+    private final Map<UUID, CavernPlayerRewardState> playerRewardStates;
     private final Map<String, PortalWorldIndex> worldPortalIndices;
 
     public CavernPersistentStateData() {
-        this(new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>());
+        this(new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>(), new LinkedHashMap<>());
     }
 
     private CavernPersistentStateData(
         Map<UUID, PortalReturnState> playerReturnStates,
         Map<UUID, CavernPlayerProgressionState> playerMiningProgressions,
+        Map<UUID, CavernPlayerRewardState> playerRewardStates,
         Map<String, PortalWorldIndex> worldPortalIndices
     ) {
         this.playerReturnStates = new LinkedHashMap<>(playerReturnStates);
         this.playerMiningProgressions = new LinkedHashMap<>(playerMiningProgressions);
+        this.playerRewardStates = new LinkedHashMap<>(playerRewardStates);
         this.worldPortalIndices = new LinkedHashMap<>(worldPortalIndices);
     }
 
@@ -72,6 +81,7 @@ public final class CavernPersistentStateData extends SavedData {
     static CavernPersistentStateData load(CompoundTag tag, HolderLookup.Provider registries) {
         Map<UUID, PortalReturnState> playerReturnStates = new LinkedHashMap<>();
         Map<UUID, CavernPlayerProgressionState> playerMiningProgressions = new LinkedHashMap<>();
+        Map<UUID, CavernPlayerRewardState> playerRewardStates = new LinkedHashMap<>();
         Map<String, PortalWorldIndex> worldPortalIndices = new LinkedHashMap<>();
 
         ListTag playerStatesTag = tag.getList(PLAYER_RETURN_STATES_TAG, Tag.TAG_COMPOUND);
@@ -93,6 +103,16 @@ public final class CavernPersistentStateData extends SavedData {
                 .ifPresent(state -> playerMiningProgressions.put(state.playerId(), state.progressionState()));
         }
 
+        ListTag playerRewardStatesTag = tag.getList(PLAYER_REWARD_STATES_TAG, Tag.TAG_COMPOUND);
+        for (Tag entry : playerRewardStatesTag) {
+            if (!(entry instanceof CompoundTag playerRewardStateTag)) {
+                continue;
+            }
+
+            tryLoadPlayerRewardState(playerRewardStateTag)
+                .ifPresent(state -> playerRewardStates.put(state.playerId(), state.rewardState()));
+        }
+
         ListTag worldIndicesTag = tag.getList(WORLD_PORTAL_INDICES_TAG, Tag.TAG_COMPOUND);
         for (Tag entry : worldIndicesTag) {
             if (!(entry instanceof CompoundTag worldIndexTag)) {
@@ -102,7 +122,7 @@ public final class CavernPersistentStateData extends SavedData {
             tryLoadWorldPortalIndex(worldIndexTag).ifPresent(state -> worldPortalIndices.put(state.worldKey(), state.worldIndex()));
         }
 
-        return new CavernPersistentStateData(playerReturnStates, playerMiningProgressions, worldPortalIndices);
+        return new CavernPersistentStateData(playerReturnStates, playerMiningProgressions, playerRewardStates, worldPortalIndices);
     }
 
     @Override
@@ -116,6 +136,10 @@ public final class CavernPersistentStateData extends SavedData {
             playerMiningProgressionsTag.add(serializePlayerMiningProgression(playerId, progressionState))
         );
         tag.put(PLAYER_MINING_PROGRESSIONS_TAG, playerMiningProgressionsTag);
+
+        ListTag playerRewardStatesTag = new ListTag();
+        playerRewardStates.forEach((playerId, rewardState) -> playerRewardStatesTag.add(serializePlayerRewardState(playerId, rewardState)));
+        tag.put(PLAYER_REWARD_STATES_TAG, playerRewardStatesTag);
 
         ListTag worldIndicesTag = new ListTag();
         worldPortalIndices.forEach((worldKey, worldIndex) -> worldIndicesTag.add(serializeWorldPortalIndex(worldKey, worldIndex)));
@@ -155,6 +179,26 @@ public final class CavernPersistentStateData extends SavedData {
 
     public void clearPlayerMiningProgression(UUID playerId) {
         if (playerMiningProgressions.remove(playerId) != null) {
+            setDirty();
+        }
+    }
+
+    public CavernPlayerRewardState loadPlayerRewardState(UUID playerId) {
+        return playerRewardStates.getOrDefault(playerId, CavernPlayerRewardState.empty(playerId));
+    }
+
+    public void savePlayerRewardState(CavernPlayerRewardState rewardState) {
+        if (rewardState.isEmpty()) {
+            clearPlayerRewardState(rewardState.playerId());
+            return;
+        }
+
+        playerRewardStates.put(rewardState.playerId(), rewardState);
+        setDirty();
+    }
+
+    public void clearPlayerRewardState(UUID playerId) {
+        if (playerRewardStates.remove(playerId) != null) {
             setDirty();
         }
     }
@@ -248,6 +292,40 @@ public final class CavernPersistentStateData extends SavedData {
             return Optional.of(new PlayerMiningProgressionEntry(playerId, progressionState));
         } catch (RuntimeException exception) {
             LOGGER.warn("Skipping invalid persistent player mining-progression entry", exception);
+            return Optional.empty();
+        }
+    }
+
+    private static CompoundTag serializePlayerRewardState(UUID playerId, CavernPlayerRewardState rewardState) {
+        CompoundTag tag = new CompoundTag();
+        tag.putString(PLAYER_ID_TAG, playerId.toString());
+
+        ListTag claimedRewardsTag = new ListTag();
+        rewardState.claimedRewardIds().forEach(rewardId -> {
+            CompoundTag rewardTag = new CompoundTag();
+            rewardTag.putString(REWARD_ID_TAG, rewardId);
+            claimedRewardsTag.add(rewardTag);
+        });
+        tag.put(CLAIMED_REWARDS_TAG, claimedRewardsTag);
+        return tag;
+    }
+
+    private static Optional<PlayerRewardStateEntry> tryLoadPlayerRewardState(CompoundTag tag) {
+        try {
+            UUID playerId = UUID.fromString(tag.getString(PLAYER_ID_TAG));
+            Set<String> claimedRewardIds = new LinkedHashSet<>();
+            ListTag claimedRewardsTag = tag.getList(CLAIMED_REWARDS_TAG, Tag.TAG_COMPOUND);
+            for (Tag entry : claimedRewardsTag) {
+                if (!(entry instanceof CompoundTag rewardTag)) {
+                    continue;
+                }
+
+                claimedRewardIds.add(requireText(rewardTag.getString(REWARD_ID_TAG), REWARD_ID_TAG));
+            }
+
+            return Optional.of(new PlayerRewardStateEntry(playerId, new CavernPlayerRewardState(playerId, claimedRewardIds)));
+        } catch (RuntimeException exception) {
+            LOGGER.warn("Skipping invalid persistent player reward-state entry", exception);
             return Optional.empty();
         }
     }
@@ -346,6 +424,9 @@ public final class CavernPersistentStateData extends SavedData {
     }
 
     private record PlayerMiningProgressionEntry(UUID playerId, CavernPlayerProgressionState progressionState) {
+    }
+
+    private record PlayerRewardStateEntry(UUID playerId, CavernPlayerRewardState rewardState) {
     }
 
     private record WorldPortalIndexEntry(String worldKey, PortalWorldIndex worldIndex) {

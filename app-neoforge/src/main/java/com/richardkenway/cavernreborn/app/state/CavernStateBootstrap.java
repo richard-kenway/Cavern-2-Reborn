@@ -4,10 +4,14 @@ import com.richardkenway.cavernreborn.app.dimension.CavernTravelBridge;
 import com.richardkenway.cavernreborn.app.portal.CavernPortalInteractionService;
 import com.richardkenway.cavernreborn.app.portal.CavernNonPlayerPortalInteractionService;
 import com.richardkenway.cavernreborn.app.portal.PortalInteractionCooldowns;
+import com.richardkenway.cavernreborn.app.progression.InMemoryPlayerClaimedRewardRepository;
 import com.richardkenway.cavernreborn.app.progression.InMemoryPlayerMiningProgressionRepository;
+import com.richardkenway.cavernreborn.app.progression.SavedDataBackedPlayerClaimedRewardRepository;
 import com.richardkenway.cavernreborn.app.progression.SavedDataBackedPlayerMiningProgressionRepository;
+import com.richardkenway.cavernreborn.core.progression.CavernRewardService;
 import com.richardkenway.cavernreborn.core.CavernProject;
 import com.richardkenway.cavernreborn.core.progression.CavernProgressionService;
+import com.richardkenway.cavernreborn.core.progression.PlayerClaimedRewardStore;
 import com.richardkenway.cavernreborn.core.progression.PlayerMiningProgressionStore;
 import com.richardkenway.cavernreborn.core.state.CavernDimensionTravelPlanner;
 import com.richardkenway.cavernreborn.core.state.PlayerReturnStateStore;
@@ -18,6 +22,7 @@ public final class CavernStateBootstrap {
     private final PlayerReturnStateStore playerReturnStateStore;
     private final WorldPortalIndexStore worldPortalIndexStore;
     private final PlayerMiningProgressionStore playerMiningProgressionStore;
+    private final PlayerClaimedRewardStore playerClaimedRewardStore;
     private final PortalLoopService portalLoopService;
     private final CavernDimensionTravelPlanner cavernDimensionTravelPlanner;
     private final CavernTravelBridge cavernTravelBridge;
@@ -25,12 +30,14 @@ public final class CavernStateBootstrap {
     private final CavernPortalInteractionService cavernPortalInteractionService;
     private final CavernNonPlayerPortalInteractionService nonPlayerPortalInteractionService;
     private final CavernProgressionService cavernProgressionService;
+    private final CavernRewardService cavernRewardService;
 
     public CavernStateBootstrap() {
         this(
             new SavedDataBackedPlayerReturnStateRepository(),
             new SavedDataBackedWorldPortalIndexRepository(),
-            new SavedDataBackedPlayerMiningProgressionRepository()
+            new SavedDataBackedPlayerMiningProgressionRepository(),
+            new SavedDataBackedPlayerClaimedRewardRepository()
         );
     }
 
@@ -38,7 +45,12 @@ public final class CavernStateBootstrap {
         PlayerReturnStateStore playerReturnStateStore,
         WorldPortalIndexStore worldPortalIndexStore
     ) {
-        this(playerReturnStateStore, worldPortalIndexStore, new InMemoryPlayerMiningProgressionRepository());
+        this(
+            playerReturnStateStore,
+            worldPortalIndexStore,
+            new InMemoryPlayerMiningProgressionRepository(),
+            new InMemoryPlayerClaimedRewardRepository()
+        );
     }
 
     public CavernStateBootstrap(
@@ -46,9 +58,24 @@ public final class CavernStateBootstrap {
         WorldPortalIndexStore worldPortalIndexStore,
         PlayerMiningProgressionStore playerMiningProgressionStore
     ) {
+        this(
+            playerReturnStateStore,
+            worldPortalIndexStore,
+            playerMiningProgressionStore,
+            new InMemoryPlayerClaimedRewardRepository()
+        );
+    }
+
+    public CavernStateBootstrap(
+        PlayerReturnStateStore playerReturnStateStore,
+        WorldPortalIndexStore worldPortalIndexStore,
+        PlayerMiningProgressionStore playerMiningProgressionStore,
+        PlayerClaimedRewardStore playerClaimedRewardStore
+    ) {
         this.playerReturnStateStore = playerReturnStateStore;
         this.worldPortalIndexStore = worldPortalIndexStore;
         this.playerMiningProgressionStore = playerMiningProgressionStore;
+        this.playerClaimedRewardStore = playerClaimedRewardStore;
         this.portalInteractionCooldowns = new PortalInteractionCooldowns();
         this.portalLoopService = new PortalLoopService(playerReturnStateStore, worldPortalIndexStore);
         this.cavernDimensionTravelPlanner = new CavernDimensionTravelPlanner(portalLoopService);
@@ -60,6 +87,7 @@ public final class CavernStateBootstrap {
             worldPortalIndexStore
         );
         this.cavernProgressionService = new CavernProgressionService(playerMiningProgressionStore);
+        this.cavernRewardService = new CavernRewardService(playerClaimedRewardStore);
     }
 
     public PlayerReturnStateStore playerReturnStateStore() {
@@ -72,6 +100,10 @@ public final class CavernStateBootstrap {
 
     public PlayerMiningProgressionStore playerMiningProgressionStore() {
         return playerMiningProgressionStore;
+    }
+
+    public PlayerClaimedRewardStore playerClaimedRewardStore() {
+        return playerClaimedRewardStore;
     }
 
     public PortalLoopService portalLoopService() {
@@ -102,8 +134,12 @@ public final class CavernStateBootstrap {
         return cavernProgressionService;
     }
 
+    public CavernRewardService cavernRewardService() {
+        return cavernRewardService;
+    }
+
     public String describe() {
         return CavernProject.PROJECT_NAME
-            + " return-state, portal block flow, safe-arrival checks, CAVERN dimension travel bridge and mining progression shell ready";
+            + " return-state, portal block flow, safe-arrival checks, CAVERN dimension travel bridge and mining progression/reward shell ready";
     }
 }

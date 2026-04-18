@@ -30,6 +30,7 @@ This repository currently contains the project skeleton and a minimal content re
 - a minimal dev inspection path for progression: `/cavern progression` reports the current player score/rank/counts, and `/cavern progression <player>` lets op/console inspect another player
 - a first player-facing progression layer: `/cavern rank` now shows a compact player-oriented rank summary, and threshold crossing sends a rank-up overlay instead of leaving progression fully hidden behind the debug command
 - a first real progression consequence: `Miner's Insight` unlocks at `apprentice` and grants `+1` bonus XP on each counted ore break inside `CAVERN`, derived directly from the persisted rank with no second progression model
+- a first bounded reward and eligibility layer: `/cavern rewards` shows the current reward surface, `/cavern claim <reward>` claims an eligible one-time reward, and the first reward `apprentice_supply_cache` grants a small mining supply bundle at `apprentice`
 - a bounded nearby portal relink step: travel now searches for an existing destination portal near the target and relinks stale index entries before creating a new frame
 - a bounded destination portal regeneration step: when an indexed destination portal is gone and nearby relink fails, travel now tries to rebuild a replacement portal near the stale anchor before falling back to generic create
 - `PortalWorldIndex` now promotes the most recently reused, relinked or recreated placement to the front, so portal churn prefers fresh anchors over older stale records
@@ -128,7 +129,9 @@ No full legacy-parity `CAVERN` gameplay stack is implemented yet.
 - Rank is derived deterministically from the persisted score; it is not stored as a separate mutable field.
 - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionUnlock.java` is the checked-in unlock surface for future systems; the first unlock is `Miner's Insight`, which activates at `apprentice`.
 - `Miner's Insight` currently grants `+1` bonus XP on each counted ore break inside `CAVERN`; the effect is derived from the persisted rank at runtime and does not add a second saved flag.
-- Use `/cavern rank` for the player-facing summary and `/cavern progression` for the dev/debug summary. Both commands read the same persisted progression state.
+- `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionReward.java` is the checked-in reward catalog surface for the next gameplay layers; the first reward is the one-time `apprentice_supply_cache`, available at `apprentice` and granting `torch x16, bread x8`.
+- Reward eligibility is derived from the same persisted progression score/rank; only claimed reward ids are stored persistently.
+- Use `/cavern rank` for the player-facing rank summary, `/cavern progression` for the dev/debug summary, `/cavern rewards` for reward availability and `/cavern claim <reward>` for the current claim path. These commands all read the same persisted progression baseline.
 - The regression-protected progression baseline, intentional compromises and local verification checklist are documented in `docs/progression-baseline.md`.
 
 ## Docker Build
