@@ -17,12 +17,12 @@ This repository currently contains the project skeleton and a minimal content re
 - a first weighted tunnel-network layer on top of `contained_caves`, used to improve underground connectedness without reopening the baseline too aggressively
 - a first weighted ravine-like layer on top of the tunnel baseline, now rebuilt as a band-limited horizontal connector pass instead of raw entrance carving
 - basic portal UX feedback for `cooldown`, failed cavern entry and missing return-state denial cases, plus an overworld fallback return target when no saved return-state exists
-- a bounded legacy-like `CAVERN` ritual activation step: `mossy_cobblestone` frames can now be activated with `minecraft:emerald` via a server-side frame-click hook and fill the `cavern_portal` interior block
+- a legacy-like `CAVERN` ritual activation step: any frame block in the `cavernreborn:cavern_portal_frames` block tag can now be activated with any item in the `cavernreborn:cavern_portal_activators` item tag via a server-side frame-click hook and fill the `cavern_portal` interior block
 - a first entity-inside portal flow step: walking into the `cavern_portal` interior block now triggers the main transfer loop; right-click interaction is disabled so runtime usage is now collision-only
 - frame-level portal identity semantics: interaction now canonicalizes a touched interior block to the portal frame anchor before building keys, cooldowns and portal placements
 - legacy-like portal collision eligibility policy is now applied at block level before travel dispatch; dead/crouching/spectator/passenger/vehicle/projectile/cooldown filters are explicit and test-covered, non-portal-capable entities are now rejected up front, and bounded non-player transport now uses an entity-persisted entry receipt instead of the player return-state store
-- an axis-aware `cavern_portal` interior plane with thin portal geometry and frame-integrity invalidation when the mossy frame is broken
-- a first destination portal placement step: travel now uses a bounded find-or-create portal target in the destination dimension instead of requiring a second portal to be placed manually every time
+- an axis-aware `cavern_portal` interior plane with thin portal geometry and frame-integrity invalidation when a tagged portal frame block is broken
+- a first destination portal placement step: travel now uses a configurable legacy-like find-or-create portal target in the destination dimension instead of requiring a second portal to be placed manually every time
 - a persistent control-plane state backend: player return-state and world portal indices now survive server restarts through overworld-level NeoForge `SavedData`
 - a bounded nearby portal relink step: travel now searches for an existing destination portal near the target and relinks stale index entries before creating a new frame
 - a bounded destination portal regeneration step: when an indexed destination portal is gone and nearby relink fails, travel now tries to rebuild a replacement portal near the stale anchor before falling back to generic create
@@ -30,7 +30,7 @@ This repository currently contains the project skeleton and a minimal content re
 - exact indexed portal reuse now rehydrates the actual placement from the world before promoting it, so stale stored axis values do not keep reinforcing themselves
 - axis-aware portal placement semantics: destination portal indices now persist portal axis, and arrival is centered to the interior portal plane instead of the raw frame anchor
 - bounded placement-quality scoring for auto-created destination portals: creation now prefers closer and safer frame anchors instead of the first valid spot in the search window
-- aligned portal creation and activation semantics: auto-create and regeneration now accept only interiors that the activator can actually fill, avoiding naked mossy frames from activation mismatches
+- aligned portal creation and activation semantics: auto-create and regeneration now accept only interiors that the activator can actually fill, avoiding naked frame shells from activation mismatches
 - fallback return now teleports directly to the bounded overworld fallback target instead of running destination-portal creation logic near shared spawn
 - bounded portal-relative exit semantics: destination arrival now preserves a clamped lateral offset from the source portal plane instead of always dropping the player into the exact portal center
 - bounded portal-relative facing semantics: destination exit yaw now remaps stored approach-facing by portal axis instead of always preserving the pre-teleport player yaw
@@ -55,8 +55,8 @@ No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 - The current portal flow now supports an axis-aware thin interior portal plane with frame-integrity invalidation; full legacy collision semantics still need manual validation.
 - Portal interaction now canonicalizes touched interior blocks to a frame-level anchor, but this still needs manual validation across different interior blocks of the same portal.
 - Destination portal placement is now automatic in a bounded search-relink-regenerate-or-create form, but it still does not implement full legacy cache, wider radius search and broader regeneration semantics.
-- `CAVERN` now uses `minecraft:mossy_cobblestone` as the canonical frame material for validation, activation and bounded auto-create/regenerate flow.
-- Player-facing ritual activation for `CAVERN` now uses `minecraft:emerald` on a valid mossy frame block and points into the portal interior.
+- `CAVERN` now validates against the `cavernreborn:cavern_portal_frames` block tag and can auto-create/regenerate frames with a configurable frame block from `config/cavernreborn-portal.properties`.
+- Player-facing ritual activation for `CAVERN` now uses the `cavernreborn:cavern_portal_activators` item tag on a valid tagged frame block and points into the portal interior.
 - The older `cavern_portal_trigger` runtime path has been removed; older worlds or inventories that still contained that item may now surface it as an unknown/removed item until they are cleaned up manually.
 - Portal index churn now prefers the most recently reused placement, but broader eviction and history policies for repeated portal churn still are not implemented.
 - Persistent world portal-index loading now skips invalid placement entries instead of dropping the entire world index, but broader corruption-repair tooling is still not implemented.
@@ -67,9 +67,9 @@ No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 - Eligible non-player entities now keep a bounded portal-entry receipt on the entity itself so they can enter `CAVERN` and return through the same portal loop, but this still needs manual validation for cross-dimension transport and missing-receipt denial cases.
 - Collision eligibility now also rejects entities that report `canUsePortal(false) == false`, which is a bounded modern stand-in for the old legacy non-boss barrier and still needs manual validation on real boss-like or modded entities.
 - Auto-created destination portals now use bounded placement-quality scoring, but the resulting anchor quality still needs manual validation in awkward terrain, near hazards and after repeated recreate/relink scenarios.
-- Portal create/regenerate now uses the same interior contract as activation, but this still needs manual validation in terrain with replaceable non-air filler to confirm that failed activation no longer leaves naked mossy frames behind.
+- Portal create/regenerate now uses the same interior contract as activation, but this still needs manual validation in terrain with replaceable non-air filler to confirm that failed activation no longer leaves naked frame shells behind.
 - Portal denial feedback currently uses short overlay messages only; there is no broader notification policy yet.
-- Cooldown and feedback suppression windows are fixed tick-based values and may need tuning after manual playtesting.
+- Cooldown, feedback suppression and portal search windows are now configurable through `config/cavernreborn-portal.properties`, but still need manual playtesting for final tuning.
 - Legacy portal branches such as `portalMenu`, shop flow and rank gating are intentionally not part of the current MVP slice.
 
 ## Structure
@@ -83,6 +83,12 @@ No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 - Single target now, portable later.
 - `CAVERN` is the MVP baseline.
 - `HUGE_CAVERN`, `AQUA_CAVERN` and all mirage worlds are intentionally out of MVP scope.
+
+## Portal Tuning
+
+- Runtime portal tuning now lives in `config/cavernreborn-portal.properties`.
+- Default frame validation and activation are data-driven through the `cavernreborn:cavern_portal_frames` and `cavernreborn:cavern_portal_activators` tags.
+- The checked-in defaults restore the old `findPortalRange = 32` behavior more closely than the previous hardcoded `8/6` and `4/2` windows.
 
 ## Docker Build
 

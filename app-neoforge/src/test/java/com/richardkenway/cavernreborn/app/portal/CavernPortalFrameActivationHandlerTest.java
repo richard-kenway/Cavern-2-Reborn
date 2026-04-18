@@ -151,7 +151,7 @@ class CavernPortalFrameActivationHandlerTest {
     }
 
     @Test
-    void supportsEmeraldOnlyActivationPath() {
+    void supportsTaggedActivatorAndFrameGate() {
         CavernPortalFrameActivationHandler handler = new CavernPortalFrameActivationHandler();
         AtomicInteger remaining = new AtomicInteger(5);
 

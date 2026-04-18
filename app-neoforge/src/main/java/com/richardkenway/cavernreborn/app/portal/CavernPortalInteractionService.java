@@ -3,6 +3,7 @@ package com.richardkenway.cavernreborn.app.portal;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.richardkenway.cavernreborn.app.config.CavernPortalSettings;
 import com.richardkenway.cavernreborn.app.dimension.CavernTravelBridge;
 import com.richardkenway.cavernreborn.core.state.CavernDimensions;
 import com.richardkenway.cavernreborn.core.state.CavernTravelPlan;
@@ -15,9 +16,6 @@ public final class CavernPortalInteractionService {
     public static final String PORTAL_COOLDOWN_MESSAGE_KEY = "message.cavernreborn.portal_cooldown";
     public static final String PORTAL_ENTRY_FAILED_MESSAGE_KEY = "message.cavernreborn.portal_entry_failed";
     public static final String PORTAL_RETURN_MISSING_MESSAGE_KEY = "message.cavernreborn.portal_return_missing";
-    private static final long SUCCESS_COOLDOWN_TICKS = 20L;
-    private static final long FAILURE_COOLDOWN_TICKS = 10L;
-    private static final long FEEDBACK_SUPPRESSION_TICKS = 10L;
 
     private final CavernTravelBridge travelBridge;
     private final PortalInteractionCooldowns cooldowns;
@@ -90,7 +88,10 @@ public final class CavernPortalInteractionService {
     }
 
     private void applyCooldown(CavernPortalInteractionContext context, boolean success) {
-        long durationTicks = success ? SUCCESS_COOLDOWN_TICKS : FAILURE_COOLDOWN_TICKS;
+        CavernPortalSettings settings = CavernPortalSettings.get();
+        long durationTicks = success
+            ? settings.successfulInteractionCooldownTicks()
+            : settings.failedInteractionCooldownTicks();
         cooldowns.markCooldown(cooldownKeyFor(context), context.gameTime(), durationTicks);
     }
 
@@ -106,7 +107,7 @@ public final class CavernPortalInteractionService {
 
     private void suppressFeedback(CavernPortalInteractionContext context, String feedbackReason) {
         String feedbackCooldownKey = feedbackCooldownKeyFor(context, feedbackReason);
-        cooldowns.markCooldown(feedbackCooldownKey, context.gameTime(), FEEDBACK_SUPPRESSION_TICKS);
+        cooldowns.markCooldown(feedbackCooldownKey, context.gameTime(), CavernPortalSettings.get().feedbackSuppressionTicks());
     }
 
     private static String portalKeyFor(CavernPortalInteractionContext context) {

@@ -9,9 +9,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.LevelAccessor;
 
@@ -33,7 +31,7 @@ public final class CavernPortalFrameActivationEvents {
         Optional<CavernPortalFrameActivationHandler.ActivationOutcome> activation = activationHandler.handle(
             level.isClientSide(),
             event.getEntity() != null && event.getEntity().isCreative(),
-            event.getItemStack().is(Items.EMERALD),
+            event.getItemStack().is(CavernPortalTags.CAVERN_PORTAL_ACTIVATORS),
             event.getPos(),
             event.getFace(),
             clickedPos -> isMossyCobblestoneFrame(level, clickedPos),
@@ -59,7 +57,7 @@ public final class CavernPortalFrameActivationEvents {
 
     private static boolean isMossyCobblestoneFrame(Level level, BlockPos pos) {
         BlockState clickedState = level.getBlockState(pos);
-        return clickedState.is(Blocks.MOSSY_COBBLESTONE);
+        return PortalFrameMaterialPolicy.CAVERN_DEFAULT.isFrame(clickedState);
     }
 
     private static Optional<CavernPortalFrameDetector.PortalFrame> activateFrame(LevelAccessor level, BlockPos pos, Direction face) {

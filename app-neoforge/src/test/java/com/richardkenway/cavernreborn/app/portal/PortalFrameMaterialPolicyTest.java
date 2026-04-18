@@ -9,8 +9,11 @@ import org.junit.jupiter.api.Test;
 
 class PortalFrameMaterialPolicyTest {
     @Test
-    void exposesNamedMossyCobblestonePolicyConstant() throws Exception {
+    void exposesNamedFramePolicyConstants() throws Exception {
         Field field = PortalFrameMaterialPolicy.class.getDeclaredField("MOSSY_COBBLESTONE");
+        Field taggedField = PortalFrameMaterialPolicy.class.getDeclaredField("CAVERN_DEFAULT");
+
+        assertNotNull(taggedField);
 
         assertNotNull(field);
     }

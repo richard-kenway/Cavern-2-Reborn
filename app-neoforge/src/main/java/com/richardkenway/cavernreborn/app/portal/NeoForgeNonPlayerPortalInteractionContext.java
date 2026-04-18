@@ -8,9 +8,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.richardkenway.cavernreborn.app.block.CavernPortalBlock;
+import com.richardkenway.cavernreborn.app.config.CavernPortalSettings;
 import com.richardkenway.cavernreborn.app.dimension.CavernNeoForgeDimensions;
 import com.richardkenway.cavernreborn.app.dimension.PortalPlacementQualityScorer;
-import com.richardkenway.cavernreborn.app.portal.CavernPortalFrameDetector.PortalFrame;
 import com.richardkenway.cavernreborn.app.registry.ModRegistries;
 import com.richardkenway.cavernreborn.core.state.PortalEntryReceipt;
 import com.richardkenway.cavernreborn.core.state.PortalWorldIndex;
@@ -26,21 +26,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
 
 public final class NeoForgeNonPlayerPortalInteractionContext implements NonPlayerPortalInteractionContext {
-    private static final Block PORTAL_FRAME_BLOCK = Blocks.MOSSY_COBBLESTONE;
     private static final int PORTAL_INNER_WIDTH = 2;
     private static final int PORTAL_INNER_HEIGHT = 3;
-    private static final int PORTAL_CREATE_SEARCH_RADIUS = 4;
-    private static final int PORTAL_CREATE_SEARCH_HEIGHT = 2;
-    private static final int PORTAL_REGEN_SEARCH_RADIUS = 2;
-    private static final int PORTAL_REGEN_SEARCH_HEIGHT = 1;
-    private static final int EXISTING_PORTAL_SEARCH_RADIUS = 8;
-    private static final int EXISTING_PORTAL_SEARCH_HEIGHT = 6;
 
     private final Entity entity;
     private final Level sourceLevel;
@@ -195,7 +187,7 @@ public final class NeoForgeNonPlayerPortalInteractionContext implements NonPlaye
         WorldPortalFrameAccess portalFrameAccess = new WorldPortalFrameAccess(
             targetLevel,
             portalBlock,
-            PortalFrameMaterialPolicy.of(PORTAL_FRAME_BLOCK)
+            frameMaterialPolicy()
         );
         CavernPortalFrameDetector detector = new CavernPortalFrameDetector(portalFrameAccess);
         return detector.detect(portalPos)
@@ -215,12 +207,13 @@ public final class NeoForgeNonPlayerPortalInteractionContext implements NonPlaye
         WorldPortalFrameAccess portalFrameAccess = new WorldPortalFrameAccess(
             targetLevel,
             portalBlock,
-            PortalFrameMaterialPolicy.of(PORTAL_FRAME_BLOCK)
+            frameMaterialPolicy()
         );
         CavernPortalFrameDetector detector = new CavernPortalFrameDetector(portalFrameAccess);
         Set<BlockPos> checkedOrigins = new LinkedHashSet<>();
+        int searchHeight = settings().findPortalVerticalRange();
 
-        for (int dy = 0; dy <= EXISTING_PORTAL_SEARCH_HEIGHT; dy++) {
+        for (int dy = 0; dy <= searchHeight; dy++) {
             Optional<PortalWorldIndex.PortalPlacement> sameHeight = findPortalAtYOffset(
                 targetLevel,
                 detector,
@@ -258,13 +251,14 @@ public final class NeoForgeNonPlayerPortalInteractionContext implements NonPlaye
     @Override
     public Optional<PortalWorldIndex.PortalPlacement> createPortalAt(String targetDimensionId, int x, int y, int z) {
         ServerLevel targetLevel = resolveLevel(targetDimensionId);
+        CavernPortalSettings settings = settings();
         return searchBestPortalCandidate(
             targetLevel,
             x,
             y,
             z,
-            PORTAL_CREATE_SEARCH_RADIUS,
-            PORTAL_CREATE_SEARCH_HEIGHT,
+            settings.findPortalRange(),
+            settings.findPortalVerticalRange(),
             Optional.empty()
         ).flatMap(candidate -> tryCreatePortalAt(
             candidate.bottomLeft(),
@@ -274,7 +268,7 @@ public final class NeoForgeNonPlayerPortalInteractionContext implements NonPlaye
                 new WorldPortalFrameAccess(
                     targetLevel,
                     ModRegistries.CAVERN_PORTAL_BLOCK.get(),
-                    PortalFrameMaterialPolicy.of(PORTAL_FRAME_BLOCK)
+                    frameMaterialPolicy()
                 )
             )
         ));
@@ -287,14 +281,15 @@ public final class NeoForgeNonPlayerPortalInteractionContext implements NonPlaye
     ) {
         Objects.requireNonNull(stalePlacement, "stalePlacement");
         ServerLevel targetLevel = resolveLevel(targetDimensionId);
+        CavernPortalSettings settings = settings();
 
         return searchBestPortalCandidate(
             targetLevel,
             stalePlacement.x(),
             stalePlacement.y(),
             stalePlacement.z(),
-            PORTAL_REGEN_SEARCH_RADIUS,
-            PORTAL_REGEN_SEARCH_HEIGHT,
+            settings.findPortalRange(),
+            settings.findPortalVerticalRange(),
             axisFromId(stalePlacement.axis())
         ).flatMap(candidate -> tryCreatePortalAt(
             candidate.bottomLeft(),
@@ -304,7 +299,7 @@ public final class NeoForgeNonPlayerPortalInteractionContext implements NonPlaye
                 new WorldPortalFrameAccess(
                     targetLevel,
                     ModRegistries.CAVERN_PORTAL_BLOCK.get(),
-                    PortalFrameMaterialPolicy.of(PORTAL_FRAME_BLOCK)
+                    frameMaterialPolicy()
                 )
             )
         ));
@@ -396,7 +391,8 @@ public final class NeoForgeNonPlayerPortalInteractionContext implements NonPlaye
         int centerZ,
         Set<BlockPos> checkedOrigins
     ) {
-        for (int radius = 0; radius <= EXISTING_PORTAL_SEARCH_RADIUS; radius++) {
+        int searchRadius = settings().findPortalRange();
+        for (int radius = 0; radius <= searchRadius; radius++) {
             for (int dx = -radius; dx <= radius; dx++) {
                 for (int dz = -radius; dz <= radius; dz++) {
                     if (radius > 0 && Math.max(Math.abs(dx), Math.abs(dz)) != radius) {
@@ -412,7 +408,7 @@ public final class NeoForgeNonPlayerPortalInteractionContext implements NonPlaye
                         continue;
                     }
 
-                    Optional<PortalFrame> frame = detector.detect(candidate);
+                    Optional<CavernPortalFrameDetector.PortalFrame> frame = detector.detect(candidate);
                     if (frame.isPresent() && !frame.get().isEmpty()) {
                         BlockPos bottomLeft = frame.get().bottomLeft();
                         return Optional.of(new PortalWorldIndex.PortalPlacement(
@@ -439,46 +435,93 @@ public final class NeoForgeNonPlayerPortalInteractionContext implements NonPlaye
         Optional<Direction.Axis> preferredAxis
     ) {
         Block portalBlock = ModRegistries.CAVERN_PORTAL_BLOCK.get();
+        Block frameBlock = frameBlock();
         PortalPlacementQualityScorer.PortalPlacementCandidate bestCandidate = null;
 
         for (int dy = 0; dy <= searchHeight; dy++) {
-            for (int radius = 0; radius <= searchRadius; radius++) {
-                for (int dx = -radius; dx <= radius; dx++) {
-                    for (int dz = -radius; dz <= radius; dz++) {
-                        if (radius > 0 && Math.max(Math.abs(dx), Math.abs(dz)) != radius) {
+            bestCandidate = evaluatePlacementCandidateAtY(
+                targetLevel,
+                portalBlock,
+                frameBlock,
+                x,
+                y,
+                y + dy,
+                z,
+                searchRadius,
+                preferredAxis,
+                bestCandidate
+            );
+            if (dy == 0) {
+                continue;
+            }
+
+            bestCandidate = evaluatePlacementCandidateAtY(
+                targetLevel,
+                portalBlock,
+                frameBlock,
+                x,
+                y,
+                y - dy,
+                z,
+                searchRadius,
+                preferredAxis,
+                bestCandidate
+            );
+        }
+
+        return Optional.ofNullable(bestCandidate);
+    }
+
+    private PortalPlacementQualityScorer.PortalPlacementCandidate evaluatePlacementCandidateAtY(
+        ServerLevel targetLevel,
+        Block portalBlock,
+        Block frameBlock,
+        int x,
+        int targetY,
+        int candidateY,
+        int z,
+        int searchRadius,
+        Optional<Direction.Axis> preferredAxis,
+        PortalPlacementQualityScorer.PortalPlacementCandidate currentBest
+    ) {
+        PortalPlacementQualityScorer.PortalPlacementCandidate bestCandidate = currentBest;
+
+        for (int radius = 0; radius <= searchRadius; radius++) {
+            for (int dx = -radius; dx <= radius; dx++) {
+                for (int dz = -radius; dz <= radius; dz++) {
+                    if (radius > 0 && Math.max(Math.abs(dx), Math.abs(dz)) != radius) {
+                        continue;
+                    }
+
+                    BlockPos candidatePos = new BlockPos(x + dx, candidateY, z + dz);
+                    for (Direction.Axis axis : orderedAxes(preferredAxis)) {
+                        if (!canBuildPortalAt(targetLevel, portalBlock, candidatePos, axis)) {
                             continue;
                         }
 
-                        BlockPos candidatePos = new BlockPos(x + dx, y + dy, z + dz);
-                        for (Direction.Axis axis : orderedAxes(preferredAxis)) {
-                            if (!canBuildPortalAt(targetLevel, portalBlock, candidatePos, axis)) {
-                                continue;
-                            }
-
-                            PortalPlacementQualityScorer.PortalPlacementCandidate scoredCandidate = PortalPlacementQualityScorer.evaluate(
-                                targetLevel,
-                                PORTAL_FRAME_BLOCK,
-                                portalBlock,
-                                candidatePos,
-                                axis,
-                                x,
-                                y,
-                                z
-                            );
-                            if (PortalPlacementQualityScorer.isBetterCandidate(
-                                scoredCandidate,
-                                bestCandidate,
-                                preferredAxis.orElse(null)
-                            )) {
-                                bestCandidate = scoredCandidate;
-                            }
+                        PortalPlacementQualityScorer.PortalPlacementCandidate scoredCandidate = PortalPlacementQualityScorer.evaluate(
+                            targetLevel,
+                            frameBlock,
+                            portalBlock,
+                            candidatePos,
+                            axis,
+                            x,
+                            targetY,
+                            z
+                        );
+                        if (PortalPlacementQualityScorer.isBetterCandidate(
+                            scoredCandidate,
+                            bestCandidate,
+                            preferredAxis.orElse(null)
+                        )) {
+                            bestCandidate = scoredCandidate;
                         }
                     }
                 }
             }
         }
 
-        return Optional.ofNullable(bestCandidate);
+        return bestCandidate;
     }
 
     private Optional<PortalWorldIndex.PortalPlacement> tryCreatePortalAt(
@@ -488,7 +531,7 @@ public final class NeoForgeNonPlayerPortalInteractionContext implements NonPlaye
         CavernPortalFrameActivator activator
     ) {
         placeFrame(targetLevel, bottomLeft, axis);
-        Optional<PortalFrame> activatedFrame = activator.activate(bottomLeft);
+        Optional<CavernPortalFrameDetector.PortalFrame> activatedFrame = activator.activate(bottomLeft);
         if (activatedFrame.isPresent()) {
             return Optional.of(new PortalWorldIndex.PortalPlacement(
                 bottomLeft.getX(),
@@ -540,15 +583,16 @@ public final class NeoForgeNonPlayerPortalInteractionContext implements NonPlaye
     private static void placeFrame(ServerLevel level, BlockPos bottomLeft, Direction.Axis axis) {
         Direction right = axis == Direction.Axis.X ? Direction.EAST : Direction.SOUTH;
         Direction left = right.getOpposite();
+        Block frameBlock = frameBlock();
 
         for (int dx = -1; dx <= PORTAL_INNER_WIDTH; dx++) {
-            level.setBlock(bottomLeft.relative(right, dx).below(), PORTAL_FRAME_BLOCK.defaultBlockState(), 3);
-            level.setBlock(bottomLeft.relative(right, dx).above(PORTAL_INNER_HEIGHT), PORTAL_FRAME_BLOCK.defaultBlockState(), 3);
+            level.setBlock(bottomLeft.relative(right, dx).below(), frameBlock.defaultBlockState(), 3);
+            level.setBlock(bottomLeft.relative(right, dx).above(PORTAL_INNER_HEIGHT), frameBlock.defaultBlockState(), 3);
         }
 
         for (int dy = 0; dy < PORTAL_INNER_HEIGHT; dy++) {
-            level.setBlock(bottomLeft.relative(left).above(dy), PORTAL_FRAME_BLOCK.defaultBlockState(), 3);
-            level.setBlock(bottomLeft.relative(right, PORTAL_INNER_WIDTH).above(dy), PORTAL_FRAME_BLOCK.defaultBlockState(), 3);
+            level.setBlock(bottomLeft.relative(left).above(dy), frameBlock.defaultBlockState(), 3);
+            level.setBlock(bottomLeft.relative(right, PORTAL_INNER_WIDTH).above(dy), frameBlock.defaultBlockState(), 3);
         }
     }
 
@@ -557,8 +601,7 @@ public final class NeoForgeNonPlayerPortalInteractionContext implements NonPlaye
     }
 
     private static boolean isFrameReplaceable(BlockState state) {
-        return PortalFrameMaterialPolicy.of(PORTAL_FRAME_BLOCK).isFrame(state)
-            || WorldPortalFrameAccess.isInteriorState(state, ModRegistries.CAVERN_PORTAL_BLOCK.get());
+        return PortalFrameMaterialPolicy.CAVERN_DEFAULT.isFrame(state) || state.canBeReplaced();
     }
 
     private static Direction.Axis[] orderedAxes(Optional<Direction.Axis> preferredAxis) {
@@ -575,5 +618,17 @@ public final class NeoForgeNonPlayerPortalInteractionContext implements NonPlaye
         return PortalWorldIndex.PortalPlacement.AXIS_Z.equals(axisId)
             ? Optional.of(Direction.Axis.Z)
             : Optional.of(Direction.Axis.X);
+    }
+
+    private static CavernPortalSettings settings() {
+        return CavernPortalSettings.get();
+    }
+
+    private static PortalFrameMaterialPolicy frameMaterialPolicy() {
+        return PortalFrameMaterialPolicy.CAVERN_DEFAULT;
+    }
+
+    private static Block frameBlock() {
+        return settings().frameBlock();
     }
 }
