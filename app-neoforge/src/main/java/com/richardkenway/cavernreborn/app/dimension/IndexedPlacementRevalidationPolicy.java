@@ -76,5 +76,36 @@ final class IndexedPlacementRevalidationPolicy {
         Optional<PortalWorldIndex.PortalPlacement> relinkableReplacement(PortalWorldIndex.PortalPlacement indexedPlacement) {
             return Optional.ofNullable(relinkableReplacements.get(indexedPlacement));
         }
+
+        PortalWorldIndex withRetainedPortal(
+            String portalKey,
+            PortalWorldIndex worldIndex,
+            PortalWorldIndex.PortalPlacement resolvedPlacement
+        ) {
+            return removeDeadIndexedPlacements(portalKey, worldIndex)
+                .withPortal(portalKey, resolvedPlacement);
+        }
+
+        PortalWorldIndex withRetainedReplacementPortal(
+            String portalKey,
+            PortalWorldIndex worldIndex,
+            PortalWorldIndex.PortalPlacement stalePlacement,
+            PortalWorldIndex.PortalPlacement replacementPlacement
+        ) {
+            return removeDeadIndexedPlacements(portalKey, worldIndex)
+                .withReplacementPortal(portalKey, stalePlacement, replacementPlacement);
+        }
+
+        private PortalWorldIndex removeDeadIndexedPlacements(String portalKey, PortalWorldIndex worldIndex) {
+            String normalizedPortalKey = Objects.requireNonNull(portalKey, "portalKey");
+            Objects.requireNonNull(worldIndex, "worldIndex");
+            PortalWorldIndex refreshedIndex = worldIndex;
+
+            for (PortalWorldIndex.PortalPlacement deadPlacement : deadIndexedPlacements) {
+                refreshedIndex = refreshedIndex.withoutPortal(normalizedPortalKey, deadPlacement);
+            }
+
+            return refreshedIndex;
+        }
     }
 }

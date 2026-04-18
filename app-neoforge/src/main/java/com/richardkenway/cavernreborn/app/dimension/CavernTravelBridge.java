@@ -169,11 +169,11 @@ public final class CavernTravelBridge {
             );
 
         if (resolvedPlacement.isPresent()) {
-            PortalWorldIndex refreshedIndex = removeDeadIndexedPlacements(
-                worldIndex,
+            PortalWorldIndex refreshedIndex = revalidationSnapshot.withRetainedPortal(
                 resolvedPortalKey,
-                revalidationSnapshot.deadIndexedPlacements()
-            ).withPortal(resolvedPortalKey, resolvedPlacement.get().resolvedPlacement());
+                worldIndex,
+                resolvedPlacement.get().resolvedPlacement()
+            );
             worldPortalIndexStore.save(targetDimensionId, refreshedIndex);
             return Optional.of(
                 toResolvedPortalDestination(targetDimensionId, resolvedPlacement.get().resolvedPlacement(), relativePortalExit, fallbackYaw)
@@ -188,12 +188,9 @@ public final class CavernTravelBridge {
                 preferredSourceAxis
             );
         if (relinkedPlacement.isPresent()) {
-            PortalWorldIndex refreshedIndex = removeDeadIndexedPlacements(
+            PortalWorldIndex refreshedIndex = revalidationSnapshot.withRetainedReplacementPortal(
+                resolvedPortalKey,
                 worldIndex,
-                resolvedPortalKey,
-                revalidationSnapshot.deadIndexedPlacements()
-            ).withReplacementPortal(
-                resolvedPortalKey,
                 relinkedPlacement.get().indexedPlacement(),
                 relinkedPlacement.get().resolvedPlacement()
             );
@@ -221,12 +218,9 @@ public final class CavernTravelBridge {
                 regenerationAnchor.get()
             );
             if (regeneratedPlacement.isPresent()) {
-                PortalWorldIndex refreshedIndex = removeDeadIndexedPlacements(
+                PortalWorldIndex refreshedIndex = revalidationSnapshot.withRetainedReplacementPortal(
+                    resolvedPortalKey,
                     worldIndex,
-                    resolvedPortalKey,
-                    revalidationSnapshot.deadIndexedPlacements()
-                ).withReplacementPortal(
-                    resolvedPortalKey,
                     regenerationAnchor.get(),
                     regeneratedPlacement.get()
                 );
@@ -242,11 +236,11 @@ public final class CavernTravelBridge {
             (int) Math.floor(preferredTarget.z())
         );
         if (nearbyPortal.isPresent()) {
-            PortalWorldIndex refreshedIndex = removeDeadIndexedPlacements(
-                worldIndex,
+            PortalWorldIndex refreshedIndex = revalidationSnapshot.withRetainedPortal(
                 resolvedPortalKey,
-                revalidationSnapshot.deadIndexedPlacements()
-            ).withPortal(resolvedPortalKey, nearbyPortal.get());
+                worldIndex,
+                nearbyPortal.get()
+            );
             worldPortalIndexStore.save(targetDimensionId, refreshedIndex);
             return Optional.of(toResolvedPortalDestination(targetDimensionId, nearbyPortal.get(), relativePortalExit, fallbackYaw));
         }
@@ -258,27 +252,14 @@ public final class CavernTravelBridge {
                 (int) Math.floor(preferredTarget.z())
             )
             .map(placement -> {
-                PortalWorldIndex refreshedIndex = removeDeadIndexedPlacements(
-                    worldIndex,
+                PortalWorldIndex refreshedIndex = revalidationSnapshot.withRetainedPortal(
                     resolvedPortalKey,
-                    revalidationSnapshot.deadIndexedPlacements()
-                ).withPortal(resolvedPortalKey, placement);
+                    worldIndex,
+                    placement
+                );
                 worldPortalIndexStore.save(targetDimensionId, refreshedIndex);
                 return toResolvedPortalDestination(targetDimensionId, placement, relativePortalExit, fallbackYaw);
             });
-    }
-
-    private static PortalWorldIndex removeDeadIndexedPlacements(
-        PortalWorldIndex worldIndex,
-        String portalKey,
-        Set<PortalWorldIndex.PortalPlacement> deadPlacements
-    ) {
-        PortalWorldIndex refreshedIndex = worldIndex;
-        for (PortalWorldIndex.PortalPlacement deadPlacement : deadPlacements) {
-            refreshedIndex = refreshedIndex.withoutPortal(portalKey, deadPlacement);
-        }
-
-        return refreshedIndex;
     }
 
     private Optional<CavernTravelPlan> fallbackReturnHome(PlayerTravelContext player) {
