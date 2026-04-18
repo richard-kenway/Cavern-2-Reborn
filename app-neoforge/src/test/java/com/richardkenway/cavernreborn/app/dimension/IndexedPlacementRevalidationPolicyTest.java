@@ -128,7 +128,7 @@ class IndexedPlacementRevalidationPolicyTest {
     }
 
     @Test
-    void retainedPortalUpdateLimitsDisplacedIndexedPlacements() {
+    void retainedPortalUpdateUsesSnapshotDisplacedPlacementsBudget() {
         PortalWorldIndex.PortalPlacement resolvedPlacement = new PortalWorldIndex.PortalPlacement(2, 64, 0, PortalWorldIndex.PortalPlacement.AXIS_X);
         PortalWorldIndex.PortalPlacement competingPlacement = new PortalWorldIndex.PortalPlacement(10, 64, 10, PortalWorldIndex.PortalPlacement.AXIS_X);
         PortalWorldIndex.PortalPlacement displacedPlacementA = new PortalWorldIndex.PortalPlacement(30, 70, 30, PortalWorldIndex.PortalPlacement.AXIS_X);
@@ -160,8 +160,7 @@ class IndexedPlacementRevalidationPolicyTest {
         PortalWorldIndex refreshedIndex = snapshot.withRetainedPortal(
             "cavern",
             worldIndex,
-            resolvedPlacement,
-            Set.of(displacedPlacementA, displacedPlacementB, displacedPlacementC, displacedPlacementD)
+            resolvedPlacement
         );
 
         Set<PortalWorldIndex.PortalPlacement> refreshedPlacements = refreshedIndex.placementsFor("cavern");
@@ -242,7 +241,7 @@ class IndexedPlacementRevalidationPolicyTest {
     }
 
     @Test
-    void retainedReplacementUpdateLimitsDisplacedIndexedPlacementsBeforeSwappingStalePlacement() {
+    void retainedReplacementUpdateUsesSnapshotDisplacedPlacementsBudgetBeforeSwappingStalePlacement() {
         PortalWorldIndex.PortalPlacement stalePlacement = new PortalWorldIndex.PortalPlacement(30, 70, 30, PortalWorldIndex.PortalPlacement.AXIS_Z);
         PortalWorldIndex.PortalPlacement replacementPlacement = new PortalWorldIndex.PortalPlacement(31, 70, 30, PortalWorldIndex.PortalPlacement.AXIS_Z);
         PortalWorldIndex.PortalPlacement survivingPlacement = new PortalWorldIndex.PortalPlacement(10, 70, 10, PortalWorldIndex.PortalPlacement.AXIS_X);
@@ -278,8 +277,7 @@ class IndexedPlacementRevalidationPolicyTest {
             "cavern",
             worldIndex,
             stalePlacement,
-            replacementPlacement,
-            Set.of(displacedPlacementA, displacedPlacementB, displacedPlacementC, displacedPlacementD)
+            replacementPlacement
         );
 
         Set<PortalWorldIndex.PortalPlacement> refreshedPlacements = refreshedIndex.placementsFor("cavern");
