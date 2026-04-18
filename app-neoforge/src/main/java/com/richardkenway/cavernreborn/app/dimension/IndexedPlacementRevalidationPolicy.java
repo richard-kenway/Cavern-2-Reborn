@@ -90,6 +90,10 @@ final class IndexedPlacementRevalidationPolicy {
         Map<PortalWorldIndex.PortalPlacement, PortalWorldIndex.PortalPlacement> liveReplacements,
         Map<PortalWorldIndex.PortalPlacement, PortalWorldIndex.PortalPlacement> relinkableReplacements
     ) {
+        Set<PortalWorldIndex.PortalPlacement> regenerationEligibleIndexedPlacements() {
+            return deadIndexedPlacements;
+        }
+
         Optional<PortalWorldIndex.PortalPlacement> liveReplacement(PortalWorldIndex.PortalPlacement indexedPlacement) {
             return Optional.ofNullable(liveReplacements.get(indexedPlacement));
         }

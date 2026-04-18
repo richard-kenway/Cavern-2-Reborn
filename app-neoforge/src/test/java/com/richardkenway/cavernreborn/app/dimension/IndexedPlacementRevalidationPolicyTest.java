@@ -108,6 +108,25 @@ class IndexedPlacementRevalidationPolicyTest {
     }
 
     @Test
+    void regenerationEligibilityKeepsDeadPlacementsAndExcludesDisplacedPlacements() {
+        PortalWorldIndex.PortalPlacement displacedPlacement = new PortalWorldIndex.PortalPlacement(30, 70, 30, PortalWorldIndex.PortalPlacement.AXIS_Z);
+        PortalWorldIndex.PortalPlacement deadPlacement = new PortalWorldIndex.PortalPlacement(90, 70, 90, PortalWorldIndex.PortalPlacement.AXIS_X);
+
+        IndexedPlacementRevalidationPolicy.IndexedPlacementRevalidationSnapshot snapshot =
+            new IndexedPlacementRevalidationPolicy.IndexedPlacementRevalidationSnapshot(
+                Set.of(),
+                Set.of(),
+                Set.of(displacedPlacement),
+                Set.of(deadPlacement),
+                Map.of(),
+                Map.of()
+            );
+
+        assertEquals(Set.of(deadPlacement), snapshot.regenerationEligibleIndexedPlacements());
+        assertFalse(snapshot.regenerationEligibleIndexedPlacements().contains(displacedPlacement));
+    }
+
+    @Test
     void retainedPortalUpdatePreservesDisplacedIndexedPlacements() {
         PortalWorldIndex.PortalPlacement displacedPlacement = new PortalWorldIndex.PortalPlacement(30, 70, 30, PortalWorldIndex.PortalPlacement.AXIS_X);
         PortalWorldIndex.PortalPlacement resolvedPlacement = new PortalWorldIndex.PortalPlacement(2, 64, 0, PortalWorldIndex.PortalPlacement.AXIS_X);

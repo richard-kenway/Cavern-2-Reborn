@@ -206,7 +206,7 @@ public final class CavernTravelBridge {
         }
 
         Optional<PortalWorldIndex.PortalPlacement> regenerationAnchor = PortalPlacementSelectionPolicy.nearestCandidate(
-            indexedPlacements,
+            revalidationSnapshot.regenerationEligibleIndexedPlacements(),
             Optional::of,
             indexedPlacement -> PortalPlacementSelectionPolicy.distanceFromPreferredTarget(preferredTarget, indexedPlacement),
             preferredSourceAxis
