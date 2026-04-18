@@ -49,25 +49,15 @@ It is closer to `Cavern 2` than the earlier generic cave placeholder, but it is 
 
 ## Runtime Validation
 
-Local headless validation was rerun on `2026-04-18` against a fresh dedicated-server world built from the current jar.
+The regression-protected baseline in this document intentionally stays separate from one-off runtime observations.
 
-- Resource inclusion was confirmed through:
-  - classpath-backed tests;
-  - the built mod jar;
-  - a dedicated NeoForge server loading the same jar from `dev-server/server/mods`.
-- The server-console smoke-check used `setworldspawn 0 70 0` before `execute in cavernreborn:cavern run locate biome ...` so biome distance checks started from a known source position.
-- The fresh world runtime confirmed:
-  - `stone_depths` at `[0, 70, 0]`;
-  - `lush_grotto` at `[-256, 70, -832]`;
-  - `dripstone_grotto` at `[480, 70, -352]`;
-  - `highland_hollows` at `[-128, 70, 128]`;
-  - a nearby `minecraft:mineshaft` at `[-240, ~, -96]`.
-- The same smoke-check sampled generated blocks on real chunks:
-  - `stone_depths`: `590` `coal_ore` and `174` `iron_ore` replacements in a `17x97x17` sample around `[32, 70, 0]`;
-  - `lush_grotto`: `88` `moss_block` and `12` `cave_vines` replacements in a `17x97x17` sample around `[-240, 70, -832]`;
-  - `dripstone_grotto`: `26` `dripstone_block` replacements in an upper-band sample and `34` `deepslate_gold_ore` replacements in a lower-band sample around `[480, 70, -352]`;
-  - `highland_hollows`: `4` and `5` `emerald_ore` replacements in adjacent `31x31x31` samples around `[-128, 70, 128]`.
-- The earlier runtime warning `Empty height range: [136 absolute-0 below top]` no longer appears after removing the imported `ore_coal_upper` pass from the custom biome baseline.
+- A dated dedicated-server validation note for the current baseline lives in `docs/worldgen-runtime-validation-2026-04-18.md`.
+- Runtime validation should confirm three things together:
+  - generated resources resolve from the runtime classpath;
+  - the built mod jar contains the expected biome, placed-feature and structure-tag resources;
+  - a fresh dedicated server can generate and observe the biome/resource baseline on real chunks.
+- If you use the dedicated-server console for biome distance checks, set a known source first, for example `setworldspawn 0 70 0`, before running `locate biome` inside `CAVERN`.
+- Keep dated coordinates, sampled block counts and single-run warnings in the validation note above instead of growing this baseline doc into a historical log.
 
 ## Supported Cases
 
@@ -86,7 +76,7 @@ Local headless validation was rerun on `2026-04-18` against a fresh dedicated-se
 - The old weighted overworld-biome transcription is approximated through four custom cave biomes, not restored biome-for-biome.
 - The old custom ores, tower dungeons, mirage remnants, Huge Cavern and Aqua Cavern are still out of scope.
 - The baseline still uses modern vanilla ore/features where possible instead of restoring the full legacy custom vein table.
-- The headless runtime pass uses server-console commands and block-sampling on disposable chunks; it is strong enough to validate generation/runtime wiring, but it is not a substitute for a visual client pass.
+- The dedicated-server validation note records a headless server-console pass plus block-sampling on disposable chunks; that is strong enough to validate generation/runtime wiring, but it is not a substitute for a visual client pass.
 - No new user-facing worldgen config surface was added for this pass; the runtime source of truth is the checked-in data resources above.
 
 ## Follow-Up Gaps

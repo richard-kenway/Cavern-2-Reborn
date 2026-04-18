@@ -45,7 +45,7 @@ No full legacy-parity `CAVERN` worldgen or broader gameplay systems are implemen
 - The current terrain profile is still a tuned vanilla-noise fork, not a literal port of the old 1.12 chunk generator.
 - The current dry-out pass keeps `sea_level` pinned to `min_y`, so the normal `CAVERN` baseline no longer has an operative flood-line inside its playable volume.
 - Collision handling now applies a legacy-like eligibility filter matrix in the portal block, and a bounded non-player transport path now exists for eligible entities, but it still is not full legacy parity for bosses, broader entity classes or richer cache semantics.
-- The new data-driven cave-biome family is now a conscious four-biome baseline, and a fresh dedicated-server smoke-check has already confirmed it on generated chunks; a full visual client pass across remote regions is still pending.
+- The new data-driven cave-biome family is now a conscious four-biome baseline, and a dedicated-server validation note exists for the current runtime slice; a full visual client pass across remote regions is still pending.
 - Large open cavities may still appear in the current baseline; custom cave-like dimension effects now handle sky/sun leakage, but the overall visual result still needs manual in-game validation.
 - The tunnel/ravine tuning is still a bounded density-function pass rather than a full custom carve stack.
 - The current baseline restores only the worldgen slices that materially affect terrain, biome identity, mining usefulness and relevant cave features; legacy custom ores/content and extra dimensions are still out of scope.
@@ -106,11 +106,10 @@ No full legacy-parity `CAVERN` worldgen or broader gameplay systems are implemen
   - `data/minecraft/tags/worldgen/biome/has_structure/mineshaft.json`
 - The current biome baseline is intentionally small and explicit: `stone_depths`, `lush_grotto`, `dripstone_grotto`, `highland_hollows`.
 - Newly added biome, placed-feature and structure-tag resources are currently checked in under `app-neoforge/src/generated/resources`, which is part of the runtime resource set via `build.gradle`.
-- The generated worldgen resources are now verified in three places: test runtime classpath, the built mod jar, and the local dedicated-server runtime.
+- Runtime validation is split between automated resource/classpath checks and a dedicated-server validation note at `docs/worldgen-runtime-validation-2026-04-18.md`.
 - `stone_depths` is the dominant mining biome; `lush_grotto` carries the humid vegetation slice; `dripstone_grotto` carries the dry mineral slice; `highland_hollows` is the mountain/hill stand-in for richer emerald pockets.
 - Mining usefulness now comes from the baseline ore set plus enabled ore veins, dense coal/iron passes, extra gold in `dripstone_grotto` and extra emerald in `highland_hollows`.
-- The fresh dedicated-server smoke-check now confirms nearby `stone_depths`, `lush_grotto`, `dripstone_grotto` and `highland_hollows`, plus sampled dense coal/iron, lush moss/vines, dripstone gold bias and nearby mineshafts on a new world.
-- The server-console `locate biome` workflow is source-position dependent; set a known source position first, for example `setworldspawn 0 70 0`, before comparing biome distances in `CAVERN`.
+- If you use the dedicated-server console for biome distance checks, set a known source position first, for example `setworldspawn 0 70 0`, before comparing biome distances in `CAVERN`.
 - Relevant cave features/structures in the baseline are amethyst geodes, lava lakes, fluid springs, lush/dripstone decoration, denser monster rooms and mineshafts.
 - The regression-protected worldgen baseline, intentional compromises and runtime checklist are documented in `docs/worldgen-baseline.md`.
 

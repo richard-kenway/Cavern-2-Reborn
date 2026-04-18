@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 class CavernWorldgenDocumentationTest {
     private static final Path README = resolveProjectFile("README.md");
     private static final Path WORLDGEN_BASELINE = resolveProjectFile("docs", "worldgen-baseline.md");
+    private static final Path WORLDGEN_RUNTIME_NOTE = resolveProjectFile("docs", "worldgen-runtime-validation-2026-04-18.md");
 
     @Test
     void readmeDocumentsCurrentWorldgenBaselineAndSourceOfTruth() throws IOException {
@@ -22,9 +23,10 @@ class CavernWorldgenDocumentationTest {
         assertTrue(readme.contains("highland_hollows"));
         assertTrue(readme.contains("ore veins"));
         assertTrue(readme.contains("mineshafts"));
-        assertTrue(readme.contains("dedicated-server smoke-check"));
-        assertTrue(readme.contains("setworldspawn 0 70 0"));
         assertTrue(readme.contains("docs/worldgen-baseline.md"));
+        assertTrue(readme.contains("docs/worldgen-runtime-validation-2026-04-18.md"));
+        assertTrue(readme.contains("dedicated-server validation note"));
+        assertTrue(readme.contains("setworldspawn 0 70 0"));
     }
 
     @Test
@@ -37,13 +39,26 @@ class CavernWorldgenDocumentationTest {
         assertTrue(doc.contains("dense coal and iron"));
         assertTrue(doc.contains("dripstone_grotto"));
         assertTrue(doc.contains("highland_hollows"));
-        assertTrue(doc.contains("2026-04-18"));
+        assertTrue(doc.contains("docs/worldgen-runtime-validation-2026-04-18.md"));
+        assertTrue(doc.contains("generated resources resolve from the runtime classpath"));
         assertTrue(doc.contains("setworldspawn 0 70 0"));
-        assertTrue(doc.contains("Empty height range"));
-        assertTrue(doc.contains("ore_coal_upper"));
+        assertTrue(doc.contains("historical log"));
         assertTrue(doc.contains("monster room"));
         assertTrue(doc.contains("Generate a fresh world and enter `CAVERN`"));
         assertTrue(doc.contains("Restart the server"));
+    }
+
+    @Test
+    void runtimeValidationNoteStoresDatedServerObservationsOutsideBaselineDoc() throws IOException {
+        String note = Files.readString(WORLDGEN_RUNTIME_NOTE);
+
+        assertTrue(note.contains("2026-04-18"));
+        assertTrue(note.contains("setworldspawn 0 70 0"));
+        assertTrue(note.contains("Empty height range"));
+        assertTrue(note.contains("ore_coal_upper"));
+        assertTrue(note.contains("monster room"));
+        assertTrue(note.contains("one-off headless dedicated-server validation pass"));
+        assertTrue(note.contains("**not** the regression-protected baseline itself"));
     }
 
     private static Path resolveProjectFile(String first, String... more) {
