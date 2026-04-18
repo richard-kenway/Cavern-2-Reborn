@@ -25,6 +25,9 @@ This repository currently contains the project skeleton and a minimal content re
 - an axis-aware `cavern_portal` interior plane with thin portal geometry and frame-integrity invalidation when a tagged portal frame block is broken
 - a first destination portal placement step: travel now uses a configurable legacy-like find-or-create portal target in the destination dimension instead of requiring a second portal to be placed manually every time
 - a persistent control-plane state backend: player return-state and world portal indices now survive server restarts through overworld-level NeoForge `SavedData`
+- a minimal server-side `CAVERN` progression shell: player-scoped mining counters, weighted progression score and deterministic rank evaluation now persist through the same overworld-level `SavedData` control plane
+- cavern-only mining accounting for progression: uncanceled non-creative player block breaks count only for the fixed baseline ore list inside `CAVERN`; overworld mining and unsupported blocks do not move the cavern-specific state
+- a minimal dev inspection path for progression: `/cavern progression` reports the current player score/rank/counts, and `/cavern progression <player>` lets op/console inspect another player
 - a bounded nearby portal relink step: travel now searches for an existing destination portal near the target and relinks stale index entries before creating a new frame
 - a bounded destination portal regeneration step: when an indexed destination portal is gone and nearby relink fails, travel now tries to rebuild a replacement portal near the stale anchor before falling back to generic create
 - `PortalWorldIndex` now promotes the most recently reused, relinked or recreated placement to the front, so portal churn prefers fresh anchors over older stale records
@@ -36,7 +39,7 @@ This repository currently contains the project skeleton and a minimal content re
 - bounded portal-relative exit semantics: destination arrival now preserves a clamped lateral offset from the source portal plane instead of always dropping the player into the exact portal center
 - bounded portal-relative facing semantics: destination exit yaw now remaps stored approach-facing by portal axis instead of always preserving the pre-teleport player yaw
 
-No full legacy-parity `CAVERN` worldgen or broader gameplay systems are implemented yet.
+No full legacy-parity `CAVERN` gameplay stack is implemented yet.
 
 ## Current Limitations
 
@@ -51,6 +54,8 @@ No full legacy-parity `CAVERN` worldgen or broader gameplay systems are implemen
 - The current baseline restores only the worldgen slices that materially affect terrain, biome identity, mining usefulness and relevant cave features; legacy custom ores/content and extra dimensions are still out of scope.
 - Safe arrival currently relies on a bounded local search around the target column and may cancel entry if no safe point is found nearby.
 - Return-state and world portal indices now persist through an overworld-level `SavedData` control plane, but this is still a bounded MVP backend rather than full player/world attachment wiring.
+- The current progression shell is intentionally narrow: it counts only a fixed baseline ore list in `CAVERN`, uses no config-driven scoring table and does not yet drive any menu, shop, economy or broader progression gating.
+- Progression currently listens to uncanceled server-side block-break events from non-creative players; it tracks qualifying block breaks, not item pickup, smelting or broader activity telemetry.
 - The new persistent backend still needs manual restart validation on a real dedicated server, especially for `portal -> CAVERN -> restart -> return` and indexed destination-portal reuse after restart.
 - The current portal flow now supports an axis-aware thin interior portal plane with frame-integrity invalidation; full legacy collision semantics still need manual validation.
 - Portal interaction now canonicalizes touched interior blocks to a frame-level anchor, but this still needs manual validation across different interior blocks of the same portal.
@@ -70,7 +75,7 @@ No full legacy-parity `CAVERN` worldgen or broader gameplay systems are implemen
 - Portal create/regenerate now uses the same interior contract as activation, but this still needs manual validation in terrain with replaceable non-air filler to confirm that failed activation no longer leaves naked frame shells behind.
 - Portal denial feedback currently uses short overlay messages only; there is no broader notification policy yet.
 - Cooldown, feedback suppression and portal search windows are now configurable through `config/cavernreborn-portal.properties`, but still need manual playtesting for final tuning.
-- Legacy portal branches such as `portalMenu`, shop flow and rank gating are intentionally not part of the current MVP slice.
+- Legacy player-facing branches such as `portalMenu`, shop flow, economy and broader rank gating are intentionally not part of the current MVP slice.
 
 ## Structure
 
@@ -112,6 +117,15 @@ No full legacy-parity `CAVERN` worldgen or broader gameplay systems are implemen
 - If you use the dedicated-server console for biome distance checks, set a known source position first, for example `setworldspawn 0 70 0`, before comparing biome distances in `CAVERN`.
 - Relevant cave features/structures in the baseline are amethyst geodes, lava lakes, fluid springs, lush/dripstone decoration, denser monster rooms and mineshafts.
 - The regression-protected worldgen baseline, intentional compromises and runtime checklist are documented in `docs/worldgen-baseline.md`.
+
+## Progression Baseline
+
+- Runtime progression source-of-truth is code, not config: `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionPolicy.java` defines the counted block list, per-block score deltas and rank thresholds.
+- Player progression state is persisted in the same overworld-level `cavernreborn_control_plane` `SavedData` file already used by the portal control plane.
+- The current baseline counts only uncanceled non-creative player block breaks for the fixed ore list inside `cavernreborn:cavern`.
+- Rank is derived deterministically from the persisted score; it is not stored as a separate mutable field.
+- Use `/cavern progression` for the current player or `/cavern progression <player>` from op/console to inspect the current server-side state.
+- The regression-protected progression baseline, intentional compromises and local verification checklist are documented in `docs/progression-baseline.md`.
 
 ## Docker Build
 

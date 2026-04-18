@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 
+import com.richardkenway.cavernreborn.core.progression.CavernPlayerProgressionState;
 import com.richardkenway.cavernreborn.core.state.PortalReturnState;
 import com.richardkenway.cavernreborn.core.state.PortalWorldIndex;
 
@@ -19,18 +20,23 @@ class CavernPersistentStateDataTest {
     void saveAndLoadRoundTripPlayerReturnStateAndWorldPortalIndex() {
         UUID playerId = UUID.randomUUID();
         PortalReturnState returnState = new PortalReturnState("cavern_portal", "minecraft:overworld", 12, 70, 14);
+        CavernPlayerProgressionState progressionState = CavernPlayerProgressionState.empty(playerId)
+            .withMinedBlock("minecraft:coal_ore", 1)
+            .withMinedBlock("minecraft:iron_ore", 2);
         PortalWorldIndex worldIndex = PortalWorldIndex.empty()
             .withPortal("cavern_portal", new PortalWorldIndex.PortalPlacement(1, 64, 2, PortalWorldIndex.PortalPlacement.AXIS_X))
             .withPortal("cavern_portal", new PortalWorldIndex.PortalPlacement(3, 65, 4, PortalWorldIndex.PortalPlacement.AXIS_Z));
 
         CavernPersistentStateData savedData = new CavernPersistentStateData();
         savedData.savePlayerReturnState(playerId, returnState);
+        savedData.savePlayerMiningProgression(progressionState);
         savedData.saveWorldPortalIndex("cavernreborn:cavern", worldIndex);
 
         CompoundTag serialized = savedData.save(new CompoundTag(), null);
         CavernPersistentStateData restored = CavernPersistentStateData.load(serialized, null);
 
         assertEquals(returnState, restored.loadPlayerReturnState(playerId).orElseThrow());
+        assertEquals(progressionState, restored.loadPlayerMiningProgression(playerId));
         assertEquals(worldIndex, restored.loadWorldPortalIndex("cavernreborn:cavern"));
         assertEquals(
             worldIndex.firstPlacementFor("cavern_portal"),
@@ -60,6 +66,19 @@ class CavernPersistentStateDataTest {
         savedData.clearPlayerReturnState(playerId);
 
         assertFalse(savedData.loadPlayerReturnState(playerId).isPresent());
+    }
+
+    @Test
+    void clearPlayerMiningProgressionRemovesSavedEntry() {
+        UUID playerId = UUID.randomUUID();
+        CavernPersistentStateData savedData = new CavernPersistentStateData();
+        savedData.savePlayerMiningProgression(
+            CavernPlayerProgressionState.empty(playerId).withMinedBlock("minecraft:coal_ore", 1)
+        );
+
+        savedData.clearPlayerMiningProgression(playerId);
+
+        assertEquals(CavernPlayerProgressionState.empty(playerId), savedData.loadPlayerMiningProgression(playerId));
     }
 
     @Test

@@ -87,7 +87,7 @@ The regression-protected baseline in this document intentionally stays separate 
 
 ## Minimal Checklist
 
-Run this before any larger worldgen or progression-shell change:
+Run this before any larger worldgen or progression change:
 
 1. `docker compose run --rm gradle ./gradlew --no-daemon test build`
 2. Stop the dev server before resetting the world or the `CAVERN` dimension.

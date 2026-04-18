@@ -12,11 +12,16 @@ class CavernStateBootstrapTest {
 
         assertNotNull(bootstrap.playerReturnStateStore());
         assertNotNull(bootstrap.worldPortalIndexStore());
+        assertNotNull(bootstrap.playerMiningProgressionStore());
         assertNotNull(bootstrap.portalLoopService());
         assertNotNull(bootstrap.cavernDimensionTravelPlanner());
         assertNotNull(bootstrap.cavernTravelBridge());
         assertNotNull(bootstrap.cavernPortalInteractionService());
         assertNotNull(bootstrap.nonPlayerPortalInteractionService());
-        assertEquals("Cavern Reborn return-state, portal block flow, safe-arrival checks and CAVERN dimension travel bridge ready", bootstrap.describe());
+        assertNotNull(bootstrap.cavernProgressionService());
+        assertEquals(
+            "Cavern Reborn return-state, portal block flow, safe-arrival checks, CAVERN dimension travel bridge and mining progression shell ready",
+            bootstrap.describe()
+        );
     }
 }

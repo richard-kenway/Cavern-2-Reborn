@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
+import com.richardkenway.cavernreborn.app.progression.CavernMiningProgressionEvents;
+import com.richardkenway.cavernreborn.app.progression.CavernProgressionCommands;
 import com.richardkenway.cavernreborn.app.registry.ModRegistries;
 import com.richardkenway.cavernreborn.app.state.CavernStateBootstrap;
 import com.richardkenway.cavernreborn.app.portal.CavernPortalFrameActivationEvents;
@@ -23,8 +25,10 @@ public final class CavernReborn {
 
     public CavernReborn(IEventBus modEventBus) {
         ModRegistries.register(modEventBus);
-        NeoForge.EVENT_BUS.register(new CavernPortalFrameActivationEvents());
         cavernStateBootstrap = new CavernStateBootstrap();
+        NeoForge.EVENT_BUS.register(new CavernPortalFrameActivationEvents());
+        NeoForge.EVENT_BUS.register(new CavernMiningProgressionEvents(cavernStateBootstrap.cavernProgressionService()));
+        NeoForge.EVENT_BUS.register(new CavernProgressionCommands(cavernStateBootstrap.cavernProgressionService()));
         LOGGER.info("Bootstrapped {} with {}", CavernProject.PROJECT_NAME, cavernStateBootstrap().describe());
     }
 

@@ -7,11 +7,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
-final class CavernPersistentStateAccess {
+public final class CavernPersistentStateAccess {
     private CavernPersistentStateAccess() {
     }
 
-    static Optional<CavernPersistentStateData> resolve() {
+    public static Optional<CavernPersistentStateData> resolve() {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server == null) {
             return Optional.empty();

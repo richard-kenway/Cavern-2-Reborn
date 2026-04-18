@@ -39,7 +39,7 @@ It is not a claim of full legacy parity. It documents the bounded baseline that 
 
 ## Out Of Scope
 
-- New dimensions, new content, progression shell, GUI, portal shop, mining records, regeneration UI.
+- New dimensions, new content, GUI, portal shop, mining records, regeneration UI and broader progression UX.
 - Large portal architecture refactors outside a concrete portal bug fix.
 - Full legacy cache parity, unbounded search radius parity or wider regeneration semantics.
 - Broad modded-entity compatibility guarantees beyond the explicit eligibility policy above.
