@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -107,6 +108,31 @@ class CavernPortalFrameActivationHandlerTest {
     }
 
     @Test
+    void rejectsUnsupportedActivatorWithoutRunningActivationAttempt() {
+        CavernPortalFrameActivationHandler handler = new CavernPortalFrameActivationHandler();
+        AtomicInteger remaining = new AtomicInteger(1);
+        AtomicBoolean activationAttempted = new AtomicBoolean(false);
+
+        Optional<CavernPortalFrameActivationHandler.ActivationOutcome> outcome = handler.handle(
+            false,
+            false,
+            false,
+            CLICKED_POS,
+            Direction.WEST,
+            clickedPos -> true,
+            (clickedPos, clickedFace) -> {
+                activationAttempted.set(true);
+                return Optional.of(FRAME);
+            },
+            remaining::decrementAndGet
+        );
+
+        assertTrue(outcome.isEmpty());
+        assertFalse(activationAttempted.get());
+        assertEquals(1, remaining.get());
+    }
+
+    @Test
     void defaultsNullFaceToUpBeforeActivationAttempt() {
         CavernPortalFrameActivationHandler handler = new CavernPortalFrameActivationHandler();
         AtomicReference<Direction> recordedFace = new AtomicReference<>();
@@ -182,5 +208,30 @@ class CavernPortalFrameActivationHandlerTest {
 
         assertFalse(blockedByFrameMaterial.isPresent());
         assertEquals(4, remaining.get());
+    }
+
+    @Test
+    void rejectsUnsupportedFrameWithoutRunningActivationAttempt() {
+        CavernPortalFrameActivationHandler handler = new CavernPortalFrameActivationHandler();
+        AtomicInteger remaining = new AtomicInteger(1);
+        AtomicBoolean activationAttempted = new AtomicBoolean(false);
+
+        Optional<CavernPortalFrameActivationHandler.ActivationOutcome> outcome = handler.handle(
+            false,
+            false,
+            true,
+            CLICKED_POS,
+            Direction.WEST,
+            clickedPos -> false,
+            (clickedPos, clickedFace) -> {
+                activationAttempted.set(true);
+                return Optional.of(FRAME);
+            },
+            remaining::decrementAndGet
+        );
+
+        assertTrue(outcome.isEmpty());
+        assertFalse(activationAttempted.get());
+        assertEquals(1, remaining.get());
     }
 }

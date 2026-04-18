@@ -2,6 +2,8 @@
 
 This document fixes the current `CAVERN` portal vertical slice as the regression-protected baseline on `main`.
 
+It is not a claim of full legacy parity. It documents the bounded baseline that is currently implemented and regression-tested.
+
 ## Expected Behavior
 
 - Activation is server-side and collision-based at runtime.
@@ -47,8 +49,10 @@ This document fixes the current `CAVERN` portal vertical slice as the regression
 ## Runtime Inputs
 
 - Runtime portal tuning file: `config/cavernreborn-portal.properties`
+- The checked-in portal properties currently control only portal search windows and cooldown semantics.
 - Frame tag: `data/cavernreborn/tags/blocks/cavern_portal_frames.json`
 - Activator tag: `data/cavernreborn/tags/items/cavern_portal_activators.json`
+- Tags are the source of truth for frame and activator allowlists.
 
 ## Minimal Checklist
 

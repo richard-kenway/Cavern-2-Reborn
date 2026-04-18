@@ -9,6 +9,7 @@ import java.util.Set;
 import com.richardkenway.cavernreborn.app.config.CavernPortalSettings;
 import com.richardkenway.cavernreborn.app.portal.CavernPortalFrameActivator;
 import com.richardkenway.cavernreborn.app.portal.CavernPortalFrameDetector;
+import com.richardkenway.cavernreborn.app.portal.CavernPortalTags;
 import com.richardkenway.cavernreborn.app.portal.PortalFrameMaterialPolicy;
 import com.richardkenway.cavernreborn.app.portal.WorldPortalFrameAccess;
 import com.richardkenway.cavernreborn.app.registry.ModRegistries;
@@ -482,6 +483,6 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
     }
 
     private static Block frameBlock() {
-        return settings().frameBlock();
+        return CavernPortalTags.defaultFrameBlock();
     }
 }

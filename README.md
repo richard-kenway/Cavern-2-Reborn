@@ -87,6 +87,7 @@ No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 ## Portal Tuning
 
 - Runtime portal tuning now lives in `config/cavernreborn-portal.properties`.
+- The checked-in portal properties currently cover only portal search windows and cooldown semantics used by the runtime flow.
 - Default frame validation and activation are data-driven through the `cavernreborn:cavern_portal_frames` and `cavernreborn:cavern_portal_activators` tags.
 - The regression-protected portal baseline, supported cases and required runtime smoke-checks are documented in `docs/portal-baseline.md`.
 - The checked-in defaults restore the old `findPortalRange = 32` behavior more closely than the previous hardcoded `8/6` and `4/2` windows.

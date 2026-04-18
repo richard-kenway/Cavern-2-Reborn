@@ -629,6 +629,6 @@ public final class NeoForgeNonPlayerPortalInteractionContext implements NonPlaye
     }
 
     private static Block frameBlock() {
-        return settings().frameBlock();
+        return CavernPortalTags.defaultFrameBlock();
     }
 }

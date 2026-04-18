@@ -42,4 +42,8 @@ public final class CavernPortalTags {
                 || stack.is(Items.EMERALD)
             );
     }
+
+    public static Block defaultFrameBlock() {
+        return Blocks.MOSSY_COBBLESTONE;
+    }
 }

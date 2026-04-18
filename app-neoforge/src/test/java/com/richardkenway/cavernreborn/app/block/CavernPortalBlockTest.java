@@ -126,6 +126,21 @@ class CavernPortalBlockTest {
     }
 
     @Test
+    void collisionContractRejectsBossAtRuntimeBoundary() {
+        assertNonPlayerCollisionIgnored(PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_BOSS);
+    }
+
+    @Test
+    void collisionContractRejectsProjectileAtRuntimeBoundary() {
+        assertNonPlayerCollisionIgnored(PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_PROJECTILE);
+    }
+
+    @Test
+    void collisionContractRejectsPortalIneligibleEntityAtRuntimeBoundary() {
+        assertNonPlayerCollisionIgnored(PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_PORTAL_INELIGIBLE);
+    }
+
+    @Test
     void collisionContractSuppressesDispatchForIgnoreEligibilityStates() {
         List<PortalCollisionEligibilityPolicy.PortalCollisionEligibility> ignoreStates = List.of(
             PortalCollisionEligibilityPolicy.PortalCollisionEligibility.IGNORE_DEAD,
@@ -248,5 +263,32 @@ class CavernPortalBlockTest {
         public boolean isPortal(BlockPos pos) {
             return portals.contains(pos);
         }
+    }
+
+    private static void assertNonPlayerCollisionIgnored(
+        PortalCollisionEligibilityPolicy.PortalCollisionEligibility eligibility
+    ) {
+        CavernPortalBlock.CollisionContract contract = CavernPortalBlock.CollisionContract.from(eligibility, false);
+        AtomicInteger playerDispatches = new AtomicInteger();
+        AtomicInteger nonPlayerDispatches = new AtomicInteger();
+
+        CavernPortalInteractionOutcome outcome = contract.dispatch(
+            null,
+            null,
+            null,
+            (level, pos, entity) -> {
+                playerDispatches.incrementAndGet();
+                return CavernPortalInteractionOutcome.handled(Optional.empty());
+            },
+            (level, pos, entity) -> {
+                nonPlayerDispatches.incrementAndGet();
+                return CavernPortalInteractionOutcome.handled(Optional.empty());
+            }
+        );
+
+        assertTrue(contract.isIgnoreDispatch());
+        assertEquals(0, playerDispatches.get());
+        assertEquals(0, nonPlayerDispatches.get());
+        assertFalse(outcome.handled());
     }
 }
