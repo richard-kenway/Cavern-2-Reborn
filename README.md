@@ -28,6 +28,8 @@ This repository currently contains the project skeleton and a minimal content re
 - a minimal server-side `CAVERN` progression shell: player-scoped mining counters, weighted progression score and deterministic rank evaluation now persist through the same overworld-level `SavedData` control plane
 - cavern-only mining accounting for progression: uncanceled non-creative player block breaks count only for the fixed baseline ore list inside `CAVERN`; overworld mining and unsupported blocks do not move the cavern-specific state
 - a minimal dev inspection path for progression: `/cavern progression` reports the current player score/rank/counts, and `/cavern progression <player>` lets op/console inspect another player
+- a first player-facing progression layer: `/cavern rank` now shows a compact player-oriented rank summary, and threshold crossing sends a rank-up overlay instead of leaving progression fully hidden behind the debug command
+- a first real progression consequence: `Miner's Insight` unlocks at `apprentice` and grants `+1` bonus XP on each counted ore break inside `CAVERN`, derived directly from the persisted rank with no second progression model
 - a bounded nearby portal relink step: travel now searches for an existing destination portal near the target and relinks stale index entries before creating a new frame
 - a bounded destination portal regeneration step: when an indexed destination portal is gone and nearby relink fails, travel now tries to rebuild a replacement portal near the stale anchor before falling back to generic create
 - `PortalWorldIndex` now promotes the most recently reused, relinked or recreated placement to the front, so portal churn prefers fresh anchors over older stale records
@@ -54,7 +56,7 @@ No full legacy-parity `CAVERN` gameplay stack is implemented yet.
 - The current baseline restores only the worldgen slices that materially affect terrain, biome identity, mining usefulness and relevant cave features; legacy custom ores/content and extra dimensions are still out of scope.
 - Safe arrival currently relies on a bounded local search around the target column and may cancel entry if no safe point is found nearby.
 - Return-state and world portal indices now persist through an overworld-level `SavedData` control plane, but this is still a bounded MVP backend rather than full player/world attachment wiring.
-- The current progression shell is intentionally narrow: it counts only a fixed baseline ore list in `CAVERN`, uses no config-driven scoring table and does not yet drive any menu, shop, economy or broader progression gating.
+- The current progression shell is intentionally narrow: it counts only a fixed baseline ore list in `CAVERN`, uses no config-driven scoring table and currently drives only one small unlock plus lightweight player-facing feedback.
 - Progression currently listens to uncanceled server-side block-break events from non-creative players; it tracks qualifying block breaks, not item pickup, smelting or broader activity telemetry.
 - The new persistent backend still needs manual restart validation on a real dedicated server, especially for `portal -> CAVERN -> restart -> return` and indexed destination-portal reuse after restart.
 - The current portal flow now supports an axis-aware thin interior portal plane with frame-integrity invalidation; full legacy collision semantics still need manual validation.
@@ -75,7 +77,7 @@ No full legacy-parity `CAVERN` gameplay stack is implemented yet.
 - Portal create/regenerate now uses the same interior contract as activation, but this still needs manual validation in terrain with replaceable non-air filler to confirm that failed activation no longer leaves naked frame shells behind.
 - Portal denial feedback currently uses short overlay messages only; there is no broader notification policy yet.
 - Cooldown, feedback suppression and portal search windows are now configurable through `config/cavernreborn-portal.properties`, but still need manual playtesting for final tuning.
-- Legacy player-facing branches such as `portalMenu`, shop flow, economy and broader rank gating are intentionally not part of the current MVP slice.
+- Legacy player-facing branches such as `portalMenu`, shop flow, economy, rewards trees and broader rank gating are intentionally not part of the current MVP slice.
 
 ## Structure
 
@@ -124,7 +126,9 @@ No full legacy-parity `CAVERN` gameplay stack is implemented yet.
 - Player progression state is persisted in the same overworld-level `cavernreborn_control_plane` `SavedData` file already used by the portal control plane.
 - The current baseline counts only uncanceled non-creative player block breaks for the fixed ore list inside `cavernreborn:cavern`.
 - Rank is derived deterministically from the persisted score; it is not stored as a separate mutable field.
-- Use `/cavern progression` for the current player or `/cavern progression <player>` from op/console to inspect the current server-side state.
+- `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionUnlock.java` is the checked-in unlock surface for future systems; the first unlock is `Miner's Insight`, which activates at `apprentice`.
+- `Miner's Insight` currently grants `+1` bonus XP on each counted ore break inside `CAVERN`; the effect is derived from the persisted rank at runtime and does not add a second saved flag.
+- Use `/cavern rank` for the player-facing summary and `/cavern progression` for the dev/debug summary. Both commands read the same persisted progression state.
 - The regression-protected progression baseline, intentional compromises and local verification checklist are documented in `docs/progression-baseline.md`.
 
 ## Docker Build

@@ -1,6 +1,7 @@
 package com.richardkenway.cavernreborn.app.progression;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Method;
 import java.util.Optional;
@@ -9,9 +10,11 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 import com.richardkenway.cavernreborn.app.state.CavernPersistentStateData;
+import com.richardkenway.cavernreborn.core.progression.CavernProgressionConsequences;
 import com.richardkenway.cavernreborn.core.progression.CavernProgressionRank;
 import com.richardkenway.cavernreborn.core.progression.CavernProgressionService;
 import com.richardkenway.cavernreborn.core.progression.CavernProgressionSnapshot;
+import com.richardkenway.cavernreborn.core.progression.CavernProgressionUnlock;
 import com.richardkenway.cavernreborn.core.state.CavernDimensions;
 
 import net.minecraft.nbt.CompoundTag;
@@ -31,7 +34,7 @@ class CavernProgressionPersistenceTest {
             playerId,
             CavernDimensions.CAVERN_DIMENSION_ID,
             "minecraft:diamond_ore"
-        );
+        ).currentSnapshot();
 
         assertEquals(3, snapshot.countedBlocks());
         assertEquals(8, snapshot.progressionScore());
@@ -52,6 +55,28 @@ class CavernProgressionPersistenceTest {
         CavernProgressionSnapshot snapshot = service.inspect(playerId);
         assertEquals(0, snapshot.countedBlocks());
         assertEquals(0, snapshot.progressionScore());
+    }
+
+    @Test
+    void unlockedConsequenceSurvivesRestartAndMatchesPlayerFacingStatus() {
+        UUID playerId = UUID.randomUUID();
+        CavernPersistentStateData persistentState = new CavernPersistentStateData();
+        CavernProgressionService firstService = serviceFor(persistentState);
+
+        for (int i = 0; i < 5; i++) {
+            firstService.recordMiningEvent(playerId, CavernDimensions.CAVERN_DIMENSION_ID, "minecraft:diamond_ore");
+        }
+
+        CavernProgressionService restartedService = serviceFor(restart(persistentState));
+        CavernProgressionSnapshot snapshot = restartedService.inspect(playerId);
+
+        assertEquals(CavernProgressionRank.APPRENTICE, snapshot.rank());
+        assertTrue(snapshot.hasUnlocked(CavernProgressionUnlock.MINERS_INSIGHT));
+        assertEquals(1, CavernProgressionConsequences.bonusExperienceFor(snapshot));
+        assertEquals(
+            "CAVERN rank for TestPlayer: apprentice | score 25 | counted ores 5 | next journeyman in 50 score | unlocked: Miner's Insight (+1 bonus XP on counted ores in CAVERN)",
+            CavernPlayerProgressionStatusFormatter.format("TestPlayer", snapshot)
+        );
     }
 
     private static CavernProgressionService serviceFor(CavernPersistentStateData persistentState) {

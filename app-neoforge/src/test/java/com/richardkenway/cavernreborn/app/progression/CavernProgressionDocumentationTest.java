@@ -17,8 +17,11 @@ class CavernProgressionDocumentationTest {
         String readme = Files.readString(README);
 
         assertTrue(readme.contains("minimal server-side `CAVERN` progression shell"));
+        assertTrue(readme.contains("first player-facing progression layer"));
         assertTrue(readme.contains("CavernProgressionPolicy.java"));
         assertTrue(readme.contains("/cavern progression"));
+        assertTrue(readme.contains("/cavern rank"));
+        assertTrue(readme.contains("Miner's Insight"));
         assertTrue(readme.contains("docs/progression-baseline.md"));
         assertTrue(readme.contains("uncanceled non-creative player block breaks"));
     }
@@ -31,12 +34,15 @@ class CavernProgressionDocumentationTest {
         assertTrue(doc.contains("cavernreborn_control_plane"));
         assertTrue(doc.contains("CavernMiningProgressionEvents.java"));
         assertTrue(doc.contains("CavernProgressionCommands.java"));
+        assertTrue(doc.contains("CavernProgressionUnlock.java"));
+        assertTrue(doc.contains("Miner's Insight"));
         assertTrue(doc.contains("apprentice"));
         assertTrue(doc.contains("journeyman"));
         assertTrue(doc.contains("veteran"));
         assertTrue(doc.contains("master"));
         assertTrue(doc.contains("Mine the same ore outside `CAVERN`"));
         assertTrue(doc.contains("Restart the server"));
+        assertTrue(doc.contains("/cavern rank"));
     }
 
     private static Path resolveProjectFile(String first, String... more) {

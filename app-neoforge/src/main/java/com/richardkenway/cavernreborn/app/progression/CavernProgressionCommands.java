@@ -31,6 +31,18 @@ public final class CavernProgressionCommands {
         event.getDispatcher().register(
             Commands.literal("cavern")
                 .then(
+                    Commands.literal("rank")
+                        .executes(context -> showOwnRank(context.getSource()))
+                        .then(
+                            Commands.argument("player", EntityArgument.player())
+                                .requires(source -> source.hasPermission(2))
+                                .executes(context -> showRank(
+                                    context.getSource(),
+                                    EntityArgument.getPlayer(context, "player")
+                                ))
+                        )
+                )
+                .then(
                     Commands.literal("progression")
                         .executes(context -> showOwnProgression(context.getSource()))
                         .then(
@@ -50,6 +62,22 @@ public final class CavernProgressionCommands {
             throw PLAYER_TARGET_REQUIRED.create();
         }
         return showProgression(source, player);
+    }
+
+    private int showOwnRank(CommandSourceStack source) throws CommandSyntaxException {
+        if (!(source.getEntity() instanceof ServerPlayer player)) {
+            throw PLAYER_TARGET_REQUIRED.create();
+        }
+        return showRank(source, player);
+    }
+
+    private int showRank(CommandSourceStack source, ServerPlayer player) {
+        CavernProgressionSnapshot snapshot = progressionService.inspect(player.getUUID());
+        source.sendSuccess(
+            () -> Component.literal(CavernPlayerProgressionStatusFormatter.format(player.getGameProfile().getName(), snapshot)),
+            false
+        );
+        return snapshot.progressionScore();
     }
 
     private int showProgression(CommandSourceStack source, ServerPlayer player) {

@@ -30,6 +30,10 @@ public record CavernProgressionSnapshot(
         return rank.next();
     }
 
+    public boolean hasUnlocked(CavernProgressionUnlock unlock) {
+        return Objects.requireNonNull(unlock, "unlock").isUnlocked(rank);
+    }
+
     public int pointsToNextRank() {
         return nextRank()
             .map(nextRank -> Math.max(0, nextRank.threshold() - progressionScore))

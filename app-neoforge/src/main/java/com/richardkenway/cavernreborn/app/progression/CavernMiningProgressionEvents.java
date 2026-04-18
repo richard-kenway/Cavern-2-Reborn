@@ -2,9 +2,12 @@ package com.richardkenway.cavernreborn.app.progression;
 
 import java.util.Objects;
 
+import com.richardkenway.cavernreborn.core.progression.CavernProgressionConsequences;
 import com.richardkenway.cavernreborn.core.progression.CavernProgressionService;
+import com.richardkenway.cavernreborn.core.progression.CavernProgressionUpdateResult;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.EventPriority;
@@ -30,10 +33,23 @@ public final class CavernMiningProgressionEvents {
             return;
         }
 
-        progressionService.recordMiningEvent(
+        CavernProgressionUpdateResult update = progressionService.recordMiningEvent(
             player.getUUID(),
             level.dimension().location().toString(),
             BuiltInRegistries.BLOCK.getKey(event.getState().getBlock()).toString()
         );
+        if (!update.counted()) {
+            return;
+        }
+
+        int bonusExperience = CavernProgressionConsequences.bonusExperienceFor(update.currentSnapshot());
+        if (bonusExperience > 0) {
+            player.giveExperiencePoints(bonusExperience);
+        }
+
+        CavernProgressionRankUpFeedbackFormatter.formatActionBar(update)
+            .ifPresent(message -> player.displayClientMessage(Component.literal(message), true));
+        CavernProgressionRankUpFeedbackFormatter.formatUnlockMessage(update)
+            .ifPresent(message -> player.sendSystemMessage(Component.literal(message)));
     }
 }

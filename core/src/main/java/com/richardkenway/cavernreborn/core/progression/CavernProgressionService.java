@@ -14,16 +14,19 @@ public final class CavernProgressionService {
         return snapshot(progressionStore.load(Objects.requireNonNull(playerId, "playerId")));
     }
 
-    public CavernProgressionSnapshot recordMiningEvent(UUID playerId, String dimensionId, String blockId) {
+    public CavernProgressionUpdateResult recordMiningEvent(UUID playerId, String dimensionId, String blockId) {
         Objects.requireNonNull(playerId, "playerId");
+        String normalizedBlockId = requireText(blockId, "blockId");
         CavernPlayerProgressionState currentState = progressionStore.load(playerId);
-        if (!CavernProgressionPolicy.countsTowardProgression(dimensionId, blockId)) {
-            return snapshot(currentState);
+        CavernProgressionSnapshot previousSnapshot = snapshot(currentState);
+        if (!CavernProgressionPolicy.countsTowardProgression(dimensionId, normalizedBlockId)) {
+            return new CavernProgressionUpdateResult(previousSnapshot, previousSnapshot, false, normalizedBlockId, 0);
         }
 
-        CavernPlayerProgressionState updatedState = currentState.withMinedBlock(blockId, CavernProgressionPolicy.scoreForBlock(blockId));
+        int scoreDelta = CavernProgressionPolicy.scoreForBlock(normalizedBlockId);
+        CavernPlayerProgressionState updatedState = currentState.withMinedBlock(normalizedBlockId, scoreDelta);
         progressionStore.save(updatedState);
-        return snapshot(updatedState);
+        return new CavernProgressionUpdateResult(previousSnapshot, snapshot(updatedState), true, normalizedBlockId, scoreDelta);
     }
 
     private static CavernProgressionSnapshot snapshot(CavernPlayerProgressionState state) {
@@ -34,5 +37,12 @@ public final class CavernProgressionService {
             CavernProgressionRank.forScore(state.progressionScore()),
             state.minedBlocksById()
         );
+    }
+
+    private static String requireText(String value, String fieldName) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException(fieldName + " must not be blank");
+        }
+        return value;
     }
 }

@@ -1,6 +1,6 @@
 # CAVERN Progression Baseline
 
-This document fixes the current minimal `CAVERN` progression shell as the regression-protected backend baseline on `main`.
+This document fixes the current `CAVERN` progression baseline on `main`: the narrow backend shell plus the first player-facing and gameplay-visible layer built on top of it.
 
 It is not a claim of full legacy gameplay parity. It documents the bounded progression slice that is currently implemented, persisted and test-covered.
 
@@ -25,6 +25,13 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
   - `journeyman`: `75`
   - `veteran`: `175`
   - `master`: `325`
+- `/cavern rank` exposes the same persisted state through a compact player-facing summary, while `/cavern progression` remains the verbose developer/debug view.
+- Threshold crossing sends a rank-up overlay for the affected player.
+- The first unlock is `Miner's Insight`.
+  - source-of-truth: `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionUnlock.java`
+  - unlock threshold: `apprentice`
+  - gameplay consequence: counted ore breaks inside `CAVERN` grant `+1` bonus XP once the rank is unlocked
+- The threshold-crossing ore already receives the unlock, because the bonus check runs against the updated persisted snapshot for that same counted mining event.
 - Player state survives restart through the same overworld-level `SavedData` control plane already used by the portal baseline.
 - After restart, the same player continues from the stored score/counters instead of reinitializing.
 
@@ -35,8 +42,11 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
 - Mining the same baseline ore outside `CAVERN` does not affect cavern-specific progression.
 - Multiple players advance independently without shared counters.
 - Threshold crossing updates the derived rank deterministically.
+- Threshold crossing shows player-facing rank-up feedback exactly once for that crossing event.
+- `/cavern rank` stays consistent with `/cavern progression` because both read the same persisted snapshot.
+- `Miner's Insight` remains active after restart because it is derived from the restored score/rank, not from a separate saved unlock flag.
 - Restart-safe persistence and continued progression after restart.
-- Minimal server-side inspection through `/cavern progression` and `/cavern progression <player>`.
+- Minimal server-side inspection through `/cavern progression` / `/cavern progression <player>` and player-facing status through `/cavern rank` / `/cavern rank <player>`.
 
 ## Runtime Inputs
 
@@ -51,22 +61,29 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
   - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/progression/CavernMiningProgressionEvents.java`
 - Debug inspection path:
   - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/progression/CavernProgressionCommands.java`
+- Player-facing formatting and feedback:
+  - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/progression/CavernPlayerProgressionStatusFormatter.java`
+  - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/progression/CavernProgressionRankUpFeedbackFormatter.java`
+- Gameplay consequence policy:
+  - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionConsequences.java`
+  - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionUnlock.java`
 
 ## Intentional Compromises
 
-- This pass restores only a minimal server-side progression shell, not the old full gameplay stack.
-- No GUI, portal menu, shop flow, economy, mining records screen or player-facing polish is part of this baseline.
+- This pass restores only a small player-visible layer on top of the narrow progression shell, not the old full gameplay stack.
+- No GUI, portal menu, shop flow, economy, mining records screen or broad player-facing polish is part of this baseline.
 - No new config surface was added; counted blocks, scores and thresholds are checked-in code.
 - The baseline counts qualifying block breaks, not item drops, smelting output, trading, pickups or broader activity telemetry.
 - Rank is computed from score at read time and is not stored as a separate mutable field.
-- Progression currently does not gate portal use, worldgen, loot or other systems.
+- The first gameplay consequence is intentionally small: one unlock and one bounded XP bonus instead of a larger perks tree or reward graph.
+- Progression still does not gate portal use, worldgen, loot or broader economy/menu systems.
 
 ## Out Of Scope
 
 - New dimensions, new content, progression UI, portal shop/menu and regeneration UI.
 - Economy, rewards, unlock trees, mining leaderboards or persistence migrations for future score-table changes.
 - Broader non-ore activity tracking such as mob kills, exploration, crafting or item collection.
-- Full legacy parity for miner rank perks or the older menu-driven rank flow.
+- Full legacy parity for miner rank perks, the older menu-driven rank flow or a larger unlock/perks stack.
 
 ## Minimal Checklist
 
@@ -76,8 +93,11 @@ Run this before any larger progression or gameplay-shell change:
 2. Start the local dev server and load a persistent world.
 3. Enter `CAVERN` through the current portal flow.
 4. Mine at least one counted ore block in `CAVERN`.
-5. Run `/cavern progression` and confirm score, counted blocks and top block counters changed.
-6. Mine the same ore outside `CAVERN` and confirm the command output does not change for the cavern-specific state.
-7. Restart the server.
-8. Run `/cavern progression` again and confirm the stored state survived restart.
-9. Mine another counted ore in `CAVERN` and confirm progression continues from the stored value instead of resetting.
+5. Run `/cavern rank` and confirm the player-facing summary shows the current rank, score and next threshold.
+6. Continue mining until `apprentice` and confirm the rank-up overlay appears and the unlock message mentions `Miner's Insight`.
+7. Mine another counted ore in `CAVERN` and confirm the XP bar receives the extra `+1` bonus XP from `Miner's Insight`.
+8. Run `/cavern progression` and confirm the debug summary matches the same persisted score/rank.
+9. Mine the same ore outside `CAVERN` and confirm neither the bonus XP nor the cavern-specific progression state changes.
+10. Restart the server.
+11. Run `/cavern rank` or `/cavern progression` again and confirm the stored state survived restart.
+12. Mine another counted ore in `CAVERN` and confirm progression and `Miner's Insight` continue from the stored value instead of resetting.
