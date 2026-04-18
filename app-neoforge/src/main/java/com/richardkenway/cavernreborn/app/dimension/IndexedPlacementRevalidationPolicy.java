@@ -27,6 +27,7 @@ final class IndexedPlacementRevalidationPolicy {
 
         Map<PortalWorldIndex.PortalPlacement, PortalWorldIndex.PortalPlacement> liveReplacements = new LinkedHashMap<>();
         Map<PortalWorldIndex.PortalPlacement, PortalWorldIndex.PortalPlacement> relinkableReplacements = new LinkedHashMap<>();
+        Set<PortalWorldIndex.PortalPlacement> displacedPlacements = new LinkedHashSet<>();
         Set<PortalWorldIndex.PortalPlacement> deadPlacements = new LinkedHashSet<>();
 
         for (PortalWorldIndex.PortalPlacement indexedPlacement : indexedPlacements) {
@@ -51,6 +52,8 @@ final class IndexedPlacementRevalidationPolicy {
 
             if (relinkedPlacement.isPresent() && isWithinAllowedRelinkDrift(indexedPlacement, relinkedPlacement.get())) {
                 relinkableReplacements.put(indexedPlacement, relinkedPlacement.get());
+            } else if (relinkedPlacement.isPresent()) {
+                displacedPlacements.add(indexedPlacement);
             } else {
                 deadPlacements.add(indexedPlacement);
             }
@@ -59,6 +62,7 @@ final class IndexedPlacementRevalidationPolicy {
         return new IndexedPlacementRevalidationSnapshot(
             Set.copyOf(liveReplacements.keySet()),
             Set.copyOf(relinkableReplacements.keySet()),
+            Set.copyOf(displacedPlacements),
             Set.copyOf(deadPlacements),
             Map.copyOf(liveReplacements),
             Map.copyOf(relinkableReplacements)
@@ -81,6 +85,7 @@ final class IndexedPlacementRevalidationPolicy {
     static record IndexedPlacementRevalidationSnapshot(
         Set<PortalWorldIndex.PortalPlacement> liveIndexedPlacements,
         Set<PortalWorldIndex.PortalPlacement> relinkableIndexedPlacements,
+        Set<PortalWorldIndex.PortalPlacement> displacedIndexedPlacements,
         Set<PortalWorldIndex.PortalPlacement> deadIndexedPlacements,
         Map<PortalWorldIndex.PortalPlacement, PortalWorldIndex.PortalPlacement> liveReplacements,
         Map<PortalWorldIndex.PortalPlacement, PortalWorldIndex.PortalPlacement> relinkableReplacements
