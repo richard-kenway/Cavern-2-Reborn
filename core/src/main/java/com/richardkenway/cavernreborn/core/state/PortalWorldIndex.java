@@ -21,23 +21,23 @@ public record PortalWorldIndex(Map<String, Set<PortalPlacement>> portalsByKey) {
     }
 
     public PortalWorldIndex withPortal(String portalKey, PortalPlacement placement) {
-        return withPortal(portalKey, placement, Set.of());
+        return withRetainedPortal(portalKey, placement, Set.of());
     }
 
-    public PortalWorldIndex withPortal(
+    public PortalWorldIndex withRetainedPortal(
         String portalKey,
         PortalPlacement placement,
-        Set<PortalPlacement> lowerPriorityPlacements
+        Set<PortalPlacement> displacedPlacements
     ) {
         String normalizedPortalKey = requireText(portalKey, "portalKey");
         Objects.requireNonNull(placement, "placement");
-        Objects.requireNonNull(lowerPriorityPlacements, "lowerPriorityPlacements");
+        Objects.requireNonNull(displacedPlacements, "displacedPlacements");
 
         Map<String, Set<PortalPlacement>> updatedIndex = new LinkedHashMap<>(portalsByKey);
         Set<PortalPlacement> placements = prioritizePlacement(
             updatedIndex.getOrDefault(normalizedPortalKey, Set.of()),
             placement,
-            lowerPriorityPlacements
+            displacedPlacements
         );
         placements = trimToLimit(placements);
         updatedIndex.put(normalizedPortalKey, placements);
@@ -50,29 +50,29 @@ public record PortalWorldIndex(Map<String, Set<PortalPlacement>> portalsByKey) {
         PortalPlacement stalePlacement,
         PortalPlacement replacementPlacement
     ) {
-        return withReplacementPortal(portalKey, stalePlacement, replacementPlacement, Set.of());
+        return withRetainedReplacementPortal(portalKey, stalePlacement, replacementPlacement, Set.of());
     }
 
-    public PortalWorldIndex withReplacementPortal(
+    public PortalWorldIndex withRetainedReplacementPortal(
         String portalKey,
         PortalPlacement stalePlacement,
         PortalPlacement replacementPlacement,
-        Set<PortalPlacement> lowerPriorityPlacements
+        Set<PortalPlacement> displacedPlacements
     ) {
         String normalizedPortalKey = requireText(portalKey, "portalKey");
         Objects.requireNonNull(stalePlacement, "stalePlacement");
         Objects.requireNonNull(replacementPlacement, "replacementPlacement");
-        Objects.requireNonNull(lowerPriorityPlacements, "lowerPriorityPlacements");
+        Objects.requireNonNull(displacedPlacements, "displacedPlacements");
 
         if (stalePlacement.equals(replacementPlacement)) {
-            return withPortal(normalizedPortalKey, replacementPlacement, lowerPriorityPlacements);
+            return withRetainedPortal(normalizedPortalKey, replacementPlacement, displacedPlacements);
         }
 
         Map<String, Set<PortalPlacement>> updatedIndex = new LinkedHashMap<>(portalsByKey);
         Set<PortalPlacement> placements = prioritizePlacement(
             updatedIndex.getOrDefault(normalizedPortalKey, Set.of()),
             replacementPlacement,
-            lowerPriorityPlacements
+            displacedPlacements
         );
         placements.remove(stalePlacement);
         placements = trimToLimit(placements);
@@ -115,20 +115,20 @@ public record PortalWorldIndex(Map<String, Set<PortalPlacement>> portalsByKey) {
     private static Set<PortalPlacement> prioritizePlacement(
         Set<PortalPlacement> existingPlacements,
         PortalPlacement prioritizedPlacement,
-        Set<PortalPlacement> lowerPriorityPlacements
+        Set<PortalPlacement> displacedPlacements
     ) {
         LinkedHashSet<PortalPlacement> prioritizedPlacements = new LinkedHashSet<>();
         prioritizedPlacements.add(prioritizedPlacement);
         existingPlacements.stream()
             .filter(existingPlacement -> !existingPlacement.equals(prioritizedPlacement))
-            .filter(existingPlacement -> !lowerPriorityPlacements.contains(existingPlacement))
+            .filter(existingPlacement -> !displacedPlacements.contains(existingPlacement))
             .forEach(prioritizedPlacements::add);
         int retainedLowerPriorityPlacements = 0;
         for (PortalPlacement existingPlacement : existingPlacements) {
             if (existingPlacement.equals(prioritizedPlacement)) {
                 continue;
             }
-            if (!lowerPriorityPlacements.contains(existingPlacement)) {
+            if (!displacedPlacements.contains(existingPlacement)) {
                 continue;
             }
             if (retainedLowerPriorityPlacements >= MAX_DISPLACED_PLACEMENTS_PER_PORTAL_KEY) {

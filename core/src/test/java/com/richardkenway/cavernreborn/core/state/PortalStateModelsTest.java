@@ -119,7 +119,7 @@ class PortalStateModelsTest {
     }
 
     @Test
-    void portalWorldIndexReplacingPlacementRespectsCapAndKeepsReplacementAtHead() {
+    void portalWorldIndexRetainedReplacementPortalRespectsCapAndKeepsReplacementAtHead() {
         int maxPlacementsPerPortalKey = PortalWorldIndex.MAX_PLACEMENTS_PER_PORTAL_KEY;
         PortalWorldIndex index = PortalWorldIndex.empty();
         for (int i = 0; i < maxPlacementsPerPortalKey; i++) {
@@ -128,7 +128,12 @@ class PortalStateModelsTest {
 
         PortalWorldIndex.PortalPlacement stalePlacement = new PortalWorldIndex.PortalPlacement(3, 0, 3);
         PortalWorldIndex.PortalPlacement replacementPlacement = new PortalWorldIndex.PortalPlacement(99, 0, 99);
-        PortalWorldIndex replacedIndex = index.withReplacementPortal("cavern", stalePlacement, replacementPlacement);
+        PortalWorldIndex replacedIndex = index.withRetainedReplacementPortal(
+            "cavern",
+            stalePlacement,
+            replacementPlacement,
+            Set.of()
+        );
 
         assertEquals(replacementPlacement, replacedIndex.firstPlacementFor("cavern").orElseThrow());
         assertEquals(maxPlacementsPerPortalKey, replacedIndex.placementsFor("cavern").size());
@@ -137,7 +142,7 @@ class PortalStateModelsTest {
     }
 
     @Test
-    void portalWorldIndexLimitsLowerPriorityHistoryWhilePromotingFreshPlacementsUnderCapPressure() {
+    void portalWorldIndexRetainsDisplacedHistoryWhilePromotingFreshPlacementsUnderCapPressure() {
         int maxPlacementsPerPortalKey = PortalWorldIndex.MAX_PLACEMENTS_PER_PORTAL_KEY;
         PortalWorldIndex.PortalPlacement livePlacementA = new PortalWorldIndex.PortalPlacement(1, 64, 1);
         PortalWorldIndex.PortalPlacement livePlacementB = new PortalWorldIndex.PortalPlacement(2, 64, 2);
@@ -163,7 +168,7 @@ class PortalStateModelsTest {
         portalsByKey.put("cavern", placements);
 
         PortalWorldIndex index = new PortalWorldIndex(portalsByKey);
-        PortalWorldIndex refreshedIndex = index.withPortal(
+        PortalWorldIndex refreshedIndex = index.withRetainedPortal(
             "cavern",
             freshPlacement,
             Set.of(displacedPlacementA, displacedPlacementB, displacedPlacementC, displacedPlacementD)
