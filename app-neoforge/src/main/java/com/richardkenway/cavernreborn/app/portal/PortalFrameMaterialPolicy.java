@@ -11,7 +11,8 @@ public interface PortalFrameMaterialPolicy {
     boolean isFrame(BlockState state);
 
     PortalFrameMaterialPolicy MOSSY_COBBLESTONE = state -> state.is(Blocks.MOSSY_COBBLESTONE);
-    PortalFrameMaterialPolicy CAVERN_DEFAULT = state -> state.is(CavernPortalTags.CAVERN_PORTAL_FRAMES);
+    PortalFrameMaterialPolicy MOSSY_STONE_BRICKS = state -> state.is(Blocks.MOSSY_STONE_BRICKS);
+    PortalFrameMaterialPolicy CAVERN_DEFAULT = CavernPortalTags::isAllowedFrame;
 
     static PortalFrameMaterialPolicy of(Block frameMaterial) {
         Objects.requireNonNull(frameMaterial, "frameMaterial");

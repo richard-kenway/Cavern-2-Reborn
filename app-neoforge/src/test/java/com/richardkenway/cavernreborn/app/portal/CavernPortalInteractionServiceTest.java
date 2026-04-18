@@ -488,6 +488,122 @@ class CavernPortalInteractionServiceTest {
         assertEquals(CavernDimensions.CAVERN_DIMENSION_ID, laterContext.lastTargetDimensionId);
     }
 
+    @Test
+    void roundTripCanRepeatWithoutBreakingStateAndImmediateReturnSpamIsBlocked() {
+        CavernStateBootstrap bootstrap = new CavernStateBootstrap();
+        CavernPortalInteractionService service = bootstrap.cavernPortalInteractionService();
+        UUID playerId = UUID.randomUUID();
+
+        FakePortalInteractionContext firstEntry = new FakePortalInteractionContext(
+            playerId,
+            false,
+            CavernDimensions.OVERWORLD_DIMENSION_ID,
+            100L,
+            11,
+            70,
+            11,
+            0.25D,
+            0.5D,
+            0.75D,
+            "north",
+            90.0F,
+            30.0F,
+            Set.of(new SafeArrival(0, 64, 0))
+        );
+        CavernPortalInteractionOutcome firstEntryOutcome = service.use(firstEntry);
+        assertTrue(firstEntryOutcome.handled());
+        assertTrue(firstEntryOutcome.travelPlan().isPresent());
+
+        FakePortalInteractionContext firstReturn = new FakePortalInteractionContext(
+            playerId,
+            false,
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            120L,
+            0,
+            80,
+            0,
+            0.25D,
+            0.5D,
+            0.75D,
+            "south",
+            45.0F,
+            15.0F,
+            Set.of(new SafeArrival(0, 64, 0))
+        );
+        CavernPortalInteractionOutcome firstReturnOutcome = service.use(firstReturn);
+        assertTrue(firstReturnOutcome.handled());
+        assertTrue(firstReturnOutcome.travelPlan().isPresent());
+        assertEquals(11.0D, firstReturn.lastX);
+        assertEquals(70.0D, firstReturn.lastY);
+        assertEquals(11.0D, firstReturn.lastZ);
+
+        FakePortalInteractionContext spamReturn = new FakePortalInteractionContext(
+            playerId,
+            false,
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            120L,
+            0,
+            80,
+            0,
+            0.25D,
+            0.5D,
+            0.75D,
+            "south",
+            45.0F,
+            15.0F,
+            Set.of(new SafeArrival(0, 64, 0))
+        );
+        CavernPortalInteractionOutcome spamOutcome = service.use(spamReturn);
+        assertTrue(spamOutcome.handled());
+        assertTrue(spamOutcome.travelPlan().isEmpty());
+        assertEquals(CavernPortalInteractionService.PORTAL_COOLDOWN_MESSAGE_KEY, spamReturn.feedbackKeys.get(0));
+        assertNull(spamReturn.lastTargetDimensionId);
+
+        FakePortalInteractionContext secondEntry = new FakePortalInteractionContext(
+            playerId,
+            false,
+            CavernDimensions.OVERWORLD_DIMENSION_ID,
+            141L,
+            25,
+            72,
+            25,
+            0.25D,
+            0.5D,
+            0.75D,
+            "north",
+            90.0F,
+            30.0F,
+            Set.of(new SafeArrival(0, 64, 0))
+        );
+        CavernPortalInteractionOutcome secondEntryOutcome = service.use(secondEntry);
+        assertTrue(secondEntryOutcome.handled());
+        assertTrue(secondEntryOutcome.travelPlan().isPresent());
+
+        FakePortalInteractionContext secondReturn = new FakePortalInteractionContext(
+            playerId,
+            false,
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            161L,
+            0,
+            80,
+            0,
+            0.25D,
+            0.5D,
+            0.75D,
+            "south",
+            45.0F,
+            15.0F,
+            Set.of(new SafeArrival(0, 64, 0))
+        );
+        CavernPortalInteractionOutcome secondReturnOutcome = service.use(secondReturn);
+
+        assertTrue(secondReturnOutcome.handled());
+        assertTrue(secondReturnOutcome.travelPlan().isPresent());
+        assertEquals(25.0D, secondReturn.lastX);
+        assertEquals(72.0D, secondReturn.lastY);
+        assertEquals(25.0D, secondReturn.lastZ);
+    }
+
     private static final class FakePortalInteractionContext implements CavernPortalInteractionContext, CavernArrivalPlacementProbe {
         private final UUID playerId;
         private final boolean clientSide;

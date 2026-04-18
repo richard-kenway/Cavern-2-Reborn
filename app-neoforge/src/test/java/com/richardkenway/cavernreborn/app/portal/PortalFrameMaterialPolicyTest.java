@@ -11,11 +11,12 @@ class PortalFrameMaterialPolicyTest {
     @Test
     void exposesNamedFramePolicyConstants() throws Exception {
         Field field = PortalFrameMaterialPolicy.class.getDeclaredField("MOSSY_COBBLESTONE");
+        Field stoneBricksField = PortalFrameMaterialPolicy.class.getDeclaredField("MOSSY_STONE_BRICKS");
         Field taggedField = PortalFrameMaterialPolicy.class.getDeclaredField("CAVERN_DEFAULT");
 
         assertNotNull(taggedField);
-
         assertNotNull(field);
+        assertNotNull(stoneBricksField);
     }
 
     @Test

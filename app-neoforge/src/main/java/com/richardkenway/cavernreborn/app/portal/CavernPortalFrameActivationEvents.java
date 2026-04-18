@@ -31,10 +31,10 @@ public final class CavernPortalFrameActivationEvents {
         Optional<CavernPortalFrameActivationHandler.ActivationOutcome> activation = activationHandler.handle(
             level.isClientSide(),
             event.getEntity() != null && event.getEntity().isCreative(),
-            event.getItemStack().is(CavernPortalTags.CAVERN_PORTAL_ACTIVATORS),
+            CavernPortalTags.isAllowedActivator(event.getItemStack()),
             event.getPos(),
             event.getFace(),
-            clickedPos -> isMossyCobblestoneFrame(level, clickedPos),
+            clickedPos -> isSupportedFrame(level, clickedPos),
             (clickedPos, clickedFace) -> activateFrame(level, clickedPos, clickedFace),
             () -> event.getItemStack().shrink(1)
         );
@@ -55,7 +55,7 @@ public final class CavernPortalFrameActivationEvents {
         event.setCanceled(true);
     }
 
-    private static boolean isMossyCobblestoneFrame(Level level, BlockPos pos) {
+    private static boolean isSupportedFrame(Level level, BlockPos pos) {
         BlockState clickedState = level.getBlockState(pos);
         return PortalFrameMaterialPolicy.CAVERN_DEFAULT.isFrame(clickedState);
     }
