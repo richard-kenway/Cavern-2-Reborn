@@ -7,10 +7,22 @@
       "type": "minecraft:multi_noise",
       "biomes": [
         {
-          "biome": "minecraft:dripstone_caves",
+          "biome": "cavernreborn:stone_depths",
           "parameters": {
-            "temperature": 0.8,
-            "humidity": 0.4,
+            "temperature": -0.6,
+            "humidity": -0.2,
+            "continentalness": 0.0,
+            "erosion": 0.0,
+            "depth": 0.0,
+            "weirdness": -0.5,
+            "offset": 0.0
+          }
+        },
+        {
+          "biome": "cavernreborn:stone_depths",
+          "parameters": {
+            "temperature": 0.0,
+            "humidity": 0.2,
             "continentalness": 0.0,
             "erosion": 0.0,
             "depth": 0.0,
@@ -19,15 +31,63 @@
           }
         },
         {
-          "biome": "minecraft:lush_caves",
+          "biome": "cavernreborn:stone_depths",
           "parameters": {
-            "temperature": 0.5,
-            "humidity": 0.8,
+            "temperature": 0.3,
+            "humidity": 0.5,
             "continentalness": 0.0,
             "erosion": 0.0,
             "depth": 0.0,
-            "weirdness": 0.0,
+            "weirdness": 0.2,
+            "offset": 0.0
+          }
+        },
+        {
+          "biome": "cavernreborn:stone_depths",
+          "parameters": {
+            "temperature": 0.6,
+            "humidity": 0.1,
+            "continentalness": 0.0,
+            "erosion": 0.0,
+            "depth": 0.0,
+            "weirdness": -0.1,
+            "offset": 0.0
+          }
+        },
+        {
+          "biome": "cavernreborn:lush_grotto",
+          "parameters": {
+            "temperature": 0.5,
+            "humidity": 0.9,
+            "continentalness": 0.0,
+            "erosion": 0.0,
+            "depth": 0.0,
+            "weirdness": -0.35,
+            "offset": 0.05
+          }
+        },
+        {
+          "biome": "cavernreborn:dripstone_grotto",
+          "parameters": {
+            "temperature": 0.9,
+            "humidity": 0.15,
+            "continentalness": 0.0,
+            "erosion": 0.0,
+            "depth": 0.0,
+            "weirdness": 0.45,
             "offset": 0.1
+          }
+        },
+        {
+          "biome": "cavernreborn:highland_hollows",
+          "parameters": {
+            "temperature": -0.4,
+            "humidity": 0.0,
+            "continentalness": 0.0,
+            "erosion": 0.0,
+            "depth": 0.0,
+            "weirdness": 0.8,
+            "offset": 0.0
           }
         }
       ]

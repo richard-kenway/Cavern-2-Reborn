@@ -13,9 +13,10 @@ This repository currently contains the project skeleton and a minimal content re
 - a return-state, portal block flow and `CAVERN` travel skeleton for the first `CAVERN` architecture phase
 - a registered `CAVERN` target dimension with a data-driven cave-biome family and the first real safe-arrival check on top of that skeleton
 - custom cave-like dimension effects for `CAVERN`, used to reduce visible sky and sun leakage in large open cavities
-- a bounded `contained_caves` noise-settings fork of vanilla `minecraft:caves`, used to reduce oversized cavity formation without changing the overall cave-first direction of the baseline
-- a first weighted tunnel-network layer on top of `contained_caves`, used to improve underground connectedness without reopening the baseline too aggressively
-- a first weighted ravine-like layer on top of the tunnel baseline, now rebuilt as a band-limited horizontal connector pass instead of raw entrance carving
+- a bounded `contained_caves` noise-settings fork of vanilla `minecraft:caves`, now tuned into a dry 192-block cavern profile with ore veins enabled and portal-compatible vertical assumptions kept intact
+- a tuned tunnel-network layer and a broader ravine-like connector band on top of `contained_caves`, used to keep `CAVERN` connected without turning it back into an oversized generic cave carve
+- a conscious four-biome `CAVERN` family closer to the old mining dimension baseline: dominant `stone_depths`, plus `lush_grotto`, `dripstone_grotto` and `highland_hollows`
+- a mining-oriented worldgen baseline for `CAVERN`: dense coal/iron passes, biome-shaped gold/emerald bias, denser monster rooms and mineshaft-enabled cave biomes
 - basic portal UX feedback for `cooldown`, failed cavern entry and missing return-state denial cases, plus an overworld fallback return target when no saved return-state exists
 - a legacy-like `CAVERN` ritual activation step: any frame block in the `cavernreborn:cavern_portal_frames` block tag can now be activated with any item in the `cavernreborn:cavern_portal_activators` item tag via a server-side frame-click hook and fill the `cavern_portal` interior block
 - a first entity-inside portal flow step: walking into the `cavern_portal` interior block now triggers the main transfer loop; right-click interaction is disabled so runtime usage is now collision-only
@@ -35,27 +36,26 @@ This repository currently contains the project skeleton and a minimal content re
 - bounded portal-relative exit semantics: destination arrival now preserves a clamped lateral offset from the source portal plane instead of always dropping the player into the exact portal center
 - bounded portal-relative facing semantics: destination exit yaw now remaps stored approach-facing by portal axis instead of always preserving the pre-teleport player yaw
 
-No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
+No full legacy-parity `CAVERN` worldgen or broader gameplay systems are implemented yet.
 
 ## Current Limitations
 
-- `CAVERN` still uses a first baseline cave profile rather than full legacy-parity worldgen.
+- `CAVERN` is now noticeably closer to the old mining-dimension profile, but it is still a bounded modern stand-in rather than full legacy-parity worldgen.
 - The current `contained_caves` preset is intentionally a narrow fork of vanilla `minecraft:caves`, not a new long-term worldgen direction.
-- The current containment pass now also shifts only a small pair of `final_density` bias values; this is still a bounded tuning step and not a worldgen redesign.
+- The current terrain profile is still a tuned vanilla-noise fork, not a literal port of the old 1.12 chunk generator.
 - The current dry-out pass keeps `sea_level` pinned to `min_y`, so the normal `CAVERN` baseline no longer has an operative flood-line inside its playable volume.
 - Collision handling now applies a legacy-like eligibility filter matrix in the portal block, and a bounded non-player transport path now exists for eligible entities, but it still is not full legacy parity for bosses, broader entity classes or richer cache semantics.
-- The new data-driven cave-biome family still needs manual in-game validation on a real generated world after the move away from the fixed biome stub.
+- The new data-driven cave-biome family is now a conscious four-biome baseline, but it still needs manual in-game validation on a real generated world across multiple remote regions.
 - Large open cavities may still appear in the current baseline; custom cave-like dimension effects now handle sky/sun leakage, but the overall visual result still needs manual in-game validation.
-- The tunnel-network layer is now denser again after repeated manual playtesting showed that players still had to dig too often; this remains a bounded tuning step rather than a new carve system.
-- The ravine-like layer no longer uses raw entrance carving; it now relies on a band-limited `spaghetti_2d` connector field to bias the pass toward longer horizontal links instead of narrow vertical shafts.
-- The current cave-biome family is intentionally minimal and does not yet cover ore veins, structures or a broader biome set.
+- The tunnel/ravine tuning is still a bounded density-function pass rather than a full custom carve stack.
+- The current baseline restores only the worldgen slices that materially affect terrain, biome identity, mining usefulness and relevant cave features; legacy custom ores/content and extra dimensions are still out of scope.
 - Safe arrival currently relies on a bounded local search around the target column and may cancel entry if no safe point is found nearby.
 - Return-state and world portal indices now persist through an overworld-level `SavedData` control plane, but this is still a bounded MVP backend rather than full player/world attachment wiring.
 - The new persistent backend still needs manual restart validation on a real dedicated server, especially for `portal -> CAVERN -> restart -> return` and indexed destination-portal reuse after restart.
 - The current portal flow now supports an axis-aware thin interior portal plane with frame-integrity invalidation; full legacy collision semantics still need manual validation.
 - Portal interaction now canonicalizes touched interior blocks to a frame-level anchor, but this still needs manual validation across different interior blocks of the same portal.
 - Destination portal placement is now automatic in a bounded search-relink-regenerate-or-create form, but it still does not implement full legacy cache, wider radius search and broader regeneration semantics.
-- `CAVERN` now validates against the `cavernreborn:cavern_portal_frames` block tag and can auto-create/regenerate frames with a configurable frame block from `config/cavernreborn-portal.properties`.
+- `CAVERN` now validates against the `cavernreborn:cavern_portal_frames` block tag and auto-create/regenerate still use the checked-in mossy-cobblestone generation default.
 - Player-facing ritual activation for `CAVERN` now uses the `cavernreborn:cavern_portal_activators` item tag on a valid tagged frame block and points into the portal interior.
 - The older `cavern_portal_trigger` runtime path has been removed; older worlds or inventories that still contained that item may now surface it as an unknown/removed item until they are cleaned up manually.
 - Portal index churn now prefers the most recently reused placement, but broader eviction and history policies for repeated portal churn still are not implemented.
@@ -93,6 +93,23 @@ No full `CAVERN` worldgen or broader gameplay systems are implemented yet.
 - That generation default does not narrow the allowlist; both legacy frame blocks remain allowed through tags.
 - The regression-protected portal baseline, supported cases and required runtime smoke-checks are documented in `docs/portal-baseline.md`.
 - The checked-in defaults restore the old `findPortalRange = 32` behavior more closely than the previous hardcoded `8/6` and `4/2` windows.
+
+## Worldgen Baseline
+
+- Runtime worldgen source-of-truth lives in the checked-in data resources:
+  - `data/cavernreborn/dimension/cavern.json`
+  - `data/cavernreborn/worldgen/noise_settings/contained_caves.json`
+  - `data/cavernreborn/worldgen/density_function/cave_tunnel_network.json`
+  - `data/cavernreborn/worldgen/density_function/cave_ravine_network.json`
+  - `data/cavernreborn/worldgen/biome/*.json`
+  - `data/cavernreborn/worldgen/placed_feature/*.json`
+  - `data/minecraft/tags/worldgen/biome/has_structure/mineshaft.json`
+- The current biome baseline is intentionally small and explicit: `stone_depths`, `lush_grotto`, `dripstone_grotto`, `highland_hollows`.
+- Newly added biome, placed-feature and structure-tag resources are currently checked in under `app-neoforge/src/generated/resources`, which is part of the runtime resource set via `build.gradle`.
+- `stone_depths` is the dominant mining biome; `lush_grotto` carries the humid vegetation slice; `dripstone_grotto` carries the dry mineral slice; `highland_hollows` is the mountain/hill stand-in for richer emerald pockets.
+- Mining usefulness now comes from the baseline ore set plus enabled ore veins, dense coal/iron passes, extra gold in `dripstone_grotto` and extra emerald in `highland_hollows`.
+- Relevant cave features/structures in the baseline are amethyst geodes, lava lakes, fluid springs, lush/dripstone decoration, denser monster rooms and mineshafts.
+- The regression-protected worldgen baseline, intentional compromises and runtime checklist are documented in `docs/worldgen-baseline.md`.
 
 ## Docker Build
 
