@@ -44,6 +44,66 @@ class IndexedPlacementRevalidationPolicyTest {
     }
 
     @Test
+    void classifyIndexedPlacementsRejectsFarAwayNearbyPortal() {
+        PortalWorldIndex.PortalPlacement indexedPlacement = new PortalWorldIndex.PortalPlacement(30, 70, 30, PortalWorldIndex.PortalPlacement.AXIS_Z);
+        PortalWorldIndex.PortalPlacement farPortalPlacement = new PortalWorldIndex.PortalPlacement(35, 70, 30, PortalWorldIndex.PortalPlacement.AXIS_Z);
+
+        FakePlayerTravelContext player = new FakePlayerTravelContext();
+        player.nearbyPlacements.put(keyFor(indexedPlacement.x(), indexedPlacement.y(), indexedPlacement.z()), farPortalPlacement);
+
+        IndexedPlacementRevalidationPolicy.IndexedPlacementRevalidationSnapshot snapshot =
+            IndexedPlacementRevalidationPolicy.classifyIndexedPlacements(
+                "cavern",
+                Set.of(indexedPlacement),
+                player
+            );
+
+        assertEquals(Set.of(), snapshot.relinkableIndexedPlacements());
+        assertEquals(Set.of(indexedPlacement), snapshot.deadIndexedPlacements());
+        assertEquals(Optional.empty(), snapshot.relinkableReplacement(indexedPlacement));
+    }
+
+    @Test
+    void classifyIndexedPlacementsAcceptsNearbyPortalAtAllowedDriftBoundary() {
+        PortalWorldIndex.PortalPlacement indexedPlacement = new PortalWorldIndex.PortalPlacement(30, 70, 30, PortalWorldIndex.PortalPlacement.AXIS_Z);
+        PortalWorldIndex.PortalPlacement boundaryPortalPlacement = new PortalWorldIndex.PortalPlacement(32, 71, 28, PortalWorldIndex.PortalPlacement.AXIS_X);
+
+        FakePlayerTravelContext player = new FakePlayerTravelContext();
+        player.nearbyPlacements.put(keyFor(indexedPlacement.x(), indexedPlacement.y(), indexedPlacement.z()), boundaryPortalPlacement);
+
+        IndexedPlacementRevalidationPolicy.IndexedPlacementRevalidationSnapshot snapshot =
+            IndexedPlacementRevalidationPolicy.classifyIndexedPlacements(
+                "cavern",
+                Set.of(indexedPlacement),
+                player
+            );
+
+        assertEquals(Set.of(indexedPlacement), snapshot.relinkableIndexedPlacements());
+        assertEquals(Set.of(), snapshot.deadIndexedPlacements());
+        assertEquals(Optional.of(boundaryPortalPlacement), snapshot.relinkableReplacement(indexedPlacement));
+    }
+
+    @Test
+    void classifyIndexedPlacementsRejectsNearbyPortalWithTooMuchVerticalDrift() {
+        PortalWorldIndex.PortalPlacement indexedPlacement = new PortalWorldIndex.PortalPlacement(30, 70, 30, PortalWorldIndex.PortalPlacement.AXIS_Z);
+        PortalWorldIndex.PortalPlacement highPortalPlacement = new PortalWorldIndex.PortalPlacement(31, 72, 29, PortalWorldIndex.PortalPlacement.AXIS_Z);
+
+        FakePlayerTravelContext player = new FakePlayerTravelContext();
+        player.nearbyPlacements.put(keyFor(indexedPlacement.x(), indexedPlacement.y(), indexedPlacement.z()), highPortalPlacement);
+
+        IndexedPlacementRevalidationPolicy.IndexedPlacementRevalidationSnapshot snapshot =
+            IndexedPlacementRevalidationPolicy.classifyIndexedPlacements(
+                "cavern",
+                Set.of(indexedPlacement),
+                player
+            );
+
+        assertEquals(Set.of(), snapshot.relinkableIndexedPlacements());
+        assertEquals(Set.of(indexedPlacement), snapshot.deadIndexedPlacements());
+        assertEquals(Optional.empty(), snapshot.relinkableReplacement(indexedPlacement));
+    }
+
+    @Test
     void retainedPortalUpdateDropsDeadIndexedPlacementsBeforePromotingReplacement() {
         PortalWorldIndex.PortalPlacement deadPlacement = new PortalWorldIndex.PortalPlacement(90, 64, 90, PortalWorldIndex.PortalPlacement.AXIS_X);
         PortalWorldIndex.PortalPlacement oldPlacement = new PortalWorldIndex.PortalPlacement(2, 64, 0, PortalWorldIndex.PortalPlacement.AXIS_X);

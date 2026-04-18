@@ -10,6 +10,9 @@ import java.util.Set;
 import com.richardkenway.cavernreborn.core.state.PortalWorldIndex;
 
 final class IndexedPlacementRevalidationPolicy {
+    private static final int MAX_REVALIDATION_RELINK_XZ_DRIFT = 2;
+    private static final int MAX_REVALIDATION_RELINK_Y_DRIFT = 1;
+
     private IndexedPlacementRevalidationPolicy() {
     }
 
@@ -46,7 +49,7 @@ final class IndexedPlacementRevalidationPolicy {
                 indexedPlacement.z()
             );
 
-            if (relinkedPlacement.isPresent()) {
+            if (relinkedPlacement.isPresent() && isWithinAllowedRelinkDrift(indexedPlacement, relinkedPlacement.get())) {
                 relinkableReplacements.put(indexedPlacement, relinkedPlacement.get());
             } else {
                 deadPlacements.add(indexedPlacement);
@@ -60,6 +63,19 @@ final class IndexedPlacementRevalidationPolicy {
             Map.copyOf(liveReplacements),
             Map.copyOf(relinkableReplacements)
         );
+    }
+
+    private static boolean isWithinAllowedRelinkDrift(
+        PortalWorldIndex.PortalPlacement stalePlacement,
+        PortalWorldIndex.PortalPlacement relinkedPlacement
+    ) {
+        int xDrift = Math.abs(stalePlacement.x() - relinkedPlacement.x());
+        int yDrift = Math.abs(stalePlacement.y() - relinkedPlacement.y());
+        int zDrift = Math.abs(stalePlacement.z() - relinkedPlacement.z());
+
+        return xDrift <= MAX_REVALIDATION_RELINK_XZ_DRIFT
+            && yDrift <= MAX_REVALIDATION_RELINK_Y_DRIFT
+            && zDrift <= MAX_REVALIDATION_RELINK_XZ_DRIFT;
     }
 
     static record IndexedPlacementRevalidationSnapshot(
