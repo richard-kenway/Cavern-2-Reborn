@@ -253,14 +253,14 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
         Optional<Direction.Axis> preferredAxis
     ) {
         Block portalBlock = ModRegistries.CAVERN_PORTAL_BLOCK.get();
-        Block frameBlock = frameBlock();
+        Block generatedFrameBlock = generatedFrameBlock();
         PortalPlacementQualityScorer.PortalPlacementCandidate bestCandidate = null;
 
         for (int dy = 0; dy <= searchHeight; dy++) {
             bestCandidate = evaluatePlacementCandidateAtY(
                 targetLevel,
                 portalBlock,
-                frameBlock,
+                generatedFrameBlock,
                 x,
                 y,
                 y + dy,
@@ -276,7 +276,7 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
             bestCandidate = evaluatePlacementCandidateAtY(
                 targetLevel,
                 portalBlock,
-                frameBlock,
+                generatedFrameBlock,
                 x,
                 y,
                 y - dy,
@@ -407,16 +407,16 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
     private static void placeFrame(ServerLevel level, BlockPos bottomLeft, Direction.Axis axis) {
         Direction right = axis == Direction.Axis.X ? Direction.EAST : Direction.SOUTH;
         Direction left = right.getOpposite();
-        Block frameBlock = frameBlock();
+        Block generatedFrameBlock = generatedFrameBlock();
 
         for (int dx = -1; dx <= PORTAL_INNER_WIDTH; dx++) {
-            level.setBlock(bottomLeft.relative(right, dx).below(), frameBlock.defaultBlockState(), 3);
-            level.setBlock(bottomLeft.relative(right, dx).above(PORTAL_INNER_HEIGHT), frameBlock.defaultBlockState(), 3);
+            level.setBlock(bottomLeft.relative(right, dx).below(), generatedFrameBlock.defaultBlockState(), 3);
+            level.setBlock(bottomLeft.relative(right, dx).above(PORTAL_INNER_HEIGHT), generatedFrameBlock.defaultBlockState(), 3);
         }
 
         for (int dy = 0; dy < PORTAL_INNER_HEIGHT; dy++) {
-            level.setBlock(bottomLeft.relative(left).above(dy), frameBlock.defaultBlockState(), 3);
-            level.setBlock(bottomLeft.relative(right, PORTAL_INNER_WIDTH).above(dy), frameBlock.defaultBlockState(), 3);
+            level.setBlock(bottomLeft.relative(left).above(dy), generatedFrameBlock.defaultBlockState(), 3);
+            level.setBlock(bottomLeft.relative(right, PORTAL_INNER_WIDTH).above(dy), generatedFrameBlock.defaultBlockState(), 3);
         }
     }
 
@@ -482,7 +482,7 @@ public final class NeoForgePlayerTravelContext implements PlayerTravelContext {
         return PortalFrameMaterialPolicy.CAVERN_DEFAULT;
     }
 
-    private static Block frameBlock() {
-        return CavernPortalTags.defaultFrameBlock();
+    private static Block generatedFrameBlock() {
+        return CavernPortalTags.defaultGeneratedFrameBlock();
     }
 }

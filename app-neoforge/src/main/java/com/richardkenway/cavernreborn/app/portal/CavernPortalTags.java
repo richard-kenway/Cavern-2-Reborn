@@ -43,7 +43,7 @@ public final class CavernPortalTags {
             );
     }
 
-    public static Block defaultFrameBlock() {
+    public static Block defaultGeneratedFrameBlock() {
         return Blocks.MOSSY_COBBLESTONE;
     }
 }

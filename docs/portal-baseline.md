@@ -53,6 +53,8 @@ It is not a claim of full legacy parity. It documents the bounded baseline that 
 - Frame tag: `data/cavernreborn/tags/blocks/cavern_portal_frames.json`
 - Activator tag: `data/cavernreborn/tags/items/cavern_portal_activators.json`
 - Tags are the source of truth for frame and activator allowlists.
+- Newly generated portal frames default to `minecraft:mossy_cobblestone`.
+- That generation default does not narrow frame validation; both legacy frame blocks stay allowed through the frame tag baseline.
 
 ## Minimal Checklist
 
