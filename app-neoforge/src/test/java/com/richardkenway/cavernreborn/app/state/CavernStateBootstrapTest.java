@@ -22,7 +22,7 @@ class CavernStateBootstrapTest {
         assertNotNull(bootstrap.cavernProgressionService());
         assertNotNull(bootstrap.cavernRewardService());
         assertEquals(
-            "Cavern Reborn return-state, portal block flow, safe-arrival checks, CAVERN dimension travel bridge and mining progression/reward shell ready",
+            "Cavern II: Reborn return-state, portal block flow, safe-arrival checks, CAVERN dimension travel bridge and mining progression/reward shell ready",
             bootstrap.describe()
         );
     }

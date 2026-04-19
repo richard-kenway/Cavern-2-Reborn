@@ -7,6 +7,7 @@ CAVERN_WORLD_DIR="${SERVER_RUN_DIR}/world/dimensions/cavernreborn/cavern"
 WORLD_DIR="${SERVER_RUN_DIR}/world"
 DEV_SERVER_PORT="${DEV_SERVER_PORT:-25585}"
 CLIENT_MOD_DIR="${CLIENT_MOD_DIR:-/path/to/client/mods}"
+MOD_NAME="$(awk -F= '$1 == "mod_name" { print $2 }' "${ROOT_DIR}/gradle.properties")"
 CLIENT_MOD_JAR="${CLIENT_MOD_DIR}/cavernreborn-0.1.0.jar"
 BUILD_JAR="${ROOT_DIR}/app-neoforge/build/libs/cavernreborn-0.1.0.jar"
 SERVER_MOD_DIR="${SERVER_RUN_DIR}/mods"
@@ -64,11 +65,11 @@ ensure_server_layout() {
         printf 'eula=true\n' > "${SERVER_RUN_DIR}/eula.txt"
     fi
     if [[ ! -f "${SERVER_RUN_DIR}/server.properties" ]]; then
-        cat > "${SERVER_RUN_DIR}/server.properties" <<'EOF'
+        cat > "${SERVER_RUN_DIR}/server.properties" <<EOF
 allow-flight=true
 difficulty=peaceful
 gamemode=creative
-motd=Cavern Reborn Dev Server
+motd=${MOD_NAME} Dev Server
 online-mode=false
 spawn-protection=0
 view-distance=12

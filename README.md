@@ -1,4 +1,4 @@
-# Cavern Reborn
+# Cavern II: Reborn
 
 Bootstrap for the modern rewrite of Cavern on `Minecraft 1.21.1 + NeoForge`.
 
