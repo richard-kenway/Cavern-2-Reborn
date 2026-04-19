@@ -27,7 +27,8 @@ public final class ModRegistries {
             () -> new CavernPortalBlock(
             BlockBehaviour.Properties.of().strength(2.0F).sound(SoundType.GLASS).noCollission().noOcclusion(),
             () -> CavernReborn.cavernStateBootstrap().cavernPortalInteractionService(),
-            () -> CavernReborn.cavernStateBootstrap().nonPlayerPortalInteractionService()));
+            () -> CavernReborn.cavernStateBootstrap().nonPlayerPortalInteractionService(),
+            () -> CavernReborn.cavernStateBootstrap().cavernCatalogGuiOpener()));
     public static final DeferredItem<BlockItem> BOOTSTRAP_BLOCK_ITEM = ITEMS.registerSimpleBlockItem(BOOTSTRAP_BLOCK);
     public static final DeferredItem<BlockItem> CAVERN_PORTAL_BLOCK_ITEM = ITEMS.registerSimpleBlockItem(CAVERN_PORTAL_BLOCK);
 

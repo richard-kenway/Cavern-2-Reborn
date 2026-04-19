@@ -35,7 +35,8 @@ public final class CavernReborn {
                 cavernStateBootstrap.cavernRewardService(),
                 new CavernRewardGranter(),
                 cavernStateBootstrap.cavernInteractionService(),
-                cavernStateBootstrap.playerServiceStateStore()
+                cavernStateBootstrap.playerServiceStateStore(),
+                cavernStateBootstrap.cavernCatalogGuiOpener()
             )
         );
         LOGGER.info("Bootstrapped {} with {}", CavernProject.PROJECT_NAME, cavernStateBootstrap().describe());

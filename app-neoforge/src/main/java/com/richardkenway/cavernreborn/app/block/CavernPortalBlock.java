@@ -1,6 +1,7 @@
 package com.richardkenway.cavernreborn.app.block;
 
 import java.util.Objects;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import com.richardkenway.cavernreborn.app.portal.CavernPortalFrameDetector;
@@ -13,11 +14,16 @@ import com.richardkenway.cavernreborn.app.portal.PortalCollisionEligibilityPolic
 import com.richardkenway.cavernreborn.app.portal.NeoForgeCavernPortalInteractionContext;
 import com.richardkenway.cavernreborn.app.portal.NeoForgeNonPlayerPortalInteractionContext;
 import com.richardkenway.cavernreborn.app.portal.WorldPortalFrameAccess;
+import com.richardkenway.cavernreborn.app.progression.CavernCatalogGuiOpener;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -29,7 +35,9 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -41,16 +49,45 @@ public final class CavernPortalBlock extends Block {
 
     private final Supplier<CavernPortalInteractionService> interactionServiceSupplier;
     private final Supplier<CavernNonPlayerPortalInteractionService> nonPlayerInteractionServiceSupplier;
+    private final Supplier<CavernCatalogGuiOpener> catalogGuiOpenerSupplier;
 
     public CavernPortalBlock(
         BlockBehaviour.Properties properties,
         Supplier<CavernPortalInteractionService> interactionServiceSupplier,
-        Supplier<CavernNonPlayerPortalInteractionService> nonPlayerInteractionServiceSupplier
+        Supplier<CavernNonPlayerPortalInteractionService> nonPlayerInteractionServiceSupplier,
+        Supplier<CavernCatalogGuiOpener> catalogGuiOpenerSupplier
     ) {
         super(properties);
         this.interactionServiceSupplier = Objects.requireNonNull(interactionServiceSupplier, "interactionServiceSupplier");
         this.nonPlayerInteractionServiceSupplier = Objects.requireNonNull(nonPlayerInteractionServiceSupplier, "nonPlayerInteractionServiceSupplier");
+        this.catalogGuiOpenerSupplier = Objects.requireNonNull(catalogGuiOpenerSupplier, "catalogGuiOpenerSupplier");
         registerDefaultState(stateDefinition.any().setValue(AXIS, Direction.Axis.X));
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        return routeUse(
+            level.isClientSide(),
+            player instanceof ServerPlayer,
+            () -> openCatalogGui((ServerPlayer) player)
+        );
+    }
+
+    @Override
+    protected ItemInteractionResult useItemOn(
+        ItemStack stack,
+        BlockState state,
+        Level level,
+        BlockPos pos,
+        Player player,
+        InteractionHand hand,
+        BlockHitResult hitResult
+    ) {
+        return routeUseWithItem(
+            level.isClientSide(),
+            player instanceof ServerPlayer,
+            () -> openCatalogGui((ServerPlayer) player)
+        );
     }
 
     @Override
@@ -82,6 +119,38 @@ public final class CavernPortalBlock extends Block {
     private CavernPortalInteractionOutcome runNonPlayerCollisionTransport(Level level, BlockPos pos, Entity entity) {
         NonPlayerPortalInteractionContext context = NeoForgeNonPlayerPortalInteractionContext.forCollision(entity, level, pos);
         return nonPlayerInteractionServiceSupplier.get().use(context);
+    }
+
+    private boolean openCatalogGui(ServerPlayer player) {
+        return catalogGuiOpenerSupplier.get().open(player);
+    }
+
+    static InteractionResult routeUse(boolean clientSide, boolean serverPlayerActor, BooleanSupplier openCatalogGuiAction) {
+        Objects.requireNonNull(openCatalogGuiAction, "openCatalogGuiAction");
+        if (clientSide) {
+            return InteractionResult.SUCCESS;
+        }
+        if (!serverPlayerActor) {
+            return InteractionResult.PASS;
+        }
+        return openCatalogGuiAction.getAsBoolean() ? InteractionResult.CONSUME : InteractionResult.PASS;
+    }
+
+    static ItemInteractionResult routeUseWithItem(
+        boolean clientSide,
+        boolean serverPlayerActor,
+        BooleanSupplier openCatalogGuiAction
+    ) {
+        Objects.requireNonNull(openCatalogGuiAction, "openCatalogGuiAction");
+        if (clientSide) {
+            return ItemInteractionResult.SUCCESS;
+        }
+        if (!serverPlayerActor) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
+        return openCatalogGuiAction.getAsBoolean()
+            ? ItemInteractionResult.CONSUME
+            : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @FunctionalInterface

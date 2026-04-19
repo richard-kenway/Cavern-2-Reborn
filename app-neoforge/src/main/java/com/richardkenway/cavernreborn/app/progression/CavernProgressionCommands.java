@@ -26,7 +26,6 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.SimpleMenuProvider;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
@@ -50,13 +49,15 @@ public final class CavernProgressionCommands {
     private final CavernInteractionService interactionService;
     private final PlayerServiceStateStore serviceStateStore;
     private final CavernCatalogAccess catalogAccess;
+    private final CavernCatalogGuiOpener catalogGuiOpener;
 
     public CavernProgressionCommands(
         CavernProgressionService progressionService,
         CavernRewardService rewardService,
         CavernRewardGranter rewardGranter,
         CavernInteractionService interactionService,
-        PlayerServiceStateStore serviceStateStore
+        PlayerServiceStateStore serviceStateStore,
+        CavernCatalogGuiOpener catalogGuiOpener
     ) {
         this.progressionService = Objects.requireNonNull(progressionService, "progressionService");
         this.rewardService = Objects.requireNonNull(rewardService, "rewardService");
@@ -64,6 +65,7 @@ public final class CavernProgressionCommands {
         this.interactionService = Objects.requireNonNull(interactionService, "interactionService");
         this.serviceStateStore = Objects.requireNonNull(serviceStateStore, "serviceStateStore");
         this.catalogAccess = new CavernCatalogAccess(this.progressionService, this.interactionService, this.rewardGranter);
+        this.catalogGuiOpener = Objects.requireNonNull(catalogGuiOpener, "catalogGuiOpener");
     }
 
     @SubscribeEvent
@@ -367,21 +369,15 @@ public final class CavernProgressionCommands {
     }
 
     private int openGui(ServerPlayer player) {
-        return player.openMenu(new SimpleMenuProvider(
-            (containerId, inventory, menuPlayer) -> {
-                if (!(menuPlayer instanceof ServerPlayer serverPlayer)) {
-                    throw new IllegalStateException("CAVERN GUI requires a server-side player");
-                }
-                return new CavernCatalogGuiMenu(
-                    containerId,
-                    inventory,
-                    serverPlayer,
-                    catalogAccess,
-                    System::currentTimeMillis
-                );
-            },
-            CavernCatalogGuiMenu.TITLE
-        )).isPresent() ? 1 : 0;
+        return openGui(() -> catalogGuiOpener.open(player));
+    }
+
+    int openGui(CavernCatalogGuiOpener.MenuHost menuHost) {
+        return openGui(() -> catalogGuiOpener.open(menuHost));
+    }
+
+    private int openGui(java.util.function.BooleanSupplier openAction) {
+        return openAction.getAsBoolean() ? 1 : 0;
     }
 
     private int showProgression(CommandSourceStack source, ServerPlayer player) {

@@ -10,6 +10,9 @@ import com.richardkenway.cavernreborn.app.progression.SavedDataBackedPlayerServi
 import com.richardkenway.cavernreborn.app.progression.InMemoryPlayerMiningProgressionRepository;
 import com.richardkenway.cavernreborn.app.progression.SavedDataBackedPlayerClaimedRewardRepository;
 import com.richardkenway.cavernreborn.app.progression.SavedDataBackedPlayerMiningProgressionRepository;
+import com.richardkenway.cavernreborn.app.progression.CavernCatalogAccess;
+import com.richardkenway.cavernreborn.app.progression.CavernCatalogGuiOpener;
+import com.richardkenway.cavernreborn.app.progression.CavernRewardGranter;
 import com.richardkenway.cavernreborn.core.progression.CavernRewardService;
 import com.richardkenway.cavernreborn.core.CavernProject;
 import com.richardkenway.cavernreborn.core.progression.CavernProgressionService;
@@ -37,6 +40,7 @@ public final class CavernStateBootstrap {
     private final CavernRewardService cavernRewardService;
     private final PlayerServiceStateStore playerServiceStateStore;
     private final CavernInteractionService cavernInteractionService;
+    private final CavernCatalogGuiOpener cavernCatalogGuiOpener;
 
     public CavernStateBootstrap() {
         this(
@@ -98,6 +102,9 @@ public final class CavernStateBootstrap {
         this.cavernProgressionService = new CavernProgressionService(playerMiningProgressionStore);
         this.cavernRewardService = new CavernRewardService(playerClaimedRewardStore);
         this.cavernInteractionService = new CavernInteractionService(playerClaimedRewardStore, playerServiceStateStore);
+        this.cavernCatalogGuiOpener = new CavernCatalogGuiOpener(
+            new CavernCatalogAccess(cavernProgressionService, cavernInteractionService, new CavernRewardGranter())
+        );
     }
 
     public PlayerReturnStateStore playerReturnStateStore() {
@@ -154,6 +161,10 @@ public final class CavernStateBootstrap {
 
     public CavernInteractionService cavernInteractionService() {
         return cavernInteractionService;
+    }
+
+    public CavernCatalogGuiOpener cavernCatalogGuiOpener() {
+        return cavernCatalogGuiOpener;
     }
 
     public String describe() {

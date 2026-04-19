@@ -18,9 +18,79 @@ import com.richardkenway.cavernreborn.app.portal.PortalCollisionEligibilityPolic
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 class CavernPortalBlockTest {
+    @Test
+    void serverRightClickRoutesIntoMenuOpenAction() {
+        AtomicInteger openCalls = new AtomicInteger();
+
+        InteractionResult result = CavernPortalBlock.routeUse(
+            false,
+            true,
+            () -> {
+                openCalls.incrementAndGet();
+                return true;
+            }
+        );
+
+        assertEquals(InteractionResult.CONSUME, result);
+        assertEquals(1, openCalls.get());
+    }
+
+    @Test
+    void clientRightClickDoesNotOpenSharedCatalogGui() {
+        AtomicInteger openCalls = new AtomicInteger();
+
+        InteractionResult result = CavernPortalBlock.routeUse(
+            true,
+            true,
+            () -> {
+                openCalls.incrementAndGet();
+                return true;
+            }
+        );
+
+        assertEquals(InteractionResult.SUCCESS, result);
+        assertEquals(0, openCalls.get());
+    }
+
+    @Test
+    void nonPlayerRightClickDoesNotOpenSharedCatalogGui() {
+        AtomicInteger openCalls = new AtomicInteger();
+
+        InteractionResult result = CavernPortalBlock.routeUse(
+            false,
+            false,
+            () -> {
+                openCalls.incrementAndGet();
+                return true;
+            }
+        );
+
+        assertEquals(InteractionResult.PASS, result);
+        assertEquals(0, openCalls.get());
+    }
+
+    @Test
+    void itemRightClickRoutesThroughSharedCatalogGuiOpener() {
+        AtomicInteger openCalls = new AtomicInteger();
+
+        ItemInteractionResult result = CavernPortalBlock.routeUseWithItem(
+            false,
+            true,
+            () -> {
+                openCalls.incrementAndGet();
+                return true;
+            }
+        );
+
+        assertEquals(ItemInteractionResult.CONSUME, result);
+        assertEquals(1, openCalls.get());
+    }
+
     @Test
     void getShapeUsesThinPortalPlaneForXAxis() {
         VoxelShape shape = CavernPortalBlock.shapeFor(Direction.Axis.X);
