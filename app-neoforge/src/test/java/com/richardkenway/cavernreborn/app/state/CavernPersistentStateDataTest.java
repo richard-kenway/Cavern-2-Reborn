@@ -10,7 +10,9 @@ import org.junit.jupiter.api.Test;
 
 import com.richardkenway.cavernreborn.core.progression.CavernPlayerProgressionState;
 import com.richardkenway.cavernreborn.core.progression.CavernPlayerRewardState;
+import com.richardkenway.cavernreborn.core.progression.CavernPlayerServiceState;
 import com.richardkenway.cavernreborn.core.progression.CavernProgressionReward;
+import com.richardkenway.cavernreborn.core.progression.CavernServiceEntry;
 import com.richardkenway.cavernreborn.core.state.PortalReturnState;
 import com.richardkenway.cavernreborn.core.state.PortalWorldIndex;
 
@@ -27,6 +29,8 @@ class CavernPersistentStateDataTest {
             .withMinedBlock("minecraft:iron_ore", 2);
         CavernPlayerRewardState rewardState = CavernPlayerRewardState.empty(playerId)
             .withClaimed(CavernProgressionReward.APPRENTICE_SUPPLY_CACHE);
+        CavernPlayerServiceState serviceState = CavernPlayerServiceState.empty(playerId)
+            .withServiceUsed(CavernServiceEntry.TORCH_SUPPLY, 1_000L);
         PortalWorldIndex worldIndex = PortalWorldIndex.empty()
             .withPortal("cavern_portal", new PortalWorldIndex.PortalPlacement(1, 64, 2, PortalWorldIndex.PortalPlacement.AXIS_X))
             .withPortal("cavern_portal", new PortalWorldIndex.PortalPlacement(3, 65, 4, PortalWorldIndex.PortalPlacement.AXIS_Z));
@@ -35,6 +39,7 @@ class CavernPersistentStateDataTest {
         savedData.savePlayerReturnState(playerId, returnState);
         savedData.savePlayerMiningProgression(progressionState);
         savedData.savePlayerRewardState(rewardState);
+        savedData.savePlayerServiceState(serviceState);
         savedData.saveWorldPortalIndex("cavernreborn:cavern", worldIndex);
 
         CompoundTag serialized = savedData.save(new CompoundTag(), null);
@@ -43,6 +48,7 @@ class CavernPersistentStateDataTest {
         assertEquals(returnState, restored.loadPlayerReturnState(playerId).orElseThrow());
         assertEquals(progressionState, restored.loadPlayerMiningProgression(playerId));
         assertEquals(rewardState, restored.loadPlayerRewardState(playerId));
+        assertEquals(serviceState, restored.loadPlayerServiceState(playerId));
         assertEquals(worldIndex, restored.loadWorldPortalIndex("cavernreborn:cavern"));
         assertEquals(
             worldIndex.firstPlacementFor("cavern_portal"),

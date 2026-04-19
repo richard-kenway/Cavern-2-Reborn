@@ -161,6 +161,10 @@ public final class CavernPersistentStateData extends SavedData {
         playerRewardStates.forEach((playerId, rewardState) -> playerRewardStatesTag.add(serializePlayerRewardState(playerId, rewardState)));
         tag.put(PLAYER_REWARD_STATES_TAG, playerRewardStatesTag);
 
+        ListTag playerServiceStatesTag = new ListTag();
+        playerServiceStates.forEach((playerId, serviceState) -> playerServiceStatesTag.add(serializePlayerServiceState(playerId, serviceState)));
+        tag.put(PLAYER_SERVICE_STATES_TAG, playerServiceStatesTag);
+
         ListTag worldIndicesTag = new ListTag();
         worldPortalIndices.forEach((worldKey, worldIndex) -> worldIndicesTag.add(serializeWorldPortalIndex(worldKey, worldIndex)));
         tag.put(WORLD_PORTAL_INDICES_TAG, worldIndicesTag);
@@ -229,14 +233,17 @@ public final class CavernPersistentStateData extends SavedData {
 
     public void savePlayerServiceState(CavernPlayerServiceState serviceState) {
         if (serviceState.isEmpty()) {
-            playerServiceStates.remove(serviceState.playerId());
+            clearPlayerServiceState(serviceState.playerId());
             return;
         }
         playerServiceStates.put(serviceState.playerId(), serviceState);
+        setDirty();
     }
 
     public void clearPlayerServiceState(UUID playerId) {
-        playerServiceStates.remove(Objects.requireNonNull(playerId, "playerId"));
+        if (playerServiceStates.remove(Objects.requireNonNull(playerId, "playerId")) != null) {
+            setDirty();
+        }
     }
 
     public PortalWorldIndex loadWorldPortalIndex(String worldKey) {

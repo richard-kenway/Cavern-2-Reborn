@@ -1,6 +1,6 @@
 # CAVERN Progression Baseline
 
-This document fixes the current `CAVERN` progression baseline on `main`: the narrow backend shell plus the first player-facing, gameplay-visible and reward-visible layers built on top of it.
+This document fixes the current `CAVERN` progression baseline on `main`: the narrow backend shell plus the first player-facing, gameplay-visible, reward-visible and compact catalog-visible layers built on top of it.
 
 It is not a claim of full legacy gameplay parity. It documents the bounded progression slice that is currently implemented, persisted and test-covered.
 
@@ -28,6 +28,7 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
 - `/cavern rank` exposes the same persisted state through a compact player-facing summary, while `/cavern progression` remains the verbose developer/debug view.
 - `/cavern rewards` exposes the same persisted state through a compact reward summary, while `/cavern claim <reward>` is the current bounded claim path.
 - `/cavern services` exposes available services with their availability state, while `/cavern request <service>` is the bounded service use path.
+- `/cavern catalog` aggregates the current reward and service surface into one compact shop-like summary, while `/cavern use <entry>` is the unified use path for the same checked-in entries.
 - The first service is `torch_supply`, available at `apprentice`, repeatable with a 10-minute cooldown and granting torch x16.
 - Threshold crossing sends a rank-up overlay for the affected player.
 - The first unlock is `Miner's Insight`.
@@ -42,6 +43,7 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
   - current grant bundle: `torch x16, bread x8`
 - Reward eligibility is derived from the same persisted score/rank as `/cavern rank`; the reward layer does not store a second rank or unlock field.
 - Only claimed reward ids are persisted. Eligibility and current status are recomputed from the stored progression score plus the claimed reward set.
+- Only claimed reward ids and per-service last-use timestamps are persisted. Catalog eligibility and current status are recomputed from the stored progression score, claimed reward ids and service timestamps.
 - Player state survives restart through the same overworld-level `SavedData` control plane already used by the portal baseline.
 - After restart, the same player continues from the stored score/counters instead of reinitializing.
 
@@ -66,7 +68,10 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
 - During cooldown, subsequent requests to `torch_supply` report the cooldown state.
 - After 10 minutes, `torch_supply` becomes available again for another use.
 - Service state survives restart and remains consistent with `/cavern rank` and `/cavern services`.
-- `/cavern rank`, `/cavern rewards`, `/cavern services` and `/cavern request` are player-facing interaction paths built on the same progression snapshot.
+- `/cavern catalog` shows rewards and services side-by-side without introducing a second rank, reward or service model.
+- `/cavern use apprentice_supply_cache` claims the same one-time reward as `/cavern claim apprentice_supply_cache`.
+- `/cavern use torch_supply` requests the same repeatable service as `/cavern request torch_supply`.
+- `/cavern rank`, `/cavern rewards`, `/cavern services`, `/cavern catalog`, `/cavern claim`, `/cavern request` and `/cavern use` are player-facing interaction paths built on the same progression snapshot.
 - One-time rewards and repeatable services do not interfere with each other's eligibility logic.
 - Restart-safe persistence and continued progression after restart.
 - Minimal server-side inspection through `/cavern progression` / `/cavern progression <player>` and player-facing status through `/cavern rank`, `/cavern rewards` and `/cavern claim <reward>`.
@@ -89,7 +94,9 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
 - Player-facing formatting and feedback:
   - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/progression/CavernPlayerProgressionStatusFormatter.java`
   - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/progression/CavernPlayerRewardStatusFormatter.java`
+  - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/progression/CavernPlayerCatalogStatusFormatter.java`
   - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/progression/CavernRewardClaimFeedbackFormatter.java`
+  - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/progression/CavernCatalogUseFeedbackFormatter.java`
   - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/progression/CavernProgressionRankUpFeedbackFormatter.java`
 - Gameplay consequence policy:
   - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionConsequences.java`
@@ -98,6 +105,8 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
   - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernRewardService.java`
   - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/progression/CavernRewardGranter.java`
 - Service and interaction surface:
+  - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernCatalogEntry.java`
+  - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernCatalogUseResult.java`
   - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernServiceEntry.java`
   - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernInteractionService.java`
   - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernPlayerServiceState.java`
@@ -120,6 +129,7 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
 - The first gameplay consequence is intentionally small: one unlock and one bounded XP bonus instead of a larger perks tree or reward graph.
 - The first reward surface is intentionally small: one one-time bundle and one claim path instead of a wider reward tree, currency or shop stack.
 - The first service surface is intentionally small: one repeatable service with a simple cooldown instead of a wider service catalog or currency-based shop.
+- The first catalog surface is intentionally small: it aggregates existing rewards and services, but it still is not a currency shop, GUI menu or broader transaction system.
 - Progression still does not gate portal use, worldgen, loot or broader economy/menu systems.
 
 ## Out Of Scope
@@ -141,10 +151,12 @@ Run this before any larger progression or gameplay-shell change:
 6. Continue mining until `apprentice` and confirm the rank-up overlay appears and the unlock message mentions `Miner's Insight`.
 7. Mine another counted ore in `CAVERN` and confirm the XP bar receives the extra `+1` bonus XP from `Miner's Insight`.
 8. Run `/cavern rewards` and confirm `apprentice_supply_cache` is available.
-9. Run `/cavern claim apprentice_supply_cache` and confirm the reward is granted once.
-10. Repeat `/cavern claim apprentice_supply_cache` and confirm the command reports an already-claimed state instead of duplicating the reward.
-11. Run `/cavern progression` and confirm the debug summary still matches the same persisted score/rank.
-12. Mine the same ore outside `CAVERN` and confirm neither the bonus XP nor the cavern-specific progression state changes.
-13. Restart the server.
-14. Run `/cavern rank`, `/cavern progression` or `/cavern rewards` again and confirm the stored progression and claimed reward state survived restart.
-15. Mine another counted ore in `CAVERN` and confirm progression and `Miner's Insight` continue from the stored value instead of resetting.
+9. Run `/cavern catalog` and confirm `apprentice_supply_cache` and `torch_supply` are both listed as available.
+10. Run `/cavern use apprentice_supply_cache` and confirm the reward is granted once.
+11. Repeat `/cavern use apprentice_supply_cache` and confirm the command reports an already-claimed state instead of duplicating the reward.
+12. Run `/cavern use torch_supply` and confirm the service grant works and the catalog/service views move to cooldown.
+13. Run `/cavern progression` and confirm the debug summary still matches the same persisted score/rank.
+14. Mine the same ore outside `CAVERN` and confirm neither the bonus XP nor the cavern-specific progression state changes.
+15. Restart the server.
+16. Run `/cavern rank`, `/cavern progression`, `/cavern rewards`, `/cavern services` or `/cavern catalog` again and confirm the stored progression, claimed reward state and service cooldown state survived restart.
+17. Mine another counted ore in `CAVERN` and confirm progression and `Miner's Insight` continue from the stored value instead of resetting.
