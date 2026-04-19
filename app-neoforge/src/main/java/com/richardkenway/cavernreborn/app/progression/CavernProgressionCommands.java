@@ -26,6 +26,7 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.SimpleMenuProvider;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
@@ -48,6 +49,7 @@ public final class CavernProgressionCommands {
     private final CavernRewardGranter rewardGranter;
     private final CavernInteractionService interactionService;
     private final PlayerServiceStateStore serviceStateStore;
+    private final CavernCatalogAccess catalogAccess;
 
     public CavernProgressionCommands(
         CavernProgressionService progressionService,
@@ -61,6 +63,7 @@ public final class CavernProgressionCommands {
         this.rewardGranter = Objects.requireNonNull(rewardGranter, "rewardGranter");
         this.interactionService = Objects.requireNonNull(interactionService, "interactionService");
         this.serviceStateStore = Objects.requireNonNull(serviceStateStore, "serviceStateStore");
+        this.catalogAccess = new CavernCatalogAccess(this.progressionService, this.interactionService, this.rewardGranter);
     }
 
     @SubscribeEvent
@@ -135,6 +138,10 @@ public final class CavernProgressionCommands {
                                         ))
                                 )
                         )
+                )
+                .then(
+                    Commands.literal("gui")
+                        .executes(context -> openOwnGui(context.getSource()))
                 )
                 .then(
                     Commands.literal("catalog")
@@ -231,6 +238,13 @@ public final class CavernProgressionCommands {
         return showMenu(source, player);
     }
 
+    private int openOwnGui(CommandSourceStack source) throws CommandSyntaxException {
+        if (!(source.getEntity() instanceof ServerPlayer player)) {
+            throw PLAYER_TARGET_REQUIRED.create();
+        }
+        return openGui(player);
+    }
+
     private int claimOwnReward(CommandSourceStack source, String rewardId) throws CommandSyntaxException {
         if (!(source.getEntity() instanceof ServerPlayer player)) {
             throw PLAYER_TARGET_REQUIRED.create();
@@ -270,25 +284,23 @@ public final class CavernProgressionCommands {
 
     private int showCatalog(CommandSourceStack source, ServerPlayer player) {
         long currentTimeMillis = System.currentTimeMillis();
-        CavernProgressionSnapshot snapshot = progressionService.inspect(player.getUUID());
-        java.util.List<CavernCatalogEntry> catalogEntries = interactionService.inspectCatalog(snapshot, currentTimeMillis);
+        CavernCatalogAccess.CavernCatalogView view = catalogAccess.inspect(player.getUUID(), currentTimeMillis);
         source.sendSuccess(
-            () -> Component.literal(CavernPlayerCatalogStatusFormatter.format(player.getGameProfile().getName(), snapshot, catalogEntries)),
+            () -> Component.literal(CavernPlayerCatalogStatusFormatter.format(player.getGameProfile().getName(), view.snapshot(), view.entries())),
             false
         );
-        return (int) catalogEntries.stream().filter(CavernCatalogEntry::availableToUse).count();
+        return (int) view.entries().stream().filter(CavernCatalogEntry::availableToUse).count();
     }
 
     private int showMenu(CommandSourceStack source, ServerPlayer player) {
         long currentTimeMillis = System.currentTimeMillis();
-        CavernProgressionSnapshot snapshot = progressionService.inspect(player.getUUID());
-        java.util.List<CavernCatalogEntry> catalogEntries = interactionService.inspectCatalog(snapshot, currentTimeMillis);
-        java.util.List<Component> lines = CavernPlayerMenuFormatter.format(player.getGameProfile().getName(), snapshot, catalogEntries);
+        CavernCatalogAccess.CavernCatalogView view = catalogAccess.inspect(player.getUUID(), currentTimeMillis);
+        java.util.List<Component> lines = CavernPlayerMenuFormatter.format(player.getGameProfile().getName(), view.snapshot(), view.entries());
         for (Component line : lines) {
             Component immutableLine = line.copy();
             source.sendSuccess(() -> immutableLine, false);
         }
-        return (int) catalogEntries.stream().filter(CavernCatalogEntry::availableToUse).count();
+        return (int) view.entries().stream().filter(CavernCatalogEntry::availableToUse).count();
     }
 
     private int showOwnServices(CommandSourceStack source) throws CommandSyntaxException {
@@ -337,16 +349,11 @@ public final class CavernProgressionCommands {
             throw PLAYER_TARGET_REQUIRED.create();
         }
         long currentTimeMillis = System.currentTimeMillis();
-        CavernProgressionSnapshot snapshot = progressionService.inspect(player.getUUID());
-        CavernCatalogUseResult result = interactionService.useCatalogEntry(snapshot, entryId, currentTimeMillis)
+        CavernCatalogUseResult result = catalogAccess.use(player.getUUID(), entryId, currentTimeMillis)
             .orElseThrow(() -> UNKNOWN_CATALOG_ENTRY.create(entryId));
 
         if (result.granted()) {
-            if (result.rewardEntry()) {
-                rewardGranter.grant(player, result.reward());
-            } else {
-                rewardGranter.grantService(player, result.service());
-            }
+            catalogAccess.grant(player, result);
             source.sendSuccess(() -> Component.literal(CavernCatalogUseFeedbackFormatter.format(result)), false);
             return 1;
         }
@@ -357,6 +364,24 @@ public final class CavernProgressionCommands {
 
     private int useOwnMenuEntry(CommandSourceStack source, String entryId) throws CommandSyntaxException {
         return useOwnCatalogEntry(source, entryId);
+    }
+
+    private int openGui(ServerPlayer player) {
+        return player.openMenu(new SimpleMenuProvider(
+            (containerId, inventory, menuPlayer) -> {
+                if (!(menuPlayer instanceof ServerPlayer serverPlayer)) {
+                    throw new IllegalStateException("CAVERN GUI requires a server-side player");
+                }
+                return new CavernCatalogGuiMenu(
+                    containerId,
+                    inventory,
+                    serverPlayer,
+                    catalogAccess,
+                    System::currentTimeMillis
+                );
+            },
+            CavernCatalogGuiMenu.TITLE
+        )).isPresent() ? 1 : 0;
     }
 
     private int showProgression(CommandSourceStack source, ServerPlayer player) {
