@@ -7,7 +7,12 @@ It is closer to `Cavern 2` than the earlier generic cave placeholder, but it is 
 ## Expected Behavior
 
 - `CAVERN` stays a dry 192-block-tall cave dimension with `min_y = -64`, `height = 192` and `sea_level = -64`.
-- Terrain is still driven by the bounded `contained_caves` fork, but the runtime baseline now uses `size_vertical = 2`, a denser horizontal tunnel layer and a broader ravine-like connector band around the main playable heights.
+- Terrain is still driven by the bounded `contained_caves` fork, but the runtime baseline now deliberately pushes a legacy-like terrain signature instead of a generic cave preset:
+  - the base density stays stone-heavy so the dimension reads as carved mass first;
+  - the main playable band uses a denser tunnel/chamber layer;
+  - a broader ravine connector band cuts through the middle heights;
+  - an upper extreme-like chamber band adds larger cavities and pillar-backed voids in the upper third;
+  - a lower hot band starts below `Y = -32`, well below the current safe-arrival search floor.
 - The world remains arrival-compatible with the current portal slice: the safe-arrival search still targets the same vertical band, and portal create/relink/regenerate logic still relies on existing local cavities rather than carving new ones.
 - The biome family is now a conscious four-biome baseline instead of two borrowed vanilla cave biomes:
   - `cavernreborn:stone_depths` is the dominant mining biome.
@@ -18,8 +23,9 @@ It is closer to `Cavern 2` than the earlier generic cave placeholder, but it is 
 - Surface exposure is intentionally biome-shaped:
   - `lush_grotto` uses `moss_block` floors and `rooted_dirt` ceilings.
   - `dripstone_grotto` uses `dripstone_block` on exposed floors and ceilings.
-  - `highland_hollows` uses `tuff` on exposed surfaces.
-  - deeper exposed surfaces fall back to `deepslate`.
+  - `highland_hollows` uses `tuff` on exposed surfaces and `calcite` on higher exposed ledges.
+  - the lower hot band swaps exposed lower floors and ceilings into `magma_block`, `basalt` and `blackstone` as a modern stand-in for the old lava-heavy lower cavern feel.
+  - deeper exposed surfaces above that hot band still fall back to `deepslate`.
 - Resource generation is mining-oriented by default:
   - the vanilla overworld cave ore set stays present in each custom biome;
   - the imported `minecraft:ore_coal_upper` pass is intentionally removed because it produces an empty-height warning in a 192-block-tall `CAVERN` and the custom dense coal pass already covers the upper mining band;
@@ -42,9 +48,11 @@ It is closer to `Cavern 2` than the earlier generic cave placeholder, but it is 
 - Noise settings: `data/cavernreborn/worldgen/noise_settings/contained_caves.json`
 - Density tuning: `data/cavernreborn/worldgen/density_function/cave_tunnel_network.json`
 - Density tuning: `data/cavernreborn/worldgen/density_function/cave_ravine_network.json`
+- Density tuning: `data/cavernreborn/worldgen/density_function/cave_extreme_upper_network.json`
 - Biome baseline: `data/cavernreborn/worldgen/biome/*.json`
 - Mining/features baseline: `data/cavernreborn/worldgen/placed_feature/*.json`
 - Structure enablement: `data/minecraft/tags/worldgen/biome/has_structure/mineshaft.json`
+- Terrain-signature design note: `docs/cavern-worldgen-parity.md`
 - The new biome, placed-feature and structure-tag resources are currently checked in under `app-neoforge/src/generated/resources`, which is part of the runtime resource set via `build.gradle`.
 
 ## Runtime Validation
@@ -62,6 +70,7 @@ The regression-protected baseline in this document intentionally stays separate 
 ## Supported Cases
 
 - Fresh world generation with a recognizable `CAVERN` identity instead of a minimal cave placeholder.
+- A denser stone-mass feel with large upper cavities, mid-band ravine cuts and a lower hot band that does not overlap the arrival-safe band.
 - Multiple remote regions with the same bounded biome family and mining/resource profile.
 - Fresh portal arrival into a newly generated `CAVERN` chunk column.
 - Portal create/relink/regenerate on the updated terrain profile.
@@ -76,6 +85,7 @@ The regression-protected baseline in this document intentionally stays separate 
 - The old weighted overworld-biome transcription is approximated through four custom cave biomes, not restored biome-for-biome.
 - The old custom ores, tower dungeons, mirage remnants, Huge Cavern and Aqua Cavern are still out of scope.
 - The baseline still uses modern vanilla ore/features where possible instead of restoring the full legacy custom vein table.
+- The lower lava feel is approximated through a hot lower surface band plus existing lava lakes/springs; it is not a literal port of the old `y < 10` lava carve rule.
 - The dedicated-server validation note records a headless server-console pass plus block-sampling on disposable chunks; that is strong enough to validate generation/runtime wiring, but it is not a substitute for a visual client pass.
 - No new user-facing worldgen config surface was added for this pass; the runtime source of truth is the checked-in data resources above.
 
@@ -96,8 +106,10 @@ Run this before any larger worldgen or progression change:
 5. Visit several remote `CAVERN` regions, not only the arrival zone.
 6. If you use the dedicated-server console for biome distance checks, set a known source first, for example `setworldspawn 0 70 0`, before running `locate biome`.
 7. Confirm the world still reads as a contained cavern dimension rather than a generic overworld cave carve.
-8. Confirm the biome mix includes `stone_depths`, `lush_grotto`, `dripstone_grotto` and `highland_hollows`.
-9. Confirm coal/iron feel abundant, `dripstone_grotto` trends richer in gold and `highland_hollows` can expose emerald.
-10. Confirm lush/dripstone decoration and mineshafts can all appear, and check monster rooms if the sampled chunks expose one.
-11. Break or invalidate a destination portal on the new terrain and verify create/relink/regenerate still keeps the loop usable.
-12. Restart the server and verify a repeated `Overworld -> CAVERN -> Overworld` loop still works on the generated world.
+8. Confirm the terrain now shows dense stone mass, larger upper cavities and non-uniform mid-band ravine variation.
+9. Confirm the lower `Y < -32` band reads hotter than the rest of the dimension and does not leak into the arrival-safe band.
+10. Confirm the biome mix includes `stone_depths`, `lush_grotto`, `dripstone_grotto` and `highland_hollows`.
+11. Confirm coal/iron feel abundant, `dripstone_grotto` trends richer in gold and `highland_hollows` can expose emerald.
+12. Confirm lush/dripstone decoration and mineshafts can all appear, and check monster rooms if the sampled chunks expose one.
+13. Break or invalidate a destination portal on the new terrain and verify create/relink/regenerate still keeps the loop usable.
+14. Restart the server and verify a repeated `Overworld -> CAVERN -> Overworld` loop still works on the generated world.

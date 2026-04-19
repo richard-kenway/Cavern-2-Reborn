@@ -27,6 +27,7 @@ class CavernWorldgenResourcesTest {
         JsonObject containedCaves = readJsonResource("data/cavernreborn/worldgen/noise_settings/contained_caves.json");
         JsonObject tunnelNetwork = readJsonResource("data/cavernreborn/worldgen/density_function/cave_tunnel_network.json");
         JsonObject ravineNetwork = readJsonResource("data/cavernreborn/worldgen/density_function/cave_ravine_network.json");
+        JsonObject extremeUpperNetwork = readJsonResource("data/cavernreborn/worldgen/density_function/cave_extreme_upper_network.json");
         JsonObject generator = cavernDimension.getAsJsonObject("generator");
         JsonObject biomeSource = generator.getAsJsonObject("biome_source");
         JsonArray biomes = biomeSource.getAsJsonArray("biomes");
@@ -60,6 +61,7 @@ class CavernWorldgenResourcesTest {
         assertContainedCavesNoiseSettings(containedCaves);
         assertCaveTunnelNetwork(tunnelNetwork);
         assertCaveRavineNetwork(ravineNetwork);
+        assertCaveExtremeUpperNetwork(extremeUpperNetwork);
 
         assertEquals(192, cavernDimensionType.get("height").getAsInt());
         assertEquals(-64, cavernDimensionType.get("min_y").getAsInt());
@@ -126,10 +128,29 @@ class CavernWorldgenResourcesTest {
         URL stoneDepths = resourceUrl("data/cavernreborn/worldgen/biome/stone_depths.json");
         URL highlandHollows = resourceUrl("data/cavernreborn/worldgen/biome/highland_hollows.json");
         URL mineshaftTag = resourceUrl("data/minecraft/tags/worldgen/biome/has_structure/mineshaft.json");
+        URL extremeUpperNetwork = resourceUrl("data/cavernreborn/worldgen/density_function/cave_extreme_upper_network.json");
 
         assertClassPathOrigin(stoneDepths, "data/cavernreborn/worldgen/biome/stone_depths.json");
         assertClassPathOrigin(highlandHollows, "data/cavernreborn/worldgen/biome/highland_hollows.json");
         assertClassPathOrigin(mineshaftTag, "data/minecraft/tags/worldgen/biome/has_structure/mineshaft.json");
+        assertClassPathOrigin(extremeUpperNetwork, "data/cavernreborn/worldgen/density_function/cave_extreme_upper_network.json");
+    }
+
+    @Test
+    void terrainSignatureResourcesEncodeDenseMassHotBandAndVerticalLayering() {
+        String rawNoiseSettings = readResource("data/cavernreborn/worldgen/noise_settings/contained_caves.json");
+        String rawExtremeUpper = readResource("data/cavernreborn/worldgen/density_function/cave_extreme_upper_network.json");
+
+        assertTrue(rawNoiseSettings.contains("\"cavernreborn:cave_extreme_upper_network\""));
+        assertTrue(rawNoiseSettings.contains("\"minecraft:overworld/caves/noodle\""));
+        assertTrue(rawNoiseSettings.contains("\"minecraft:magma_block\""));
+        assertTrue(rawNoiseSettings.contains("\"minecraft:basalt\""));
+        assertTrue(rawNoiseSettings.contains("\"minecraft:blackstone\""));
+        assertTrue(rawNoiseSettings.contains("\"minecraft:calcite\""));
+        assertTrue(rawNoiseSettings.contains("\"absolute\": -48"));
+        assertTrue(rawNoiseSettings.contains("\"absolute\": -32"));
+        assertTrue(rawExtremeUpper.contains("\"minecraft:overworld/caves/pillars\""));
+        assertTrue(rawExtremeUpper.contains("\"minecraft:overworld/caves/entrances\""));
     }
 
     private static void assertContainedCavesNoiseSettings(JsonObject noiseSettings) {
@@ -166,6 +187,12 @@ class CavernWorldgenResourcesTest {
         assertTrue(rawNoiseSettings.contains("\"minecraft:dripstone_block\""));
         assertTrue(rawNoiseSettings.contains("\"cavernreborn:highland_hollows\""));
         assertTrue(rawNoiseSettings.contains("\"minecraft:tuff\""));
+        assertTrue(rawNoiseSettings.contains("\"minecraft:calcite\""));
+        assertTrue(rawNoiseSettings.contains("\"minecraft:magma_block\""));
+        assertTrue(rawNoiseSettings.contains("\"minecraft:basalt\""));
+        assertTrue(rawNoiseSettings.contains("\"minecraft:blackstone\""));
+        assertTrue(rawNoiseSettings.contains("\"cavernreborn:cave_extreme_upper_network\""));
+        assertTrue(rawNoiseSettings.contains("\"minecraft:overworld/caves/noodle\""));
     }
 
     private static void assertFinalDensityBias(JsonObject noiseSettings) {
@@ -173,78 +200,176 @@ class CavernWorldgenResourcesTest {
         assertNotNull(finalDensity);
 
         assertEquals("minecraft:min", finalDensity.get("type").getAsString());
-        assertEquals("cavernreborn:cave_ravine_network", finalDensity.get("argument2").getAsString());
+        JsonObject caveNetworks = finalDensity.getAsJsonObject("argument1");
+        assertNotNull(caveNetworks);
+        assertEquals("minecraft:min", caveNetworks.get("type").getAsString());
+        assertEquals("cavernreborn:cave_ravine_network", caveNetworks.get("argument2").getAsString());
 
-        JsonObject outerMin = finalDensity.getAsJsonObject("argument1");
-        assertNotNull(outerMin);
-        assertEquals("minecraft:min", outerMin.get("type").getAsString());
-        assertEquals("cavernreborn:cave_tunnel_network", outerMin.get("argument2").getAsString());
+        JsonObject tunnelMin = caveNetworks.getAsJsonObject("argument1");
+        assertNotNull(tunnelMin);
+        assertEquals("minecraft:min", tunnelMin.get("type").getAsString());
+        assertEquals("cavernreborn:cave_tunnel_network", tunnelMin.get("argument2").getAsString());
 
-        JsonObject baseDensity = outerMin.getAsJsonObject("argument1");
+        JsonObject baseDensity = tunnelMin.getAsJsonObject("argument1");
         assertNotNull(baseDensity);
         assertEquals("minecraft:squeeze", baseDensity.get("type").getAsString());
 
         JsonObject densityMul = baseDensity.getAsJsonObject("argument");
         assertNotNull(densityMul);
         assertEquals("minecraft:mul", densityMul.get("type").getAsString());
-        assertEquals(0.64, densityMul.get("argument1").getAsDouble(), 0.0);
+        assertEquals(0.7, densityMul.get("argument1").getAsDouble(), 0.0);
+
+        JsonObject upperVariation = finalDensity.getAsJsonObject("argument2");
+        assertNotNull(upperVariation);
+        assertEquals("minecraft:min", upperVariation.get("type").getAsString());
+        assertEquals("cavernreborn:cave_extreme_upper_network", upperVariation.get("argument1").getAsString());
+        assertEquals("minecraft:overworld/caves/noodle", upperVariation.get("argument2").getAsString());
     }
 
     private static void assertCaveTunnelNetwork(JsonObject tunnelNetwork) {
         assertNotNull(tunnelNetwork);
-        assertEquals("minecraft:add", tunnelNetwork.get("type").getAsString());
-        assertEquals(0.03, tunnelNetwork.get("argument1").getAsDouble(), 0.0);
+        assertEquals("minecraft:min", tunnelNetwork.get("type").getAsString());
 
-        JsonObject weightedLayer = tunnelNetwork.getAsJsonObject("argument2");
-        assertNotNull(weightedLayer);
-        assertEquals("minecraft:mul", weightedLayer.get("type").getAsString());
-        assertEquals(0.92, weightedLayer.get("argument1").getAsDouble(), 0.0);
+        JsonObject spaghettiBranch = tunnelNetwork.getAsJsonObject("argument1");
+        assertNotNull(spaghettiBranch);
+        assertEquals("minecraft:add", spaghettiBranch.get("type").getAsString());
+        assertEquals(-0.04, spaghettiBranch.get("argument1").getAsDouble(), 0.0);
 
-        JsonObject spaghettiLayer = weightedLayer.getAsJsonObject("argument2");
+        JsonObject weightedSpaghetti = spaghettiBranch.getAsJsonObject("argument2");
+        assertNotNull(weightedSpaghetti);
+        assertEquals("minecraft:mul", weightedSpaghetti.get("type").getAsString());
+        assertEquals(1.0, weightedSpaghetti.get("argument1").getAsDouble(), 0.0);
+
+        JsonObject spaghettiLayer = weightedSpaghetti.getAsJsonObject("argument2");
         assertNotNull(spaghettiLayer);
         assertEquals("minecraft:add", spaghettiLayer.get("type").getAsString());
         assertEquals("minecraft:overworld/caves/spaghetti_2d", spaghettiLayer.get("argument1").getAsString());
         assertEquals("minecraft:overworld/caves/spaghetti_roughness_function", spaghettiLayer.get("argument2").getAsString());
-    }
 
-    private static void assertCaveRavineNetwork(JsonObject ravineNetwork) {
-        assertNotNull(ravineNetwork);
-        assertEquals("minecraft:add", ravineNetwork.get("type").getAsString());
-        assertEquals(0.38, ravineNetwork.get("argument1").getAsDouble(), 0.0);
+        JsonObject chamberBranch = tunnelNetwork.getAsJsonObject("argument2");
+        assertNotNull(chamberBranch);
+        assertEquals("minecraft:add", chamberBranch.get("type").getAsString());
+        assertEquals(0.2, chamberBranch.get("argument1").getAsDouble(), 0.0);
 
-        JsonObject weightedLayer = ravineNetwork.getAsJsonObject("argument2");
-        assertNotNull(weightedLayer);
-        assertEquals("minecraft:mul", weightedLayer.get("type").getAsString());
-        assertEquals(0.42, weightedLayer.get("argument1").getAsDouble(), 0.0);
+        JsonObject chamberMul = chamberBranch.getAsJsonObject("argument2");
+        assertNotNull(chamberMul);
+        assertEquals("minecraft:mul", chamberMul.get("type").getAsString());
+        assertEquals(0.45, chamberMul.get("argument1").getAsDouble(), 0.0);
 
-        JsonObject connectorField = weightedLayer.getAsJsonObject("argument2");
-        assertNotNull(connectorField);
-        assertEquals("minecraft:mul", connectorField.get("type").getAsString());
+        JsonObject bandedEntrances = chamberMul.getAsJsonObject("argument2");
+        assertNotNull(bandedEntrances);
+        assertEquals("minecraft:mul", bandedEntrances.get("type").getAsString());
 
-        JsonObject cachedSpaghetti = connectorField.getAsJsonObject("argument1");
-        assertNotNull(cachedSpaghetti);
-        assertEquals("minecraft:cache_once", cachedSpaghetti.get("type").getAsString());
-        assertEquals("minecraft:overworld/caves/spaghetti_2d", cachedSpaghetti.get("argument").getAsString());
-
-        JsonObject heightBand = connectorField.getAsJsonObject("argument2");
+        JsonObject heightBand = bandedEntrances.getAsJsonObject("argument1");
         assertNotNull(heightBand);
         assertEquals("minecraft:mul", heightBand.get("type").getAsString());
 
         JsonObject lowerBand = heightBand.getAsJsonObject("argument1");
         assertNotNull(lowerBand);
         assertEquals("minecraft:y_clamped_gradient", lowerBand.get("type").getAsString());
-        assertEquals(-48, lowerBand.get("from_y").getAsInt());
-        assertEquals(24, lowerBand.get("to_y").getAsInt());
+        assertEquals(-24, lowerBand.get("from_y").getAsInt());
+        assertEquals(32, lowerBand.get("to_y").getAsInt());
+
+        JsonObject upperBand = heightBand.getAsJsonObject("argument2");
+        assertNotNull(upperBand);
+        assertEquals("minecraft:y_clamped_gradient", upperBand.get("type").getAsString());
+        assertEquals(32, upperBand.get("from_y").getAsInt());
+        assertEquals(96, upperBand.get("to_y").getAsInt());
+
+        assertEquals("minecraft:overworld/caves/entrances", bandedEntrances.get("argument2").getAsString());
+    }
+
+    private static void assertCaveRavineNetwork(JsonObject ravineNetwork) {
+        assertNotNull(ravineNetwork);
+        assertEquals("minecraft:add", ravineNetwork.get("type").getAsString());
+        assertEquals(0.28, ravineNetwork.get("argument1").getAsDouble(), 0.0);
+
+        JsonObject weightedLayer = ravineNetwork.getAsJsonObject("argument2");
+        assertNotNull(weightedLayer);
+        assertEquals("minecraft:mul", weightedLayer.get("type").getAsString());
+        assertEquals(0.58, weightedLayer.get("argument1").getAsDouble(), 0.0);
+
+        JsonObject connectorField = weightedLayer.getAsJsonObject("argument2");
+        assertNotNull(connectorField);
+        assertEquals("minecraft:mul", connectorField.get("type").getAsString());
+
+        JsonObject heightBand = connectorField.getAsJsonObject("argument1");
+        assertNotNull(heightBand);
+        assertEquals("minecraft:mul", heightBand.get("type").getAsString());
+
+        JsonObject lowerBand = heightBand.getAsJsonObject("argument1");
+        assertNotNull(lowerBand);
+        assertEquals("minecraft:y_clamped_gradient", lowerBand.get("type").getAsString());
+        assertEquals(-56, lowerBand.get("from_y").getAsInt());
+        assertEquals(12, lowerBand.get("to_y").getAsInt());
         assertEquals(0.0, lowerBand.get("from_value").getAsDouble(), 0.0);
         assertEquals(1.0, lowerBand.get("to_value").getAsDouble(), 0.0);
 
         JsonObject upperBand = heightBand.getAsJsonObject("argument2");
         assertNotNull(upperBand);
         assertEquals("minecraft:y_clamped_gradient", upperBand.get("type").getAsString());
-        assertEquals(24, upperBand.get("from_y").getAsInt());
-        assertEquals(80, upperBand.get("to_y").getAsInt());
+        assertEquals(12, upperBand.get("from_y").getAsInt());
+        assertEquals(104, upperBand.get("to_y").getAsInt());
         assertEquals(1.0, upperBand.get("from_value").getAsDouble(), 0.0);
         assertEquals(0.0, upperBand.get("to_value").getAsDouble(), 0.0);
+
+        JsonObject roughSpaghettiLayer = connectorField.getAsJsonObject("argument2");
+        assertNotNull(roughSpaghettiLayer);
+        assertEquals("minecraft:add", roughSpaghettiLayer.get("type").getAsString());
+
+        JsonObject cachedSpaghetti = roughSpaghettiLayer.getAsJsonObject("argument1");
+        assertNotNull(cachedSpaghetti);
+        assertEquals("minecraft:cache_once", cachedSpaghetti.get("type").getAsString());
+        assertEquals("minecraft:overworld/caves/spaghetti_2d", cachedSpaghetti.get("argument").getAsString());
+
+        JsonObject roughnessMul = roughSpaghettiLayer.getAsJsonObject("argument2");
+        assertNotNull(roughnessMul);
+        assertEquals("minecraft:mul", roughnessMul.get("type").getAsString());
+        assertEquals(0.6, roughnessMul.get("argument1").getAsDouble(), 0.0);
+        assertEquals("minecraft:overworld/caves/spaghetti_roughness_function", roughnessMul.get("argument2").getAsString());
+    }
+
+    private static void assertCaveExtremeUpperNetwork(JsonObject extremeUpperNetwork) {
+        assertNotNull(extremeUpperNetwork);
+        assertEquals("minecraft:max", extremeUpperNetwork.get("type").getAsString());
+
+        JsonObject chamberBranch = extremeUpperNetwork.getAsJsonObject("argument1");
+        assertNotNull(chamberBranch);
+        assertEquals("minecraft:add", chamberBranch.get("type").getAsString());
+        assertEquals(0.26, chamberBranch.get("argument1").getAsDouble(), 0.0);
+
+        JsonObject weightedChamber = chamberBranch.getAsJsonObject("argument2");
+        assertNotNull(weightedChamber);
+        assertEquals("minecraft:mul", weightedChamber.get("type").getAsString());
+        assertEquals(0.6, weightedChamber.get("argument1").getAsDouble(), 0.0);
+
+        JsonObject bandedEntrances = weightedChamber.getAsJsonObject("argument2");
+        assertNotNull(bandedEntrances);
+        assertEquals("minecraft:mul", bandedEntrances.get("type").getAsString());
+
+        JsonObject heightBand = bandedEntrances.getAsJsonObject("argument1");
+        assertNotNull(heightBand);
+        assertEquals("minecraft:mul", heightBand.get("type").getAsString());
+
+        JsonObject lowerBand = heightBand.getAsJsonObject("argument1");
+        assertNotNull(lowerBand);
+        assertEquals("minecraft:y_clamped_gradient", lowerBand.get("type").getAsString());
+        assertEquals(24, lowerBand.get("from_y").getAsInt());
+        assertEquals(72, lowerBand.get("to_y").getAsInt());
+
+        JsonObject upperBand = heightBand.getAsJsonObject("argument2");
+        assertNotNull(upperBand);
+        assertEquals("minecraft:y_clamped_gradient", upperBand.get("type").getAsString());
+        assertEquals(72, upperBand.get("from_y").getAsInt());
+        assertEquals(124, upperBand.get("to_y").getAsInt());
+
+        assertEquals("minecraft:overworld/caves/entrances", bandedEntrances.get("argument2").getAsString());
+
+        JsonObject pillarSupport = extremeUpperNetwork.getAsJsonObject("argument2");
+        assertNotNull(pillarSupport);
+        assertEquals("minecraft:range_choice", pillarSupport.get("type").getAsString());
+        assertEquals("minecraft:overworld/caves/pillars", pillarSupport.get("input").getAsString());
+        assertEquals("minecraft:overworld/caves/pillars", pillarSupport.get("when_out_of_range").getAsString());
     }
 
     private static void assertBiomeFeatures(JsonObject biome, int expectedSteps, String expectedFeature, String anotherExpectedFeature) {

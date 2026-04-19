@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 class CavernWorldgenDocumentationTest {
     private static final Path README = resolveProjectFile("README.md");
     private static final Path WORLDGEN_BASELINE = resolveProjectFile("docs", "worldgen-baseline.md");
+    private static final Path WORLDGEN_PARITY_NOTE = resolveProjectFile("docs", "cavern-worldgen-parity.md");
     private static final Path WORLDGEN_RUNTIME_NOTE = resolveProjectFile("docs", "worldgen-runtime-validation-2026-04-18.md");
 
     @Test
@@ -23,6 +24,9 @@ class CavernWorldgenDocumentationTest {
         assertTrue(readme.contains("highland_hollows"));
         assertTrue(readme.contains("ore veins"));
         assertTrue(readme.contains("mineshafts"));
+        assertTrue(readme.contains("cave_extreme_upper_network.json"));
+        assertTrue(readme.contains("docs/cavern-worldgen-parity.md"));
+        assertTrue(readme.contains("lower `Y < -32` hot band"));
         assertTrue(readme.contains("docs/worldgen-baseline.md"));
         assertTrue(readme.contains("docs/worldgen-runtime-validation-2026-04-18.md"));
         assertTrue(readme.contains("dedicated-server validation note"));
@@ -39,6 +43,10 @@ class CavernWorldgenDocumentationTest {
         assertTrue(doc.contains("dense coal and iron"));
         assertTrue(doc.contains("dripstone_grotto"));
         assertTrue(doc.contains("highland_hollows"));
+        assertTrue(doc.contains("upper extreme-like chamber band"));
+        assertTrue(doc.contains("lower hot band"));
+        assertTrue(doc.contains("cave_extreme_upper_network.json"));
+        assertTrue(doc.contains("docs/cavern-worldgen-parity.md"));
         assertTrue(doc.contains("docs/worldgen-runtime-validation-2026-04-18.md"));
         assertTrue(doc.contains("generated resources resolve from the runtime classpath"));
         assertTrue(doc.contains("setworldspawn 0 70 0"));
@@ -46,6 +54,19 @@ class CavernWorldgenDocumentationTest {
         assertTrue(doc.contains("monster room"));
         assertTrue(doc.contains("Generate a fresh world and enter `CAVERN`"));
         assertTrue(doc.contains("Restart the server"));
+    }
+
+    @Test
+    void parityNoteDocumentsNarrowTerrainSignatureScope() throws IOException {
+        String note = Files.readString(WORLDGEN_PARITY_NOTE);
+
+        assertTrue(note.contains("Terrain-Signature Parity"));
+        assertTrue(note.contains("solid stone world first"));
+        assertTrue(note.contains("upper extreme-like cavern band"));
+        assertTrue(note.contains("lower hot/lava-oriented band"));
+        assertTrue(note.contains("Deliberately Not In This Tranche"));
+        assertTrue(note.contains("Literal 1:1 port"));
+        assertTrue(note.contains("surface band below the portal safe-arrival search floor"));
     }
 
     @Test
