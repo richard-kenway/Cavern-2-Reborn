@@ -99,6 +99,36 @@ class CavernWorldgenResourcesTest {
     }
 
     @Test
+    void cavernBiomeResourcesWirePopulationParitySignals() throws IOException {
+        JsonObject stoneDepths = readJsonResource("data/cavernreborn/worldgen/biome/stone_depths.json");
+        JsonObject lushGrotto = readJsonResource("data/cavernreborn/worldgen/biome/lush_grotto.json");
+        JsonObject dripstoneGrotto = readJsonResource("data/cavernreborn/worldgen/biome/dripstone_grotto.json");
+        JsonObject highlandHollows = readJsonResource("data/cavernreborn/worldgen/biome/highland_hollows.json");
+
+        assertTrue(featureStep(stoneDepths, 3).contains("cavernreborn:cavern_monster_room"));
+        assertTrue(featureStep(stoneDepths, 8).contains("cavernreborn:cavern_spring_water_falls"));
+        assertTrue(featureStep(stoneDepths, 8).contains("cavernreborn:cavern_spring_lava_falls"));
+        assertTrue(featureStep(stoneDepths, 9).contains("cavernreborn:cavern_brown_mushroom_patch"));
+        assertTrue(featureStep(stoneDepths, 9).contains("cavernreborn:cavern_red_mushroom_patch"));
+
+        assertTrue(featureStep(lushGrotto, 8).contains("cavernreborn:cavern_spring_water_falls"));
+        assertFalse(featureStep(lushGrotto, 8).contains("cavernreborn:cavern_spring_lava_falls"));
+        assertTrue(featureStep(lushGrotto, 9).contains("cavernreborn:cavern_brown_mushroom_patch"));
+        assertTrue(featureStep(lushGrotto, 9).contains("cavernreborn:cavern_red_mushroom_patch"));
+        assertTrue(featureStep(lushGrotto, 9).contains("minecraft:lush_caves_vegetation"));
+
+        assertFalse(featureStep(dripstoneGrotto, 8).contains("cavernreborn:cavern_spring_water_falls"));
+        assertTrue(featureStep(dripstoneGrotto, 8).contains("cavernreborn:cavern_spring_lava_falls"));
+        assertFalse(featureStep(dripstoneGrotto, 9).contains("cavernreborn:cavern_brown_mushroom_patch"));
+        assertTrue(featureStep(dripstoneGrotto, 7).contains("minecraft:dripstone_cluster"));
+
+        assertTrue(featureStep(highlandHollows, 8).contains("cavernreborn:cavern_spring_water_falls"));
+        assertTrue(featureStep(highlandHollows, 8).contains("cavernreborn:cavern_spring_lava_falls"));
+        assertTrue(featureStep(highlandHollows, 9).contains("cavernreborn:cavern_brown_mushroom_patch"));
+        assertFalse(featureStep(highlandHollows, 9).contains("cavernreborn:cavern_red_mushroom_patch"));
+    }
+
+    @Test
     void placedFeaturesAndMineshaftTagProtectWorldgenBaseline() throws IOException {
         JsonObject mineshaftTag = readJsonResource("data/minecraft/tags/worldgen/biome/has_structure/mineshaft.json");
         JsonObject monsterRoom = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_monster_room.json");
@@ -107,6 +137,10 @@ class CavernWorldgenResourcesTest {
         JsonObject ironDense = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_ore_iron_dense.json");
         JsonObject goldDry = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_ore_gold_dry.json");
         JsonObject emeraldHighlands = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_ore_emerald_highlands.json");
+        JsonObject springWaterFalls = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_spring_water_falls.json");
+        JsonObject springLavaFalls = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_spring_lava_falls.json");
+        JsonObject brownMushroomPatch = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_brown_mushroom_patch.json");
+        JsonObject redMushroomPatch = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_red_mushroom_patch.json");
 
         List<String> mineshaftBiomes = arrayStrings(mineshaftTag.getAsJsonArray("values"));
         assertFalse(mineshaftTag.get("replace").getAsBoolean());
@@ -115,12 +149,16 @@ class CavernWorldgenResourcesTest {
         assertTrue(mineshaftBiomes.contains("cavernreborn:dripstone_grotto"));
         assertTrue(mineshaftBiomes.contains("cavernreborn:highland_hollows"));
 
-        assertPlacedFeature(monsterRoom, "minecraft:monster_room", 12, 96, 1);
-        assertPlacedFeature(deepMonsterRoom, "minecraft:monster_room", 6, 0, 6);
+        assertPlacedFeature(monsterRoom, "minecraft:monster_room", 16, 96, 1);
+        assertPlacedFeature(deepMonsterRoom, "minecraft:monster_room", 8, 0, 6);
         assertPlacedFeature(coalDense, "minecraft:ore_coal_buried", 22, 120, -16);
         assertPlacedFeature(ironDense, "minecraft:ore_iron", 18, 104, -48);
         assertPlacedFeature(goldDry, "minecraft:ore_gold_buried", 6, 40, -56);
         assertPlacedFeature(emeraldHighlands, "minecraft:ore_emerald", 14, 120, 16);
+        assertPlacedFeature(springWaterFalls, "minecraft:spring_water", 14, 56, 16);
+        assertPlacedFeature(springLavaFalls, "minecraft:spring_lava_overworld", 10, 24, 8);
+        assertPlacedFeature(brownMushroomPatch, "minecraft:patch_brown_mushroom", 6, 88, 8);
+        assertPlacedFeature(redMushroomPatch, "minecraft:patch_red_mushroom", 4, 72, 8);
     }
 
     @Test
@@ -129,11 +167,15 @@ class CavernWorldgenResourcesTest {
         URL highlandHollows = resourceUrl("data/cavernreborn/worldgen/biome/highland_hollows.json");
         URL mineshaftTag = resourceUrl("data/minecraft/tags/worldgen/biome/has_structure/mineshaft.json");
         URL extremeUpperNetwork = resourceUrl("data/cavernreborn/worldgen/density_function/cave_extreme_upper_network.json");
+        URL springWaterFalls = resourceUrl("data/cavernreborn/worldgen/placed_feature/cavern_spring_water_falls.json");
+        URL brownMushroomPatch = resourceUrl("data/cavernreborn/worldgen/placed_feature/cavern_brown_mushroom_patch.json");
 
         assertClassPathOrigin(stoneDepths, "data/cavernreborn/worldgen/biome/stone_depths.json");
         assertClassPathOrigin(highlandHollows, "data/cavernreborn/worldgen/biome/highland_hollows.json");
         assertClassPathOrigin(mineshaftTag, "data/minecraft/tags/worldgen/biome/has_structure/mineshaft.json");
         assertClassPathOrigin(extremeUpperNetwork, "data/cavernreborn/worldgen/density_function/cave_extreme_upper_network.json");
+        assertClassPathOrigin(springWaterFalls, "data/cavernreborn/worldgen/placed_feature/cavern_spring_water_falls.json");
+        assertClassPathOrigin(brownMushroomPatch, "data/cavernreborn/worldgen/placed_feature/cavern_brown_mushroom_patch.json");
     }
 
     @Test
@@ -449,6 +491,11 @@ class CavernWorldgenResourcesTest {
             .flatMap(step -> StreamSupport.stream(step.spliterator(), false))
             .map(JsonElement::getAsString)
             .toList();
+    }
+
+    private static List<String> featureStep(JsonObject biome, int index) {
+        JsonArray features = biome.getAsJsonArray("features");
+        return arrayStrings(features.get(index).getAsJsonArray());
     }
 
     private static List<String> arrayStrings(JsonArray array) {

@@ -71,12 +71,16 @@
     [],
     [
       "minecraft:spring_water",
-      "minecraft:spring_lava"
+      "cavernreborn:cavern_spring_water_falls",
+      "minecraft:spring_lava",
+      "cavernreborn:cavern_spring_lava_falls"
     ],
     [
       "minecraft:glow_lichen",
       "minecraft:brown_mushroom_normal",
-      "minecraft:red_mushroom_normal"
+      "minecraft:red_mushroom_normal",
+      "cavernreborn:cavern_brown_mushroom_patch",
+      "cavernreborn:cavern_red_mushroom_patch"
     ],
     []
   ],

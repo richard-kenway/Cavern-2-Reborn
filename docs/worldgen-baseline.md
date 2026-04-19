@@ -36,7 +36,9 @@ It is closer to `Cavern 2` than the earlier generic cave placeholder, but it is 
 - Relevant cave features and structures are explicitly part of the baseline:
   - amethyst geodes;
   - lava lakes and fluid springs;
+  - extra lower-biased water/lava spring passes as a modern stand-in for the old spring/fall feel;
   - lush cave vegetation where appropriate;
+  - extra mushroom patch scatter in the non-dry slices;
   - dripstone clusters and large dripstone where appropriate;
   - denser monster-room placement than the earlier placeholder baseline;
   - mineshafts via the biome structure tag.
@@ -53,6 +55,7 @@ It is closer to `Cavern 2` than the earlier generic cave placeholder, but it is 
 - Mining/features baseline: `data/cavernreborn/worldgen/placed_feature/*.json`
 - Structure enablement: `data/minecraft/tags/worldgen/biome/has_structure/mineshaft.json`
 - Terrain-signature design note: `docs/cavern-worldgen-parity.md`
+- Population-parity design note: `docs/cavern-population-parity.md`
 - The new biome, placed-feature and structure-tag resources are currently checked in under `app-neoforge/src/generated/resources`, which is part of the runtime resource set via `build.gradle`.
 
 ## Runtime Validation
@@ -83,6 +86,7 @@ The regression-protected baseline in this document intentionally stays separate 
 
 - This is not a literal 1:1 port of the old 1.12 `Cavern 2` chunk generator.
 - The old weighted overworld-biome transcription is approximated through four custom cave biomes, not restored biome-for-biome.
+- The first population tranche restores only monster-room pressure, spring/fall feel and mushroom scatter; tower dungeons, mirage remnants and broader structure parity are still out of scope.
 - The old custom ores, tower dungeons, mirage remnants, Huge Cavern and Aqua Cavern are still out of scope.
 - The baseline still uses modern vanilla ore/features where possible instead of restoring the full legacy custom vein table.
 - The lower lava feel is approximated through a hot lower surface band plus existing lava lakes/springs; it is not a literal port of the old `y < 10` lava carve rule.
@@ -110,6 +114,6 @@ Run this before any larger worldgen or progression change:
 9. Confirm the lower `Y < -32` band reads hotter than the rest of the dimension and does not leak into the arrival-safe band.
 10. Confirm the biome mix includes `stone_depths`, `lush_grotto`, `dripstone_grotto` and `highland_hollows`.
 11. Confirm coal/iron feel abundant, `dripstone_grotto` trends richer in gold and `highland_hollows` can expose emerald.
-12. Confirm lush/dripstone decoration and mineshafts can all appear, and check monster rooms if the sampled chunks expose one.
+12. Confirm lush/dripstone decoration, mushroom scatter, stronger spring/fall activity and mineshafts can all appear, and check monster rooms if the sampled chunks expose one.
 13. Break or invalidate a destination portal on the new terrain and verify create/relink/regenerate still keeps the loop usable.
 14. Restart the server and verify a repeated `Overworld -> CAVERN -> Overworld` loop still works on the generated world.
