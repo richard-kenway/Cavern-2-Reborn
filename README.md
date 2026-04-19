@@ -195,3 +195,10 @@ Notes:
 - `scripts/dev-server/reset-world.sh` and `scripts/dev-server/reset-cavern.sh` now require the server to be stopped first and can clean up container-owned world files through Docker when needed.
 - The generated `runs/` directories are ignored by git, so resets and local test worlds do not dirty the repository.
 - If `25585` is busy too, set a different host port with `DEV_SERVER_PORT=<port> scripts/dev-server/up.sh`.
+
+
+## License
+
+This project is licensed under the GNU General Public License v3.0 only (`GPL-3.0-only`). See `LICENSE` for the full license text.
+
+The licensing baseline for the original `Cavern II` project is GPLv3 as listed on CurseForge, and this repository is published under GPLv3 accordingly.
