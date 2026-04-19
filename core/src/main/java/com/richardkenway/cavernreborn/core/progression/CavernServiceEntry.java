@@ -13,6 +13,17 @@ public enum CavernServiceEntry {
         List.of(
             new CavernRewardGrant("minecraft:torch", 16)
         )
+    ),
+    CLIMBING_SUPPLY(
+        "climbing_supply",
+        "Climbing Supply",
+        CavernProgressionRank.JOURNEYMAN,
+        false,
+        1_200_000L,
+        List.of(
+            new CavernRewardGrant("minecraft:ladder", 16),
+            new CavernRewardGrant("minecraft:cobblestone", 32)
+        )
     );
 
     private static final java.util.Map<String, CavernServiceEntry> SERVICES_BY_ID = createServicesById();

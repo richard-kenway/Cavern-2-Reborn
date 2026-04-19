@@ -1,12 +1,18 @@
 package com.richardkenway.cavernreborn.core.progression;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
 public final class CavernInteractionService {
+    private static final Comparator<CavernCatalogEntry> CATALOG_ENTRY_ORDER = Comparator
+        .comparingInt((CavernCatalogEntry entry) -> entry.requiredRank().threshold())
+        .thenComparingInt(entry -> entry.type().ordinal())
+        .thenComparing(CavernCatalogEntry::id);
+
     private final PlayerClaimedRewardStore claimedRewardStore;
     private final PlayerServiceStateStore serviceStateStore;
 
@@ -42,7 +48,9 @@ public final class CavernInteractionService {
         java.util.ArrayList<CavernCatalogEntry> entries = new java.util.ArrayList<>(rewardEntries.size() + serviceEntries.size());
         entries.addAll(rewardEntries);
         entries.addAll(serviceEntries);
-        return List.copyOf(entries);
+        return entries.stream()
+            .sorted(CATALOG_ENTRY_ORDER)
+            .toList();
     }
 
     public CavernServiceRequestResult requestService(CavernProgressionSnapshot snapshot, CavernServiceEntry service, long currentTimeMillis) {

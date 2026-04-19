@@ -38,11 +38,13 @@ class CavernInteractionServiceTest {
 
         java.util.List<CavernCatalogEntry> catalogEntries = service.inspectCatalog(emptySnapshot(playerId), 0L);
 
-        assertEquals(2, catalogEntries.size());
+        assertEquals(4, catalogEntries.size());
         assertEquals(CavernCatalogEntryType.REWARD, catalogEntries.get(0).type());
         assertEquals(CavernCatalogAvailability.LOCKED, catalogEntries.get(0).availability());
         assertEquals(CavernCatalogEntryType.SERVICE, catalogEntries.get(1).type());
         assertEquals(CavernCatalogAvailability.LOCKED, catalogEntries.get(1).availability());
+        assertEquals(CavernProgressionRank.JOURNEYMAN, catalogEntries.get(2).requiredRank());
+        assertEquals(CavernProgressionRank.JOURNEYMAN, catalogEntries.get(3).requiredRank());
     }
 
     @Test
@@ -60,6 +62,24 @@ class CavernInteractionServiceTest {
         assertEquals(CavernProgressionRank.APPRENTICE, progressionService.inspect(playerId).rank());
         assertTrue(status.availableToUse());
         assertFalse(status.onCooldown());
+    }
+
+    @Test
+    void apprenticeCatalogLeavesJourneymanTierLocked() {
+        UUID playerId = UUID.randomUUID();
+        CavernProgressionService progressionService = new CavernProgressionService(new TestPlayerMiningProgressionStore());
+        CavernInteractionService service = newInteractionService();
+
+        for (int i = 0; i < 5; i++) {
+            progressionService.recordMiningEvent(playerId, CavernDimensions.CAVERN_DIMENSION_ID, "minecraft:diamond_ore");
+        }
+
+        java.util.List<CavernCatalogEntry> catalogEntries = service.inspectCatalog(progressionService.inspect(playerId), 0L);
+
+        assertTrue(catalogEntryFor(catalogEntries, "apprentice_supply_cache").availableToUse());
+        assertTrue(catalogEntryFor(catalogEntries, "torch_supply").availableToUse());
+        assertTrue(catalogEntryFor(catalogEntries, "journeyman_supply_cache").locked());
+        assertTrue(catalogEntryFor(catalogEntries, "climbing_supply").locked());
     }
 
     @Test
@@ -116,6 +136,37 @@ class CavernInteractionServiceTest {
         assertFalse(serviceRetry.granted());
         assertTrue(serviceRetry.onCooldown());
         assertEquals(CavernCatalogAvailability.ON_COOLDOWN, serviceRetry.entry().availability());
+    }
+
+    @Test
+    void journeymanCatalogEntriesUnlockAndKeepTheirOwnSemantics() {
+        UUID playerId = UUID.randomUUID();
+        CavernProgressionService progressionService = new CavernProgressionService(new TestPlayerMiningProgressionStore());
+        CavernInteractionService service = newInteractionService();
+
+        for (int i = 0; i < 15; i++) {
+            progressionService.recordMiningEvent(playerId, CavernDimensions.CAVERN_DIMENSION_ID, "minecraft:diamond_ore");
+        }
+
+        CavernProgressionSnapshot snapshot = progressionService.inspect(playerId);
+        CavernCatalogUseResult rewardUse = service.useCatalogEntry(snapshot, "journeyman_supply_cache", 0L).orElseThrow();
+        CavernCatalogUseResult rewardRetry = service.useCatalogEntry(snapshot, "journeyman_supply_cache", 0L).orElseThrow();
+        CavernCatalogUseResult serviceUse = service.useCatalogEntry(snapshot, "climbing_supply", 0L).orElseThrow();
+        CavernCatalogUseResult serviceRetry = service.useCatalogEntry(snapshot, "climbing_supply", 0L).orElseThrow();
+
+        assertTrue(rewardUse.granted());
+        assertTrue(rewardUse.rewardEntry());
+        assertEquals(CavernCatalogAvailability.CLAIMED, rewardUse.entry().availability());
+
+        assertFalse(rewardRetry.granted());
+        assertTrue(rewardRetry.alreadyClaimed());
+
+        assertTrue(serviceUse.granted());
+        assertTrue(serviceUse.serviceEntry());
+        assertEquals(CavernCatalogAvailability.ON_COOLDOWN, serviceUse.entry().availability());
+
+        assertFalse(serviceRetry.granted());
+        assertTrue(serviceRetry.onCooldown());
     }
 
     @Test
@@ -178,6 +229,34 @@ class CavernInteractionServiceTest {
     }
 
     @Test
+    void journeymanServiceCooldownSurvivesItsOwnWindow() {
+        UUID playerId = UUID.randomUUID();
+        CavernInteractionService service = newInteractionService();
+
+        CavernProgressionSnapshot snapshot = new CavernProgressionSnapshot(
+            playerId, 15, 75, CavernProgressionRank.JOURNEYMAN, Map.of("minecraft:diamond_ore", 15)
+        );
+
+        long baseTime = 2_000_000L;
+        CavernServiceRequestResult first = service.requestService(snapshot, CavernServiceEntry.CLIMBING_SUPPLY, baseTime);
+        assertTrue(first.granted());
+
+        long justBeforeReady = baseTime + CavernServiceEntry.CLIMBING_SUPPLY.cooldownMillis() - 1L;
+        CavernServiceStatus onCooldown = serviceStatusFor(
+            service.inspectServices(snapshot, justBeforeReady),
+            CavernServiceEntry.CLIMBING_SUPPLY
+        );
+        assertTrue(onCooldown.onCooldown());
+
+        long justAfterReady = baseTime + CavernServiceEntry.CLIMBING_SUPPLY.cooldownMillis() + 1L;
+        CavernServiceStatus available = serviceStatusFor(
+            service.inspectServices(snapshot, justAfterReady),
+            CavernServiceEntry.CLIMBING_SUPPLY
+        );
+        assertTrue(available.availableToUse());
+    }
+
+    @Test
     void catalogReturnsEmptyForUnknownEntryId() {
         UUID playerId = UUID.randomUUID();
         CavernInteractionService service = newInteractionService();
@@ -187,6 +266,23 @@ class CavernInteractionServiceTest {
 
     private static CavernProgressionSnapshot emptySnapshot(UUID playerId) {
         return new CavernProgressionSnapshot(playerId, 0, 0, CavernProgressionRank.NOVICE, Map.of());
+    }
+
+    private static CavernCatalogEntry catalogEntryFor(java.util.List<CavernCatalogEntry> entries, String entryId) {
+        return entries.stream()
+            .filter(entry -> entry.id().equals(entryId))
+            .findFirst()
+            .orElseThrow();
+    }
+
+    private static CavernServiceStatus serviceStatusFor(
+        java.util.List<CavernServiceStatus> statuses,
+        CavernServiceEntry service
+    ) {
+        return statuses.stream()
+            .filter(status -> status.service() == service)
+            .findFirst()
+            .orElseThrow();
     }
 
     private static CavernInteractionService newInteractionService() {

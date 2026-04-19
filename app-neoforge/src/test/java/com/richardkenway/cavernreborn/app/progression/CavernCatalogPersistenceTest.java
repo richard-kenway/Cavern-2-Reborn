@@ -24,7 +24,7 @@ import net.minecraft.nbt.CompoundTag;
 
 class CavernCatalogPersistenceTest {
     @Test
-    void unifiedCatalogStaysAlignedWithRewardAndServiceStateAfterRestart() {
+    void apprenticeCatalogStateStaysAlignedAfterRestart() {
         UUID playerId = UUID.randomUUID();
         long baseTime = 1_000_000L;
         CavernPersistentStateData persistentState = new CavernPersistentStateData();
@@ -52,11 +52,16 @@ class CavernCatalogPersistenceTest {
         List<CavernServiceStatus> serviceStatuses = restartedInteractionService.inspectServices(restartedSnapshot, baseTime);
 
         assertEquals(
-            "CAVERN catalog for TestPlayer: rank=apprentice, entries=apprentice_supply_cache [reward, claimed: already claimed, grants torch x16, bread x8]; torch_supply [service, on cooldown: ready in 10m 0s, grants torch x16]",
+            "CAVERN catalog for TestPlayer: rank=apprentice, available=0, next=journeyman, tiers="
+                + "apprentice -> apprentice_supply_cache [reward, claimed: already claimed, grants torch x16, bread x8], "
+                + "torch_supply [service, on cooldown: ready in 10m 0s, grants torch x16]; "
+                + "journeyman -> journeyman_supply_cache [reward, locked: requires journeyman, current apprentice, grants torch x24, cooked_beef x8, water_bucket x1], "
+                + "climbing_supply [service, locked: requires journeyman, current apprentice, grants ladder x16, cobblestone x32]",
             CavernPlayerCatalogStatusFormatter.format("TestPlayer", restartedSnapshot, catalogEntries)
         );
         assertEquals(
-            "CAVERN rewards for TestPlayer: apprentice_supply_cache [claimed: grants torch x16, bread x8]",
+            "CAVERN rewards for TestPlayer: apprentice_supply_cache [claimed: grants torch x16, bread x8]; "
+                + "journeyman_supply_cache [locked: requires journeyman, current apprentice, grants torch x24, cooked_beef x8, water_bucket x1]",
             CavernPlayerRewardStatusFormatter.format("TestPlayer", restartedSnapshot, restartedRewardService.inspect(restartedSnapshot))
         );
         assertEquals(
@@ -64,6 +69,63 @@ class CavernCatalogPersistenceTest {
                 TestPlayer | Services
                 Rank: apprentice (25 pts)
                 [COOLDOWN] Torch Supply (10m 0s)
+                [LOCKED] Climbing Supply (unlocks at journeyman)
+                """.trim(),
+            CavernPlayerServiceStatusFormatter.format(
+                "TestPlayer",
+                restartedSnapshot,
+                serviceStatuses,
+                restartedState.loadPlayerServiceState(playerId),
+                baseTime
+            )
+        );
+    }
+
+    @Test
+    void journeymanCatalogEntriesStayConsistentAfterRestart() {
+        UUID playerId = UUID.randomUUID();
+        long baseTime = 2_000_000L;
+        CavernPersistentStateData persistentState = new CavernPersistentStateData();
+        CavernProgressionService progressionService = progressionServiceFor(persistentState);
+        CavernRewardService rewardService = rewardServiceFor(persistentState);
+        CavernInteractionService interactionService = interactionServiceFor(persistentState);
+
+        for (int i = 0; i < 15; i++) {
+            progressionService.recordMiningEvent(playerId, CavernDimensions.CAVERN_DIMENSION_ID, "minecraft:diamond_ore");
+        }
+
+        CavernProgressionSnapshot snapshot = progressionService.inspect(playerId);
+        assertTrue(interactionService.useCatalogEntry(snapshot, "journeyman_supply_cache", baseTime).orElseThrow().granted());
+        assertTrue(interactionService.useCatalogEntry(snapshot, "climbing_supply", baseTime).orElseThrow().granted());
+
+        CavernPersistentStateData restartedState = restart(persistentState);
+        CavernProgressionService restartedProgressionService = progressionServiceFor(restartedState);
+        CavernRewardService restartedRewardService = rewardServiceFor(restartedState);
+        CavernInteractionService restartedInteractionService = interactionServiceFor(restartedState);
+
+        CavernProgressionSnapshot restartedSnapshot = restartedProgressionService.inspect(playerId);
+        List<CavernCatalogEntry> catalogEntries = restartedInteractionService.inspectCatalog(restartedSnapshot, baseTime);
+        List<CavernServiceStatus> serviceStatuses = restartedInteractionService.inspectServices(restartedSnapshot, baseTime);
+
+        assertEquals(
+            "CAVERN catalog for TestPlayer: rank=journeyman, available=2, next=none, tiers="
+                + "apprentice -> apprentice_supply_cache [reward, available: use /cavern use apprentice_supply_cache, grants torch x16, bread x8], "
+                + "torch_supply [service, available: use /cavern use torch_supply, grants torch x16]; "
+                + "journeyman -> journeyman_supply_cache [reward, claimed: already claimed, grants torch x24, cooked_beef x8, water_bucket x1], "
+                + "climbing_supply [service, on cooldown: ready in 20m 0s, grants ladder x16, cobblestone x32]",
+            CavernPlayerCatalogStatusFormatter.format("TestPlayer", restartedSnapshot, catalogEntries)
+        );
+        assertEquals(
+            "CAVERN rewards for TestPlayer: apprentice_supply_cache [available: claim with /cavern claim apprentice_supply_cache, grants torch x16, bread x8]; "
+                + "journeyman_supply_cache [claimed: grants torch x24, cooked_beef x8, water_bucket x1]",
+            CavernPlayerRewardStatusFormatter.format("TestPlayer", restartedSnapshot, restartedRewardService.inspect(restartedSnapshot))
+        );
+        assertEquals(
+            """
+                TestPlayer | Services
+                Rank: journeyman (75 pts)
+                [READY] Torch Supply
+                [COOLDOWN] Climbing Supply (20m 0s)
                 """.trim(),
             CavernPlayerServiceStatusFormatter.format(
                 "TestPlayer",

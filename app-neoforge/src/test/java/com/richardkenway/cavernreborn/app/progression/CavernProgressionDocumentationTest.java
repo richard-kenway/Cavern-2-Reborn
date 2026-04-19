@@ -29,7 +29,10 @@ class CavernProgressionDocumentationTest {
         assertTrue(readme.contains("/cavern use <entry>"));
         assertTrue(readme.contains("Miner's Insight"));
         assertTrue(readme.contains("apprentice_supply_cache"));
+        assertTrue(readme.contains("journeyman_supply_cache"));
         assertTrue(readme.contains("torch_supply"));
+        assertTrue(readme.contains("climbing_supply"));
+        assertTrue(readme.contains("tiered"));
         assertTrue(readme.contains("CavernProgressionReward.java"));
         assertTrue(readme.contains("CavernInteractionService.java"));
         assertTrue(readme.contains("docs/progression-baseline.md"));
@@ -51,8 +54,11 @@ class CavernProgressionDocumentationTest {
         assertTrue(doc.contains("CavernCatalogUseResult.java"));
         assertTrue(doc.contains("Miner's Insight"));
         assertTrue(doc.contains("apprentice_supply_cache"));
+        assertTrue(doc.contains("journeyman_supply_cache"));
         assertTrue(doc.contains("torch_supply"));
+        assertTrue(doc.contains("climbing_supply"));
         assertTrue(doc.contains("torch x16, bread x8"));
+        assertTrue(doc.contains("torch x24, cooked_beef x8, water_bucket x1"));
         assertTrue(doc.contains("apprentice"));
         assertTrue(doc.contains("journeyman"));
         assertTrue(doc.contains("veteran"));
@@ -62,10 +68,15 @@ class CavernProgressionDocumentationTest {
         assertTrue(doc.contains("/cavern rank"));
         assertTrue(doc.contains("/cavern rewards"));
         assertTrue(doc.contains("/cavern claim apprentice_supply_cache"));
+        assertTrue(doc.contains("/cavern claim journeyman_supply_cache"));
         assertTrue(doc.contains("/cavern services"));
         assertTrue(doc.contains("/cavern request torch_supply"));
+        assertTrue(doc.contains("/cavern request climbing_supply"));
         assertTrue(doc.contains("/cavern catalog"));
         assertTrue(doc.contains("/cavern use apprentice_supply_cache"));
+        assertTrue(doc.contains("/cavern use journeyman_supply_cache"));
+        assertTrue(doc.contains("/cavern use climbing_supply"));
+        assertTrue(doc.contains("tiered"));
     }
 
     private static Path resolveProjectFile(String first, String... more) {

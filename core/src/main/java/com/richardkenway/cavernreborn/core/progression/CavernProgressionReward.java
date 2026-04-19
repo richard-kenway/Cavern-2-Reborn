@@ -18,6 +18,17 @@ public enum CavernProgressionReward {
             new CavernRewardGrant("minecraft:torch", 16),
             new CavernRewardGrant("minecraft:bread", 8)
         )
+    ),
+    JOURNEYMAN_SUPPLY_CACHE(
+        "journeyman_supply_cache",
+        "Journeyman Supply Cache",
+        CavernProgressionRank.JOURNEYMAN,
+        true,
+        List.of(
+            new CavernRewardGrant("minecraft:torch", 24),
+            new CavernRewardGrant("minecraft:cooked_beef", 8),
+            new CavernRewardGrant("minecraft:water_bucket", 1)
+        )
     );
 
     private static final Map<String, CavernProgressionReward> REWARDS_BY_ID = createRewardsById();

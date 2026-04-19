@@ -18,7 +18,10 @@ class CavernRewardServiceTest {
         UUID playerId = UUID.randomUUID();
         CavernRewardService rewardService = new CavernRewardService(new TestPlayerClaimedRewardStore());
 
-        CavernRewardStatus status = rewardService.inspect(emptySnapshot(playerId)).getFirst();
+        CavernRewardStatus status = rewardStatusFor(
+            rewardService.inspect(emptySnapshot(playerId)),
+            CavernProgressionReward.APPRENTICE_SUPPLY_CACHE
+        );
 
         assertEquals(CavernProgressionReward.APPRENTICE_SUPPLY_CACHE, status.reward());
         assertTrue(status.locked());
@@ -35,9 +38,32 @@ class CavernRewardServiceTest {
             progressionService.recordMiningEvent(playerId, CavernDimensions.CAVERN_DIMENSION_ID, "minecraft:diamond_ore");
         }
 
-        CavernRewardStatus status = rewardService.inspect(progressionService.inspect(playerId)).getFirst();
+        java.util.List<CavernRewardStatus> statuses = rewardService.inspect(progressionService.inspect(playerId));
+        CavernRewardStatus apprenticeStatus = rewardStatusFor(statuses, CavernProgressionReward.APPRENTICE_SUPPLY_CACHE);
+        CavernRewardStatus journeymanStatus = rewardStatusFor(statuses, CavernProgressionReward.JOURNEYMAN_SUPPLY_CACHE);
 
         assertEquals(CavernProgressionRank.APPRENTICE, progressionService.inspect(playerId).rank());
+        assertTrue(apprenticeStatus.availableToClaim());
+        assertFalse(apprenticeStatus.claimed());
+        assertTrue(journeymanStatus.locked());
+    }
+
+    @Test
+    void journeymanRewardUnlocksOnlyAtJourneymanThreshold() {
+        UUID playerId = UUID.randomUUID();
+        CavernProgressionService progressionService = new CavernProgressionService(new TestPlayerMiningProgressionStore());
+        CavernRewardService rewardService = new CavernRewardService(new TestPlayerClaimedRewardStore());
+
+        for (int i = 0; i < 15; i++) {
+            progressionService.recordMiningEvent(playerId, CavernDimensions.CAVERN_DIMENSION_ID, "minecraft:diamond_ore");
+        }
+
+        CavernRewardStatus status = rewardStatusFor(
+            rewardService.inspect(progressionService.inspect(playerId)),
+            CavernProgressionReward.JOURNEYMAN_SUPPLY_CACHE
+        );
+
+        assertEquals(CavernProgressionRank.JOURNEYMAN, progressionService.inspect(playerId).rank());
         assertTrue(status.availableToClaim());
         assertFalse(status.claimed());
     }
@@ -73,6 +99,31 @@ class CavernRewardServiceTest {
     }
 
     @Test
+    void journeymanRewardCanBeClaimedOnlyOnce() {
+        UUID playerId = UUID.randomUUID();
+        CavernProgressionService progressionService = new CavernProgressionService(new TestPlayerMiningProgressionStore());
+        TestPlayerClaimedRewardStore claimedRewardStore = new TestPlayerClaimedRewardStore();
+        CavernRewardService rewardService = new CavernRewardService(claimedRewardStore);
+
+        for (int i = 0; i < 15; i++) {
+            progressionService.recordMiningEvent(playerId, CavernDimensions.CAVERN_DIMENSION_ID, "minecraft:diamond_ore");
+        }
+
+        CavernProgressionSnapshot snapshot = progressionService.inspect(playerId);
+        CavernRewardClaimResult firstClaim = rewardService.claim(snapshot, CavernProgressionReward.JOURNEYMAN_SUPPLY_CACHE);
+        CavernRewardClaimResult secondClaim = rewardService.claim(snapshot, CavernProgressionReward.JOURNEYMAN_SUPPLY_CACHE);
+
+        assertTrue(firstClaim.claimed());
+        assertTrue(firstClaim.currentStatus().claimed());
+        assertEquals(
+            CavernPlayerRewardState.empty(playerId).withClaimed(CavernProgressionReward.JOURNEYMAN_SUPPLY_CACHE),
+            claimedRewardStore.load(playerId)
+        );
+        assertFalse(secondClaim.claimed());
+        assertTrue(secondClaim.alreadyClaimed());
+    }
+
+    @Test
     void claimedRewardStateStaysIsolatedPerPlayer() {
         UUID playerA = UUID.randomUUID();
         UUID playerB = UUID.randomUUID();
@@ -92,6 +143,16 @@ class CavernRewardServiceTest {
         assertTrue(playerAStatus.claimed());
         assertTrue(playerBStatus.availableToClaim());
         assertFalse(playerBStatus.claimed());
+    }
+
+    private static CavernRewardStatus rewardStatusFor(
+        java.util.List<CavernRewardStatus> statuses,
+        CavernProgressionReward reward
+    ) {
+        return statuses.stream()
+            .filter(status -> status.reward() == reward)
+            .findFirst()
+            .orElseThrow();
     }
 
     private static CavernProgressionSnapshot emptySnapshot(UUID playerId) {

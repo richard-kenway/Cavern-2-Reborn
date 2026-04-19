@@ -1,6 +1,6 @@
 # CAVERN Progression Baseline
 
-This document fixes the current `CAVERN` progression baseline on `main`: the narrow backend shell plus the first player-facing, gameplay-visible, reward-visible and compact catalog-visible layers built on top of it.
+This document fixes the current `CAVERN` progression baseline on `main`: the narrow backend shell plus the first player-facing, gameplay-visible, reward-visible and compact tiered-catalog-visible layers built on top of it.
 
 It is not a claim of full legacy gameplay parity. It documents the bounded progression slice that is currently implemented, persisted and test-covered.
 
@@ -28,19 +28,20 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
 - `/cavern rank` exposes the same persisted state through a compact player-facing summary, while `/cavern progression` remains the verbose developer/debug view.
 - `/cavern rewards` exposes the same persisted state through a compact reward summary, while `/cavern claim <reward>` is the current bounded claim path.
 - `/cavern services` exposes available services with their availability state, while `/cavern request <service>` is the bounded service use path.
-- `/cavern catalog` aggregates the current reward and service surface into one compact shop-like summary, while `/cavern use <entry>` is the unified use path for the same checked-in entries.
-- The first service is `torch_supply`, available at `apprentice`, repeatable with a 10-minute cooldown and granting torch x16.
+- `/cavern catalog` aggregates the current reward and service surface into one compact tiered shop-like summary, while `/cavern use <entry>` is the unified use path for the same checked-in entries.
+- The checked-in service tier baseline is:
+  - `torch_supply`: available at `apprentice`, repeatable, 10-minute cooldown, grants torch x16
+  - `climbing_supply`: available at `journeyman`, repeatable, 20-minute cooldown, grants ladder x16 and cobblestone x32
 - Threshold crossing sends a rank-up overlay for the affected player.
 - The first unlock is `Miner's Insight`.
   - source-of-truth: `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionUnlock.java`
   - unlock threshold: `apprentice`
   - gameplay consequence: counted ore breaks inside `CAVERN` grant `+1` bonus XP once the rank is unlocked
 - The threshold-crossing ore already receives the unlock, because the bonus check runs against the updated persisted snapshot for that same counted mining event.
-- The first reward is `apprentice_supply_cache`.
+- The checked-in reward tier baseline is:
   - source-of-truth: `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionReward.java`
-  - reward threshold: `apprentice`
-  - claim mode: one-time
-  - current grant bundle: `torch x16, bread x8`
+  - `apprentice_supply_cache`: one-time at `apprentice`, grants `torch x16, bread x8`
+  - `journeyman_supply_cache`: one-time at `journeyman`, grants `torch x24, cooked_beef x8, water_bucket x1`
 - Reward eligibility is derived from the same persisted score/rank as `/cavern rank`; the reward layer does not store a second rank or unlock field.
 - Only claimed reward ids are persisted. Eligibility and current status are recomputed from the stored progression score plus the claimed reward set.
 - Only claimed reward ids and per-service last-use timestamps are persisted. Catalog eligibility and current status are recomputed from the stored progression score, claimed reward ids and service timestamps.
@@ -61,16 +62,26 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
 - Reaching `apprentice` makes `apprentice_supply_cache` available without adding a second rank-state.
 - Claiming `apprentice_supply_cache` marks it as claimed exactly once and does not mutate the stored progression score/rank.
 - Repeated claim attempts stay safe and predictable by reporting that the reward is already claimed.
+- A player below `journeyman` still sees `journeyman_supply_cache` as locked even after unlocking the apprentice tier.
+- Reaching `journeyman` makes `journeyman_supply_cache` available without a second progression model.
 - Claimed reward state survives restart and remains consistent with `/cavern rank`, `/cavern progression` and `/cavern rewards`.
 - A new player below `apprentice` sees `torch_supply` as locked.
 - Reaching `apprentice` makes `torch_supply` available for the first use.
 - Using `torch_supply` marks the service as on cooldown for 10 minutes.
 - During cooldown, subsequent requests to `torch_supply` report the cooldown state.
 - After 10 minutes, `torch_supply` becomes available again for another use.
+- A player below `journeyman` sees `climbing_supply` as locked.
+- Reaching `journeyman` makes `climbing_supply` available for the first use.
+- Using `climbing_supply` marks the service as on cooldown for 20 minutes.
+- During cooldown, subsequent requests to `climbing_supply` report the cooldown state.
+- After 20 minutes, `climbing_supply` becomes available again for another use.
 - Service state survives restart and remains consistent with `/cavern rank` and `/cavern services`.
-- `/cavern catalog` shows rewards and services side-by-side without introducing a second rank, reward or service model.
+- `/cavern catalog` shows rewards and services side-by-side, ordered by rank tier, without introducing a second rank, reward or service model.
+- `/cavern catalog` exposes the next locked tier explicitly so the player can see the next progression step without opening a GUI.
 - `/cavern use apprentice_supply_cache` claims the same one-time reward as `/cavern claim apprentice_supply_cache`.
+- `/cavern use journeyman_supply_cache` claims the same one-time reward as `/cavern claim journeyman_supply_cache`.
 - `/cavern use torch_supply` requests the same repeatable service as `/cavern request torch_supply`.
+- `/cavern use climbing_supply` requests the same repeatable service as `/cavern request climbing_supply`.
 - `/cavern rank`, `/cavern rewards`, `/cavern services`, `/cavern catalog`, `/cavern claim`, `/cavern request` and `/cavern use` are player-facing interaction paths built on the same progression snapshot.
 - One-time rewards and repeatable services do not interfere with each other's eligibility logic.
 - Restart-safe persistence and continued progression after restart.
@@ -127,15 +138,15 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
 - The baseline counts qualifying block breaks, not item drops, smelting output, trading, pickups or broader activity telemetry.
 - Rank is computed from score at read time and is not stored as a separate mutable field.
 - The first gameplay consequence is intentionally small: one unlock and one bounded XP bonus instead of a larger perks tree or reward graph.
-- The first reward surface is intentionally small: one one-time bundle and one claim path instead of a wider reward tree, currency or shop stack.
-- The first service surface is intentionally small: one repeatable service with a simple cooldown instead of a wider service catalog or currency-based shop.
-- The first catalog surface is intentionally small: it aggregates existing rewards and services, but it still is not a currency shop, GUI menu or broader transaction system.
+- The reward surface is intentionally small: two one-time bundles across two tiers instead of a wider reward tree, currency or shop stack.
+- The service surface is intentionally small: two repeatable services with simple cooldowns instead of a wider service catalog or currency-based shop.
+- The first tiered catalog surface is intentionally small: it aggregates existing rewards and services, but it still is not a currency shop, GUI menu or broader transaction system.
 - Progression still does not gate portal use, worldgen, loot or broader economy/menu systems.
 
 ## Out Of Scope
 
 - New dimensions, new content, progression UI, portal shop/menu and regeneration UI.
-- Economy, broader rewards trees, service catalogs, unlock trees, mining leaderboards or persistence migrations for future score-table changes.
+- Economy, broader rewards trees, larger service catalogs, unlock trees, mining leaderboards or persistence migrations for future score-table changes.
 - Broader non-ore activity tracking such as mob kills, exploration, crafting or item collection.
 - Full legacy parity for miner rank perks, the older menu-driven rank flow or a larger unlock/perks stack.
 
@@ -150,13 +161,16 @@ Run this before any larger progression or gameplay-shell change:
 5. Run `/cavern rank` and confirm the player-facing summary shows the current rank, score and next threshold.
 6. Continue mining until `apprentice` and confirm the rank-up overlay appears and the unlock message mentions `Miner's Insight`.
 7. Mine another counted ore in `CAVERN` and confirm the XP bar receives the extra `+1` bonus XP from `Miner's Insight`.
-8. Run `/cavern rewards` and confirm `apprentice_supply_cache` is available.
-9. Run `/cavern catalog` and confirm `apprentice_supply_cache` and `torch_supply` are both listed as available.
+8. Run `/cavern rewards` and confirm `apprentice_supply_cache` is available while `journeyman_supply_cache` is still locked.
+9. Run `/cavern catalog` and confirm the apprentice tier is available, the journeyman tier is still locked and the next tier hint points at `journeyman`.
 10. Run `/cavern use apprentice_supply_cache` and confirm the reward is granted once.
 11. Repeat `/cavern use apprentice_supply_cache` and confirm the command reports an already-claimed state instead of duplicating the reward.
 12. Run `/cavern use torch_supply` and confirm the service grant works and the catalog/service views move to cooldown.
-13. Run `/cavern progression` and confirm the debug summary still matches the same persisted score/rank.
-14. Mine the same ore outside `CAVERN` and confirm neither the bonus XP nor the cavern-specific progression state changes.
-15. Restart the server.
-16. Run `/cavern rank`, `/cavern progression`, `/cavern rewards`, `/cavern services` or `/cavern catalog` again and confirm the stored progression, claimed reward state and service cooldown state survived restart.
-17. Mine another counted ore in `CAVERN` and confirm progression and `Miner's Insight` continue from the stored value instead of resetting.
+13. Continue mining until `journeyman`, then run `/cavern catalog` and confirm `journeyman_supply_cache` and `climbing_supply` become available.
+14. Run `/cavern use journeyman_supply_cache` once and confirm the reward is granted exactly once.
+15. Run `/cavern use climbing_supply` and confirm the service grant works and the catalog/service views move to a 20-minute cooldown.
+16. Run `/cavern progression` and confirm the debug summary still matches the same persisted score/rank.
+17. Mine the same ore outside `CAVERN` and confirm neither the bonus XP nor the cavern-specific progression state changes.
+18. Restart the server.
+19. Run `/cavern rank`, `/cavern progression`, `/cavern rewards`, `/cavern services` or `/cavern catalog` again and confirm the stored progression, claimed reward state and service cooldown state survived restart.
+20. Mine another counted ore in `CAVERN` and confirm progression and `Miner's Insight` continue from the stored value instead of resetting.

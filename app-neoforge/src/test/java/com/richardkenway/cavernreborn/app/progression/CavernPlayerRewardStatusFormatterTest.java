@@ -26,11 +26,15 @@ class CavernPlayerRewardStatusFormatterTest {
         );
 
         assertEquals(
-            "CAVERN rewards for TestPlayer: apprentice_supply_cache [locked: requires apprentice, current novice, grants torch x16, bread x8]",
+            "CAVERN rewards for TestPlayer: apprentice_supply_cache [locked: requires apprentice, current novice, grants torch x16, bread x8]; "
+                + "journeyman_supply_cache [locked: requires journeyman, current novice, grants torch x24, cooked_beef x8, water_bucket x1]",
             CavernPlayerRewardStatusFormatter.format(
                 "TestPlayer",
                 snapshot,
-                List.of(new CavernRewardStatus(CavernProgressionReward.APPRENTICE_SUPPLY_CACHE, CavernRewardAvailability.LOCKED))
+                List.of(
+                    new CavernRewardStatus(CavernProgressionReward.APPRENTICE_SUPPLY_CACHE, CavernRewardAvailability.LOCKED),
+                    new CavernRewardStatus(CavernProgressionReward.JOURNEYMAN_SUPPLY_CACHE, CavernRewardAvailability.LOCKED)
+                )
             )
         );
     }
@@ -46,19 +50,36 @@ class CavernPlayerRewardStatusFormatterTest {
         );
 
         assertEquals(
-            "CAVERN rewards for TestPlayer: apprentice_supply_cache [available: claim with /cavern claim apprentice_supply_cache, grants torch x16, bread x8]",
+            "CAVERN rewards for TestPlayer: apprentice_supply_cache [available: claim with /cavern claim apprentice_supply_cache, grants torch x16, bread x8]; "
+                + "journeyman_supply_cache [locked: requires journeyman, current apprentice, grants torch x24, cooked_beef x8, water_bucket x1]",
             CavernPlayerRewardStatusFormatter.format(
                 "TestPlayer",
                 apprenticeSnapshot,
-                List.of(new CavernRewardStatus(CavernProgressionReward.APPRENTICE_SUPPLY_CACHE, CavernRewardAvailability.AVAILABLE))
+                List.of(
+                    new CavernRewardStatus(CavernProgressionReward.APPRENTICE_SUPPLY_CACHE, CavernRewardAvailability.AVAILABLE),
+                    new CavernRewardStatus(CavernProgressionReward.JOURNEYMAN_SUPPLY_CACHE, CavernRewardAvailability.LOCKED)
+                )
             )
         );
+
+        CavernProgressionSnapshot journeymanSnapshot = new CavernProgressionSnapshot(
+            UUID.randomUUID(),
+            15,
+            75,
+            CavernProgressionRank.JOURNEYMAN,
+            Map.of("minecraft:diamond_ore", 15)
+        );
+
         assertEquals(
-            "CAVERN rewards for TestPlayer: apprentice_supply_cache [claimed: grants torch x16, bread x8]",
+            "CAVERN rewards for TestPlayer: apprentice_supply_cache [claimed: grants torch x16, bread x8]; "
+                + "journeyman_supply_cache [available: claim with /cavern claim journeyman_supply_cache, grants torch x24, cooked_beef x8, water_bucket x1]",
             CavernPlayerRewardStatusFormatter.format(
                 "TestPlayer",
-                apprenticeSnapshot,
-                List.of(new CavernRewardStatus(CavernProgressionReward.APPRENTICE_SUPPLY_CACHE, CavernRewardAvailability.CLAIMED))
+                journeymanSnapshot,
+                List.of(
+                    new CavernRewardStatus(CavernProgressionReward.APPRENTICE_SUPPLY_CACHE, CavernRewardAvailability.CLAIMED),
+                    new CavernRewardStatus(CavernProgressionReward.JOURNEYMAN_SUPPLY_CACHE, CavernRewardAvailability.AVAILABLE)
+                )
             )
         );
     }

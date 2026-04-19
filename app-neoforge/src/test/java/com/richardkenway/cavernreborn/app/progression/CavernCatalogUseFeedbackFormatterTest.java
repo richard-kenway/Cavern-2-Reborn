@@ -96,6 +96,32 @@ class CavernCatalogUseFeedbackFormatterTest {
                 )
             ))
         );
+        assertEquals(
+            "Catalog entry used: journeyman_supply_cache (torch x24, cooked_beef x8, water_bucket x1)",
+            CavernCatalogUseFeedbackFormatter.format(new CavernCatalogUseResult(
+                new CavernCatalogEntry(
+                    CavernCatalogEntryType.REWARD,
+                    "journeyman_supply_cache",
+                    "Journeyman Supply Cache",
+                    CavernProgressionRank.JOURNEYMAN,
+                    CavernCatalogAvailability.CLAIMED,
+                    false,
+                    List.of(
+                        new CavernRewardGrant("minecraft:torch", 24),
+                        new CavernRewardGrant("minecraft:cooked_beef", 8),
+                        new CavernRewardGrant("minecraft:water_bucket", 1)
+                    ),
+                    0L
+                ),
+                new CavernRewardClaimResult(
+                    snapshot(playerId, CavernProgressionRank.JOURNEYMAN, 75, 15),
+                    new CavernRewardStatus(CavernProgressionReward.JOURNEYMAN_SUPPLY_CACHE, CavernRewardAvailability.AVAILABLE),
+                    new CavernRewardStatus(CavernProgressionReward.JOURNEYMAN_SUPPLY_CACHE, CavernRewardAvailability.CLAIMED),
+                    true
+                ),
+                null
+            ))
+        );
     }
 
     private static CavernProgressionSnapshot snapshot(UUID playerId, CavernProgressionRank rank, int score, int countedBlocks) {

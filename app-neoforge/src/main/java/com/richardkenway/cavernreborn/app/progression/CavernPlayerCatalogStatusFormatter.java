@@ -1,14 +1,21 @@
 package com.richardkenway.cavernreborn.app.progression;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.richardkenway.cavernreborn.core.progression.CavernCatalogEntry;
 import com.richardkenway.cavernreborn.core.progression.CavernCatalogEntryType;
+import com.richardkenway.cavernreborn.core.progression.CavernProgressionRank;
 import com.richardkenway.cavernreborn.core.progression.CavernProgressionSnapshot;
 
 public final class CavernPlayerCatalogStatusFormatter {
+    private static final Comparator<CavernCatalogEntry> CATALOG_ENTRY_ORDER = Comparator
+        .comparingInt((CavernCatalogEntry entry) -> entry.requiredRank().threshold())
+        .thenComparingInt(entry -> entry.type().ordinal())
+        .thenComparing(CavernCatalogEntry::id);
+
     private CavernPlayerCatalogStatusFormatter() {
     }
 
@@ -19,16 +26,41 @@ public final class CavernPlayerCatalogStatusFormatter {
     ) {
         String normalizedPlayerName = requireText(playerName, "playerName");
         CavernProgressionSnapshot normalizedSnapshot = Objects.requireNonNull(snapshot, "snapshot");
-        List<CavernCatalogEntry> normalizedEntries = List.copyOf(Objects.requireNonNull(catalogEntries, "catalogEntries"));
+        List<CavernCatalogEntry> normalizedEntries = Objects.requireNonNull(catalogEntries, "catalogEntries").stream()
+            .sorted(CATALOG_ENTRY_ORDER)
+            .toList();
+        long availableCount = normalizedEntries.stream().filter(CavernCatalogEntry::availableToUse).count();
+        String nextTier = nextTier(normalizedSnapshot, normalizedEntries);
         String entrySummary = normalizedEntries.isEmpty()
             ? "none"
             : normalizedEntries.stream()
-                .map(entry -> formatEntry(normalizedSnapshot, entry))
+                .collect(Collectors.groupingBy(
+                    CavernCatalogEntry::requiredRank,
+                    java.util.LinkedHashMap::new,
+                    Collectors.toList()
+                ))
+                .entrySet()
+                .stream()
+                .map(entry -> entry.getKey().id() + " -> " + entry.getValue().stream()
+                    .map(value -> formatEntry(normalizedSnapshot, value))
+                    .collect(Collectors.joining(", ")))
                 .collect(Collectors.joining("; "));
 
         return "CAVERN catalog for " + normalizedPlayerName
             + ": rank=" + normalizedSnapshot.rank().id()
-            + ", entries=" + entrySummary;
+            + ", available=" + availableCount
+            + ", next=" + nextTier
+            + ", tiers=" + entrySummary;
+    }
+
+    private static String nextTier(CavernProgressionSnapshot snapshot, List<CavernCatalogEntry> entries) {
+        return entries.stream()
+            .map(CavernCatalogEntry::requiredRank)
+            .filter(rank -> rank.ordinal() > snapshot.rank().ordinal())
+            .distinct()
+            .min(Comparator.comparingInt(CavernProgressionRank::threshold))
+            .map(CavernProgressionRank::id)
+            .orElse("none");
     }
 
     private static String formatEntry(CavernProgressionSnapshot snapshot, CavernCatalogEntry entry) {

@@ -57,8 +57,9 @@ class CavernRewardPersistenceTest {
             CavernProgressionDebugSummaryFormatter.format("TestPlayer", restartedSnapshot)
         );
         assertEquals(
-            "CAVERN rewards for TestPlayer: apprentice_supply_cache [claimed: grants torch x16, bread x8]",
-            CavernPlayerRewardStatusFormatter.format("TestPlayer", restartedSnapshot, java.util.List.of(restartedStatus))
+            "CAVERN rewards for TestPlayer: apprentice_supply_cache [claimed: grants torch x16, bread x8]; "
+                + "journeyman_supply_cache [locked: requires journeyman, current apprentice, grants torch x24, cooked_beef x8, water_bucket x1]",
+            CavernPlayerRewardStatusFormatter.format("TestPlayer", restartedSnapshot, restartedRewardService.inspect(restartedSnapshot))
         );
     }
 
