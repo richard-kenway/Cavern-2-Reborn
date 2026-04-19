@@ -3,6 +3,7 @@ package com.richardkenway.cavernreborn.app.dimension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -68,6 +69,8 @@ class CavernWorldgenSmokeTest {
         assertEquals("minecraft:magma_block", hotFloor);
         assertEquals("minecraft:basalt", transitionFloor);
         assertEquals("minecraft:basalt", hotCeiling);
+        assertNotNull(safeFloor, () -> "safeFloor did not resolve at y=" + arrivalSearchFloor);
+        assertNotNull(safeCeiling, () -> "safeCeiling did not resolve at y=" + arrivalSearchFloor);
         assertFalse(isHotBandBlock(safeFloor), () -> "safeFloor=" + safeFloor);
         assertFalse(isHotBandBlock(safeCeiling), () -> "safeCeiling=" + safeCeiling);
         assertEquals("minecraft:calcite", upperHighlandFloor);
