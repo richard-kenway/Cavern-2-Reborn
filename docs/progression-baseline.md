@@ -27,6 +27,8 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
   - `master`: `325`
 - `/cavern rank` exposes the same persisted state through a compact player-facing summary, while `/cavern progression` remains the verbose developer/debug view.
 - `/cavern rewards` exposes the same persisted state through a compact reward summary, while `/cavern claim <reward>` is the current bounded claim path.
+- `/cavern services` exposes available services with their availability state, while `/cavern request <service>` is the bounded service use path.
+- The first service is `torch_supply`, available at `apprentice`, repeatable with a 10-minute cooldown and granting torch x16.
 - Threshold crossing sends a rank-up overlay for the affected player.
 - The first unlock is `Miner's Insight`.
   - source-of-truth: `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionUnlock.java`
@@ -58,6 +60,14 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
 - Claiming `apprentice_supply_cache` marks it as claimed exactly once and does not mutate the stored progression score/rank.
 - Repeated claim attempts stay safe and predictable by reporting that the reward is already claimed.
 - Claimed reward state survives restart and remains consistent with `/cavern rank`, `/cavern progression` and `/cavern rewards`.
+- A new player below `apprentice` sees `torch_supply` as locked.
+- Reaching `apprentice` makes `torch_supply` available for the first use.
+- Using `torch_supply` marks the service as on cooldown for 10 minutes.
+- During cooldown, subsequent requests to `torch_supply` report the cooldown state.
+- After 10 minutes, `torch_supply` becomes available again for another use.
+- Service state survives restart and remains consistent with `/cavern rank` and `/cavern services`.
+- `/cavern rank`, `/cavern rewards`, `/cavern services` and `/cavern request` are player-facing interaction paths built on the same progression snapshot.
+- One-time rewards and repeatable services do not interfere with each other's eligibility logic.
 - Restart-safe persistence and continued progression after restart.
 - Minimal server-side inspection through `/cavern progression` / `/cavern progression <player>` and player-facing status through `/cavern rank`, `/cavern rewards` and `/cavern claim <reward>`.
 
@@ -87,6 +97,18 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
 - Reward policy and claim semantics:
   - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernRewardService.java`
   - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/progression/CavernRewardGranter.java`
+- Service and interaction surface:
+  - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernServiceEntry.java`
+  - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernInteractionService.java`
+  - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernPlayerServiceState.java`
+  - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernServiceStatus.java`
+  - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernServiceRequestResult.java`
+  - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/progression/CavernPlayerServiceStatusFormatter.java`
+  - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/progression/CavernServiceRequestFeedbackFormatter.java`
+  - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/progression/SavedDataBackedPlayerServiceStateRepository.java`
+  - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/progression/InMemoryPlayerServiceStateRepository.java`
+- Service state persistence:
+  - `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/state/CavernPersistentStateData.java`
 
 ## Intentional Compromises
 
@@ -97,12 +119,13 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
 - Rank is computed from score at read time and is not stored as a separate mutable field.
 - The first gameplay consequence is intentionally small: one unlock and one bounded XP bonus instead of a larger perks tree or reward graph.
 - The first reward surface is intentionally small: one one-time bundle and one claim path instead of a wider reward tree, currency or shop stack.
+- The first service surface is intentionally small: one repeatable service with a simple cooldown instead of a wider service catalog or currency-based shop.
 - Progression still does not gate portal use, worldgen, loot or broader economy/menu systems.
 
 ## Out Of Scope
 
 - New dimensions, new content, progression UI, portal shop/menu and regeneration UI.
-- Economy, broader rewards trees, unlock trees, mining leaderboards or persistence migrations for future score-table changes.
+- Economy, broader rewards trees, service catalogs, unlock trees, mining leaderboards or persistence migrations for future score-table changes.
 - Broader non-ore activity tracking such as mob kills, exploration, crafting or item collection.
 - Full legacy parity for miner rank perks, the older menu-driven rank flow or a larger unlock/perks stack.
 

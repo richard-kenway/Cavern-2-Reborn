@@ -6,12 +6,18 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.richardkenway.cavernreborn.core.progression.CavernInteractionService;
 import com.richardkenway.cavernreborn.core.progression.CavernProgressionReward;
 import com.richardkenway.cavernreborn.core.progression.CavernProgressionService;
 import com.richardkenway.cavernreborn.core.progression.CavernProgressionSnapshot;
 import com.richardkenway.cavernreborn.core.progression.CavernRewardClaimResult;
 import com.richardkenway.cavernreborn.core.progression.CavernRewardService;
 import com.richardkenway.cavernreborn.core.progression.CavernRewardStatus;
+import com.richardkenway.cavernreborn.core.progression.CavernServiceAvailability;
+import com.richardkenway.cavernreborn.core.progression.CavernServiceEntry;
+import com.richardkenway.cavernreborn.core.progression.CavernServiceRequestResult;
+import com.richardkenway.cavernreborn.core.progression.CavernServiceStatus;
+import com.richardkenway.cavernreborn.core.progression.PlayerServiceStateStore;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -29,23 +35,32 @@ public final class CavernProgressionCommands {
     private static final DynamicCommandExceptionType UNKNOWN_REWARD = new DynamicCommandExceptionType(
         rewardId -> Component.literal("Unknown CAVERN reward: " + rewardId)
     );
+    private static final DynamicCommandExceptionType UNKNOWN_SERVICE = new DynamicCommandExceptionType(
+        serviceId -> Component.literal("Unknown CAVERN service: " + serviceId)
+    );
 
     private final CavernProgressionService progressionService;
     private final CavernRewardService rewardService;
     private final CavernRewardGranter rewardGranter;
+    private final CavernInteractionService interactionService;
+    private final PlayerServiceStateStore serviceStateStore;
 
     public CavernProgressionCommands(CavernProgressionService progressionService, CavernRewardService rewardService) {
-        this(progressionService, rewardService, new CavernRewardGranter());
+        this(progressionService, rewardService, new CavernRewardGranter(), null, null);
     }
 
-    CavernProgressionCommands(
+    public CavernProgressionCommands(
         CavernProgressionService progressionService,
         CavernRewardService rewardService,
-        CavernRewardGranter rewardGranter
+        CavernRewardGranter rewardGranter,
+        CavernInteractionService interactionService,
+        PlayerServiceStateStore serviceStateStore
     ) {
         this.progressionService = Objects.requireNonNull(progressionService, "progressionService");
         this.rewardService = Objects.requireNonNull(rewardService, "rewardService");
         this.rewardGranter = Objects.requireNonNull(rewardGranter, "rewardGranter");
+        this.interactionService = Objects.requireNonNull(interactionService, "interactionService");
+        this.serviceStateStore = Objects.requireNonNull(serviceStateStore, "serviceStateStore");
     }
 
     @SubscribeEvent
@@ -85,6 +100,32 @@ public final class CavernProgressionCommands {
                                 .executes(context -> showRewards(
                                     context.getSource(),
                                     EntityArgument.getPlayer(context, "player")
+                                ))
+                        )
+                )
+                .then(
+                    Commands.literal("services")
+                        .executes(context -> showOwnServices(context.getSource()))
+                        .then(
+                            Commands.argument("player", EntityArgument.player())
+                                .requires(source -> source.hasPermission(2))
+                                .executes(context -> showServices(
+                                    context.getSource(),
+                                    EntityArgument.getPlayer(context, "player")
+                                ))
+                        )
+                )
+                .then(
+                    Commands.literal("request")
+                        .then(
+                            Commands.argument("service", StringArgumentType.word())
+                                .suggests((context, builder) -> SharedSuggestionProvider.suggest(
+                                    java.util.Arrays.stream(CavernServiceEntry.values()).map(CavernServiceEntry::id),
+                                    builder
+                                ))
+                                .executes(context -> requestOwnService(
+                                    context.getSource(),
+                                    StringArgumentType.getString(context, "service")
                                 ))
                         )
                 )
@@ -161,6 +202,47 @@ public final class CavernProgressionCommands {
             false
         );
         return rewardStatuses.stream().mapToInt(status -> status.availableToClaim() ? 1 : 0).sum();
+    }
+
+    private int showOwnServices(CommandSourceStack source) throws CommandSyntaxException {
+        if (!(source.getEntity() instanceof ServerPlayer player)) {
+            throw PLAYER_TARGET_REQUIRED.create();
+        }
+        return showServices(source, player);
+    }
+
+    private int showServices(CommandSourceStack source, ServerPlayer player) {
+        long currentTimeMillis = player.getServer().getTickCount() * 50L;
+        CavernProgressionSnapshot snapshot = progressionService.inspect(player.getUUID());
+        java.util.List<CavernServiceStatus> serviceStatuses = interactionService.inspectServices(snapshot, currentTimeMillis);
+        com.richardkenway.cavernreborn.core.progression.CavernPlayerServiceState serviceState = serviceStateStore.load(player.getUUID());
+        source.sendSuccess(
+            () -> Component.literal(CavernPlayerServiceStatusFormatter.format(
+                player.getGameProfile().getName(), snapshot, serviceStatuses, serviceState, currentTimeMillis
+            )),
+            false
+        );
+        return serviceStatuses.stream().mapToInt(s -> s.availableToUse() ? 1 : 0).sum();
+    }
+
+    private int requestOwnService(CommandSourceStack source, String serviceId) throws CommandSyntaxException {
+        if (!(source.getEntity() instanceof ServerPlayer player)) {
+            throw PLAYER_TARGET_REQUIRED.create();
+        }
+        CavernServiceEntry service = CavernServiceEntry.findById(serviceId);
+        if (service == null) {
+            throw UNKNOWN_SERVICE.create(serviceId);
+        }
+        long currentTimeMillis = player.getServer().getTickCount() * 50L;
+        CavernProgressionSnapshot snapshot = progressionService.inspect(player.getUUID());
+        CavernServiceRequestResult result = interactionService.requestService(snapshot, service, currentTimeMillis);
+        if (result.granted()) {
+            rewardGranter.grantService(player, service);
+            source.sendSuccess(() -> Component.literal(CavernServiceRequestFeedbackFormatter.format(result)), false);
+            return 1;
+        }
+        source.sendFailure(Component.literal(CavernServiceRequestFeedbackFormatter.format(result)));
+        return 0;
     }
 
     private int showProgression(CommandSourceStack source, ServerPlayer player) {

@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
 
 import com.richardkenway.cavernreborn.app.progression.CavernMiningProgressionEvents;
+import com.richardkenway.cavernreborn.app.progression.CavernRewardGranter;
 import com.richardkenway.cavernreborn.app.progression.CavernProgressionCommands;
 import com.richardkenway.cavernreborn.app.registry.ModRegistries;
 import com.richardkenway.cavernreborn.app.state.CavernStateBootstrap;
@@ -31,7 +32,10 @@ public final class CavernReborn {
         NeoForge.EVENT_BUS.register(
             new CavernProgressionCommands(
                 cavernStateBootstrap.cavernProgressionService(),
-                cavernStateBootstrap.cavernRewardService()
+                cavernStateBootstrap.cavernRewardService(),
+                new CavernRewardGranter(),
+                cavernStateBootstrap.cavernInteractionService(),
+                cavernStateBootstrap.playerServiceStateStore()
             )
         );
         LOGGER.info("Bootstrapped {} with {}", CavernProject.PROJECT_NAME, cavernStateBootstrap().describe());
