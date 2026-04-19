@@ -33,6 +33,7 @@ This repository currently contains the project skeleton and a minimal content re
 - a first bounded reward and eligibility layer: `/cavern rewards` shows the current reward surface, `/cavern claim <reward>` claims eligible one-time rewards, and the checked-in baseline now includes `apprentice_supply_cache` at `apprentice` plus `journeyman_supply_cache` at `journeyman`
 - a first bounded interaction and service layer: `/cavern services` shows available services, `/cavern request <service>` uses an eligible service, and the checked-in baseline now includes `torch_supply` at `apprentice` plus `climbing_supply` at `journeyman`
 - a first tiered catalog/shop-like surface: `/cavern catalog` aggregates rank-gated rewards and services into one compact player-facing view, while `/cavern use <entry>` provides a unified interaction path without adding GUI or currency
+- a first bounded in-game menu-like presentation layer: `/cavern menu` opens a clickable chat menu over the same tiered catalog, and `/cavern menu use <entry>` routes into the same backend interaction semantics without adding a second shop model
 - a bounded nearby portal relink step: travel now searches for an existing destination portal near the target and relinks stale index entries before creating a new frame
 - a bounded destination portal regeneration step: when an indexed destination portal is gone and nearby relink fails, travel now tries to rebuild a replacement portal near the stale anchor before falling back to generic create
 - `PortalWorldIndex` now promotes the most recently reused, relinked or recreated placement to the front, so portal churn prefers fresh anchors over older stale records
@@ -81,6 +82,7 @@ No full legacy-parity `CAVERN` gameplay stack is implemented yet.
 - Portal denial feedback currently uses short overlay messages only; there is no broader notification policy yet.
 - Cooldown, feedback suppression and portal search windows are now configurable through `config/cavernreborn-portal.properties`, but still need manual playtesting for final tuning.
 - Legacy player-facing branches such as `portalMenu`, shop flow, economy, rewards trees and broader rank gating are intentionally not part of the current MVP slice.
+- The current `/cavern menu` layer is a clickable chat presentation over the catalog baseline, not a real container GUI, currency shop or broader menu framework.
 
 ## Structure
 
@@ -134,9 +136,10 @@ No full legacy-parity `CAVERN` gameplay stack is implemented yet.
 - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionReward.java` is the checked-in reward catalog surface for the next gameplay layers; the current baseline is tiered: `apprentice_supply_cache` at `apprentice` and `journeyman_supply_cache` at `journeyman`.
 - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernServiceEntry.java` is the checked-in repeatable service catalog surface; the current baseline is `torch_supply` at `apprentice` and `climbing_supply` at `journeyman`.
 - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernInteractionService.java` now also projects the first compact tiered catalog surface used by `/cavern catalog` and `/cavern use <entry>`.
+- `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/progression/CavernPlayerMenuFormatter.java` is the first bounded in-game presentation layer for that catalog; it drives `/cavern menu` and the clickable `/cavern menu use <entry>` path without adding new business rules.
 - Reward eligibility is derived from the same persisted progression score/rank; only claimed reward ids are stored persistently.
 - Service cooldown state is derived from the same persisted progression and per-player service timestamps; only last-use timestamps are stored persistently.
-- Use `/cavern rank` for the player-facing rank summary, `/cavern progression` for the dev/debug summary, `/cavern rewards` and `/cavern claim <reward>` for the reward path, `/cavern services` and `/cavern request <service>` for the service path, and `/cavern catalog` plus `/cavern use <entry>` for the first compact tiered aggregation layer. The catalog now groups apprentice and journeyman entries, shows the next unlock tier and still reads the same persisted progression baseline as the low-level commands.
+- Use `/cavern rank` for the player-facing rank summary, `/cavern progression` for the dev/debug summary, `/cavern rewards` and `/cavern claim <reward>` for the reward path, `/cavern services` and `/cavern request <service>` for the service path, `/cavern catalog` plus `/cavern use <entry>` for the compact tiered aggregation layer, and `/cavern menu` plus `/cavern menu use <entry>` for the first bounded in-game menu-like presentation over that same backend state. The catalog/menu layers group apprentice and journeyman entries, show the next unlock tier and still read the same persisted progression baseline as the low-level commands.
 - The regression-protected progression baseline, intentional compromises and local verification checklist are documented in `docs/progression-baseline.md`.
 
 ## Docker Build

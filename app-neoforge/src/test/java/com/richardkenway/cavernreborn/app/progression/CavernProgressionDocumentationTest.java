@@ -27,12 +27,16 @@ class CavernProgressionDocumentationTest {
         assertTrue(readme.contains("/cavern request <service>"));
         assertTrue(readme.contains("/cavern catalog"));
         assertTrue(readme.contains("/cavern use <entry>"));
+        assertTrue(readme.contains("/cavern menu"));
+        assertTrue(readme.contains("/cavern menu use <entry>"));
         assertTrue(readme.contains("Miner's Insight"));
         assertTrue(readme.contains("apprentice_supply_cache"));
         assertTrue(readme.contains("journeyman_supply_cache"));
         assertTrue(readme.contains("torch_supply"));
         assertTrue(readme.contains("climbing_supply"));
         assertTrue(readme.contains("tiered"));
+        assertTrue(readme.contains("clickable chat menu"));
+        assertTrue(readme.contains("CavernPlayerMenuFormatter.java"));
         assertTrue(readme.contains("CavernProgressionReward.java"));
         assertTrue(readme.contains("CavernInteractionService.java"));
         assertTrue(readme.contains("docs/progression-baseline.md"));
@@ -76,6 +80,12 @@ class CavernProgressionDocumentationTest {
         assertTrue(doc.contains("/cavern use apprentice_supply_cache"));
         assertTrue(doc.contains("/cavern use journeyman_supply_cache"));
         assertTrue(doc.contains("/cavern use climbing_supply"));
+        assertTrue(doc.contains("/cavern menu"));
+        assertTrue(doc.contains("/cavern menu use apprentice_supply_cache"));
+        assertTrue(doc.contains("/cavern menu use journeyman_supply_cache"));
+        assertTrue(doc.contains("/cavern menu use climbing_supply"));
+        assertTrue(doc.contains("clickable `CLAIM` / `USE` actions"));
+        assertTrue(doc.contains("CavernPlayerMenuFormatter.java"));
         assertTrue(doc.contains("tiered"));
     }
 

@@ -116,6 +116,27 @@ public final class CavernProgressionCommands {
                         )
                 )
                 .then(
+                    Commands.literal("menu")
+                        .executes(context -> showOwnMenu(context.getSource()))
+                        .then(
+                            Commands.literal("use")
+                                .then(
+                                    Commands.argument("entry", StringArgumentType.word())
+                                        .suggests((context, builder) -> SharedSuggestionProvider.suggest(
+                                            java.util.stream.Stream.concat(
+                                                java.util.Arrays.stream(CavernProgressionReward.values()).map(CavernProgressionReward::id),
+                                                java.util.Arrays.stream(CavernServiceEntry.values()).map(CavernServiceEntry::id)
+                                            ),
+                                            builder
+                                        ))
+                                        .executes(context -> useOwnMenuEntry(
+                                            context.getSource(),
+                                            StringArgumentType.getString(context, "entry")
+                                        ))
+                                )
+                        )
+                )
+                .then(
                     Commands.literal("catalog")
                         .executes(context -> showOwnCatalog(context.getSource()))
                         .then(
@@ -203,6 +224,13 @@ public final class CavernProgressionCommands {
         return showCatalog(source, player);
     }
 
+    private int showOwnMenu(CommandSourceStack source) throws CommandSyntaxException {
+        if (!(source.getEntity() instanceof ServerPlayer player)) {
+            throw PLAYER_TARGET_REQUIRED.create();
+        }
+        return showMenu(source, player);
+    }
+
     private int claimOwnReward(CommandSourceStack source, String rewardId) throws CommandSyntaxException {
         if (!(source.getEntity() instanceof ServerPlayer player)) {
             throw PLAYER_TARGET_REQUIRED.create();
@@ -248,6 +276,18 @@ public final class CavernProgressionCommands {
             () -> Component.literal(CavernPlayerCatalogStatusFormatter.format(player.getGameProfile().getName(), snapshot, catalogEntries)),
             false
         );
+        return (int) catalogEntries.stream().filter(CavernCatalogEntry::availableToUse).count();
+    }
+
+    private int showMenu(CommandSourceStack source, ServerPlayer player) {
+        long currentTimeMillis = System.currentTimeMillis();
+        CavernProgressionSnapshot snapshot = progressionService.inspect(player.getUUID());
+        java.util.List<CavernCatalogEntry> catalogEntries = interactionService.inspectCatalog(snapshot, currentTimeMillis);
+        java.util.List<Component> lines = CavernPlayerMenuFormatter.format(player.getGameProfile().getName(), snapshot, catalogEntries);
+        for (Component line : lines) {
+            Component immutableLine = line.copy();
+            source.sendSuccess(() -> immutableLine, false);
+        }
         return (int) catalogEntries.stream().filter(CavernCatalogEntry::availableToUse).count();
     }
 
@@ -313,6 +353,10 @@ public final class CavernProgressionCommands {
 
         source.sendFailure(Component.literal(CavernCatalogUseFeedbackFormatter.format(result)));
         return 0;
+    }
+
+    private int useOwnMenuEntry(CommandSourceStack source, String entryId) throws CommandSyntaxException {
+        return useOwnCatalogEntry(source, entryId);
     }
 
     private int showProgression(CommandSourceStack source, ServerPlayer player) {
