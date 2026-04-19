@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.LongSupplier;
+import java.util.function.Supplier;
 
 import com.richardkenway.cavernreborn.core.progression.CavernCatalogUseResult;
 
@@ -72,26 +73,19 @@ public final class CavernCatalogGuiMenu extends ChestMenu {
     @Override
     public void clicked(int slotId, int button, ClickType clickType, Player player) {
         if (slotId >= 0 && slotId < CavernCatalogGuiLayout.SLOT_COUNT) {
-            if (!player.getUUID().equals(ownerId) || clickType != ClickType.PICKUP) {
+            if (!(player instanceof ServerPlayer serverPlayer)) {
                 return;
             }
-            if (slotId == CavernCatalogGuiLayout.REFRESH_SLOT) {
-                refreshContents();
-                return;
-            }
-
-            String entryId = entryIdsBySlot.get(slotId);
-            if (entryId == null) {
-                return;
-            }
-
-            java.util.Optional<CavernCatalogUseResult> result = catalogAccess.use(ownerId, entryId, currentTimeMillis());
-            if (result.isPresent() && player instanceof ServerPlayer serverPlayer) {
-                CavernCatalogUseResult resolvedResult = result.get();
-                catalogAccess.grant(serverPlayer, resolvedResult);
-                serverPlayer.sendSystemMessage(Component.literal(CavernCatalogUseFeedbackFormatter.format(resolvedResult)));
-                refreshContents();
-            }
+            routeClick(
+                ownerId,
+                slotId,
+                clickType,
+                new ServerClickActor(serverPlayer, catalogAccess),
+                () -> entryIdsBySlot,
+                catalogAccess,
+                this::currentTimeMillis,
+                this::refreshContents
+            );
             return;
         }
         super.clicked(slotId, button, clickType, player);
@@ -149,5 +143,77 @@ public final class CavernCatalogGuiMenu extends ChestMenu {
             return BuiltInRegistries.ITEM.get(resourceLocation);
         }
         return Items.BARRIER;
+    }
+
+    static boolean routeClick(
+        UUID ownerId,
+        int slotId,
+        ClickType clickType,
+        ClickActor actor,
+        Supplier<Map<Integer, String>> entryIdsBySlotSupplier,
+        CavernCatalogAccess catalogAccess,
+        LongSupplier currentTimeMillis,
+        Runnable refreshContents
+    ) {
+        UUID normalizedOwnerId = Objects.requireNonNull(ownerId, "ownerId");
+        ClickActor normalizedActor = Objects.requireNonNull(actor, "actor");
+        Supplier<Map<Integer, String>> normalizedEntryIdsBySlotSupplier = Objects.requireNonNull(
+            entryIdsBySlotSupplier,
+            "entryIdsBySlotSupplier"
+        );
+        CavernCatalogAccess normalizedCatalogAccess = Objects.requireNonNull(catalogAccess, "catalogAccess");
+        LongSupplier normalizedCurrentTimeMillis = Objects.requireNonNull(currentTimeMillis, "currentTimeMillis");
+        Runnable normalizedRefreshContents = Objects.requireNonNull(refreshContents, "refreshContents");
+
+        if (!normalizedOwnerId.equals(normalizedActor.playerId()) || clickType != ClickType.PICKUP) {
+            return false;
+        }
+        if (slotId == CavernCatalogGuiLayout.REFRESH_SLOT) {
+            normalizedRefreshContents.run();
+            return true;
+        }
+
+        String entryId = normalizedEntryIdsBySlotSupplier.get().get(slotId);
+        if (entryId == null) {
+            return false;
+        }
+
+        java.util.Optional<CavernCatalogUseResult> result = normalizedCatalogAccess.use(
+            normalizedOwnerId,
+            entryId,
+            normalizedCurrentTimeMillis.getAsLong()
+        );
+        if (result.isEmpty()) {
+            return false;
+        }
+        normalizedActor.onResult(result.get());
+        normalizedRefreshContents.run();
+        return true;
+    }
+
+    interface ClickActor {
+        UUID playerId();
+
+        void onResult(CavernCatalogUseResult result);
+    }
+
+    private record ServerClickActor(ServerPlayer player, CavernCatalogAccess catalogAccess) implements ClickActor {
+        private ServerClickActor {
+            Objects.requireNonNull(player, "player");
+            Objects.requireNonNull(catalogAccess, "catalogAccess");
+        }
+
+        @Override
+        public UUID playerId() {
+            return player.getUUID();
+        }
+
+        @Override
+        public void onResult(CavernCatalogUseResult result) {
+            if (result.granted()) {
+                catalogAccess.grant(player, result);
+            }
+            player.sendSystemMessage(Component.literal(CavernCatalogUseFeedbackFormatter.format(result)));
+        }
     }
 }
