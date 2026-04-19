@@ -211,4 +211,62 @@ class CavernInteractionServiceTest {
             states.remove(playerId);
         }
     }
+
+    @Test
+    void serviceCooldownSurvivesRestartAndRemainsConsistent() {
+        UUID playerId = UUID.randomUUID();
+        TestPlayerServiceStateStore serviceStore = new TestPlayerServiceStateStore();
+        CavernInteractionService service = new CavernInteractionService(
+            new TestPlayerClaimedRewardStore(),
+            serviceStore
+        );
+
+        CavernProgressionSnapshot snapshot = new CavernProgressionSnapshot(
+            playerId, 30, 5, CavernProgressionRank.APPRENTICE, Map.of()
+        );
+        long realWallClockBeforeUse = 1_000_000_000L;
+        long cooldownMillis = CavernServiceEntry.TORCH_SUPPLY.cooldownMillis();
+
+        CavernServiceRequestResult useResult = service.requestService(snapshot, CavernServiceEntry.TORCH_SUPPLY, realWallClockBeforeUse);
+        assertTrue(useResult.granted());
+        assertTrue(useResult.previousStatus().availableToUse());
+        assertTrue(useResult.currentStatus().onCooldown());
+
+        CavernPlayerServiceState persistedState = serviceStore.load(playerId);
+        assertEquals(realWallClockBeforeUse, persistedState.lastUsedTimestamp(CavernServiceEntry.TORCH_SUPPLY));
+
+        long justBeforeCooldownEnds = realWallClockBeforeUse + cooldownMillis - 1L;
+        CavernServiceStatus statusJustBefore = service.inspectServices(snapshot, justBeforeCooldownEnds).getFirst();
+        assertTrue(statusJustBefore.onCooldown());
+        assertFalse(statusJustBefore.availableToUse());
+
+        long justAfterCooldownEnds = realWallClockBeforeUse + cooldownMillis + 1L;
+        CavernServiceStatus statusJustAfter = service.inspectServices(snapshot, justAfterCooldownEnds).getFirst();
+        assertFalse(statusJustAfter.onCooldown());
+        assertTrue(statusJustAfter.availableToUse());
+    }
+
+    @Test
+    void repeatedRequestsDuringCooldownAreRejected() {
+        UUID playerId = UUID.randomUUID();
+        CavernInteractionService service = newInteractionService();
+
+        CavernProgressionSnapshot snapshot = new CavernProgressionSnapshot(
+            playerId, 30, 5, CavernProgressionRank.APPRENTICE, Map.of()
+        );
+
+        long baseTime = 500_000_000L;
+        CavernServiceRequestResult first = service.requestService(snapshot, CavernServiceEntry.TORCH_SUPPLY, baseTime);
+        assertTrue(first.granted());
+
+        CavernServiceRequestResult immediateRetry = service.requestService(snapshot, CavernServiceEntry.TORCH_SUPPLY, baseTime);
+        assertFalse(immediateRetry.granted());
+        assertTrue(immediateRetry.onCooldown());
+
+        long stillOnCooldown = baseTime + (CavernServiceEntry.TORCH_SUPPLY.cooldownMillis() / 2);
+        CavernServiceRequestResult midCooldown = service.requestService(snapshot, CavernServiceEntry.TORCH_SUPPLY, stillOnCooldown);
+        assertFalse(midCooldown.granted());
+        assertTrue(midCooldown.onCooldown());
+    }
+
 }

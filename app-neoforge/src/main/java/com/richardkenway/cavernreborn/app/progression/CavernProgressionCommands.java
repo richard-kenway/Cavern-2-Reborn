@@ -45,10 +45,6 @@ public final class CavernProgressionCommands {
     private final CavernInteractionService interactionService;
     private final PlayerServiceStateStore serviceStateStore;
 
-    public CavernProgressionCommands(CavernProgressionService progressionService, CavernRewardService rewardService) {
-        this(progressionService, rewardService, new CavernRewardGranter(), null, null);
-    }
-
     public CavernProgressionCommands(
         CavernProgressionService progressionService,
         CavernRewardService rewardService,
@@ -212,7 +208,7 @@ public final class CavernProgressionCommands {
     }
 
     private int showServices(CommandSourceStack source, ServerPlayer player) {
-        long currentTimeMillis = player.getServer().getTickCount() * 50L;
+        long currentTimeMillis = System.currentTimeMillis();
         CavernProgressionSnapshot snapshot = progressionService.inspect(player.getUUID());
         java.util.List<CavernServiceStatus> serviceStatuses = interactionService.inspectServices(snapshot, currentTimeMillis);
         com.richardkenway.cavernreborn.core.progression.CavernPlayerServiceState serviceState = serviceStateStore.load(player.getUUID());
@@ -233,7 +229,7 @@ public final class CavernProgressionCommands {
         if (service == null) {
             throw UNKNOWN_SERVICE.create(serviceId);
         }
-        long currentTimeMillis = player.getServer().getTickCount() * 50L;
+        long currentTimeMillis = System.currentTimeMillis();
         CavernProgressionSnapshot snapshot = progressionService.inspect(player.getUUID());
         CavernServiceRequestResult result = interactionService.requestService(snapshot, service, currentTimeMillis);
         if (result.granted()) {
