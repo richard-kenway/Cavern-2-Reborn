@@ -28,9 +28,12 @@ It is closer to `Cavern 2` than the earlier generic cave placeholder, but it is 
   - deeper exposed surfaces above that hot band still fall back to `deepslate`.
 - Resource generation is mining-oriented by default:
   - the vanilla overworld cave ore set stays present in each custom biome;
+  - the first custom cavern-native ore slice restores `aquamarine` as a direct-drop gem ore and `magnite` as a furnace-bound ingot ore;
   - the imported `minecraft:ore_coal_upper` pass is intentionally removed because it produces an empty-height warning in a 192-block-tall `CAVERN` and the custom dense coal pass already covers the upper mining band;
   - iron/copper ore veins are enabled through the dimension noise settings;
   - extra dense coal and iron placed features are added across the biome family;
+  - `aquamarine` is wired into the upper/mid mining band of `stone_depths`, `lush_grotto` and `highland_hollows`;
+  - `magnite` is wired into the deeper dry band of `stone_depths` and `dripstone_grotto`;
   - `dripstone_grotto` adds extra gold;
   - `highland_hollows` adds extra emerald.
 - Relevant cave features and structures are explicitly part of the baseline:
@@ -56,6 +59,7 @@ It is closer to `Cavern 2` than the earlier generic cave placeholder, but it is 
 - Structure enablement: `data/minecraft/tags/worldgen/biome/has_structure/mineshaft.json`
 - Terrain-signature design note: `docs/cavern-worldgen-parity.md`
 - Population-parity design note: `docs/cavern-population-parity.md`
+- Ore/content-parity design note: `docs/cavern-ore-content-parity.md`
 - The new biome, placed-feature and structure-tag resources are currently checked in under `app-neoforge/src/generated/resources`, which is part of the runtime resource set via `build.gradle`.
 
 ## Runtime Validation
@@ -88,6 +92,7 @@ The regression-protected baseline in this document intentionally stays separate 
 - The old weighted overworld-biome transcription is approximated through four custom cave biomes, not restored biome-for-biome.
 - The first population tranche restores only monster-room pressure, spring/fall feel and mushroom scatter; tower dungeons, mirage remnants and broader structure parity are still out of scope.
 - The old custom ores, tower dungeons, mirage remnants, Huge Cavern and Aqua Cavern are still out of scope.
+- The first ore/content tranche restores only `aquamarine` and `magnite`; the wider legacy ore roster, special-case ore mechanics and full vein-provider parity are still out of scope.
 - The baseline still uses modern vanilla ore/features where possible instead of restoring the full legacy custom vein table.
 - The lower lava feel is approximated through a hot lower surface band plus existing lava lakes/springs; it is not a literal port of the old `y < 10` lava carve rule.
 - The dedicated-server validation note records a headless server-console pass plus block-sampling on disposable chunks; that is strong enough to validate generation/runtime wiring, but it is not a substitute for a visual client pass.

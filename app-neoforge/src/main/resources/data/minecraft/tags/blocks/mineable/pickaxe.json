@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "cavernreborn:aquamarine_ore",
+    "cavernreborn:aquamarine_block",
+    "cavernreborn:magnite_ore",
+    "cavernreborn:magnite_block"
+  ]
+}

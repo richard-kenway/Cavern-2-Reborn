@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "cavernreborn:magnite_ingot"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "cavernreborn:magnite_block"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "cavernreborn:magnite_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "cavernreborn:magnite_ingot"
+  }
+}

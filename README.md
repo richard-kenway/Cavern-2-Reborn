@@ -16,6 +16,7 @@ This repository currently contains the project skeleton and a minimal content re
 - a bounded `contained_caves` noise-settings fork of vanilla `minecraft:caves`, now tuned into a dry 192-block cavern profile with ore veins enabled and portal-compatible vertical assumptions kept intact
 - a terrain-signature parity pass on top of `contained_caves`: denser stone mass, a stronger tunnel/chamber band, broader ravine cuts, an upper extreme-like chamber band and a lower hot band that stays below the current portal safe-arrival window
 - a first population-parity pass on top of that terrain slice: slightly stronger monster-room pressure, biome-biased water/lava spring passes and extra mushroom scatter so `CAVERN` reads as a more populated underground world without adding a new content roster
+- a first ore/content-parity pass on top of the terrain and population baselines: `aquamarine` and `magnite` now exist as cavern-native ore families with registered blocks/items, minimal storage loops and narrow `CAVERN` worldgen wiring instead of relying only on vanilla ore identity
 - a conscious four-biome `CAVERN` family closer to the old mining dimension baseline: dominant `stone_depths`, plus `lush_grotto`, `dripstone_grotto` and `highland_hollows`
 - a mining-oriented worldgen baseline for `CAVERN`: dense coal/iron passes, biome-shaped gold/emerald bias, denser monster rooms and mineshaft-enabled cave biomes
 - basic portal UX feedback for `cooldown`, failed cavern entry and missing return-state denial cases, plus an overworld fallback return target when no saved return-state exists
@@ -127,6 +128,7 @@ No full legacy-parity `CAVERN` gameplay stack is implemented yet.
 - `stone_depths` is the dominant mining biome; `lush_grotto` carries the humid vegetation slice; `dripstone_grotto` carries the dry mineral slice; `highland_hollows` is the mountain/hill stand-in for richer emerald pockets.
 - Terrain signature now intentionally emphasizes carved stone mass, larger upper cavities, stronger middle ravine variation and a lower `Y < -32` hot band.
 - Mining usefulness now comes from the baseline ore set plus enabled ore veins, dense coal/iron passes, extra gold in `dripstone_grotto` and extra emerald in `highland_hollows`.
+- The first narrow custom ore/content note for `aquamarine` and `magnite` lives in `docs/cavern-ore-content-parity.md`.
 - If you use the dedicated-server console for biome distance checks, set a known source position first, for example `setworldspawn 0 70 0`, before comparing biome distances in `CAVERN`.
 - Relevant cave features/structures in the baseline are amethyst geodes, lava lakes, fluid springs, lush/dripstone decoration, denser monster rooms and mineshafts.
 - The first narrow population-parity note for post-terrain cave dressing lives in `docs/cavern-population-parity.md`.

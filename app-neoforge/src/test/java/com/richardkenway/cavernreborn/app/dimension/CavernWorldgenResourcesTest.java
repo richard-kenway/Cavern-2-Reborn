@@ -129,6 +129,26 @@ class CavernWorldgenResourcesTest {
     }
 
     @Test
+    void cavernBiomeResourcesWireCustomOreFamilies() throws IOException {
+        JsonObject stoneDepths = readJsonResource("data/cavernreborn/worldgen/biome/stone_depths.json");
+        JsonObject lushGrotto = readJsonResource("data/cavernreborn/worldgen/biome/lush_grotto.json");
+        JsonObject dripstoneGrotto = readJsonResource("data/cavernreborn/worldgen/biome/dripstone_grotto.json");
+        JsonObject highlandHollows = readJsonResource("data/cavernreborn/worldgen/biome/highland_hollows.json");
+
+        assertTrue(featureStep(stoneDepths, 6).contains("cavernreborn:cavern_ore_aquamarine"));
+        assertTrue(featureStep(stoneDepths, 6).contains("cavernreborn:cavern_ore_magnite"));
+
+        assertTrue(featureStep(lushGrotto, 6).contains("cavernreborn:cavern_ore_aquamarine"));
+        assertFalse(featureStep(lushGrotto, 6).contains("cavernreborn:cavern_ore_magnite"));
+
+        assertTrue(featureStep(dripstoneGrotto, 6).contains("cavernreborn:cavern_ore_magnite"));
+        assertFalse(featureStep(dripstoneGrotto, 6).contains("cavernreborn:cavern_ore_aquamarine"));
+
+        assertTrue(featureStep(highlandHollows, 6).contains("cavernreborn:cavern_ore_aquamarine"));
+        assertFalse(featureStep(highlandHollows, 6).contains("cavernreborn:cavern_ore_magnite"));
+    }
+
+    @Test
     void placedFeaturesAndMineshaftTagProtectWorldgenBaseline() throws IOException {
         JsonObject mineshaftTag = readJsonResource("data/minecraft/tags/worldgen/biome/has_structure/mineshaft.json");
         JsonObject monsterRoom = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_monster_room.json");
@@ -137,6 +157,10 @@ class CavernWorldgenResourcesTest {
         JsonObject ironDense = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_ore_iron_dense.json");
         JsonObject goldDry = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_ore_gold_dry.json");
         JsonObject emeraldHighlands = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_ore_emerald_highlands.json");
+        JsonObject aquamarineOre = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_ore_aquamarine.json");
+        JsonObject magniteOre = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_ore_magnite.json");
+        JsonObject aquamarineConfiguredOre = readJsonResource("data/cavernreborn/worldgen/configured_feature/aquamarine_ore.json");
+        JsonObject magniteConfiguredOre = readJsonResource("data/cavernreborn/worldgen/configured_feature/magnite_ore.json");
         JsonObject springWaterFalls = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_spring_water_falls.json");
         JsonObject springLavaFalls = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_spring_lava_falls.json");
         JsonObject brownMushroomPatch = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_brown_mushroom_patch.json");
@@ -155,6 +179,10 @@ class CavernWorldgenResourcesTest {
         assertPlacedFeature(ironDense, "minecraft:ore_iron", 18, 104, -48);
         assertPlacedFeature(goldDry, "minecraft:ore_gold_buried", 6, 40, -56);
         assertPlacedFeature(emeraldHighlands, "minecraft:ore_emerald", 14, 120, 16);
+        assertConfiguredOreFeature(aquamarineConfiguredOre, "cavernreborn:aquamarine_ore", 6);
+        assertConfiguredOreFeature(magniteConfiguredOre, "cavernreborn:magnite_ore", 5);
+        assertPlacedFeature(aquamarineOre, "cavernreborn:aquamarine_ore", 7, 112, 12);
+        assertPlacedFeature(magniteOre, "cavernreborn:magnite_ore", 5, 24, -48);
         assertPlacedFeature(springWaterFalls, "minecraft:spring_water", 14, 56, 16);
         assertPlacedFeature(springLavaFalls, "minecraft:spring_lava_overworld", 10, 24, 8);
         assertPlacedFeature(brownMushroomPatch, "minecraft:patch_brown_mushroom", 6, 88, 8);
@@ -167,6 +195,8 @@ class CavernWorldgenResourcesTest {
         URL highlandHollows = resourceUrl("data/cavernreborn/worldgen/biome/highland_hollows.json");
         URL mineshaftTag = resourceUrl("data/minecraft/tags/worldgen/biome/has_structure/mineshaft.json");
         URL extremeUpperNetwork = resourceUrl("data/cavernreborn/worldgen/density_function/cave_extreme_upper_network.json");
+        URL aquamarineConfiguredOre = resourceUrl("data/cavernreborn/worldgen/configured_feature/aquamarine_ore.json");
+        URL magniteOre = resourceUrl("data/cavernreborn/worldgen/placed_feature/cavern_ore_magnite.json");
         URL springWaterFalls = resourceUrl("data/cavernreborn/worldgen/placed_feature/cavern_spring_water_falls.json");
         URL brownMushroomPatch = resourceUrl("data/cavernreborn/worldgen/placed_feature/cavern_brown_mushroom_patch.json");
 
@@ -174,6 +204,8 @@ class CavernWorldgenResourcesTest {
         assertClassPathOrigin(highlandHollows, "data/cavernreborn/worldgen/biome/highland_hollows.json");
         assertClassPathOrigin(mineshaftTag, "data/minecraft/tags/worldgen/biome/has_structure/mineshaft.json");
         assertClassPathOrigin(extremeUpperNetwork, "data/cavernreborn/worldgen/density_function/cave_extreme_upper_network.json");
+        assertClassPathOrigin(aquamarineConfiguredOre, "data/cavernreborn/worldgen/configured_feature/aquamarine_ore.json");
+        assertClassPathOrigin(magniteOre, "data/cavernreborn/worldgen/placed_feature/cavern_ore_magnite.json");
         assertClassPathOrigin(springWaterFalls, "data/cavernreborn/worldgen/placed_feature/cavern_spring_water_falls.json");
         assertClassPathOrigin(brownMushroomPatch, "data/cavernreborn/worldgen/placed_feature/cavern_brown_mushroom_patch.json");
     }
@@ -412,6 +444,20 @@ class CavernWorldgenResourcesTest {
         assertEquals("minecraft:range_choice", pillarSupport.get("type").getAsString());
         assertEquals("minecraft:overworld/caves/pillars", pillarSupport.get("input").getAsString());
         assertEquals("minecraft:overworld/caves/pillars", pillarSupport.get("when_out_of_range").getAsString());
+    }
+
+    private static void assertConfiguredOreFeature(JsonObject configuredOre, String expectedBlockId, int expectedSize) {
+        assertEquals("minecraft:ore", configuredOre.get("type").getAsString());
+
+        JsonObject config = configuredOre.getAsJsonObject("config");
+        assertNotNull(config);
+        assertEquals(expectedSize, config.get("size").getAsInt());
+        assertEquals(0.0, config.get("discard_chance_on_air_exposure").getAsDouble(), 0.0);
+
+        JsonObject target = config.getAsJsonArray("targets").get(0).getAsJsonObject();
+        assertEquals(expectedBlockId, target.getAsJsonObject("state").get("Name").getAsString());
+        assertEquals("minecraft:tag_match", target.getAsJsonObject("target").get("predicate_type").getAsString());
+        assertEquals("minecraft:stone_ore_replaceables", target.getAsJsonObject("target").get("tag").getAsString());
     }
 
     private static void assertBiomeFeatures(JsonObject biome, int expectedSteps, String expectedFeature, String anotherExpectedFeature) {

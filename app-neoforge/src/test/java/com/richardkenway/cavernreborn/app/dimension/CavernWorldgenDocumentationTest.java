@@ -13,6 +13,7 @@ class CavernWorldgenDocumentationTest {
     private static final Path WORLDGEN_BASELINE = resolveProjectFile("docs", "worldgen-baseline.md");
     private static final Path WORLDGEN_PARITY_NOTE = resolveProjectFile("docs", "cavern-worldgen-parity.md");
     private static final Path POPULATION_PARITY_NOTE = resolveProjectFile("docs", "cavern-population-parity.md");
+    private static final Path ORE_CONTENT_PARITY_NOTE = resolveProjectFile("docs", "cavern-ore-content-parity.md");
     private static final Path WORLDGEN_RUNTIME_NOTE = resolveProjectFile("docs", "worldgen-runtime-validation-2026-04-18.md");
 
     @Test
@@ -28,9 +29,12 @@ class CavernWorldgenDocumentationTest {
         assertTrue(readme.contains("cave_extreme_upper_network.json"));
         assertTrue(readme.contains("docs/cavern-worldgen-parity.md"));
         assertTrue(readme.contains("docs/cavern-population-parity.md"));
+        assertTrue(readme.contains("docs/cavern-ore-content-parity.md"));
         assertTrue(readme.contains("lower `Y < -32` hot band"));
         assertTrue(readme.contains("monster-room pressure"));
         assertTrue(readme.contains("mushroom scatter"));
+        assertTrue(readme.contains("aquamarine"));
+        assertTrue(readme.contains("magnite"));
         assertTrue(readme.contains("docs/worldgen-baseline.md"));
         assertTrue(readme.contains("docs/worldgen-runtime-validation-2026-04-18.md"));
         assertTrue(readme.contains("dedicated-server validation note"));
@@ -52,10 +56,13 @@ class CavernWorldgenDocumentationTest {
         assertTrue(doc.contains("cave_extreme_upper_network.json"));
         assertTrue(doc.contains("docs/cavern-worldgen-parity.md"));
         assertTrue(doc.contains("docs/cavern-population-parity.md"));
+        assertTrue(doc.contains("docs/cavern-ore-content-parity.md"));
         assertTrue(doc.contains("docs/worldgen-runtime-validation-2026-04-18.md"));
         assertTrue(doc.contains("generated resources resolve from the runtime classpath"));
         assertTrue(doc.contains("spring/fall feel"));
         assertTrue(doc.contains("mushroom patch scatter"));
+        assertTrue(doc.contains("aquamarine"));
+        assertTrue(doc.contains("magnite"));
         assertTrue(doc.contains("setworldspawn 0 70 0"));
         assertTrue(doc.contains("historical log"));
         assertTrue(doc.contains("monster room"));
@@ -87,6 +94,20 @@ class CavernWorldgenDocumentationTest {
         assertTrue(note.contains("Deliberately Not In This Tranche"));
         assertTrue(note.contains("Tower dungeons"));
         assertTrue(note.contains("current portal and terrain baselines"));
+    }
+
+    @Test
+    void oreContentParityNoteDocumentsNarrowCustomOreScope() throws IOException {
+        String note = Files.readString(ORE_CONTENT_PARITY_NOTE);
+
+        assertTrue(note.contains("Ore/Content Parity"));
+        assertTrue(note.contains("aquamarine"));
+        assertTrue(note.contains("magnite"));
+        assertTrue(note.contains("direct-drop gem family"));
+        assertTrue(note.contains("furnace-bound ingot family"));
+        assertTrue(note.contains("Deliberately Not In This Tranche"));
+        assertTrue(note.contains("Full old vein-provider parity"));
+        assertTrue(note.contains("Leave broader vein/content parity for later tranches"));
     }
 
     @Test
