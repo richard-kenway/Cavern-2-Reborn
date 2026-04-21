@@ -46,6 +46,11 @@ class CavernProgressionDocumentationTest {
         assertTrue(readme.contains("CavernInteractionService.java"));
         assertTrue(readme.contains("docs/progression-baseline.md"));
         assertTrue(readme.contains("uncanceled non-creative player block breaks"));
+        assertTrue(readme.contains("aquamarine_ore"));
+        assertTrue(readme.contains("magnite_ore"));
+        assertTrue(readme.contains("randomite_ore"));
+        assertTrue(readme.contains("fissured_stone"));
+        assertTrue(readme.contains("hexcite_ore"));
     }
 
     @Test
@@ -72,6 +77,11 @@ class CavernProgressionDocumentationTest {
         assertTrue(doc.contains("journeyman"));
         assertTrue(doc.contains("veteran"));
         assertTrue(doc.contains("master"));
+        assertTrue(doc.contains("cavernreborn:magnite_ore"));
+        assertTrue(doc.contains("cavernreborn:aquamarine_ore"));
+        assertTrue(doc.contains("cavernreborn:randomite_ore"));
+        assertTrue(doc.contains("cavernreborn:fissured_stone"));
+        assertTrue(doc.contains("cavernreborn:hexcite_ore"));
         assertTrue(doc.contains("Mine the same ore outside `CAVERN`"));
         assertTrue(doc.contains("Restart the server"));
         assertTrue(doc.contains("/cavern rank"));

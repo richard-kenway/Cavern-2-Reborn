@@ -4,6 +4,10 @@
     "cavernreborn:aquamarine_ore",
     "cavernreborn:aquamarine_block",
     "cavernreborn:magnite_ore",
-    "cavernreborn:magnite_block"
+    "cavernreborn:magnite_block",
+    "cavernreborn:randomite_ore",
+    "cavernreborn:hexcite_ore",
+    "cavernreborn:hexcite_block",
+    "cavernreborn:fissured_stone"
   ]
 }

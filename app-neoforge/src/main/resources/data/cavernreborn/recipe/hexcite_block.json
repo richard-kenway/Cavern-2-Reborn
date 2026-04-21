@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "cavernreborn:hexcite"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "cavernreborn:hexcite_block"
+  }
+}

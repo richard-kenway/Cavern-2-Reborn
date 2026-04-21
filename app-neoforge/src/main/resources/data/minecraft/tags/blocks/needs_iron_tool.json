@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "cavernreborn:magnite_ore",
-    "cavernreborn:magnite_block"
+    "cavernreborn:magnite_block",
+    "cavernreborn:hexcite_ore",
+    "cavernreborn:hexcite_block"
   ]
 }

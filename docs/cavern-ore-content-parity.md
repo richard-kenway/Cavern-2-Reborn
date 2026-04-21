@@ -2,6 +2,8 @@
 
 This note fixes the first narrow ore/content tranche for `CAVERN`.
 
+The special-ore follow-up tranche that adds `hexcite`, `randomite` and `fissured_stone` now lives in `docs/cavern-special-ore-content-parity.md`.
+
 ## Chosen Families
 
 - `aquamarine`: the simplest direct-drop gem family from legacy `Cavern 2`.

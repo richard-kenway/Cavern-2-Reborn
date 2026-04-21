@@ -17,6 +17,7 @@ This repository currently contains the project skeleton and a minimal content re
 - a terrain-signature parity pass on top of `contained_caves`: denser stone mass, a stronger tunnel/chamber band, broader ravine cuts, an upper extreme-like chamber band and a lower hot band that stays below the current portal safe-arrival window
 - a first population-parity pass on top of that terrain slice: slightly stronger monster-room pressure, biome-biased water/lava spring passes and extra mushroom scatter so `CAVERN` reads as a more populated underground world without adding a new content roster
 - a first ore/content-parity pass on top of the terrain and population baselines: `aquamarine` and `magnite` now exist as cavern-native ore families with registered blocks/items, minimal storage loops and narrow `CAVERN` worldgen wiring instead of relying only on vanilla ore identity
+- a second special ore/content tranche on top of that slice: `hexcite`, `randomite` and `fissured_stone` now exist as bounded custom `CAVERN` content with checked-in assets, loot, recipes, worldgen and non-griefing fissure behavior instead of broad legacy-system ports
 - a conscious four-biome `CAVERN` family closer to the old mining dimension baseline: dominant `stone_depths`, plus `lush_grotto`, `dripstone_grotto` and `highland_hollows`
 - a mining-oriented worldgen baseline for `CAVERN`: dense coal/iron passes, biome-shaped gold/emerald bias, denser monster rooms and mineshaft-enabled cave biomes
 - basic portal UX feedback for `cooldown`, failed cavern entry and missing return-state denial cases, plus an overworld fallback return target when no saved return-state exists
@@ -28,7 +29,7 @@ This repository currently contains the project skeleton and a minimal content re
 - a first destination portal placement step: travel now uses a configurable legacy-like find-or-create portal target in the destination dimension instead of requiring a second portal to be placed manually every time
 - a persistent control-plane state backend: player return-state and world portal indices now survive server restarts through overworld-level NeoForge `SavedData`
 - a minimal server-side `CAVERN` progression shell: player-scoped mining counters, weighted progression score and deterministic rank evaluation now persist through the same overworld-level `SavedData` control plane
-- cavern-only mining accounting for progression: uncanceled non-creative player block breaks count only for the fixed baseline ore list inside `CAVERN`; overworld mining and unsupported blocks do not move the cavern-specific state
+- cavern-only mining accounting for progression: uncanceled non-creative player block breaks count only for the fixed baseline ore list inside `CAVERN`; that list now includes the checked-in custom cavern ores, while overworld mining and unsupported blocks do not move the cavern-specific state
 - a minimal dev inspection path for progression: `/cavern progression` reports the current player score/rank/counts, and `/cavern progression <player>` lets op/console inspect another player
 - a first player-facing progression layer: `/cavern rank` now shows a compact player-oriented rank summary, and threshold crossing sends a rank-up overlay instead of leaving progression fully hidden behind the debug command
 - a first real progression consequence: `Miner's Insight` unlocks at `apprentice` and grants `+1` bonus XP on each counted ore break inside `CAVERN`, derived directly from the persisted rank with no second progression model
@@ -129,6 +130,7 @@ No full legacy-parity `CAVERN` gameplay stack is implemented yet.
 - Terrain signature now intentionally emphasizes carved stone mass, larger upper cavities, stronger middle ravine variation and a lower `Y < -32` hot band.
 - Mining usefulness now comes from the baseline ore set plus enabled ore veins, dense coal/iron passes, extra gold in `dripstone_grotto` and extra emerald in `highland_hollows`.
 - The first narrow custom ore/content note for `aquamarine` and `magnite` lives in `docs/cavern-ore-content-parity.md`.
+- The second narrow special-ore/content note for `hexcite`, `randomite`, `fissured_stone`, bounded randomite drops and non-griefing fissure behavior lives in `docs/cavern-special-ore-content-parity.md`.
 - If you use the dedicated-server console for biome distance checks, set a known source position first, for example `setworldspawn 0 70 0`, before comparing biome distances in `CAVERN`.
 - Relevant cave features/structures in the baseline are amethyst geodes, lava lakes, fluid springs, lush/dripstone decoration, denser monster rooms and mineshafts.
 - The first narrow population-parity note for post-terrain cave dressing lives in `docs/cavern-population-parity.md`.
@@ -138,7 +140,7 @@ No full legacy-parity `CAVERN` gameplay stack is implemented yet.
 
 - Runtime progression source-of-truth is code, not config: `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionPolicy.java` defines the counted block list, per-block score deltas and rank thresholds.
 - Player progression state is persisted in the same overworld-level `cavernreborn_control_plane` `SavedData` file already used by the portal control plane.
-- The current baseline counts only uncanceled non-creative player block breaks for the fixed ore list inside `cavernreborn:cavern`.
+- The current baseline counts only uncanceled non-creative player block breaks for the fixed ore list inside `cavernreborn:cavern`, including the checked-in custom cavern ores `aquamarine_ore`, `magnite_ore`, `randomite_ore`, `fissured_stone` and `hexcite_ore`.
 - Rank is derived deterministically from the persisted score; it is not stored as a separate mutable field.
 - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionUnlock.java` is the checked-in unlock surface for future systems; the first unlock is `Miner's Insight`, which activates at `apprentice`.
 - `Miner's Insight` currently grants `+1` bonus XP on each counted ore break inside `CAVERN`; the effect is derived from the persisted rank at runtime and does not add a second saved flag.
@@ -210,3 +212,5 @@ Notes:
 This project is licensed under the GNU General Public License v3.0 only (`GPL-3.0-only`). See `LICENSE` for the full license text.
 
 The licensing baseline for the original `Cavern II` project is GPLv3 as listed on CurseForge, and this repository is published under GPLv3 accordingly.
+
+Copied legacy texture assets used for `hexcite`, `randomite` and `fissured_stone` are documented for provenance in `docs/cavern-special-ore-content-parity.md`. The original legacy code baseline was GPLv3, and the original legacy visual/audio asset pack was distributed under CC-BY-NC 4.0.

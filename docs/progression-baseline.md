@@ -17,7 +17,14 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
   - `raw_copper_block`: `+4`
   - diamond ores: `+5`
   - emerald ores and `raw_iron_block`: `+6`
+- Custom cavern ores also participate in the same checked-in score table:
+  - `cavernreborn:magnite_ore`: `+1`
+  - `cavernreborn:aquamarine_ore`: `+2`
+  - `cavernreborn:randomite_ore`: `+2`
+  - `cavernreborn:fissured_stone`: `+3`
+  - `cavernreborn:hexcite_ore`: `+4`
 - Unsupported blocks, block breaks outside `CAVERN`, creative-mode mining and non-player activity do not advance progression.
+- The custom `CAVERN` ore entries above still count only inside `cavernreborn:cavern`; mining the same blocks outside `CAVERN` does not advance the cavern progression state.
 - Each counted mining event increments `counted_blocks` by exactly `1` and adds the deterministic block score to `progression_score`.
 - Rank is derived from the persisted score with fixed thresholds:
   - `novice`: `0`

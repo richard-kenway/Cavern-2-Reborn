@@ -53,6 +53,7 @@
       "minecraft:ore_coal_lower",
       "cavernreborn:cavern_ore_coal_dense",
       "cavernreborn:cavern_ore_aquamarine",
+      "cavernreborn:cavern_ore_randomite",
       "minecraft:ore_iron_upper",
       "minecraft:ore_iron_middle",
       "minecraft:ore_iron_small",
@@ -68,6 +69,7 @@
       "minecraft:ore_lapis",
       "minecraft:ore_lapis_buried",
       "minecraft:ore_copper",
+      "cavernreborn:cavern_ore_hexcite_upper_rare",
       "cavernreborn:cavern_ore_emerald_highlands"
     ],
     [],

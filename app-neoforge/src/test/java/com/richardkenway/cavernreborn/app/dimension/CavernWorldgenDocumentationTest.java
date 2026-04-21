@@ -14,6 +14,7 @@ class CavernWorldgenDocumentationTest {
     private static final Path WORLDGEN_PARITY_NOTE = resolveProjectFile("docs", "cavern-worldgen-parity.md");
     private static final Path POPULATION_PARITY_NOTE = resolveProjectFile("docs", "cavern-population-parity.md");
     private static final Path ORE_CONTENT_PARITY_NOTE = resolveProjectFile("docs", "cavern-ore-content-parity.md");
+    private static final Path SPECIAL_ORE_CONTENT_PARITY_NOTE = resolveProjectFile("docs", "cavern-special-ore-content-parity.md");
     private static final Path WORLDGEN_RUNTIME_NOTE = resolveProjectFile("docs", "worldgen-runtime-validation-2026-04-18.md");
 
     @Test
@@ -35,6 +36,10 @@ class CavernWorldgenDocumentationTest {
         assertTrue(readme.contains("mushroom scatter"));
         assertTrue(readme.contains("aquamarine"));
         assertTrue(readme.contains("magnite"));
+        assertTrue(readme.contains("hexcite"));
+        assertTrue(readme.contains("randomite"));
+        assertTrue(readme.contains("fissured_stone"));
+        assertTrue(readme.contains("docs/cavern-special-ore-content-parity.md"));
         assertTrue(readme.contains("docs/worldgen-baseline.md"));
         assertTrue(readme.contains("docs/worldgen-runtime-validation-2026-04-18.md"));
         assertTrue(readme.contains("dedicated-server validation note"));
@@ -63,6 +68,10 @@ class CavernWorldgenDocumentationTest {
         assertTrue(doc.contains("mushroom patch scatter"));
         assertTrue(doc.contains("aquamarine"));
         assertTrue(doc.contains("magnite"));
+        assertTrue(doc.contains("hexcite"));
+        assertTrue(doc.contains("randomite"));
+        assertTrue(doc.contains("fissured_stone"));
+        assertTrue(doc.contains("docs/cavern-special-ore-content-parity.md"));
         assertTrue(doc.contains("setworldspawn 0 70 0"));
         assertTrue(doc.contains("historical log"));
         assertTrue(doc.contains("monster room"));
@@ -108,6 +117,21 @@ class CavernWorldgenDocumentationTest {
         assertTrue(note.contains("Deliberately Not In This Tranche"));
         assertTrue(note.contains("Full old vein-provider parity"));
         assertTrue(note.contains("Leave broader vein/content parity for later tranches"));
+    }
+
+    @Test
+    void specialOreParityNoteDocumentsBoundedRandomiteAndNonGriefingFissureScope() throws IOException {
+        String note = Files.readString(SPECIAL_ORE_CONTENT_PARITY_NOTE);
+
+        assertTrue(note.contains("Tranche 2"));
+        assertTrue(note.contains("hexcite"));
+        assertTrue(note.contains("randomite"));
+        assertTrue(note.contains("fissured_stone"));
+        assertTrue(note.contains("curated bounded loot table"));
+        assertTrue(note.contains("non-griefing"));
+        assertTrue(note.contains("does not create destructive explosions"));
+        assertTrue(note.contains("Custom `CAVERN` ores now participate in progression"));
+        assertTrue(note.contains("CC-BY-NC 4.0"));
     }
 
     @Test

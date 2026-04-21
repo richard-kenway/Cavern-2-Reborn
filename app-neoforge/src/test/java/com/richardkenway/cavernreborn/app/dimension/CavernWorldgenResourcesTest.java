@@ -137,15 +137,26 @@ class CavernWorldgenResourcesTest {
 
         assertTrue(featureStep(stoneDepths, 6).contains("cavernreborn:cavern_ore_aquamarine"));
         assertTrue(featureStep(stoneDepths, 6).contains("cavernreborn:cavern_ore_magnite"));
+        assertTrue(featureStep(stoneDepths, 6).contains("cavernreborn:cavern_ore_randomite"));
+        assertTrue(featureStep(stoneDepths, 6).contains("cavernreborn:cavern_ore_hexcite_deep"));
+        assertTrue(featureStep(stoneDepths, 6).contains("cavernreborn:cavern_fissured_stone"));
 
         assertTrue(featureStep(lushGrotto, 6).contains("cavernreborn:cavern_ore_aquamarine"));
         assertFalse(featureStep(lushGrotto, 6).contains("cavernreborn:cavern_ore_magnite"));
+        assertTrue(featureStep(lushGrotto, 6).contains("cavernreborn:cavern_ore_randomite"));
+        assertFalse(featureStep(lushGrotto, 6).contains("cavernreborn:cavern_fissured_stone"));
 
         assertTrue(featureStep(dripstoneGrotto, 6).contains("cavernreborn:cavern_ore_magnite"));
         assertFalse(featureStep(dripstoneGrotto, 6).contains("cavernreborn:cavern_ore_aquamarine"));
+        assertTrue(featureStep(dripstoneGrotto, 6).contains("cavernreborn:cavern_ore_hexcite_deep"));
+        assertTrue(featureStep(dripstoneGrotto, 6).contains("cavernreborn:cavern_fissured_stone"));
+        assertFalse(featureStep(dripstoneGrotto, 6).contains("cavernreborn:cavern_ore_randomite"));
 
         assertTrue(featureStep(highlandHollows, 6).contains("cavernreborn:cavern_ore_aquamarine"));
         assertFalse(featureStep(highlandHollows, 6).contains("cavernreborn:cavern_ore_magnite"));
+        assertTrue(featureStep(highlandHollows, 6).contains("cavernreborn:cavern_ore_randomite"));
+        assertTrue(featureStep(highlandHollows, 6).contains("cavernreborn:cavern_ore_hexcite_upper_rare"));
+        assertFalse(featureStep(highlandHollows, 6).contains("cavernreborn:cavern_fissured_stone"));
     }
 
     @Test
@@ -161,6 +172,13 @@ class CavernWorldgenResourcesTest {
         JsonObject magniteOre = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_ore_magnite.json");
         JsonObject aquamarineConfiguredOre = readJsonResource("data/cavernreborn/worldgen/configured_feature/aquamarine_ore.json");
         JsonObject magniteConfiguredOre = readJsonResource("data/cavernreborn/worldgen/configured_feature/magnite_ore.json");
+        JsonObject hexciteConfiguredOre = readJsonResource("data/cavernreborn/worldgen/configured_feature/hexcite_ore.json");
+        JsonObject randomiteConfiguredOre = readJsonResource("data/cavernreborn/worldgen/configured_feature/randomite_ore.json");
+        JsonObject fissuredStoneConfigured = readJsonResource("data/cavernreborn/worldgen/configured_feature/fissured_stone.json");
+        JsonObject hexciteDeep = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_ore_hexcite_deep.json");
+        JsonObject hexciteUpperRare = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_ore_hexcite_upper_rare.json");
+        JsonObject randomiteOre = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_ore_randomite.json");
+        JsonObject fissuredStone = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_fissured_stone.json");
         JsonObject springWaterFalls = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_spring_water_falls.json");
         JsonObject springLavaFalls = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_spring_lava_falls.json");
         JsonObject brownMushroomPatch = readJsonResource("data/cavernreborn/worldgen/placed_feature/cavern_brown_mushroom_patch.json");
@@ -181,8 +199,15 @@ class CavernWorldgenResourcesTest {
         assertPlacedFeature(emeraldHighlands, "minecraft:ore_emerald", 14, 120, 16);
         assertConfiguredOreFeature(aquamarineConfiguredOre, "cavernreborn:aquamarine_ore", 6);
         assertConfiguredOreFeature(magniteConfiguredOre, "cavernreborn:magnite_ore", 5);
+        assertConfiguredOreFeature(hexciteConfiguredOre, "cavernreborn:hexcite_ore", 4);
+        assertConfiguredOreFeature(randomiteConfiguredOre, "cavernreborn:randomite_ore", 4);
+        assertConfiguredOreFeature(fissuredStoneConfigured, "cavernreborn:fissured_stone", 6);
         assertPlacedFeature(aquamarineOre, "cavernreborn:aquamarine_ore", 7, 112, 12);
         assertPlacedFeature(magniteOre, "cavernreborn:magnite_ore", 5, 24, -48);
+        assertPlacedFeature(hexciteDeep, "cavernreborn:hexcite_ore", 3, 16, -56);
+        assertPlacedFeature(hexciteUpperRare, "cavernreborn:hexcite_ore", 1, 96, 32);
+        assertPlacedFeature(randomiteOre, "cavernreborn:randomite_ore", 4, 96, -40);
+        assertPlacedFeature(fissuredStone, "cavernreborn:fissured_stone", 6, 80, -48);
         assertPlacedFeature(springWaterFalls, "minecraft:spring_water", 14, 56, 16);
         assertPlacedFeature(springLavaFalls, "minecraft:spring_lava_overworld", 10, 24, 8);
         assertPlacedFeature(brownMushroomPatch, "minecraft:patch_brown_mushroom", 6, 88, 8);
@@ -197,6 +222,9 @@ class CavernWorldgenResourcesTest {
         URL extremeUpperNetwork = resourceUrl("data/cavernreborn/worldgen/density_function/cave_extreme_upper_network.json");
         URL aquamarineConfiguredOre = resourceUrl("data/cavernreborn/worldgen/configured_feature/aquamarine_ore.json");
         URL magniteOre = resourceUrl("data/cavernreborn/worldgen/placed_feature/cavern_ore_magnite.json");
+        URL hexciteConfiguredOre = resourceUrl("data/cavernreborn/worldgen/configured_feature/hexcite_ore.json");
+        URL randomiteOre = resourceUrl("data/cavernreborn/worldgen/placed_feature/cavern_ore_randomite.json");
+        URL fissuredStone = resourceUrl("data/cavernreborn/worldgen/placed_feature/cavern_fissured_stone.json");
         URL springWaterFalls = resourceUrl("data/cavernreborn/worldgen/placed_feature/cavern_spring_water_falls.json");
         URL brownMushroomPatch = resourceUrl("data/cavernreborn/worldgen/placed_feature/cavern_brown_mushroom_patch.json");
 
@@ -206,6 +234,9 @@ class CavernWorldgenResourcesTest {
         assertClassPathOrigin(extremeUpperNetwork, "data/cavernreborn/worldgen/density_function/cave_extreme_upper_network.json");
         assertClassPathOrigin(aquamarineConfiguredOre, "data/cavernreborn/worldgen/configured_feature/aquamarine_ore.json");
         assertClassPathOrigin(magniteOre, "data/cavernreborn/worldgen/placed_feature/cavern_ore_magnite.json");
+        assertClassPathOrigin(hexciteConfiguredOre, "data/cavernreborn/worldgen/configured_feature/hexcite_ore.json");
+        assertClassPathOrigin(randomiteOre, "data/cavernreborn/worldgen/placed_feature/cavern_ore_randomite.json");
+        assertClassPathOrigin(fissuredStone, "data/cavernreborn/worldgen/placed_feature/cavern_fissured_stone.json");
         assertClassPathOrigin(springWaterFalls, "data/cavernreborn/worldgen/placed_feature/cavern_spring_water_falls.json");
         assertClassPathOrigin(brownMushroomPatch, "data/cavernreborn/worldgen/placed_feature/cavern_brown_mushroom_patch.json");
     }

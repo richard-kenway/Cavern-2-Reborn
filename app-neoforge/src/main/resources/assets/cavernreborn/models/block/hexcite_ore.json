@@ -1,0 +1,7 @@
+{
+  "parent": "cavernreborn:block/cube_ore",
+  "textures": {
+    "base": "minecraft:block/stone",
+    "ore": "cavernreborn:block/hexcite_ore"
+  }
+}

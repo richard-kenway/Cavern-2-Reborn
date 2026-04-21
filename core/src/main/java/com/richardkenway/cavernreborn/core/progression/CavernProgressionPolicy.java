@@ -45,6 +45,11 @@ public final class CavernProgressionPolicy {
         scores.put("minecraft:emerald_ore", 6);
         scores.put("minecraft:deepslate_emerald_ore", 6);
         scores.put("minecraft:raw_iron_block", 6);
+        scores.put("cavernreborn:magnite_ore", 1);
+        scores.put("cavernreborn:aquamarine_ore", 2);
+        scores.put("cavernreborn:randomite_ore", 2);
+        scores.put("cavernreborn:fissured_stone", 3);
+        scores.put("cavernreborn:hexcite_ore", 4);
         return Collections.unmodifiableMap(scores);
     }
 
