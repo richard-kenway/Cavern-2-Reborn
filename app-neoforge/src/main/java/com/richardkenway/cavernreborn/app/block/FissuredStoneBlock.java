@@ -47,6 +47,9 @@ public final class FissuredStoneBlock extends DropExperienceBlock {
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
+        if (player.isCreative()) {
+            return;
+        }
 
         applyEffect(serverLevel, pos, player, FissuredStoneEffectPolicy.effectForBreak(true, fortuneLevel(level, tool)));
     }
