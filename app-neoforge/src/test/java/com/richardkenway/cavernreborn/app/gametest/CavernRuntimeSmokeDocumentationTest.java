@@ -58,6 +58,10 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("scripts/runtime-smoke.sh"));
         assertTrue(doc.contains("minecraft:empty"));
         assertTrue(doc.contains("app-neoforge/src/gameteststructures/empty.snbt"));
+        assertTrue(doc.contains("registered unconditionally"));
+        assertTrue(doc.contains("GameTestHooks.isGametestEnabled()"));
+        assertTrue(doc.contains("infrastructure workaround"));
+        assertTrue(doc.contains("does not change gameplay behavior"));
         assertTrue(doc.contains("manual client smoke is still needed"));
         assertTrue(doc.contains("portal UX"));
         assertTrue(doc.contains("rendering"));

@@ -1,6 +1,7 @@
 package com.richardkenway.cavernreborn.app.progression;
 
 import java.util.Objects;
+import java.util.UUID;
 
 import com.richardkenway.cavernreborn.app.mining.MiningAssistBreakContext;
 import com.richardkenway.cavernreborn.app.registry.ModItemTags;
@@ -15,7 +16,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.EventPriority;
@@ -52,13 +52,13 @@ public final class CavernMiningProgressionEvents {
 
         String dimensionId = level.dimension().location().toString();
         String blockId = BuiltInRegistries.BLOCK.getKey(event.getState().getBlock()).toString();
-        boolean countedBlock = CavernProgressionPolicy.countsTowardProgression(dimensionId, blockId);
-        int baseScore = CavernProgressionPolicy.scoreForBlock(blockId);
-        CavernProgressionUpdateResult update = progressionService.recordMiningEvent(
+        CavernProgressionUpdateResult update = recordMiningProgression(
             player.getUUID(),
             dimensionId,
             blockId,
-            resolveMinerOrbBonus(player, dimensionId, blockId, baseScore, countedBlock, false)
+            player.isCreative(),
+            hasMiningBonusOrb(player.getInventory().items, player.getInventory().offhand),
+            false
         );
         if (!update.counted()) {
             return;
@@ -75,16 +75,42 @@ public final class CavernMiningProgressionEvents {
             .ifPresent(message -> player.sendSystemMessage(Component.literal(message)));
     }
 
+    CavernProgressionUpdateResult recordMiningProgression(
+        UUID playerId,
+        String dimensionId,
+        String blockId,
+        boolean creative,
+        boolean hasMinerOrb,
+        boolean miningAssistSuppressed
+    ) {
+        boolean countedBlock = CavernProgressionPolicy.countsTowardProgression(dimensionId, blockId);
+        int baseScore = CavernProgressionPolicy.scoreForBlock(blockId);
+        return progressionService.recordMiningEvent(
+            playerId,
+            dimensionId,
+            blockId,
+            resolveMinerOrbBonus(
+                dimensionId,
+                blockId,
+                baseScore,
+                countedBlock,
+                hasMinerOrb,
+                creative,
+                miningAssistSuppressed
+            )
+        );
+    }
+
     private int resolveMinerOrbBonus(
-        ServerPlayer player,
         String dimensionId,
         String blockId,
         int baseScore,
         boolean countedBlock,
+        boolean hasMinerOrb,
+        boolean creative,
         boolean miningAssistSuppressed
     ) {
-        boolean hasMinerOrb = hasMiningBonusOrb(player);
-        int roll = shouldRollMinerOrbBonus(dimensionId, countedBlock, baseScore, hasMinerOrb, player.isCreative(), miningAssistSuppressed)
+        int roll = shouldRollMinerOrbBonus(dimensionId, countedBlock, baseScore, hasMinerOrb, creative, miningAssistSuppressed)
             ? minerOrbRollSource.nextRoll(MinerOrbBonusPolicy.BONUS_ROLL_BOUND)
             : 0;
 
@@ -94,7 +120,7 @@ public final class CavernMiningProgressionEvents {
             baseScore,
             countedBlock,
             hasMinerOrb,
-            player.isCreative(),
+            creative,
             miningAssistSuppressed,
             roll
         ).bonusScore();
@@ -116,9 +142,8 @@ public final class CavernMiningProgressionEvents {
             && CavernDimensions.CAVERN_DIMENSION_ID.equals(dimensionId);
     }
 
-    private static boolean hasMiningBonusOrb(ServerPlayer player) {
-        Inventory inventory = player.getInventory();
-        return containsMiningBonusOrb(inventory.items) || containsMiningBonusOrb(inventory.offhand);
+    private static boolean hasMiningBonusOrb(Iterable<ItemStack> inventoryItems, Iterable<ItemStack> offhandItems) {
+        return containsMiningBonusOrb(inventoryItems) || containsMiningBonusOrb(offhandItems);
     }
 
     private static boolean containsMiningBonusOrb(Iterable<ItemStack> stacks) {

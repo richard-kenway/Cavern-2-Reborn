@@ -85,6 +85,13 @@ docker compose run --rm gradle ./gradlew --no-daemon build
 - The same GameTest layer now also covers the bounded Mining Assist MVP runtime path.
 - The run is intentionally small and server-only; it should not require a GUI client or a human player.
 
+## Registration Workaround
+
+- `CavernSpecialOreGameTests` is currently registered unconditionally in `CavernReborn.registerGameTests()`.
+- This is an infrastructure workaround for the current project setup: guarding registration with `GameTestHooks.isGametestEnabled()` prevents `:app-neoforge:runGameTestServer` from discovering any tests.
+- The workaround is limited to GameTest bootstrap wiring and does not change gameplay behavior.
+- If the NeoForge/GameTest discovery path becomes stable for this repository later, the unconditional registration can be revisited.
+
 ## Template Strategy
 
 - The current GameTests use a checked-in minimal `minecraft:empty` template.
