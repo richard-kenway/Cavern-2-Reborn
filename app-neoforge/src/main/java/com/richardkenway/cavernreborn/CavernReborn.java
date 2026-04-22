@@ -19,6 +19,7 @@ import com.richardkenway.cavernreborn.core.CavernProject;
 import net.minecraft.gametest.framework.GameTestRegistry;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.gametest.GameTestHooks;
 import net.neoforged.neoforge.common.NeoForge;
 
 @Mod(CavernReborn.MOD_ID)
@@ -48,7 +49,9 @@ public final class CavernReborn {
     }
 
     private void registerGameTests() {
-        GameTestRegistry.register(CavernSpecialOreGameTests.class);
+        if (GameTestHooks.isGametestEnabled()) {
+            GameTestRegistry.register(CavernSpecialOreGameTests.class);
+        }
     }
 
     public static CavernStateBootstrap cavernStateBootstrap() {

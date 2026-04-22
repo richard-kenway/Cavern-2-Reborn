@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 
@@ -37,7 +38,7 @@ public final class CavernMiningAssistEvents {
         this.blockCollector = Objects.requireNonNull(blockCollector, "blockCollector");
     }
 
-    @SubscribeEvent(receiveCanceled = true)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onBlockBreak(BlockEvent.BreakEvent event) {
         if (event.isCanceled()) {
             return;
@@ -174,11 +175,15 @@ public final class CavernMiningAssistEvents {
         boolean applyDurability
     ) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        state.getBlock().playerDestroy(level, player, pos, state, blockEntity, tool);
         boolean removed = level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
-        if (removed && applyDurability && tool.isDamageableItem()) {
+        if (!removed) {
+            return false;
+        }
+
+        state.getBlock().playerDestroy(level, player, pos, state, blockEntity, tool);
+        if (applyDurability && tool.isDamageableItem()) {
             tool.hurtAndBreak(1, player, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
         }
-        return removed;
+        return true;
     }
 }

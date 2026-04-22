@@ -34,10 +34,18 @@ class MiningAssistResourcesTest {
         );
 
         assertTrue(modSource.contains("new CavernMiningAssistEvents("));
+        assertTrue(modSource.contains("GameTestHooks.isGametestEnabled()"));
         assertTrue(eventSource.contains("MiningAssistPolicy.evaluate("));
         assertTrue(eventSource.contains("MiningAssistBreakContext"));
         assertTrue(eventSource.contains("MiningAssistPolicy.MAX_EXTRA_BLOCKS"));
         assertTrue(eventSource.contains("breakBlockWithTool("));
+        assertTrue(eventSource.contains("EventPriority.LOWEST"));
+        assertTrue(!eventSource.contains("receiveCanceled = true"));
+        assertTrue(eventSource.contains("boolean removed = level.setBlock("));
+        assertTrue(eventSource.contains("if (!removed)"));
+        assertTrue(eventSource.contains("state.getBlock().playerDestroy("));
+        assertTrue(eventSource.indexOf("if (!removed)") < eventSource.indexOf("state.getBlock().playerDestroy("));
+        assertTrue(eventSource.indexOf("state.getBlock().playerDestroy(") < eventSource.indexOf("tool.hurtAndBreak("));
     }
 
     @Test
