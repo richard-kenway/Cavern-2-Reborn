@@ -21,6 +21,7 @@ It builds on top of `docs/cavern-special-ore-content-parity.md` and the follow-u
 - The assist breaks at most `6` extra blocks per origin break.
 - Sneaking disables the assist for that break.
 - Assisted extra blocks do not add extra progression score in this MVP.
+- Assisted extra blocks also stay excluded from the Miner's Orb score bonus path.
 - `fissured_stone` is intentionally excluded.
 - No 3x3 mining, tunnel mining, GUI, keybinds, particles or sounds are added here.
 

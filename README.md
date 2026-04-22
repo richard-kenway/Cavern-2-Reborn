@@ -20,6 +20,7 @@ This repository currently contains the project skeleton and a minimal content re
 - a second special ore/content tranche on top of that slice: `hexcite`, `randomite` and `fissured_stone` now exist as bounded custom `CAVERN` content with checked-in assets, loot, recipes, worldgen and non-griefing fissure behavior instead of broad legacy-system ports
 - a first hexcite tool-set MVP on top of that special ore slice: `hexcite_pickaxe`, `hexcite_axe`, `hexcite_shovel`, `hexcite_hoe` and `hexcite_sword` now exist as bounded craftable equipment with `hexcite` repair support, while armor and special abilities remain out of scope
 - a first progression-gated Mining Assist MVP on top of the progression baseline and the hexcite tool slice: `Mining Assist` now unlocks at `journeyman` and lets `hexcite_pickaxe` break up to 6 extra connected ore blocks inside `CAVERN`, while sneaking disables the assist for that break and assisted extra blocks do not grant extra progression score
+- a first Miner's Orb MVP on top of the progression and mining loop: `miner_orb` now exists as a rare `randomite_ore` drop and can occasionally grant a small extra `CAVERN` progression-score bonus without being consumed
 - a conscious four-biome `CAVERN` family closer to the old mining dimension baseline: dominant `stone_depths`, plus `lush_grotto`, `dripstone_grotto` and `highland_hollows`
 - a mining-oriented worldgen baseline for `CAVERN`: dense coal/iron passes, biome-shaped gold/emerald bias, denser monster rooms and mineshaft-enabled cave biomes
 - basic portal UX feedback for `cooldown`, failed cavern entry and missing return-state denial cases, plus an overworld fallback return target when no saved return-state exists
@@ -135,6 +136,7 @@ No full legacy-parity `CAVERN` gameplay stack is implemented yet.
 - The second narrow special-ore/content note for `hexcite`, `randomite`, `fissured_stone`, bounded randomite drops and non-griefing fissure behavior lives in `docs/cavern-special-ore-content-parity.md`.
 - The first bounded hexcite tool-set MVP note lives in `docs/hexcite-tool-parity.md`.
 - The first bounded Mining Assist note lives in `docs/mining-assist-mvp.md`.
+- The first bounded Miner's Orb note lives in `docs/miner-orb-mvp.md`.
 - If you use the dedicated-server console for biome distance checks, set a known source position first, for example `setworldspawn 0 70 0`, before comparing biome distances in `CAVERN`.
 - Relevant cave features/structures in the baseline are amethyst geodes, lava lakes, fluid springs, lush/dripstone decoration, denser monster rooms and mineshafts.
 - The first narrow population-parity note for post-terrain cave dressing lives in `docs/cavern-population-parity.md`.
@@ -150,7 +152,7 @@ No full legacy-parity `CAVERN` gameplay stack is implemented yet.
 - Or run the executable wrapper directly:
   - `scripts/runtime-smoke.sh`
 - The runtime smoke scope is documented in `docs/runtime-smoke.md`.
-- The current GameTest slice covers runtime registry availability, `hexcite` normal and Silk Touch loot, `hexcite` tool runtime registry/mining paths, curated `randomite` runtime drops, `fissured_stone` no-drop/effect/creative-guard/non-destructive behavior, progression policy ids/scores and special-ore worldgen key resolution.
+- The current GameTest slice covers runtime registry availability, `hexcite` normal and Silk Touch loot, `hexcite` tool runtime registry/mining paths, `miner_orb` runtime registry/policy smoke, curated `randomite` runtime drops, `fissured_stone` no-drop/effect/creative-guard/non-destructive behavior, progression policy ids/scores and special-ore worldgen key resolution.
 - The current GameTest slice also covers Mining Assist runtime ids, bounded same-block vein breaks with `hexcite_pickaxe`, unlock-gated/no-unlock behavior, `fissured_stone` exclusion and target-preservation smoke.
 - This is still a server-side smoke layer, not a substitute for manual client validation of portal UX, rendering, particles, sounds or overall player feel.
 
@@ -163,6 +165,7 @@ No full legacy-parity `CAVERN` gameplay stack is implemented yet.
 - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionUnlock.java` is the checked-in unlock surface for future systems; the first unlock is `Miner's Insight`, which activates at `apprentice`.
 - `Miner's Insight` currently grants `+1` bonus XP on each counted ore break inside `CAVERN`; the effect is derived from the persisted rank at runtime and does not add a second saved flag.
 - `Mining Assist` is the next rank-derived unlock at `journeyman`; it remains server-side only, works only inside `CAVERN`, requires `hexcite_pickaxe`, breaks only tagged same-block ore veins, stops after at most 6 extra blocks and does not add extra progression score for those assisted extra breaks in this MVP.
+- `Miner's Orb` is now a bounded item-based follow-up on top of the same progression loop: it drops very rarely from `randomite_ore`, is not consumed, does not add a second saved unlock flag and can occasionally add a small extra score bonus on counted `CAVERN` ore breaks without changing counted-block totals.
 - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionReward.java` is the checked-in reward catalog surface for the next gameplay layers; the current baseline is tiered: `apprentice_supply_cache` at `apprentice` and `journeyman_supply_cache` at `journeyman`.
 - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernServiceEntry.java` is the checked-in repeatable service catalog surface; the current baseline is `torch_supply` at `apprentice` and `climbing_supply` at `journeyman`.
 - `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernInteractionService.java` now also projects the first compact tiered catalog surface used by `/cavern catalog` and `/cavern use <entry>`.
@@ -232,4 +235,4 @@ This project is licensed under the GNU General Public License v3.0 only (`GPL-3.
 
 The licensing baseline for the original `Cavern II` project is GPLv3 as listed on CurseForge, and this repository is published under GPLv3 accordingly.
 
-Copied legacy texture assets used for `hexcite`, `randomite` and `fissured_stone` are documented for provenance in `docs/cavern-special-ore-content-parity.md`. The original legacy code baseline was GPLv3, and the original legacy visual/audio asset pack was distributed under CC-BY-NC 4.0.
+Copied legacy texture assets used for `hexcite`, `randomite`, `fissured_stone` and `miner_orb` are documented for provenance in `docs/cavern-special-ore-content-parity.md` and `docs/miner-orb-mvp.md`. The original legacy code baseline was GPLv3, and the original legacy visual/audio asset pack was distributed under CC-BY-NC 4.0.

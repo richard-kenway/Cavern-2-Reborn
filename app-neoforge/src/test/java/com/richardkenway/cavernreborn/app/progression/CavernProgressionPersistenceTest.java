@@ -58,6 +58,22 @@ class CavernProgressionPersistenceTest {
     }
 
     @Test
+    void minerOrbBonusScoreSurvivesRestartWithoutExtraCountedBlocks() {
+        UUID playerId = UUID.randomUUID();
+        CavernPersistentStateData persistentState = new CavernPersistentStateData();
+        CavernProgressionService firstService = serviceFor(persistentState);
+
+        firstService.recordMiningEvent(playerId, CavernDimensions.CAVERN_DIMENSION_ID, "cavernreborn:hexcite_ore", 2);
+
+        CavernProgressionService restartedService = serviceFor(restart(persistentState));
+        CavernProgressionSnapshot snapshot = restartedService.inspect(playerId);
+
+        assertEquals(1, snapshot.countedBlocks());
+        assertEquals(6, snapshot.progressionScore());
+        assertEquals(1, snapshot.minedBlocksById().get("cavernreborn:hexcite_ore"));
+    }
+
+    @Test
     void unlockedConsequenceSurvivesRestartAndMatchesPlayerFacingStatus() {
         UUID playerId = UUID.randomUUID();
         CavernPersistentStateData persistentState = new CavernPersistentStateData();

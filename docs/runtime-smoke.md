@@ -1,6 +1,6 @@
 # Runtime Smoke
 
-This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2 and the follow-up `hexcite` tool-set MVP.
+This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the follow-up `hexcite` tool-set MVP, the bounded Mining Assist slice and the first Miner's Orb MVP.
 
 It is intentionally a NeoForge GameTest server pass, not a visual client smoke pass.
 
@@ -14,6 +14,9 @@ NeoForge GameTest runtime smoke covers:
 - hexcite pickaxe enchantment applicability for mining and durability enchantments
 - hexcite pickaxe normal mining path for special ores
 - hexcite pickaxe Silk Touch path for hexcite ore
+- miner_orb runtime registry availability
+- randomite allowed-drop runtime coverage that now includes miner_orb in the curated pool
+- miner_orb bonus policy/runtime smoke
 - Mining Assist policy/runtime ids
 - bounded same-block vein assist with hexcite_pickaxe
 - no unlock means no assist

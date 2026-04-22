@@ -8,11 +8,16 @@ import java.util.Set;
 import com.richardkenway.cavernreborn.CavernReborn;
 import com.richardkenway.cavernreborn.app.mining.CavernMiningAssistEvents;
 import com.richardkenway.cavernreborn.app.registry.ModBlockTags;
+import com.richardkenway.cavernreborn.app.registry.ModItemTags;
 import com.richardkenway.cavernreborn.app.registry.ModRegistries;
 import com.richardkenway.cavernreborn.app.registry.ModToolTiers;
 import com.richardkenway.cavernreborn.core.mining.MiningAssistPolicy;
+import com.richardkenway.cavernreborn.core.mining.MinerOrbBonusDecision;
+import com.richardkenway.cavernreborn.core.mining.MinerOrbBonusPolicy;
+import com.richardkenway.cavernreborn.core.mining.MinerOrbBonusResult;
 import com.richardkenway.cavernreborn.core.progression.CavernProgressionPolicy;
 import com.richardkenway.cavernreborn.core.progression.CavernProgressionUnlock;
+import com.richardkenway.cavernreborn.core.progression.CavernProgressionUpdateResult;
 import com.richardkenway.cavernreborn.core.state.CavernDimensions;
 
 import net.minecraft.core.BlockPos;
@@ -64,6 +69,7 @@ public final class CavernSpecialOreGameTests {
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
         "cavernreborn:hexcite",
+        "cavernreborn:miner_orb",
         "minecraft:coal",
         "minecraft:iron_nugget",
         "minecraft:gold_nugget",
@@ -125,6 +131,17 @@ public final class CavernSpecialOreGameTests {
         assertRegistryId(helper, ModRegistries.HEXCITE_SHOVEL.get(), "cavernreborn:hexcite_shovel");
         assertRegistryId(helper, ModRegistries.HEXCITE_HOE.get(), "cavernreborn:hexcite_hoe");
         assertRegistryId(helper, ModRegistries.HEXCITE_SWORD.get(), "cavernreborn:hexcite_sword");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void minerOrbRegistersAtRuntime(GameTestHelper helper) {
+        helper.assertTrue(ModRegistries.MINER_ORB.get() != null, "Missing miner_orb item");
+        assertRegistryId(helper, ModRegistries.MINER_ORB.get(), "cavernreborn:miner_orb");
+
+        ItemStack stack = new ItemStack(ModRegistries.MINER_ORB.get());
+        helper.assertTrue(!stack.isEmpty(), "Expected miner_orb stack to be constructible");
+        helper.assertTrue(stack.is(ModItemTags.MINING_BONUS_ORBS), "miner_orb must resolve through the mining bonus orb tag");
         helper.succeed();
     }
 
@@ -258,10 +275,21 @@ public final class CavernSpecialOreGameTests {
                 String itemId = itemId(stack);
                 helper.assertTrue(ALLOWED_RANDOMITE_DROPS.contains(itemId), "Randomite ore produced unexpected drop: " + itemId);
                 helper.assertTrue(stack.getCount() >= 1 && stack.getCount() <= 4, "Randomite ore produced out-of-bounds stack size: " + stack);
-                helper.assertFalse("cavernreborn:miner_orb".equals(itemId), "Randomite ore must not produce miner_orb");
             }
         }
 
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void randomiteRuntimeAllowedDropsIncludeMinerOrb(GameTestHelper helper) {
+        helper.assertTrue(ALLOWED_RANDOMITE_DROPS.contains("cavernreborn:miner_orb"), "Randomite runtime allow-list must include miner_orb");
+
+        List<ItemStack> drops = dropsForBlock(helper, ModRegistries.RANDOMITE_ORE.get(), normalPickaxe(helper.getLevel()));
+        helper.assertTrue(!drops.isEmpty(), "Expected randomite ore to produce a curated runtime drop");
+        for (ItemStack stack : drops) {
+            helper.assertTrue(ALLOWED_RANDOMITE_DROPS.contains(itemId(stack)), "Unexpected runtime randomite drop: " + itemId(stack));
+        }
         helper.succeed();
     }
 
@@ -357,6 +385,88 @@ public final class CavernSpecialOreGameTests {
                 "Resolved CAVERN level must keep the configured runtime id"
             );
         }
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void minerOrbBonusPolicyRuntimeSmoke(GameTestHelper helper) {
+        String blockId = "cavernreborn:hexcite_ore";
+        int baseScore = CavernProgressionPolicy.scoreForBlock(blockId);
+
+        MinerOrbBonusResult triggered = MinerOrbBonusPolicy.evaluate(
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            blockId,
+            baseScore,
+            true,
+            true,
+            false,
+            false,
+            0
+        );
+        MinerOrbBonusResult missed = MinerOrbBonusPolicy.evaluate(
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            blockId,
+            baseScore,
+            true,
+            true,
+            false,
+            false,
+            1
+        );
+
+        helper.assertTrue(triggered.triggered(), "Expected miner_orb roll 0 to trigger");
+        helper.assertTrue(triggered.bonusScore() == 2, "Expected hexcite ore to grant +2 orb score");
+        helper.assertTrue(missed.decision() == MinerOrbBonusDecision.ROLL_MISSED, "Expected non-zero roll to miss");
+        helper.assertTrue(missed.bonusScore() == 0, "Roll miss must not grant a bonus");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void minerOrbProgressionBonusDoesNotIncreaseCountedBlocks(GameTestHelper helper) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        clearProgression(player);
+
+        String blockId = "cavernreborn:hexcite_ore";
+        int bonusScore = MinerOrbBonusPolicy.evaluate(
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            blockId,
+            CavernProgressionPolicy.scoreForBlock(blockId),
+            true,
+            true,
+            false,
+            false,
+            0
+        ).bonusScore();
+        CavernProgressionUpdateResult update = CavernReborn.cavernStateBootstrap().cavernProgressionService().recordMiningEvent(
+            player.getUUID(),
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            blockId,
+            bonusScore
+        );
+
+        helper.assertTrue(update.counted(), "Expected the origin block to count toward progression");
+        helper.assertTrue(update.currentSnapshot().countedBlocks() == 1, "Miner's Orb must not add extra counted blocks");
+        helper.assertTrue(update.currentSnapshot().progressionScore() == 6, "Expected base + orb bonus score");
+        helper.assertTrue(update.currentSnapshot().minedBlocksById().get(blockId) == 1, "Per-block count must stay at one");
+        clearProgression(player);
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void minerOrbDoesNotApplyToMiningAssistSuppressedBreak(GameTestHelper helper) {
+        MinerOrbBonusResult result = MinerOrbBonusPolicy.evaluate(
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            "cavernreborn:hexcite_ore",
+            CavernProgressionPolicy.scoreForBlock("cavernreborn:hexcite_ore"),
+            true,
+            true,
+            false,
+            true,
+            0
+        );
+
+        helper.assertTrue(result.decision() == MinerOrbBonusDecision.MINING_ASSIST_SUPPRESSED, "Suppressed Mining Assist breaks must skip miner_orb bonus");
+        helper.assertTrue(result.bonusScore() == 0, "Suppressed Mining Assist breaks must not grant extra score");
         helper.succeed();
     }
 

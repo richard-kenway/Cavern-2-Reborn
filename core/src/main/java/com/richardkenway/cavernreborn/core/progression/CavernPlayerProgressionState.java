@@ -55,14 +55,26 @@ public record CavernPlayerProgressionState(
     }
 
     public CavernPlayerProgressionState withMinedBlock(String blockId, int scoreDelta) {
+        return withMinedBlock(blockId, scoreDelta, 0);
+    }
+
+    public CavernPlayerProgressionState withMinedBlock(String blockId, int baseScoreDelta, int bonusScoreDelta) {
         String normalizedBlockId = requireText(blockId, "blockId");
-        if (scoreDelta <= 0) {
-            throw new IllegalArgumentException("scoreDelta must be positive");
+        if (baseScoreDelta <= 0) {
+            throw new IllegalArgumentException("baseScoreDelta must be positive");
+        }
+        if (bonusScoreDelta < 0) {
+            throw new IllegalArgumentException("bonusScoreDelta must not be negative");
         }
 
         Map<String, Integer> updatedCounts = new LinkedHashMap<>(minedBlocksById);
         updatedCounts.merge(normalizedBlockId, 1, Integer::sum);
-        return new CavernPlayerProgressionState(playerId, countedBlocks + 1, progressionScore + scoreDelta, updatedCounts);
+        return new CavernPlayerProgressionState(
+            playerId,
+            countedBlocks + 1,
+            progressionScore + baseScoreDelta + bonusScoreDelta,
+            updatedCounts
+        );
     }
 
     private static String requireText(String value, String fieldName) {

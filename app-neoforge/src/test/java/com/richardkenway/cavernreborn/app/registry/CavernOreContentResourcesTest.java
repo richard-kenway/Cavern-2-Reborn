@@ -185,9 +185,10 @@ class CavernOreContentResourcesTest {
         String randomiteLootRaw = readTextResource("data/cavernreborn/loot_table/blocks/randomite_ore.json");
         assertFalse(randomiteEntries.isEmpty());
         assertTrue(randomiteNames.contains("cavernreborn:hexcite"));
+        assertTrue(randomiteNames.contains("cavernreborn:miner_orb"));
         assertTrue(randomiteNames.contains("minecraft:bread"));
         assertTrue(randomiteNames.contains("minecraft:apple"));
-        assertFalse(randomiteLootRaw.contains("miner_orb"));
+        assertFalse(randomiteLootRaw.contains("cavernreborn:cavenic_orb"));
         assertFalse(randomiteLootRaw.contains("RandomiteDropEvent"));
         assertFalse(randomiteLootRaw.contains("OreDictionary"));
         assertFalse(randomiteLootRaw.contains("getRandomItem"));

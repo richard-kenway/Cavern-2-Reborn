@@ -75,6 +75,7 @@ public final class ModRegistries {
     public static final DeferredItem<Item> AQUAMARINE = ITEMS.register("aquamarine", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> MAGNITE_INGOT = ITEMS.register("magnite_ingot", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> HEXCITE = ITEMS.register("hexcite", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> MINER_ORB = ITEMS.register("miner_orb", () -> new Item(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<Item> HEXCITE_PICKAXE = ITEMS.register("hexcite_pickaxe",
         () -> new PickaxeItem(
             ModToolTiers.HEXCITE,
@@ -114,6 +115,7 @@ public final class ModRegistries {
                 output.accept(AQUAMARINE.get());
                 output.accept(MAGNITE_INGOT.get());
                 output.accept(HEXCITE.get());
+                output.accept(MINER_ORB.get());
                 output.accept(HEXCITE_PICKAXE.get());
                 output.accept(HEXCITE_AXE.get());
                 output.accept(HEXCITE_SHOVEL.get());

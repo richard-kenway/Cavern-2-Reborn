@@ -26,6 +26,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("randomite"));
         assertTrue(readme.contains("fissured_stone"));
         assertTrue(readme.contains("Mining Assist"));
+        assertTrue(readme.contains("Miner's Orb MVP"));
+        assertTrue(readme.contains("docs/miner-orb-mvp.md"));
     }
 
     @Test
@@ -37,6 +39,9 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("hexcite normal and Silk Touch loot paths"));
         assertTrue(doc.contains("randomite curated runtime loot output"));
         assertTrue(doc.contains("hexcite pickaxe enchantment applicability"));
+        assertTrue(doc.contains("miner_orb runtime registry availability"));
+        assertTrue(doc.contains("randomite allowed-drop runtime coverage that now includes miner_orb in the curated pool"));
+        assertTrue(doc.contains("miner_orb bonus policy/runtime smoke"));
         assertTrue(doc.contains("Mining Assist policy/runtime ids"));
         assertTrue(doc.contains("bounded same-block vein assist with hexcite_pickaxe"));
         assertTrue(doc.contains("no unlock means no assist"));

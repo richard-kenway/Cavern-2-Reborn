@@ -34,7 +34,7 @@ class MiningAssistResourcesTest {
         );
 
         assertTrue(modSource.contains("new CavernMiningAssistEvents("));
-        assertTrue(modSource.contains("GameTestHooks.isGametestEnabled()"));
+        assertTrue(modSource.contains("GameTestRegistry.register(CavernSpecialOreGameTests.class)"));
         assertTrue(eventSource.contains("MiningAssistPolicy.evaluate("));
         assertTrue(eventSource.contains("MiningAssistBreakContext"));
         assertTrue(eventSource.contains("MiningAssistPolicy.MAX_EXTRA_BLOCKS"));

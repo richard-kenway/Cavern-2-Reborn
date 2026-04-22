@@ -46,6 +46,26 @@ class CavernProgressionServiceTest {
     }
 
     @Test
+    void minerOrbBonusIncreasesScoreWithoutExtraCountedBlock() {
+        UUID playerId = UUID.randomUUID();
+        CavernProgressionService service = new CavernProgressionService(new TestPlayerMiningProgressionStore());
+
+        CavernProgressionUpdateResult update = service.recordMiningEvent(
+            playerId,
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            "cavernreborn:hexcite_ore",
+            2
+        );
+        CavernProgressionSnapshot snapshot = update.currentSnapshot();
+
+        assertTrue(update.counted());
+        assertEquals(6, update.scoreDelta());
+        assertEquals(1, snapshot.countedBlocks());
+        assertEquals(6, snapshot.progressionScore());
+        assertEquals(1, snapshot.minedBlocksById().get("cavernreborn:hexcite_ore"));
+    }
+
+    @Test
     void miningOutsideCavernDoesNotAffectCavernProgression() {
         UUID playerId = UUID.randomUUID();
         CavernProgressionService service = new CavernProgressionService(new TestPlayerMiningProgressionStore());
@@ -162,6 +182,31 @@ class CavernProgressionServiceTest {
         assertTrue(followUp.counted());
         assertFalse(followUp.rankAdvanced());
         assertFalse(followUp.unlockJustReached(CavernProgressionUnlock.MINERS_INSIGHT));
+    }
+
+    @Test
+    void noBonusPathAndRollMissRemainEquivalentToBaseProgression() {
+        UUID noBonusPlayer = UUID.randomUUID();
+        UUID rollMissPlayer = UUID.randomUUID();
+        CavernProgressionService service = new CavernProgressionService(new TestPlayerMiningProgressionStore());
+
+        CavernProgressionSnapshot noBonusSnapshot = service.recordMiningEvent(
+            noBonusPlayer,
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            "cavernreborn:aquamarine_ore"
+        ).currentSnapshot();
+        CavernProgressionSnapshot rollMissSnapshot = service.recordMiningEvent(
+            rollMissPlayer,
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            "cavernreborn:aquamarine_ore",
+            0
+        ).currentSnapshot();
+
+        assertEquals(1, noBonusSnapshot.countedBlocks());
+        assertEquals(1, rollMissSnapshot.countedBlocks());
+        assertEquals(2, noBonusSnapshot.progressionScore());
+        assertEquals(2, rollMissSnapshot.progressionScore());
+        assertEquals(noBonusSnapshot.minedBlocksById(), rollMissSnapshot.minedBlocksById());
     }
 
     @Test

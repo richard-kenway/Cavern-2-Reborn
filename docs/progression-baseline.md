@@ -26,6 +26,14 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
 - Unsupported blocks, block breaks outside `CAVERN`, creative-mode mining and non-player activity do not advance progression.
 - The custom `CAVERN` ore entries above still count only inside `cavernreborn:cavern`; mining the same blocks outside `CAVERN` does not advance the cavern progression state.
 - Each counted mining event increments `counted_blocks` by exactly `1` and adds the deterministic block score to `progression_score`.
+- If the player has at least one `cavernreborn:miner_orb` in inventory, the same counted event can also grant an occasional item-based score bonus.
+  - chance: `10%`
+  - bonus score: `max(base score / 2, 1)`
+  - the item is not consumed
+  - multiple orbs do not stack
+  - the bonus does not add extra counted-block records
+  - the bonus does not add extra `Miner's Insight` XP
+  - the bonus does not apply to Mining Assist extra blocks
 - Rank is derived from the persisted score with fixed thresholds:
   - `novice`: `0`
   - `apprentice`: `25`
@@ -51,6 +59,10 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
   - unlock threshold: `journeyman`
   - gameplay consequence: `hexcite_pickaxe` can break up to `6` extra connected ore blocks from the checked-in mining-assist target tag inside `CAVERN`
   - bounded policy: sneaking disables assist for that break, and assisted extra blocks do not add extra progression score or extra `Miner's Insight` bonus XP in this MVP
+- `Miner's Orb` is an item-based bonus path, not a rank-derived unlock.
+  - source-of-truth: `core/src/main/java/com/richardkenway/cavernreborn/core/mining/MinerOrbBonusPolicy.java`
+  - acquisition: very rare `randomite_ore` drop
+  - persistence model: no separate unlock flag, no saved roll state and no extra counted-block records
 - The threshold-crossing ore already receives the unlock, because the bonus check runs against the updated persisted snapshot for that same counted mining event.
 - The checked-in reward tier baseline is:
   - source-of-truth: `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionReward.java`
