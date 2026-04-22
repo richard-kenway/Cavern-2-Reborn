@@ -143,6 +143,8 @@ No full legacy-parity `CAVERN` gameplay stack is implemented yet.
   - `./gradlew --no-daemon test`
   - `./gradlew --no-daemon :app-neoforge:runGameTestServer`
   - `./gradlew --no-daemon build`
+- Or run the executable wrapper directly:
+  - `scripts/runtime-smoke.sh`
 - The runtime smoke scope is documented in `docs/runtime-smoke.md`.
 - The current GameTest slice covers runtime registry availability, `hexcite` normal and Silk Touch loot, curated `randomite` runtime drops, `fissured_stone` no-drop/effect/creative-guard/non-destructive behavior, progression policy ids/scores and special-ore worldgen key resolution.
 - This is still a server-side smoke layer, not a substitute for manual client validation of portal UX, rendering, particles, sounds or overall player feel.

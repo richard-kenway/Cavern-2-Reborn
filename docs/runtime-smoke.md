@@ -74,7 +74,10 @@ docker compose run --rm gradle ./gradlew --no-daemon build
 
 ## Template Strategy
 
-- The current GameTests use the built-in minimal `minecraft:empty` template.
+- The current GameTests use a checked-in minimal `minecraft:empty` template.
+- The template source lives at `app-neoforge/src/gameteststructures/empty.snbt`.
+- `app-neoforge/build.gradle` stages that local `.snbt` into the GameTest run directory because the current GameTest server setup does not reliably provide a built-in empty template for this project.
+- Under the current 1.21.1 GameTest local-structure lookup, that staged file resolves as `minecraft:empty`, so the namespace is intentionally explicit in the test annotations.
 - Test setup happens programmatically through `GameTestHelper`.
 - No large structure template or generated world is required for this runtime-smoke pass.
 

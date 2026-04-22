@@ -21,6 +21,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("NeoForge GameTest"));
         assertTrue(readme.contains("docs/runtime-smoke.md"));
         assertTrue(readme.contains("./gradlew --no-daemon :app-neoforge:runGameTestServer"));
+        assertTrue(readme.contains("scripts/runtime-smoke.sh"));
         assertTrue(readme.contains("hexcite"));
         assertTrue(readme.contains("randomite"));
         assertTrue(readme.contains("fissured_stone"));
@@ -42,6 +43,9 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("worldgen configured/placed feature runtime resolution"));
         assertTrue(doc.contains("./gradlew --no-daemon :app-neoforge:runGameTestServer"));
         assertTrue(doc.contains("docker compose run --rm gradle ./gradlew --no-daemon :app-neoforge:runGameTestServer"));
+        assertTrue(doc.contains("scripts/runtime-smoke.sh"));
+        assertTrue(doc.contains("minecraft:empty"));
+        assertTrue(doc.contains("app-neoforge/src/gameteststructures/empty.snbt"));
         assertTrue(doc.contains("manual client smoke is still needed"));
         assertTrue(doc.contains("portal UX"));
         assertTrue(doc.contains("rendering"));
@@ -50,6 +54,7 @@ class CavernRuntimeSmokeDocumentationTest {
     @Test
     void runtimeSmokeScriptExists() {
         assertTrue(Files.exists(SCRIPT));
+        assertTrue(Files.isExecutable(SCRIPT));
     }
 
     private static Path resolveProjectFile(String first, String... more) {
