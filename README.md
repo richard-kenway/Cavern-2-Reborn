@@ -136,6 +136,17 @@ No full legacy-parity `CAVERN` gameplay stack is implemented yet.
 - The first narrow population-parity note for post-terrain cave dressing lives in `docs/cavern-population-parity.md`.
 - The regression-protected worldgen baseline, intentional compromises and runtime checklist are documented in `docs/worldgen-baseline.md`.
 
+## Automated Runtime Validation
+
+- NeoForge GameTest is now the automated runtime smoke layer for tranche 2 special ore/content parity.
+- Run the checked-in validation sequence with:
+  - `./gradlew --no-daemon test`
+  - `./gradlew --no-daemon :app-neoforge:runGameTestServer`
+  - `./gradlew --no-daemon build`
+- The runtime smoke scope is documented in `docs/runtime-smoke.md`.
+- The current GameTest slice covers runtime registry availability, `hexcite` normal and Silk Touch loot, curated `randomite` runtime drops, `fissured_stone` no-drop/effect/creative-guard/non-destructive behavior, progression policy ids/scores and special-ore worldgen key resolution.
+- This is still a server-side smoke layer, not a substitute for manual client validation of portal UX, rendering, particles, sounds or overall player feel.
+
 ## Progression Baseline
 
 - Runtime progression source-of-truth is code, not config: `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionPolicy.java` defines the counted block list, per-block score deltas and rank thresholds.

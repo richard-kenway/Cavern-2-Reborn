@@ -169,7 +169,13 @@ class CavernOreContentResourcesTest {
         JsonObject hexciteSilkTouchChild = hexciteChildren.get(0).getAsJsonObject();
         JsonObject hexciteNormalChild = hexciteChildren.get(1).getAsJsonObject();
         assertEquals("cavernreborn:hexcite_ore", hexciteSilkTouchChild.get("name").getAsString());
-        assertEquals("minecraft:match_tool", hexciteSilkTouchChild.getAsJsonArray("conditions").get(0).getAsJsonObject().get("condition").getAsString());
+        JsonObject hexciteSilkTouchCondition = hexciteSilkTouchChild.getAsJsonArray("conditions").get(0).getAsJsonObject();
+        assertEquals("minecraft:match_tool", hexciteSilkTouchCondition.get("condition").getAsString());
+        JsonObject hexcitePredicate = hexciteSilkTouchCondition.getAsJsonObject("predicate");
+        JsonArray hexciteSilkEnchantments = hexcitePredicate
+            .getAsJsonObject("predicates")
+            .getAsJsonArray("minecraft:enchantments");
+        assertEquals("minecraft:silk_touch", hexciteSilkEnchantments.get(0).getAsJsonObject().get("enchantments").getAsString());
         assertEquals("cavernreborn:hexcite", hexciteNormalChild.get("name").getAsString());
         assertTrue(functionNames(hexciteNormalChild).contains("minecraft:apply_bonus"));
         assertTrue(functionNames(hexciteNormalChild).contains("minecraft:explosion_decay"));

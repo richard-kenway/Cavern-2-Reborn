@@ -8,8 +8,42 @@ dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
 }
 
+configurations.configureEach {
+    resolutionStrategy.force(
+        'org.ow2.asm:asm:9.8',
+        'org.ow2.asm:asm-tree:9.8',
+        'org.ow2.asm:asm-analysis:9.8',
+        'org.ow2.asm:asm-util:9.8',
+        'org.ow2.asm:asm-commons:9.8',
+        'org.lwjgl:lwjgl:3.3.3',
+        'org.lwjgl:lwjgl-glfw:3.3.3',
+        'org.lwjgl:lwjgl-opengl:3.3.3',
+        'org.lwjgl:lwjgl-openal:3.3.3',
+        'org.lwjgl:lwjgl-stb:3.3.3',
+        'org.lwjgl:lwjgl-tinyfd:3.3.3',
+        'org.lwjgl:lwjgl-freetype:3.3.3',
+        'org.lwjgl:lwjgl-jemalloc:3.3.3',
+        'net.neoforged:mergetool:2.0.3'
+    )
+}
+
 base {
     archivesName = mod_id
+}
+
+def syncRuntimeMergedClasses = tasks.register('syncRuntimeMergedClasses', Sync) {
+    dependsOn project(':core').tasks.named('classes')
+    dependsOn project(':data').tasks.named('classes')
+    dependsOn tasks.named('compileJava')
+    into layout.buildDirectory.dir('classes/java/main')
+    from project(':core').sourceSets.main.output.classesDirs
+    from project(':data').sourceSets.main.output.classesDirs
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+def syncGameTestStructures = tasks.register('syncGameTestStructures', Sync) {
+    from layout.projectDirectory.dir('src/gameteststructures')
+    into layout.projectDirectory.dir('runs/gameTestServer/gameteststructures')
 }
 
 sourceSets {
@@ -32,6 +66,12 @@ runs {
     }
 
     server {
+        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        programArgument '--nogui'
+    }
+
+    gameTestServer {
+        gameTest()
         systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         programArgument '--nogui'
     }
@@ -66,4 +106,38 @@ tasks.named('jar', Jar).configure {
     from project(':core').sourceSets.main.output
     from project(':data').sourceSets.main.output
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.named('classes').configure {
+    dependsOn syncRuntimeMergedClasses
+}
+
+tasks.named('runGameTestServer').configure {
+    dependsOn syncGameTestStructures
+}
+
+tasks.configureEach {
+    if (name in ['runClient', 'runServer', 'runGameTestServer', 'runData']) {
+        notCompatibleWithConfigurationCache('NeoGradle run tasks capture Project and SourceSet state during execution in this project.')
+    }
+}
+
+tasks.matching { it.name in ['writeMinecraftClasspathServer', 'writeMinecraftClasspathGameTestServer'] }.configureEach {
+    outputs.upToDateWhen { false }
+    outputs.cacheIf { false }
+
+    doLast {
+        File classpathFile = outputs.files.files.find { it.name == 'classpath.txt' }
+        if (classpathFile == null || !classpathFile.exists()) {
+            throw new GradleException("Missing generated classpath.txt for $name")
+        }
+
+        List<String> filteredLines = classpathFile.readLines('UTF-8').findAll { String line ->
+            !(line.contains('/org.ow2.asm/') && line.contains('/9.5/')) &&
+            !(line.contains('/org.lwjgl/') && line.contains('/3.3.1/')) &&
+            !line.contains('/net.neoforged/mergetool/2.0.0/')
+        }
+
+        classpathFile.text = filteredLines.join(System.lineSeparator()) + System.lineSeparator()
+    }
 }
