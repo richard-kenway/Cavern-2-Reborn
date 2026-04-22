@@ -11,11 +11,18 @@ This note fixes the second narrow special-ore/content tranche for `CAVERN` (Tran
 ## Bounded Modern Scope
 
 - `hexcite` restores only the ore, gem and storage-block loop in this tranche.
-- `hexcite` tools, armor, weapons, trims and tuning remain out of scope.
+- `hexcite` tools, armor, weapons, trims and tuning remain out of scope for this tranche itself.
 - `randomite_ore` uses a curated bounded loot table instead of the old OreDictionary scan, registry-wide random item mode or `RandomiteDropEvent`.
 - `fissured_stone` is restored as a bounded non-griefing cave effect block.
 - The current `fissured_stone` pass does not create destructive explosions or terrain damage.
 - Custom `CAVERN` ores now participate in progression scoring inside `cavernreborn:cavern`.
+
+## Follow-Up Tool Slice
+
+- The first hexcite tool set MVP is documented separately in `docs/hexcite-tool-parity.md`.
+- That follow-up slice adds the five core `hexcite` tools only.
+- Armor remains out of scope there as well.
+- No special tool abilities were added on top of the special ore tranche.
 
 ## Modern Reborn Slice
 

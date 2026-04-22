@@ -6,10 +6,15 @@ import com.richardkenway.cavernreborn.app.block.FissuredStoneBlock;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -70,6 +75,26 @@ public final class ModRegistries {
     public static final DeferredItem<Item> AQUAMARINE = ITEMS.register("aquamarine", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> MAGNITE_INGOT = ITEMS.register("magnite_ingot", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> HEXCITE = ITEMS.register("hexcite", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> HEXCITE_PICKAXE = ITEMS.register("hexcite_pickaxe",
+        () -> new PickaxeItem(
+            ModToolTiers.HEXCITE,
+            new Item.Properties().attributes(PickaxeItem.createAttributes(ModToolTiers.HEXCITE, 1.0F, -2.8F))));
+    public static final DeferredItem<Item> HEXCITE_AXE = ITEMS.register("hexcite_axe",
+        () -> new AxeItem(
+            ModToolTiers.HEXCITE,
+            new Item.Properties().attributes(AxeItem.createAttributes(ModToolTiers.HEXCITE, 5.0F, -3.0F))));
+    public static final DeferredItem<Item> HEXCITE_SHOVEL = ITEMS.register("hexcite_shovel",
+        () -> new ShovelItem(
+            ModToolTiers.HEXCITE,
+            new Item.Properties().attributes(ShovelItem.createAttributes(ModToolTiers.HEXCITE, 1.5F, -3.0F))));
+    public static final DeferredItem<Item> HEXCITE_HOE = ITEMS.register("hexcite_hoe",
+        () -> new HoeItem(
+            ModToolTiers.HEXCITE,
+            new Item.Properties().attributes(HoeItem.createAttributes(ModToolTiers.HEXCITE, -3.0F, 0.0F))));
+    public static final DeferredItem<Item> HEXCITE_SWORD = ITEMS.register("hexcite_sword",
+        () -> new SwordItem(
+            ModToolTiers.HEXCITE,
+            new Item.Properties().attributes(SwordItem.createAttributes(ModToolTiers.HEXCITE, 3, -2.4F))));
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MAIN_TAB = CREATIVE_MODE_TABS.register("main",
         () -> CreativeModeTab.builder()
@@ -89,6 +114,11 @@ public final class ModRegistries {
                 output.accept(AQUAMARINE.get());
                 output.accept(MAGNITE_INGOT.get());
                 output.accept(HEXCITE.get());
+                output.accept(HEXCITE_PICKAXE.get());
+                output.accept(HEXCITE_AXE.get());
+                output.accept(HEXCITE_SHOVEL.get());
+                output.accept(HEXCITE_HOE.get());
+                output.accept(HEXCITE_SWORD.get());
             })
             .build());
 

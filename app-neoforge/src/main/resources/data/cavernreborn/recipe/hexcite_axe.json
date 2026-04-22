@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "## ",
+    "#| ",
+    " | "
+  ],
+  "key": {
+    "#": {
+      "item": "cavernreborn:hexcite"
+    },
+    "|": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "cavernreborn:hexcite_axe"
+  }
+}

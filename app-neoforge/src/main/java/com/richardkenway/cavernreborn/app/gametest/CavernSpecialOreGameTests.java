@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.richardkenway.cavernreborn.CavernReborn;
 import com.richardkenway.cavernreborn.app.registry.ModRegistries;
+import com.richardkenway.cavernreborn.app.registry.ModToolTiers;
 import com.richardkenway.cavernreborn.core.progression.CavernProgressionPolicy;
 import com.richardkenway.cavernreborn.core.state.CavernDimensions;
 
@@ -97,6 +98,22 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void hexciteToolsRegisterAtRuntime(GameTestHelper helper) {
+        helper.assertTrue(ModRegistries.HEXCITE_PICKAXE.get() != null, "Missing hexcite pickaxe");
+        helper.assertTrue(ModRegistries.HEXCITE_AXE.get() != null, "Missing hexcite axe");
+        helper.assertTrue(ModRegistries.HEXCITE_SHOVEL.get() != null, "Missing hexcite shovel");
+        helper.assertTrue(ModRegistries.HEXCITE_HOE.get() != null, "Missing hexcite hoe");
+        helper.assertTrue(ModRegistries.HEXCITE_SWORD.get() != null, "Missing hexcite sword");
+
+        assertRegistryId(helper, ModRegistries.HEXCITE_PICKAXE.get(), "cavernreborn:hexcite_pickaxe");
+        assertRegistryId(helper, ModRegistries.HEXCITE_AXE.get(), "cavernreborn:hexcite_axe");
+        assertRegistryId(helper, ModRegistries.HEXCITE_SHOVEL.get(), "cavernreborn:hexcite_shovel");
+        assertRegistryId(helper, ModRegistries.HEXCITE_HOE.get(), "cavernreborn:hexcite_hoe");
+        assertRegistryId(helper, ModRegistries.HEXCITE_SWORD.get(), "cavernreborn:hexcite_sword");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void hexciteOreNormalLootDropsHexcite(GameTestHelper helper) {
         helper.killAllEntities();
 
@@ -117,6 +134,75 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(!drops.isEmpty(), "Expected hexcite ore to produce drops for a Silk Touch pickaxe");
         assertContainsItem(helper, drops, "cavernreborn:hexcite_ore");
         assertDoesNotContainItem(helper, drops, "cavernreborn:hexcite");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void hexcitePickaxeCanMineSpecialCavernOres(GameTestHelper helper) {
+        helper.killAllEntities();
+
+        List<ItemStack> hexciteDrops = dropsForBlock(helper, ModRegistries.HEXCITE_ORE.get(), hexcitePickaxe());
+        helper.assertTrue(!hexciteDrops.isEmpty(), "Expected hexcite pickaxe to mine hexcite ore");
+        assertContainsItem(helper, hexciteDrops, "cavernreborn:hexcite");
+        assertDoesNotContainItem(helper, hexciteDrops, "cavernreborn:hexcite_ore");
+
+        List<ItemStack> randomiteDrops = dropsForBlock(helper, ModRegistries.RANDOMITE_ORE.get(), hexcitePickaxe());
+        helper.assertTrue(!randomiteDrops.isEmpty(), "Expected hexcite pickaxe to mine randomite ore");
+        for (ItemStack stack : randomiteDrops) {
+            String itemId = itemId(stack);
+            helper.assertTrue(ALLOWED_RANDOMITE_DROPS.contains(itemId), "Unexpected randomite drop for hexcite pickaxe: " + itemId);
+        }
+
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void hexcitePickaxeSilkTouchStillTriggersOreDrop(GameTestHelper helper) {
+        helper.killAllEntities();
+
+        List<ItemStack> drops = dropsForBlock(helper, ModRegistries.HEXCITE_ORE.get(), silkTouchHexcitePickaxe(helper.getLevel()));
+
+        helper.assertTrue(!drops.isEmpty(), "Expected Silk Touch hexcite pickaxe to produce drops");
+        assertContainsItem(helper, drops, "cavernreborn:hexcite_ore");
+        assertDoesNotContainItem(helper, drops, "cavernreborn:hexcite");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void hexciteToolsExposeToolComponents(GameTestHelper helper) {
+        List<ItemStack> tools = List.of(
+            new ItemStack(ModRegistries.HEXCITE_PICKAXE.get()),
+            new ItemStack(ModRegistries.HEXCITE_AXE.get()),
+            new ItemStack(ModRegistries.HEXCITE_SHOVEL.get()),
+            new ItemStack(ModRegistries.HEXCITE_HOE.get()),
+            new ItemStack(ModRegistries.HEXCITE_SWORD.get())
+        );
+
+        for (ItemStack tool : tools) {
+            helper.assertTrue(tool.isDamageableItem(), "Expected damageable hexcite tool: " + itemId(tool));
+            helper.assertTrue(tool.getMaxDamage() == ModToolTiers.HEXCITE.getUses(), "Unexpected max damage for " + itemId(tool));
+        }
+
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void hexciteToolsAreRepairableWithHexcite(GameTestHelper helper) {
+        ItemStack repairStack = new ItemStack(ModRegistries.HEXCITE.get());
+        ItemStack wrongRepairStack = new ItemStack(Items.STICK);
+        List<ItemStack> tools = List.of(
+            new ItemStack(ModRegistries.HEXCITE_PICKAXE.get()),
+            new ItemStack(ModRegistries.HEXCITE_AXE.get()),
+            new ItemStack(ModRegistries.HEXCITE_SHOVEL.get()),
+            new ItemStack(ModRegistries.HEXCITE_HOE.get()),
+            new ItemStack(ModRegistries.HEXCITE_SWORD.get())
+        );
+
+        for (ItemStack tool : tools) {
+            helper.assertTrue(tool.getItem().isValidRepairItem(tool, repairStack), "Expected hexcite repair support for " + itemId(tool));
+            helper.assertFalse(tool.getItem().isValidRepairItem(tool, wrongRepairStack), "Stick must not repair " + itemId(tool));
+        }
+
         helper.succeed();
     }
 
@@ -256,6 +342,17 @@ public final class CavernSpecialOreGameTests {
 
     private static ItemStack silkTouchPickaxe(ServerLevel level) {
         ItemStack tool = normalPickaxe(level);
+        HolderLookup.RegistryLookup<Enchantment> enchantments = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        tool.enchant(enchantments.getOrThrow(Enchantments.SILK_TOUCH), 1);
+        return tool;
+    }
+
+    private static ItemStack hexcitePickaxe() {
+        return new ItemStack(ModRegistries.HEXCITE_PICKAXE.get());
+    }
+
+    private static ItemStack silkTouchHexcitePickaxe(ServerLevel level) {
+        ItemStack tool = hexcitePickaxe();
         HolderLookup.RegistryLookup<Enchantment> enchantments = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
         tool.enchant(enchantments.getOrThrow(Enchantments.SILK_TOUCH), 1);
         return tool;

@@ -18,6 +18,7 @@ This repository currently contains the project skeleton and a minimal content re
 - a first population-parity pass on top of that terrain slice: slightly stronger monster-room pressure, biome-biased water/lava spring passes and extra mushroom scatter so `CAVERN` reads as a more populated underground world without adding a new content roster
 - a first ore/content-parity pass on top of the terrain and population baselines: `aquamarine` and `magnite` now exist as cavern-native ore families with registered blocks/items, minimal storage loops and narrow `CAVERN` worldgen wiring instead of relying only on vanilla ore identity
 - a second special ore/content tranche on top of that slice: `hexcite`, `randomite` and `fissured_stone` now exist as bounded custom `CAVERN` content with checked-in assets, loot, recipes, worldgen and non-griefing fissure behavior instead of broad legacy-system ports
+- a first hexcite tool-set MVP on top of that special ore slice: `hexcite_pickaxe`, `hexcite_axe`, `hexcite_shovel`, `hexcite_hoe` and `hexcite_sword` now exist as bounded craftable equipment with `hexcite` repair support, while armor and special abilities remain out of scope
 - a conscious four-biome `CAVERN` family closer to the old mining dimension baseline: dominant `stone_depths`, plus `lush_grotto`, `dripstone_grotto` and `highland_hollows`
 - a mining-oriented worldgen baseline for `CAVERN`: dense coal/iron passes, biome-shaped gold/emerald bias, denser monster rooms and mineshaft-enabled cave biomes
 - basic portal UX feedback for `cooldown`, failed cavern entry and missing return-state denial cases, plus an overworld fallback return target when no saved return-state exists
@@ -131,6 +132,7 @@ No full legacy-parity `CAVERN` gameplay stack is implemented yet.
 - Mining usefulness now comes from the baseline ore set plus enabled ore veins, dense coal/iron passes, extra gold in `dripstone_grotto` and extra emerald in `highland_hollows`.
 - The first narrow custom ore/content note for `aquamarine` and `magnite` lives in `docs/cavern-ore-content-parity.md`.
 - The second narrow special-ore/content note for `hexcite`, `randomite`, `fissured_stone`, bounded randomite drops and non-griefing fissure behavior lives in `docs/cavern-special-ore-content-parity.md`.
+- The first bounded hexcite tool-set MVP note lives in `docs/hexcite-tool-parity.md`.
 - If you use the dedicated-server console for biome distance checks, set a known source position first, for example `setworldspawn 0 70 0`, before comparing biome distances in `CAVERN`.
 - Relevant cave features/structures in the baseline are amethyst geodes, lava lakes, fluid springs, lush/dripstone decoration, denser monster rooms and mineshafts.
 - The first narrow population-parity note for post-terrain cave dressing lives in `docs/cavern-population-parity.md`.
@@ -146,7 +148,7 @@ No full legacy-parity `CAVERN` gameplay stack is implemented yet.
 - Or run the executable wrapper directly:
   - `scripts/runtime-smoke.sh`
 - The runtime smoke scope is documented in `docs/runtime-smoke.md`.
-- The current GameTest slice covers runtime registry availability, `hexcite` normal and Silk Touch loot, curated `randomite` runtime drops, `fissured_stone` no-drop/effect/creative-guard/non-destructive behavior, progression policy ids/scores and special-ore worldgen key resolution.
+- The current GameTest slice covers runtime registry availability, `hexcite` normal and Silk Touch loot, `hexcite` tool runtime registry/mining paths, curated `randomite` runtime drops, `fissured_stone` no-drop/effect/creative-guard/non-destructive behavior, progression policy ids/scores and special-ore worldgen key resolution.
 - This is still a server-side smoke layer, not a substitute for manual client validation of portal UX, rendering, particles, sounds or overall player feel.
 
 ## Progression Baseline

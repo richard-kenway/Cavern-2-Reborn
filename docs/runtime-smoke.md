@@ -1,6 +1,6 @@
 # Runtime Smoke
 
-This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2.
+This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2 and the follow-up `hexcite` tool-set MVP.
 
 It is intentionally a NeoForge GameTest server pass, not a visual client smoke pass.
 
@@ -9,7 +9,10 @@ It is intentionally a NeoForge GameTest server pass, not a visual client smoke p
 NeoForge GameTest runtime smoke covers:
 
 - runtime registry availability for tranche 2 content
+- hexcite tool runtime registry ids
 - hexcite normal and Silk Touch loot paths
+- hexcite pickaxe normal mining path for special ores
+- hexcite pickaxe Silk Touch path for hexcite ore
 - randomite curated runtime loot output
 - fissured stone no-drop behavior
 - fissured stone survival effect behavior
