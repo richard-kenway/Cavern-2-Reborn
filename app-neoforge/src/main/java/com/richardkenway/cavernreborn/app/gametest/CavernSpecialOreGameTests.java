@@ -11,6 +11,7 @@ import com.richardkenway.cavernreborn.core.progression.CavernProgressionPolicy;
 import com.richardkenway.cavernreborn.core.state.CavernDimensions;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -165,6 +166,20 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(!drops.isEmpty(), "Expected Silk Touch hexcite pickaxe to produce drops");
         assertContainsItem(helper, drops, "cavernreborn:hexcite_ore");
         assertDoesNotContainItem(helper, drops, "cavernreborn:hexcite");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void hexcitePickaxeSupportsMiningEnchantments(GameTestHelper helper) {
+        HolderLookup.RegistryLookup<Enchantment> enchantments = helper.getLevel().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        ItemStack tool = hexcitePickaxe();
+
+        assertSupportsEnchantment(helper, tool, enchantments.getOrThrow(Enchantments.EFFICIENCY), true);
+        assertSupportsEnchantment(helper, tool, enchantments.getOrThrow(Enchantments.SILK_TOUCH), true);
+        assertSupportsEnchantment(helper, tool, enchantments.getOrThrow(Enchantments.FORTUNE), true);
+        assertSupportsEnchantment(helper, tool, enchantments.getOrThrow(Enchantments.UNBREAKING), true);
+        assertSupportsEnchantment(helper, tool, enchantments.getOrThrow(Enchantments.MENDING), true);
+        assertSupportsEnchantment(helper, tool, enchantments.getOrThrow(Enchantments.SHARPNESS), false);
         helper.succeed();
     }
 
@@ -423,5 +438,16 @@ public final class CavernSpecialOreGameTests {
     private static void assertRegistryId(GameTestHelper helper, Item item, String expectedId) {
         ResourceLocation actual = BuiltInRegistries.ITEM.getKey(item);
         helper.assertTrue(expectedId.equals(actual.toString()), "Expected item id " + expectedId + " but got " + actual);
+    }
+
+    private static void assertSupportsEnchantment(GameTestHelper helper, ItemStack stack, Holder<Enchantment> enchantment, boolean expected) {
+        boolean actual = stack.supportsEnchantment(enchantment);
+        ResourceLocation enchantmentId = enchantment.getKey().location();
+
+        if (expected) {
+            helper.assertTrue(actual, "Expected " + itemId(stack) + " to support " + enchantmentId);
+        } else {
+            helper.assertFalse(actual, "Expected " + itemId(stack) + " not to support " + enchantmentId);
+        }
     }
 }

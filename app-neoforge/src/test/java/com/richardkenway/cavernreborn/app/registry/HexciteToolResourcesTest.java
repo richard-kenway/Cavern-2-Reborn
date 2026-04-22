@@ -10,6 +10,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
@@ -72,6 +73,17 @@ class HexciteToolResourcesTest {
         JsonObject swordRecipe = readJsonResource("data/cavernreborn/recipe/hexcite_sword.json");
         JsonObject incorrectForHexciteTool = readJsonResource("data/cavernreborn/tags/blocks/incorrect_for_hexcite_tool.json");
         JsonObject incorrectForHexciteToolCompat = readJsonResource("data/cavernreborn/tags/block/incorrect_for_hexcite_tool.json");
+        JsonObject pickaxesTag = readJsonResource("data/minecraft/tags/item/pickaxes.json");
+        JsonObject axesTag = readJsonResource("data/minecraft/tags/item/axes.json");
+        JsonObject shovelsTag = readJsonResource("data/minecraft/tags/item/shovels.json");
+        JsonObject hoesTag = readJsonResource("data/minecraft/tags/item/hoes.json");
+        JsonObject swordsTag = readJsonResource("data/minecraft/tags/item/swords.json");
+        JsonObject miningEnchantableTag = readJsonResource("data/minecraft/tags/item/enchantable/mining.json");
+        JsonObject miningLootEnchantableTag = readJsonResource("data/minecraft/tags/item/enchantable/mining_loot.json");
+        JsonObject durabilityEnchantableTag = readJsonResource("data/minecraft/tags/item/enchantable/durability.json");
+        JsonObject swordEnchantableTag = readJsonResource("data/minecraft/tags/item/enchantable/sword.json");
+        JsonObject sharpWeaponEnchantableTag = readJsonResource("data/minecraft/tags/item/enchantable/sharp_weapon.json");
+        JsonObject weaponEnchantableTag = readJsonResource("data/minecraft/tags/item/enchantable/weapon.json");
 
         assertEquals("Hexcite Pickaxe", lang.get("item.cavernreborn.hexcite_pickaxe").getAsString());
         assertEquals("Hexcite Axe", lang.get("item.cavernreborn.hexcite_axe").getAsString());
@@ -94,6 +106,34 @@ class HexciteToolResourcesTest {
         List<String> incorrectTagValues = arrayStrings(incorrectForHexciteTool.getAsJsonArray("values"));
         assertTrue(incorrectTagValues.contains("#minecraft:incorrect_for_diamond_tool"));
         assertEquals(incorrectTagValues, arrayStrings(incorrectForHexciteToolCompat.getAsJsonArray("values")));
+
+        assertTagContainsExactly(pickaxesTag, List.of("cavernreborn:hexcite_pickaxe"));
+        assertTagContainsExactly(axesTag, List.of("cavernreborn:hexcite_axe"));
+        assertTagContainsExactly(shovelsTag, List.of("cavernreborn:hexcite_shovel"));
+        assertTagContainsExactly(hoesTag, List.of("cavernreborn:hexcite_hoe"));
+        assertTagContainsExactly(swordsTag, List.of("cavernreborn:hexcite_sword"));
+        assertTagContainsExactly(miningEnchantableTag, List.of(
+            "cavernreborn:hexcite_pickaxe",
+            "cavernreborn:hexcite_axe",
+            "cavernreborn:hexcite_shovel",
+            "cavernreborn:hexcite_hoe"
+        ));
+        assertTagContainsExactly(miningLootEnchantableTag, List.of(
+            "cavernreborn:hexcite_pickaxe",
+            "cavernreborn:hexcite_axe",
+            "cavernreborn:hexcite_shovel",
+            "cavernreborn:hexcite_hoe"
+        ));
+        assertTagContainsExactly(durabilityEnchantableTag, List.of(
+            "cavernreborn:hexcite_pickaxe",
+            "cavernreborn:hexcite_axe",
+            "cavernreborn:hexcite_shovel",
+            "cavernreborn:hexcite_hoe",
+            "cavernreborn:hexcite_sword"
+        ));
+        assertTagContainsExactly(swordEnchantableTag, List.of("cavernreborn:hexcite_sword"));
+        assertTagContainsExactly(sharpWeaponEnchantableTag, List.of("cavernreborn:hexcite_axe", "cavernreborn:hexcite_sword"));
+        assertTagContainsExactly(weaponEnchantableTag, List.of("cavernreborn:hexcite_axe", "cavernreborn:hexcite_sword"));
     }
 
     @Test
@@ -115,6 +155,17 @@ class HexciteToolResourcesTest {
         assertClassPathOrigin(resourceUrl("data/cavernreborn/recipe/hexcite_sword.json"), "data/cavernreborn/recipe/hexcite_sword.json");
         assertClassPathOrigin(resourceUrl("data/cavernreborn/tags/blocks/incorrect_for_hexcite_tool.json"), "data/cavernreborn/tags/blocks/incorrect_for_hexcite_tool.json");
         assertClassPathOrigin(resourceUrl("data/cavernreborn/tags/block/incorrect_for_hexcite_tool.json"), "data/cavernreborn/tags/block/incorrect_for_hexcite_tool.json");
+        assertClassPathOrigin(resourceUrl("data/minecraft/tags/item/pickaxes.json"), "data/minecraft/tags/item/pickaxes.json");
+        assertClassPathOrigin(resourceUrl("data/minecraft/tags/item/axes.json"), "data/minecraft/tags/item/axes.json");
+        assertClassPathOrigin(resourceUrl("data/minecraft/tags/item/shovels.json"), "data/minecraft/tags/item/shovels.json");
+        assertClassPathOrigin(resourceUrl("data/minecraft/tags/item/hoes.json"), "data/minecraft/tags/item/hoes.json");
+        assertClassPathOrigin(resourceUrl("data/minecraft/tags/item/swords.json"), "data/minecraft/tags/item/swords.json");
+        assertClassPathOrigin(resourceUrl("data/minecraft/tags/item/enchantable/mining.json"), "data/minecraft/tags/item/enchantable/mining.json");
+        assertClassPathOrigin(resourceUrl("data/minecraft/tags/item/enchantable/mining_loot.json"), "data/minecraft/tags/item/enchantable/mining_loot.json");
+        assertClassPathOrigin(resourceUrl("data/minecraft/tags/item/enchantable/durability.json"), "data/minecraft/tags/item/enchantable/durability.json");
+        assertClassPathOrigin(resourceUrl("data/minecraft/tags/item/enchantable/sword.json"), "data/minecraft/tags/item/enchantable/sword.json");
+        assertClassPathOrigin(resourceUrl("data/minecraft/tags/item/enchantable/sharp_weapon.json"), "data/minecraft/tags/item/enchantable/sharp_weapon.json");
+        assertClassPathOrigin(resourceUrl("data/minecraft/tags/item/enchantable/weapon.json"), "data/minecraft/tags/item/enchantable/weapon.json");
     }
 
     private static void assertToolRecipe(JsonObject recipe, String resultId) {
@@ -130,6 +181,11 @@ class HexciteToolResourcesTest {
     private static void assertHandheldModel(JsonObject model, String texturePath) {
         assertEquals("minecraft:item/handheld", model.get("parent").getAsString());
         assertEquals(texturePath, model.getAsJsonObject("textures").get("layer0").getAsString());
+    }
+
+    private static void assertTagContainsExactly(JsonObject tag, Collection<String> expectedValues) {
+        assertTrue(!tag.get("replace").getAsBoolean(), "Expected additive tag merge");
+        assertEquals(List.copyOf(expectedValues), arrayStrings(tag.getAsJsonArray("values")));
     }
 
     private static JsonObject readJsonResource(String path) throws IOException {

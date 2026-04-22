@@ -35,6 +35,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("runtime registry availability for tranche 2 content"));
         assertTrue(doc.contains("hexcite normal and Silk Touch loot paths"));
         assertTrue(doc.contains("randomite curated runtime loot output"));
+        assertTrue(doc.contains("hexcite pickaxe enchantment applicability"));
         assertTrue(doc.contains("fissured stone no-drop behavior"));
         assertTrue(doc.contains("fissured stone survival effect behavior"));
         assertTrue(doc.contains("fissured stone creative guard"));

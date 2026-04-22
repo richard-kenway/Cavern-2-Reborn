@@ -11,6 +11,7 @@ NeoForge GameTest runtime smoke covers:
 - runtime registry availability for tranche 2 content
 - hexcite tool runtime registry ids
 - hexcite normal and Silk Touch loot paths
+- hexcite pickaxe enchantment applicability for mining and durability enchantments
 - hexcite pickaxe normal mining path for special ores
 - hexcite pickaxe Silk Touch path for hexcite ore
 - randomite curated runtime loot output

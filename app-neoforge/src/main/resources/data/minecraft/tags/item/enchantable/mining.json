@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "cavernreborn:hexcite_pickaxe",
+    "cavernreborn:hexcite_axe",
+    "cavernreborn:hexcite_shovel",
+    "cavernreborn:hexcite_hoe"
+  ]
+}
