@@ -3,7 +3,8 @@ package com.richardkenway.cavernreborn.core.progression;
 import java.util.Objects;
 
 public enum CavernProgressionUnlock {
-    MINERS_INSIGHT("miners_insight", "Miner's Insight", CavernProgressionRank.APPRENTICE);
+    MINERS_INSIGHT("miners_insight", "Miner's Insight", CavernProgressionRank.APPRENTICE),
+    MINING_ASSIST("mining_assist", "Mining Assist", CavernProgressionRank.JOURNEYMAN);
 
     private final String id;
     private final String label;

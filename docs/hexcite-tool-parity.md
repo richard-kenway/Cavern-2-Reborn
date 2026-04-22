@@ -24,6 +24,7 @@ It builds directly on `docs/cavern-special-ore-content-parity.md`.
 - armor remains out of scope.
 - No special tool abilities are added in this pass.
 - No mining assist, vein mining, area mining, particles or custom sounds are added here.
+- Mining Assist is documented separately as the follow-up functional slice in `docs/mining-assist-mvp.md`.
 
 ## Tier Policy
 

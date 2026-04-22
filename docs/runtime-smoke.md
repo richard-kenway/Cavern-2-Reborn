@@ -14,6 +14,11 @@ NeoForge GameTest runtime smoke covers:
 - hexcite pickaxe enchantment applicability for mining and durability enchantments
 - hexcite pickaxe normal mining path for special ores
 - hexcite pickaxe Silk Touch path for hexcite ore
+- Mining Assist policy/runtime ids
+- bounded same-block vein assist with hexcite_pickaxe
+- no unlock means no assist
+- sneaking disables assist
+- fissured_stone exclusion and non-target preservation during assist
 - randomite curated runtime loot output
 - fissured stone no-drop behavior
 - fissured stone survival effect behavior
@@ -74,6 +79,7 @@ docker compose run --rm gradle ./gradlew --no-daemon build
 
 - `:app-neoforge:runGameTestServer` must fail if a required special-ore GameTest fails.
 - The GameTest server run is the automated runtime layer for tranche 2 special ores and progression/worldgen wiring.
+- The same GameTest layer now also covers the bounded Mining Assist MVP runtime path.
 - The run is intentionally small and server-only; it should not require a GUI client or a human player.
 
 ## Template Strategy

@@ -74,7 +74,7 @@ class CavernProgressionPersistenceTest {
         assertTrue(snapshot.hasUnlocked(CavernProgressionUnlock.MINERS_INSIGHT));
         assertEquals(1, CavernProgressionConsequences.bonusExperienceFor(snapshot));
         assertEquals(
-            "CAVERN rank for TestPlayer: apprentice | score 25 | counted ores 5 | next journeyman in 50 score | unlocked: Miner's Insight (+1 bonus XP on counted ores in CAVERN)",
+            "CAVERN rank for TestPlayer: apprentice | score 25 | counted ores 5 | next journeyman in 50 score | unlocked: Miner's Insight (+1 bonus XP on counted ores in CAVERN) | next unlock: Mining Assist at journeyman",
             CavernPlayerProgressionStatusFormatter.format("TestPlayer", snapshot)
         );
     }

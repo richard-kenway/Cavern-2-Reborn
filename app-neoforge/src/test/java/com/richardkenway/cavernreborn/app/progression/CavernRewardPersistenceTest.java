@@ -49,7 +49,7 @@ class CavernRewardPersistenceTest {
         assertTrue(restartedStatus.claimed());
         assertFalse(restartedStatus.availableToClaim());
         assertEquals(
-            "CAVERN rank for TestPlayer: apprentice | score 25 | counted ores 5 | next journeyman in 50 score | unlocked: Miner's Insight (+1 bonus XP on counted ores in CAVERN)",
+            "CAVERN rank for TestPlayer: apprentice | score 25 | counted ores 5 | next journeyman in 50 score | unlocked: Miner's Insight (+1 bonus XP on counted ores in CAVERN) | next unlock: Mining Assist at journeyman",
             CavernPlayerProgressionStatusFormatter.format("TestPlayer", restartedSnapshot)
         );
         assertEquals(

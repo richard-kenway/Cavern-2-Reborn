@@ -1,13 +1,18 @@
 package com.richardkenway.cavernreborn.app.gametest;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.richardkenway.cavernreborn.CavernReborn;
+import com.richardkenway.cavernreborn.app.mining.CavernMiningAssistEvents;
+import com.richardkenway.cavernreborn.app.registry.ModBlockTags;
 import com.richardkenway.cavernreborn.app.registry.ModRegistries;
 import com.richardkenway.cavernreborn.app.registry.ModToolTiers;
+import com.richardkenway.cavernreborn.core.mining.MiningAssistPolicy;
 import com.richardkenway.cavernreborn.core.progression.CavernProgressionPolicy;
+import com.richardkenway.cavernreborn.core.progression.CavernProgressionUnlock;
 import com.richardkenway.cavernreborn.core.state.CavernDimensions;
 
 import net.minecraft.core.BlockPos;
@@ -23,7 +28,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.RelativeMovement;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -36,6 +44,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -46,6 +55,11 @@ public final class CavernSpecialOreGameTests {
     private static final String EMPTY_TEMPLATE = "empty";
     private static final int DEFAULT_TIMEOUT_TICKS = 100;
     private static final BlockPos PRIMARY_BLOCK_POS = new BlockPos(1, 1, 1);
+    private static final BlockPos MINING_ASSIST_ENABLED_ANCHOR = new BlockPos(0, 96, 0);
+    private static final BlockPos MINING_ASSIST_NO_UNLOCK_ANCHOR = new BlockPos(32, 96, 0);
+    private static final BlockPos MINING_ASSIST_SNEAKING_ANCHOR = new BlockPos(64, 96, 0);
+    private static final BlockPos MINING_ASSIST_FISSURE_ANCHOR = new BlockPos(96, 96, 0);
+    private static final BlockPos MINING_ASSIST_DURABILITY_ANCHOR = new BlockPos(128, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -111,6 +125,17 @@ public final class CavernSpecialOreGameTests {
         assertRegistryId(helper, ModRegistries.HEXCITE_SHOVEL.get(), "cavernreborn:hexcite_shovel");
         assertRegistryId(helper, ModRegistries.HEXCITE_HOE.get(), "cavernreborn:hexcite_hoe");
         assertRegistryId(helper, ModRegistries.HEXCITE_SWORD.get(), "cavernreborn:hexcite_sword");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void miningAssistPolicyRuntimeIdsResolve(GameTestHelper helper) {
+        helper.assertTrue(ModRegistries.HEXCITE_PICKAXE.get() != null, "Missing hexcite pickaxe");
+        helper.assertTrue(ModRegistries.HEXCITE_ORE.get().defaultBlockState().is(ModBlockTags.MINING_ASSIST_TARGETS), "hexcite ore must be a mining assist target");
+        helper.assertTrue(ModRegistries.RANDOMITE_ORE.get().defaultBlockState().is(ModBlockTags.MINING_ASSIST_TARGETS), "randomite ore must be a mining assist target");
+        helper.assertTrue(Blocks.COAL_ORE.defaultBlockState().is(ModBlockTags.MINING_ASSIST_TARGETS), "coal ore must be a mining assist target");
+        helper.assertFalse(ModRegistries.FISSURED_STONE.get().defaultBlockState().is(ModBlockTags.MINING_ASSIST_TARGETS), "fissured stone must stay outside mining assist targets");
+        helper.assertTrue(MiningAssistPolicy.MAX_EXTRA_BLOCKS == 6, "Mining Assist cap must stay at six extra blocks");
         helper.succeed();
     }
 
@@ -351,6 +376,130 @@ public final class CavernSpecialOreGameTests {
         helper.succeed();
     }
 
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void miningAssistBreaksBoundedSameBlockVein(GameTestHelper helper) {
+        ServerLevel cavernLevel = helper.getLevel();
+        BlockPos origin = MINING_ASSIST_ENABLED_ANCHOR;
+        List<BlockPos> vein = hexciteVein(origin);
+        List<BlockPos> protectedStone = List.of(origin.north().north(), origin.south().south());
+        BlockPos unrelatedRandomite = origin.east().east();
+
+        resetMiningArea(cavernLevel, origin, 8.0D);
+        placeBlockSet(cavernLevel, vein, ModRegistries.HEXCITE_ORE.get());
+        placeBlockSet(cavernLevel, protectedStone, Blocks.STONE);
+        cavernLevel.setBlock(unrelatedRandomite, ModRegistries.RANDOMITE_ORE.get().defaultBlockState(), Block.UPDATE_ALL);
+
+        Player player = makeMockPlayer(helper, cavernLevel, GameType.SURVIVAL, hexcitePickaxe(), origin);
+        grantMiningAssistUnlock(helper, player);
+        int assistedBlocks = applyMiningAssist(helper, cavernLevel, player, origin);
+        CavernMiningAssistEvents.breakBlockWithTool(cavernLevel, player, origin, cavernLevel.getBlockState(origin), player.getMainHandItem(), true);
+
+        helper.runAfterDelay(5, () -> {
+            long remainingOreBlocks = countBlocks(cavernLevel, vein, ModRegistries.HEXCITE_ORE.get());
+            helper.assertTrue(assistedBlocks <= MiningAssistPolicy.MAX_EXTRA_BLOCKS, "Mining Assist must stay within the configured cap");
+            helper.assertTrue(remainingOreBlocks >= 1, "Bounded Mining Assist must leave at least one hexcite ore beyond the cap, but remaining=" + remainingOreBlocks);
+            helper.assertTrue(remainingOreBlocks == vein.size() - 1L - assistedBlocks, "Mining Assist removed an unexpected number of hexcite ore blocks; assisted=" + assistedBlocks + ", remaining=" + remainingOreBlocks);
+            helper.assertTrue(cavernLevel.getBlockState(unrelatedRandomite).is(ModRegistries.RANDOMITE_ORE.get()), "Unrelated randomite ore must remain");
+            for (BlockPos stonePos : protectedStone) {
+                helper.assertTrue(cavernLevel.getBlockState(stonePos).is(Blocks.STONE), "Nearby stone must remain untouched at " + stonePos);
+            }
+            helper.assertTrue(itemIdsAround(cavernLevel, origin, 6.0D).contains("cavernreborn:hexcite"), "Expected hexcite drops from assisted vein");
+            clearProgression(player);
+            helper.succeed();
+        });
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void miningAssistDoesNotRunWithoutUnlock(GameTestHelper helper) {
+        ServerLevel cavernLevel = helper.getLevel();
+        BlockPos origin = MINING_ASSIST_NO_UNLOCK_ANCHOR;
+        List<BlockPos> vein = hexciteVein(origin);
+
+        resetMiningArea(cavernLevel, origin, 8.0D);
+        placeBlockSet(cavernLevel, vein, ModRegistries.HEXCITE_ORE.get());
+
+        Player player = makeMockPlayer(helper, cavernLevel, GameType.SURVIVAL, hexcitePickaxe(), origin);
+        clearProgression(player);
+        helper.assertTrue(applyMiningAssist(helper, cavernLevel, player, origin) == 0, "Without the unlock Mining Assist must not break extras");
+        CavernMiningAssistEvents.breakBlockWithTool(cavernLevel, player, origin, cavernLevel.getBlockState(origin), player.getMainHandItem(), true);
+
+        helper.runAfterDelay(5, () -> {
+            helper.assertTrue(countBlocks(cavernLevel, vein, ModRegistries.HEXCITE_ORE.get()) == 7, "Without unlock only the origin block should break");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void miningAssistSneakingDisablesAssist(GameTestHelper helper) {
+        ServerLevel cavernLevel = helper.getLevel();
+        BlockPos origin = MINING_ASSIST_SNEAKING_ANCHOR;
+        List<BlockPos> vein = hexciteVein(origin);
+
+        resetMiningArea(cavernLevel, origin, 8.0D);
+        placeBlockSet(cavernLevel, vein, ModRegistries.HEXCITE_ORE.get());
+
+        Player player = makeMockPlayer(helper, cavernLevel, GameType.SURVIVAL, hexcitePickaxe(), origin);
+        grantMiningAssistUnlock(helper, player);
+        player.setShiftKeyDown(true);
+        helper.assertTrue(applyMiningAssist(helper, cavernLevel, player, origin) == 0, "Sneaking must disable Mining Assist");
+        CavernMiningAssistEvents.breakBlockWithTool(cavernLevel, player, origin, cavernLevel.getBlockState(origin), player.getMainHandItem(), true);
+        player.setShiftKeyDown(false);
+
+        helper.runAfterDelay(5, () -> {
+            helper.assertTrue(countBlocks(cavernLevel, vein, ModRegistries.HEXCITE_ORE.get()) == 7, "Sneaking must disable assist for that break");
+            clearProgression(player);
+            helper.succeed();
+        });
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void miningAssistExcludesFissuredStone(GameTestHelper helper) {
+        ServerLevel cavernLevel = helper.getLevel();
+        BlockPos origin = MINING_ASSIST_FISSURE_ANCHOR;
+        List<BlockPos> fissuredCluster = List.of(origin, origin.above(), origin.north());
+
+        resetMiningArea(cavernLevel, origin, 8.0D);
+        placeBlockSet(cavernLevel, fissuredCluster, ModRegistries.FISSURED_STONE.get());
+
+        Player player = makeMockPlayer(helper, cavernLevel, GameType.SURVIVAL, hexcitePickaxe(), origin);
+        grantMiningAssistUnlock(helper, player);
+        helper.assertTrue(applyMiningAssist(helper, cavernLevel, player, origin) == 0, "Fissured stone must stay outside Mining Assist targets");
+        CavernMiningAssistEvents.breakBlockWithTool(cavernLevel, player, origin, cavernLevel.getBlockState(origin), player.getMainHandItem(), true);
+
+        helper.runAfterDelay(5, () -> {
+            helper.assertTrue(countBlocks(cavernLevel, fissuredCluster, ModRegistries.FISSURED_STONE.get()) == 2, "Fissured stone must not chain-break through Mining Assist");
+            helper.assertTrue(countEntities(cavernLevel, EntityType.AREA_EFFECT_CLOUD, origin, 6.0D) <= 1, "Fissured stone exclusion must avoid extra effect spam");
+            clearProgression(player);
+            helper.succeed();
+        });
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void miningAssistPreservesDurabilityBound(GameTestHelper helper) {
+        ServerLevel cavernLevel = helper.getLevel();
+        BlockPos origin = MINING_ASSIST_DURABILITY_ANCHOR;
+        List<BlockPos> vein = hexciteVein(origin);
+        ItemStack damagedPickaxe = hexcitePickaxe();
+        damagedPickaxe.setDamageValue(damagedPickaxe.getMaxDamage() - 2);
+
+        resetMiningArea(cavernLevel, origin, 8.0D);
+        placeBlockSet(cavernLevel, vein, ModRegistries.HEXCITE_ORE.get());
+
+        Player player = makeMockPlayer(helper, cavernLevel, GameType.SURVIVAL, damagedPickaxe, origin);
+        grantMiningAssistUnlock(helper, player);
+        int assistedBlocks = applyMiningAssist(helper, cavernLevel, player, origin);
+        CavernMiningAssistEvents.breakBlockWithTool(cavernLevel, player, origin, cavernLevel.getBlockState(origin), player.getMainHandItem(), true);
+
+        helper.runAfterDelay(5, () -> {
+            helper.assertTrue(assistedBlocks <= 1, "Near-broken tool must not break more extras than remaining durability allows");
+            helper.assertTrue(countBlocks(cavernLevel, vein, ModRegistries.HEXCITE_ORE.get()) >= 6, "Near-broken tool must stop Mining Assist early");
+            ItemStack currentTool = player.getMainHandItem();
+            helper.assertTrue(currentTool.isEmpty() || currentTool.getDamageValue() < currentTool.getMaxDamage(), "Tool durability must stay bounded");
+            clearProgression(player);
+            helper.succeed();
+        });
+    }
+
     private static ItemStack normalPickaxe(ServerLevel level) {
         return new ItemStack(Items.IRON_PICKAXE);
     }
@@ -448,6 +597,90 @@ public final class CavernSpecialOreGameTests {
             helper.assertTrue(actual, "Expected " + itemId(stack) + " to support " + enchantmentId);
         } else {
             helper.assertFalse(actual, "Expected " + itemId(stack) + " not to support " + enchantmentId);
+        }
+    }
+
+    private static Player makeMockPlayer(GameTestHelper helper, ServerLevel level, GameType gameType, ItemStack tool, BlockPos origin) {
+        Player player = helper.makeMockPlayer(gameType);
+        player.setItemInHand(InteractionHand.MAIN_HAND, tool);
+        player.teleportTo(level, origin.getX() + 0.5D, origin.getY() + 1.0D, origin.getZ() + 0.5D, EnumSet.noneOf(RelativeMovement.class), 0.0F, 0.0F);
+        return player;
+    }
+
+    private static int applyMiningAssist(GameTestHelper helper, ServerLevel level, Player player, BlockPos origin) {
+        CavernMiningAssistEvents events = new CavernMiningAssistEvents(CavernReborn.cavernStateBootstrap().cavernProgressionService());
+        int assistedBlocks = events.tryApplyMiningAssist(
+            level,
+            player,
+            origin,
+            level.getBlockState(origin),
+            CavernDimensions.CAVERN_DIMENSION_ID
+        );
+        helper.assertTrue(assistedBlocks >= 0, "Mining Assist must never return a negative assisted block count");
+        return assistedBlocks;
+    }
+
+    private static void grantMiningAssistUnlock(GameTestHelper helper, Player player) {
+        clearProgression(player);
+        for (int i = 0; i < 15; i++) {
+            CavernReborn.cavernStateBootstrap().cavernProgressionService().recordMiningEvent(
+                player.getUUID(),
+                CavernDimensions.CAVERN_DIMENSION_ID,
+                "minecraft:diamond_ore"
+            );
+        }
+        helper.assertTrue(
+            CavernReborn.cavernStateBootstrap().cavernProgressionService().inspect(player.getUUID()).hasUnlocked(CavernProgressionUnlock.MINING_ASSIST),
+            "Expected direct progression setup to unlock Mining Assist for the mock player"
+        );
+    }
+
+    private static void clearProgression(Player player) {
+        CavernReborn.cavernStateBootstrap().playerMiningProgressionStore().clear(player.getUUID());
+    }
+
+    private static List<BlockPos> hexciteVein(BlockPos origin) {
+        return List.of(
+            origin,
+            origin.above(),
+            origin.below(),
+            origin.north(),
+            origin.south(),
+            origin.west(),
+            origin.east(),
+            origin.above().above()
+        );
+    }
+
+    private static void placeBlockSet(ServerLevel level, List<BlockPos> positions, Block block) {
+        for (BlockPos pos : positions) {
+            level.setBlock(pos, block.defaultBlockState(), Block.UPDATE_ALL);
+        }
+    }
+
+    private static long countBlocks(ServerLevel level, List<BlockPos> positions, Block block) {
+        return positions.stream().filter(pos -> level.getBlockState(pos).is(block)).count();
+    }
+
+    private static Set<String> itemIdsAround(ServerLevel level, BlockPos center, double radius) {
+        return level.getEntitiesOfClass(ItemEntity.class, new AABB(center).inflate(radius)).stream()
+            .map(itemEntity -> itemId(itemEntity.getItem()))
+            .collect(java.util.stream.Collectors.toSet());
+    }
+
+    private static long countEntities(ServerLevel level, EntityType<?> entityType, BlockPos center, double radius) {
+        return level.getEntities((Entity) null, new AABB(center).inflate(radius), entity -> entity.getType() == entityType).size();
+    }
+
+    private static void resetMiningArea(ServerLevel level, BlockPos center, double radius) {
+        AABB bounds = new AABB(center).inflate(radius);
+        level.getEntities((Entity) null, bounds, entity -> true).forEach(Entity::discard);
+        for (int x = center.getX() - 3; x <= center.getX() + 3; x++) {
+            for (int y = center.getY() - 3; y <= center.getY() + 3; y++) {
+                for (int z = center.getZ() - 3; z <= center.getZ() + 3; z++) {
+                    level.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+                }
+            }
         }
     }
 }

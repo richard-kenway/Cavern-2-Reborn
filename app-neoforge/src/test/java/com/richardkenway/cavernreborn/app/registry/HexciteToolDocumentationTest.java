@@ -12,6 +12,7 @@ class HexciteToolDocumentationTest {
     private static final Path README = resolveProjectFile("README.md");
     private static final Path SPECIAL_ORE_PARITY = resolveProjectFile("docs", "cavern-special-ore-content-parity.md");
     private static final Path HEXCITE_TOOL_PARITY = resolveProjectFile("docs", "hexcite-tool-parity.md");
+    private static final Path MINING_ASSIST_MVP = resolveProjectFile("docs", "mining-assist-mvp.md");
     private static final Path RUNTIME_SMOKE = resolveProjectFile("docs", "runtime-smoke.md");
 
     @Test
@@ -42,17 +43,22 @@ class HexciteToolDocumentationTest {
         assertTrue(doc.contains("cavernreborn:hexcite"));
         assertTrue(doc.contains("not netherite-tier"));
         assertTrue(doc.contains("docs/cavern-special-ore-content-parity.md"));
+        assertTrue(doc.contains("docs/mining-assist-mvp.md"));
         assertTrue(doc.contains("CC-BY-NC 4.0"));
     }
 
     @Test
     void relatedDocsLinkHexciteToolSliceAndRuntimeCoverage() throws IOException {
         String specialOreDoc = Files.readString(SPECIAL_ORE_PARITY);
+        String miningAssistDoc = Files.readString(MINING_ASSIST_MVP);
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE);
 
         assertTrue(specialOreDoc.contains("docs/hexcite-tool-parity.md"));
         assertTrue(specialOreDoc.contains("Armor remains out of scope"));
         assertTrue(specialOreDoc.contains("No special tool abilities"));
+        assertTrue(miningAssistDoc.contains("docs/hexcite-tool-parity.md"));
+        assertTrue(miningAssistDoc.contains("hexcite_pickaxe"));
+        assertTrue(miningAssistDoc.contains("No 3x3 mining"));
         assertTrue(runtimeSmokeDoc.contains("hexcite tool runtime registry ids"));
         assertTrue(runtimeSmokeDoc.contains("hexcite pickaxe normal mining path for special ores"));
         assertTrue(runtimeSmokeDoc.contains("hexcite pickaxe Silk Touch path for hexcite ore"));

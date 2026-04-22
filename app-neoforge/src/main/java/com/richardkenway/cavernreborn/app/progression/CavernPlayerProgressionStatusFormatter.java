@@ -16,17 +16,28 @@ public final class CavernPlayerProgressionStatusFormatter {
         String nextRank = normalizedSnapshot.nextRank()
             .map(rank -> rank.id() + " in " + normalizedSnapshot.pointsToNextRank() + " score")
             .orElse("max rank reached");
-        String minersInsight = normalizedSnapshot.hasUnlocked(CavernProgressionUnlock.MINERS_INSIGHT)
-            ? "unlocked: Miner's Insight (+" + CavernProgressionConsequences.MINERS_INSIGHT_BONUS_EXPERIENCE
-                + " bonus XP on counted ores in CAVERN)"
-            : "next unlock: Miner's Insight at " + CavernProgressionUnlock.MINERS_INSIGHT.requiredRank().id();
 
         return "CAVERN rank for " + normalizedPlayerName
             + ": " + normalizedSnapshot.rank().id()
             + " | score " + normalizedSnapshot.progressionScore()
             + " | counted ores " + normalizedSnapshot.countedBlocks()
             + " | next " + nextRank
-            + " | " + minersInsight;
+            + " | " + unlockSummary(normalizedSnapshot);
+    }
+
+    private static String unlockSummary(CavernProgressionSnapshot snapshot) {
+        if (!snapshot.hasUnlocked(CavernProgressionUnlock.MINERS_INSIGHT)) {
+            return "next unlock: Miner's Insight at " + CavernProgressionUnlock.MINERS_INSIGHT.requiredRank().id();
+        }
+        if (!snapshot.hasUnlocked(CavernProgressionUnlock.MINING_ASSIST)) {
+            return "unlocked: Miner's Insight (+" + CavernProgressionConsequences.MINERS_INSIGHT_BONUS_EXPERIENCE
+                + " bonus XP on counted ores in CAVERN)"
+                + " | next unlock: Mining Assist at " + CavernProgressionUnlock.MINING_ASSIST.requiredRank().id();
+        }
+
+        return "unlocked: Miner's Insight (+" + CavernProgressionConsequences.MINERS_INSIGHT_BONUS_EXPERIENCE
+            + " bonus XP on counted ores in CAVERN)"
+            + " | unlocked: Mining Assist (bounded hexcite_pickaxe vein assist in CAVERN)";
     }
 
     private static String requireText(String value, String fieldName) {

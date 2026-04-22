@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
 
 import com.richardkenway.cavernreborn.app.gametest.CavernSpecialOreGameTests;
+import com.richardkenway.cavernreborn.app.mining.CavernMiningAssistEvents;
 import com.richardkenway.cavernreborn.app.progression.CavernMiningProgressionEvents;
 import com.richardkenway.cavernreborn.app.progression.CavernRewardGranter;
 import com.richardkenway.cavernreborn.app.progression.CavernProgressionCommands;
@@ -19,7 +20,6 @@ import net.minecraft.gametest.framework.GameTestRegistry;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.gametest.GameTestHooks;
 
 @Mod(CavernReborn.MOD_ID)
 public final class CavernReborn {
@@ -32,6 +32,7 @@ public final class CavernReborn {
         registerGameTests();
         cavernStateBootstrap = new CavernStateBootstrap();
         NeoForge.EVENT_BUS.register(new CavernPortalFrameActivationEvents());
+        NeoForge.EVENT_BUS.register(new CavernMiningAssistEvents(cavernStateBootstrap.cavernProgressionService()));
         NeoForge.EVENT_BUS.register(new CavernMiningProgressionEvents(cavernStateBootstrap.cavernProgressionService()));
         NeoForge.EVENT_BUS.register(
             new CavernProgressionCommands(
@@ -47,9 +48,7 @@ public final class CavernReborn {
     }
 
     private void registerGameTests() {
-        if (GameTestHooks.isGametestEnabled()) {
-            GameTestRegistry.register(CavernSpecialOreGameTests.class);
-        }
+        GameTestRegistry.register(CavernSpecialOreGameTests.class);
     }
 
     public static CavernStateBootstrap cavernStateBootstrap() {

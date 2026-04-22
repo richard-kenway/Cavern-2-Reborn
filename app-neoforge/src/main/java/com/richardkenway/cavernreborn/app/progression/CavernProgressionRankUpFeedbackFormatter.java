@@ -25,14 +25,16 @@ public final class CavernProgressionRankUpFeedbackFormatter {
 
     public static Optional<String> formatUnlockMessage(CavernProgressionUpdateResult update) {
         CavernProgressionUpdateResult normalizedUpdate = Objects.requireNonNull(update, "update");
-        if (!normalizedUpdate.unlockJustReached(CavernProgressionUnlock.MINERS_INSIGHT)) {
-            return Optional.empty();
+        if (normalizedUpdate.unlockJustReached(CavernProgressionUnlock.MINERS_INSIGHT)) {
+            return Optional.of(
+                "Miner's Insight unlocked: counted ores in CAVERN now grant +"
+                    + CavernProgressionConsequences.MINERS_INSIGHT_BONUS_EXPERIENCE
+                    + " bonus XP."
+            );
         }
-
-        return Optional.of(
-            "Miner's Insight unlocked: counted ores in CAVERN now grant +"
-                + CavernProgressionConsequences.MINERS_INSIGHT_BONUS_EXPERIENCE
-                + " bonus XP."
-        );
+        if (normalizedUpdate.unlockJustReached(CavernProgressionUnlock.MINING_ASSIST)) {
+            return Optional.of("Mining Assist unlocked: hexcite_pickaxe now breaks up to 6 extra connected ores in CAVERN.");
+        }
+        return Optional.empty();
     }
 }

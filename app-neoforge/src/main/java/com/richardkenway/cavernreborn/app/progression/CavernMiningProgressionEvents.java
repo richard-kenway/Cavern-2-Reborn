@@ -2,6 +2,7 @@ package com.richardkenway.cavernreborn.app.progression;
 
 import java.util.Objects;
 
+import com.richardkenway.cavernreborn.app.mining.MiningAssistBreakContext;
 import com.richardkenway.cavernreborn.core.progression.CavernProgressionConsequences;
 import com.richardkenway.cavernreborn.core.progression.CavernProgressionService;
 import com.richardkenway.cavernreborn.core.progression.CavernProgressionUpdateResult;
@@ -30,6 +31,9 @@ public final class CavernMiningProgressionEvents {
             return;
         }
         if (!(event.getLevel() instanceof Level level) || level.isClientSide()) {
+            return;
+        }
+        if (MiningAssistBreakContext.isSuppressed(player.getUUID(), event.getPos())) {
             return;
         }
 

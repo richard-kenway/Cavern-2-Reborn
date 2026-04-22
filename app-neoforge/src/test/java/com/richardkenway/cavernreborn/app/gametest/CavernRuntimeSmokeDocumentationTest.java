@@ -25,6 +25,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("hexcite"));
         assertTrue(readme.contains("randomite"));
         assertTrue(readme.contains("fissured_stone"));
+        assertTrue(readme.contains("Mining Assist"));
     }
 
     @Test
@@ -36,6 +37,11 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("hexcite normal and Silk Touch loot paths"));
         assertTrue(doc.contains("randomite curated runtime loot output"));
         assertTrue(doc.contains("hexcite pickaxe enchantment applicability"));
+        assertTrue(doc.contains("Mining Assist policy/runtime ids"));
+        assertTrue(doc.contains("bounded same-block vein assist with hexcite_pickaxe"));
+        assertTrue(doc.contains("no unlock means no assist"));
+        assertTrue(doc.contains("sneaking disables assist"));
+        assertTrue(doc.contains("fissured_stone exclusion"));
         assertTrue(doc.contains("fissured stone no-drop behavior"));
         assertTrue(doc.contains("fissured stone survival effect behavior"));
         assertTrue(doc.contains("fissured stone creative guard"));

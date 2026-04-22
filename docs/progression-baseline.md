@@ -46,6 +46,11 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
   - source-of-truth: `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionUnlock.java`
   - unlock threshold: `apprentice`
   - gameplay consequence: counted ore breaks inside `CAVERN` grant `+1` bonus XP once the rank is unlocked
+- The second unlock is `Mining Assist`.
+  - source-of-truth: `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionUnlock.java`
+  - unlock threshold: `journeyman`
+  - gameplay consequence: `hexcite_pickaxe` can break up to `6` extra connected ore blocks from the checked-in mining-assist target tag inside `CAVERN`
+  - bounded policy: sneaking disables assist for that break, and assisted extra blocks do not add extra progression score or extra `Miner's Insight` bonus XP in this MVP
 - The threshold-crossing ore already receives the unlock, because the bonus check runs against the updated persisted snapshot for that same counted mining event.
 - The checked-in reward tier baseline is:
   - source-of-truth: `core/src/main/java/com/richardkenway/cavernreborn/core/progression/CavernProgressionReward.java`
@@ -67,6 +72,7 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
 - Threshold crossing shows player-facing rank-up feedback exactly once for that crossing event.
 - `/cavern rank` stays consistent with `/cavern progression` because both read the same persisted snapshot.
 - `Miner's Insight` remains active after restart because it is derived from the restored score/rank, not from a separate saved unlock flag.
+- `Mining Assist` remains active after restart because it is derived from the restored score/rank, not from a separate saved unlock flag.
 - A new player below `apprentice` sees `apprentice_supply_cache` as locked.
 - Reaching `apprentice` makes `apprentice_supply_cache` available without adding a second rank-state.
 - Claiming `apprentice_supply_cache` marks it as claimed exactly once and does not mutate the stored progression score/rank.
@@ -157,6 +163,7 @@ It is not a claim of full legacy gameplay parity. It documents the bounded progr
 - The baseline counts qualifying block breaks, not item drops, smelting output, trading, pickups or broader activity telemetry.
 - Rank is computed from score at read time and is not stored as a separate mutable field.
 - The first gameplay consequence is intentionally small: one unlock and one bounded XP bonus instead of a larger perks tree or reward graph.
+- The current Mining Assist layer is intentionally small: one rank-derived `hexcite_pickaxe` vein assist instead of broader legacy mining modes, 3x3 mining or configurable behaviors.
 - The reward surface is intentionally small: two one-time bundles across two tiers instead of a wider reward tree, currency or shop stack.
 - The service surface is intentionally small: two repeatable services with simple cooldowns instead of a wider service catalog or currency-based shop.
 - The first tiered catalog surface is intentionally small: it aggregates existing rewards and services, but it still is not a currency shop, GUI menu or broader transaction system.
@@ -189,11 +196,13 @@ Run this before any larger progression or gameplay-shell change:
 12. Use the clickable `CLAIM` / `USE` button in `/cavern menu`, run `/cavern menu use apprentice_supply_cache` or click the matching slot in `/cavern gui`, and confirm the reward is granted once.
 13. Repeat the same apprentice reward interaction through `/cavern gui` or `/cavern menu use apprentice_supply_cache` and confirm the backend reports an already-claimed state instead of duplicating the reward.
 14. Run `/cavern menu use torch_supply` or click the matching slot in `/cavern gui` and confirm the service grant works and the menu/catalog/gui views move to cooldown.
-15. Continue mining until `journeyman`, then run `/cavern catalog`, `/cavern menu` or `/cavern gui` and confirm `journeyman_supply_cache` and `climbing_supply` become available.
-16. Run `/cavern menu use journeyman_supply_cache` once or click the matching slot in `/cavern gui`, and confirm the reward is granted exactly once.
-17. Run `/cavern menu use climbing_supply` or click the matching slot in `/cavern gui` and confirm the service grant works and the menu/catalog/gui views move to a 20-minute cooldown.
-18. Run `/cavern progression` and confirm the debug summary still matches the same persisted score/rank.
-19. Mine the same ore outside `CAVERN` and confirm neither the bonus XP nor the cavern-specific progression state changes.
-20. Restart the server.
-21. Run `/cavern rank`, `/cavern progression`, `/cavern rewards`, `/cavern services`, `/cavern catalog`, `/cavern menu` or `/cavern gui` again and confirm the stored progression, claimed reward state and service cooldown state survived restart.
-22. Mine another counted ore in `CAVERN` and confirm progression and `Miner's Insight` continue from the stored value instead of resetting.
+15. Continue mining until `journeyman`, then run `/cavern catalog`, `/cavern menu` or `/cavern gui` and confirm `journeyman_supply_cache`, `climbing_supply` and `Mining Assist` become available.
+16. Mine a connected target ore vein in `CAVERN` with `hexcite_pickaxe` and confirm Mining Assist breaks at most `6` extra connected same-block ores.
+17. Sneak while mining the same kind of target ore and confirm Mining Assist does not trigger for that break.
+18. Run `/cavern menu use journeyman_supply_cache` once or click the matching slot in `/cavern gui`, and confirm the reward is granted exactly once.
+19. Run `/cavern menu use climbing_supply` or click the matching slot in `/cavern gui` and confirm the service grant works and the menu/catalog/gui views move to a 20-minute cooldown.
+20. Run `/cavern progression` and confirm the debug summary still matches the same persisted score/rank.
+21. Mine the same ore outside `CAVERN` and confirm neither the bonus XP nor the cavern-specific progression state changes.
+22. Restart the server.
+23. Run `/cavern rank`, `/cavern progression`, `/cavern rewards`, `/cavern services`, `/cavern catalog`, `/cavern menu` or `/cavern gui` again and confirm the stored progression, claimed reward state and service cooldown state survived restart.
+24. Mine another counted ore in `CAVERN` and confirm progression, `Miner's Insight` and `Mining Assist` continue from the stored value instead of resetting.
