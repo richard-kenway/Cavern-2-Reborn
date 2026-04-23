@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.richardkenway.cavernreborn.app.compass.OreCompassFeedbackFormatter;
 import com.richardkenway.cavernreborn.app.compass.OreCompassScanner;
+import com.richardkenway.cavernreborn.app.compass.OreCompassStateAccess;
 import com.richardkenway.cavernreborn.app.compass.OreCompassTarget;
 import com.richardkenway.cavernreborn.core.compass.OreCompassScanPolicy;
 import com.richardkenway.cavernreborn.core.compass.OreCompassScanResult;
@@ -46,12 +47,7 @@ public final class OreCompassItem extends Item {
             return InteractionResultHolder.sidedSuccess(stack, false);
         }
 
-        Optional<OreCompassTarget> target = scanner.findNearestTarget(
-            serverLevel,
-            player.blockPosition(),
-            OreCompassScanPolicy.HORIZONTAL_RADIUS,
-            OreCompassScanPolicy.VERTICAL_RADIUS
-        );
+        Optional<OreCompassTarget> target = performServerScan(serverLevel, player.blockPosition(), stack);
 
         if (target.isPresent()) {
             OreCompassTarget resolvedTarget = target.get();
@@ -71,5 +67,27 @@ public final class OreCompassItem extends Item {
 
         player.getCooldowns().addCooldown(this, OreCompassScanPolicy.COOLDOWN_TICKS);
         return InteractionResultHolder.sidedSuccess(stack, false);
+    }
+
+    public Optional<OreCompassTarget> performServerScan(ServerLevel level, net.minecraft.core.BlockPos origin, ItemStack stack) {
+        Optional<OreCompassTarget> target = scanner.findNearestTarget(
+            level,
+            origin,
+            OreCompassScanPolicy.HORIZONTAL_RADIUS,
+            OreCompassScanPolicy.VERTICAL_RADIUS
+        );
+        if (target.isPresent()) {
+            OreCompassTarget resolvedTarget = target.get();
+            OreCompassStateAccess.writeTarget(
+                stack,
+                level.dimension().location().toString(),
+                resolvedTarget.blockId(),
+                resolvedTarget.pos()
+            );
+            return target;
+        }
+
+        OreCompassStateAccess.clear(stack);
+        return Optional.empty();
     }
 }

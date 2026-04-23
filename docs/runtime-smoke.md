@@ -1,6 +1,6 @@
 # Runtime Smoke
 
-This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the follow-up `hexcite` tool-set MVP, the bounded Mining Assist slice, the first Miner's Orb MVP and the first Ore Compass MVP.
+This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the follow-up `hexcite` tool-set MVP, the bounded Mining Assist slice, the first Miner's Orb MVP and the Ore Compass MVP plus tracking UX follow-up.
 
 It is intentionally a NeoForge GameTest server pass, not a visual client smoke pass.
 
@@ -20,6 +20,8 @@ NeoForge GameTest runtime smoke covers:
 - ore_compass runtime registry availability
 - ore_compass target tag resolution
 - ore_compass scanner nearest-target behavior
+- ore_compass stored-target state round-trip
+- ore_compass tracking policy/runtime ids
 - unsupported/fissured/storage exclusion during ore_compass scans
 - Mining Assist policy/runtime ids
 - bounded same-block vein assist with hexcite_pickaxe
@@ -88,11 +90,12 @@ docker compose run --rm gradle ./gradlew --no-daemon build
 - The GameTest server run is the automated runtime layer for tranche 2 special ores and progression/worldgen wiring.
 - The same GameTest layer now also covers the bounded Mining Assist MVP runtime path.
 - The same GameTest layer now also covers the bounded Ore Compass server-side scan path.
+- The same GameTest layer now also covers the bounded Ore Compass stored-target and tracking-policy runtime path.
 - The run is intentionally small and server-only; it should not require a GUI client or a human player.
 
 ## Registration Workaround
 
-- `CavernSpecialOreGameTests` is currently registered from an unguarded `GameTestRegistry.register(CavernSpecialOreGameTests.class)` call in `CavernReborn.registerGameTests()`.
+- `CavernSpecialOreGameTests` is currently registered from an unguarded `GameTestRegistry.register(CavernSpecialOreGameTests.class)` bootstrap call in `CavernReborn`.
 - This is an infrastructure workaround for the current project setup: guarding registration with `GameTestHooks.isGametestEnabled()` prevents `:app-neoforge:runGameTestServer` from discovering any tests.
 - The workaround is limited to GameTest bootstrap wiring and does not change gameplay behavior.
 - If the NeoForge/GameTest discovery path becomes stable for this repository later, the unguarded registration path can be revisited.
@@ -112,6 +115,9 @@ Even when the runtime-smoke pass is green, manual client smoke is still needed f
 
 - portal UX
 - rendering and block/model appearance
+- actual client-visible Ore Compass needle feel
 - particle and sound feel
 - end-to-end player movement through the portal loop
 - restart persistence on a real server save
+
+The Ore Compass tracking follow-up keeps this division intentionally explicit: GameTest covers state round-trip and runtime-id/policy wiring, while the actual client-visible needle feel still requires manual smoke.

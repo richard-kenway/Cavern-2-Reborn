@@ -27,9 +27,12 @@ public final class CavernReborn {
     public static final Logger LOGGER = LogUtils.getLogger();
     private static CavernStateBootstrap cavernStateBootstrap;
 
+    static {
+        GameTestRegistry.register(CavernSpecialOreGameTests.class);
+    }
+
     public CavernReborn(IEventBus modEventBus) {
         ModRegistries.register(modEventBus);
-        registerGameTests();
         cavernStateBootstrap = new CavernStateBootstrap();
         NeoForge.EVENT_BUS.register(new CavernPortalFrameActivationEvents());
         NeoForge.EVENT_BUS.register(new CavernMiningAssistEvents(cavernStateBootstrap.cavernProgressionService()));
@@ -45,10 +48,6 @@ public final class CavernReborn {
             )
         );
         LOGGER.info("Bootstrapped {} with {}", CavernProject.PROJECT_NAME, cavernStateBootstrap().describe());
-    }
-
-    private void registerGameTests() {
-        GameTestRegistry.register(CavernSpecialOreGameTests.class);
     }
 
     public static CavernStateBootstrap cavernStateBootstrap() {

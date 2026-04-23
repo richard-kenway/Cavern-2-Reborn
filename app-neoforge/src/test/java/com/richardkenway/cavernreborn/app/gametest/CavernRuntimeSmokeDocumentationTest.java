@@ -30,6 +30,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/miner-orb-mvp.md"));
         assertTrue(readme.contains("Ore Compass MVP"));
         assertTrue(readme.contains("docs/ore-compass-mvp.md"));
+        assertTrue(readme.contains("bounded tracking UX follow-up"));
+        assertTrue(readme.contains("track that target visually"));
     }
 
     @Test
@@ -47,6 +49,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("ore_compass runtime registry availability"));
         assertTrue(doc.contains("ore_compass target tag resolution"));
         assertTrue(doc.contains("ore_compass scanner nearest-target behavior"));
+        assertTrue(doc.contains("ore_compass stored-target state round-trip"));
+        assertTrue(doc.contains("ore_compass tracking policy/runtime ids"));
         assertTrue(doc.contains("unsupported/fissured/storage exclusion during ore_compass scans"));
         assertTrue(doc.contains("Mining Assist policy/runtime ids"));
         assertTrue(doc.contains("bounded same-block vein assist with hexcite_pickaxe"));
@@ -70,6 +74,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("infrastructure workaround"));
         assertTrue(doc.contains("does not change gameplay behavior"));
         assertTrue(doc.contains("manual client smoke is still needed"));
+        assertTrue(doc.contains("actual client-visible needle feel still requires manual smoke"));
         assertTrue(doc.contains("portal UX"));
         assertTrue(doc.contains("rendering"));
     }

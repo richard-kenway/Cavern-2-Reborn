@@ -7,8 +7,11 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.richardkenway.cavernreborn.CavernReborn;
+import com.richardkenway.cavernreborn.app.compass.OreCompassStateAccess;
 import com.richardkenway.cavernreborn.app.compass.OreCompassScanner;
 import com.richardkenway.cavernreborn.app.compass.OreCompassTarget;
+import com.richardkenway.cavernreborn.app.compass.StoredOreCompassTarget;
+import com.richardkenway.cavernreborn.app.item.OreCompassItem;
 import com.richardkenway.cavernreborn.app.mining.CavernMiningAssistEvents;
 import com.richardkenway.cavernreborn.app.registry.ModBlockTags;
 import com.richardkenway.cavernreborn.app.registry.ModItemTags;
@@ -18,6 +21,9 @@ import com.richardkenway.cavernreborn.core.compass.OreCompassDirection;
 import com.richardkenway.cavernreborn.core.compass.OreCompassScanDecision;
 import com.richardkenway.cavernreborn.core.compass.OreCompassScanPolicy;
 import com.richardkenway.cavernreborn.core.compass.OreCompassScanResult;
+import com.richardkenway.cavernreborn.core.compass.OreCompassTrackingDecision;
+import com.richardkenway.cavernreborn.core.compass.OreCompassTrackingPolicy;
+import com.richardkenway.cavernreborn.core.compass.OreCompassTrackingResult;
 import com.richardkenway.cavernreborn.core.mining.MiningAssistPolicy;
 import com.richardkenway.cavernreborn.core.mining.MinerOrbBonusDecision;
 import com.richardkenway.cavernreborn.core.mining.MinerOrbBonusPolicy;
@@ -76,6 +82,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos ORE_COMPASS_FILTERED_ANCHOR = new BlockPos(352, 96, 0);
     private static final BlockPos ORE_COMPASS_EMPTY_ANCHOR = new BlockPos(448, 96, 0);
     private static final BlockPos ORE_COMPASS_USE_ANCHOR = new BlockPos(544, 96, 0);
+    private static final BlockPos ORE_COMPASS_STATE_ANCHOR = new BlockPos(640, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -164,6 +171,78 @@ public final class CavernSpecialOreGameTests {
         ItemStack stack = new ItemStack(ModRegistries.ORE_COMPASS.get());
         helper.assertTrue(!stack.isEmpty(), "Expected ore_compass stack to be constructible");
         helper.assertTrue(stack.getMaxStackSize() == 1, "Ore Compass must stay non-stackable in this MVP");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void oreCompassStoredTargetRoundTripsAtRuntime(GameTestHelper helper) {
+        ItemStack stack = new ItemStack(ModRegistries.ORE_COMPASS.get());
+        BlockPos pos = new BlockPos(9, 33, -12);
+
+        OreCompassStateAccess.writeTarget(stack, CavernDimensions.CAVERN_DIMENSION_ID, "cavernreborn:hexcite_ore", pos);
+        Optional<StoredOreCompassTarget> target = OreCompassStateAccess.readTarget(stack);
+
+        helper.assertTrue(target.isPresent(), "Expected ore_compass stack to store a target");
+        helper.assertTrue(target.get().dimensionId().equals(CavernDimensions.CAVERN_DIMENSION_ID), "Expected stored dimension id to round-trip");
+        helper.assertTrue(target.get().blockId().equals("cavernreborn:hexcite_ore"), "Expected stored block id to round-trip");
+        helper.assertTrue(target.get().pos().equals(pos), "Expected stored target position to round-trip");
+
+        OreCompassStateAccess.clear(stack);
+        helper.assertTrue(OreCompassStateAccess.readTarget(stack).isEmpty(), "Expected clear() to remove the stored target");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void oreCompassTrackingPolicyRuntimeSmoke(GameTestHelper helper) {
+        OreCompassTrackingResult tracking = OreCompassTrackingPolicy.evaluate(
+            true,
+            true,
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            4,
+            -6,
+            -4,
+            true
+        );
+        OreCompassTrackingResult wrongDimension = OreCompassTrackingPolicy.evaluate(
+            true,
+            true,
+            CavernDimensions.OVERWORLD_DIMENSION_ID,
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            4,
+            -6,
+            -4,
+            true
+        );
+        OreCompassTrackingResult outOfRange = OreCompassTrackingPolicy.evaluate(
+            true,
+            true,
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            0,
+            0,
+            -(OreCompassTrackingPolicy.TRACKING_RADIUS + 1),
+            true
+        );
+        OreCompassTrackingResult blockMismatch = OreCompassTrackingPolicy.evaluate(
+            true,
+            true,
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            4,
+            -6,
+            -4,
+            false
+        );
+
+        helper.assertTrue(tracking.decision() == OreCompassTrackingDecision.TRACKING, "Expected valid stored target to keep tracking");
+        helper.assertTrue(tracking.horizontalDistance() == 6, "Expected tracking result to keep the rounded horizontal distance");
+        helper.assertTrue(tracking.verticalOffset() == -6, "Expected tracking result to keep the vertical offset");
+        helper.assertTrue(tracking.direction() == OreCompassDirection.NORTH_EAST, "Expected tracking direction to match dx/dz");
+        helper.assertTrue(tracking.angleFrame() == 4, "Expected north-east offset to map to frame 4");
+        helper.assertTrue(wrongDimension.decision() == OreCompassTrackingDecision.WRONG_DIMENSION, "Expected wrong dimension to invalidate tracking");
+        helper.assertTrue(outOfRange.decision() == OreCompassTrackingDecision.OUT_OF_RANGE, "Expected distant target to invalidate tracking");
+        helper.assertTrue(blockMismatch.decision() == OreCompassTrackingDecision.BLOCK_MISMATCH, "Expected block mismatch to invalidate tracking");
         helper.succeed();
     }
 
@@ -578,6 +657,74 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void oreCompassNearestScanStoresFoundTarget(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = ORE_COMPASS_USE_ANCHOR;
+        ItemStack stack = new ItemStack(ModRegistries.ORE_COMPASS.get());
+
+        resetMiningArea(level, origin, 10.0D);
+        level.setBlock(origin.east(3), ModRegistries.HEXCITE_ORE.get().defaultBlockState(), Block.UPDATE_ALL);
+
+        Optional<OreCompassTarget> scan = oreCompassItem().performServerScan(level, origin, stack);
+        Optional<StoredOreCompassTarget> storedTarget = OreCompassStateAccess.readTarget(stack);
+
+        helper.assertTrue(scan.isPresent(), "Expected server scan to find a target");
+        helper.assertTrue(storedTarget.isPresent(), "Expected found scan to persist the target on the stack");
+        helper.assertTrue(storedTarget.get().dimensionId().equals(level.dimension().location().toString()), "Expected stored dimension id to match the scan level");
+        helper.assertTrue(storedTarget.get().blockId().equals("cavernreborn:hexcite_ore"), "Expected stored target block id to match the resolved ore");
+        helper.assertTrue(storedTarget.get().pos().equals(origin.east(3)), "Expected stored target position to match the resolved ore");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void oreCompassNoTargetClearsStoredTarget(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = ORE_COMPASS_STATE_ANCHOR;
+        ItemStack stack = new ItemStack(ModRegistries.ORE_COMPASS.get());
+
+        resetMiningArea(level, origin, 10.0D);
+        OreCompassStateAccess.writeTarget(stack, CavernDimensions.CAVERN_DIMENSION_ID, "cavernreborn:hexcite_ore", origin.east(3));
+
+        Optional<OreCompassTarget> scan = oreCompassItem().performServerScan(level, origin, stack);
+
+        helper.assertTrue(scan.isEmpty(), "Expected empty scan in an unsupported area");
+        helper.assertTrue(OreCompassStateAccess.readTarget(stack).isEmpty(), "Expected empty scan to clear the stored target");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void oreCompassTrackingExcludesWrongDimension(GameTestHelper helper) {
+        ItemStack stack = new ItemStack(ModRegistries.ORE_COMPASS.get());
+        OreCompassStateAccess.writeTarget(stack, CavernDimensions.CAVERN_DIMENSION_ID, "cavernreborn:hexcite_ore", new BlockPos(3, 96, 0));
+
+        OreCompassTrackingResult result = OreCompassTrackingPolicy.evaluate(
+            OreCompassStateAccess.readTarget(stack).isPresent(),
+            true,
+            CavernDimensions.OVERWORLD_DIMENSION_ID,
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            3,
+            0,
+            0,
+            true
+        );
+
+        helper.assertTrue(result.decision() == OreCompassTrackingDecision.WRONG_DIMENSION, "Expected wrong-dimension context to invalidate tracking");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void oreCompassScannerAndTrackingStayBounded(GameTestHelper helper) {
+        helper.assertTrue(OreCompassScanPolicy.HORIZONTAL_RADIUS == 32, "Scan radius must remain bounded at 32 horizontal blocks");
+        helper.assertTrue(OreCompassScanPolicy.VERTICAL_RADIUS == 24, "Scan radius must remain bounded at 24 vertical blocks");
+        helper.assertTrue(OreCompassTrackingPolicy.TRACKING_RADIUS == 50, "Tracking radius must remain bounded at 50 horizontal blocks");
+        helper.assertTrue(OreCompassTrackingPolicy.ANGLE_FRAME_COUNT == 32, "Tracking model must remain a 32-frame compass");
+        helper.assertFalse(Blocks.COAL_ORE.defaultBlockState().is(ModBlockTags.ORE_COMPASS_TARGETS), "Coal ore must remain outside Ore Compass targets");
+        helper.assertFalse(ModRegistries.FISSURED_STONE.get().defaultBlockState().is(ModBlockTags.ORE_COMPASS_TARGETS), "Fissured stone must remain outside Ore Compass targets");
+        helper.assertFalse(ModRegistries.HEXCITE_BLOCK.get().defaultBlockState().is(ModBlockTags.ORE_COMPASS_TARGETS), "Storage blocks must remain outside Ore Compass targets");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void oreCompassPolicyRuntimeSmoke(GameTestHelper helper) {
         OreCompassScanResult wrongDimension = OreCompassScanPolicy.evaluate(
             CavernDimensions.OVERWORLD_DIMENSION_ID,
@@ -761,6 +908,10 @@ public final class CavernSpecialOreGameTests {
 
     private static OreCompassScanner oreCompassScanner() {
         return new OreCompassScanner();
+    }
+
+    private static OreCompassItem oreCompassItem() {
+        return (OreCompassItem) ModRegistries.ORE_COMPASS.get();
     }
 
     private static ItemStack silkTouchHexcitePickaxe(ServerLevel level) {

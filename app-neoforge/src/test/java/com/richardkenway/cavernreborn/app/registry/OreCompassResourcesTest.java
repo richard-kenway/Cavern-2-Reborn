@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
 import org.junit.jupiter.api.Test;
@@ -45,12 +46,22 @@ class OreCompassResourcesTest {
         JsonObject recipe = readJsonResource("data/cavernreborn/recipe/ore_compass.json");
         JsonObject singularTag = readJsonResource("data/cavernreborn/tags/block/ore_compass_targets.json");
         JsonObject pluralTag = readJsonResource("data/cavernreborn/tags/blocks/ore_compass_targets.json");
+        String modelRaw = readTextResource("assets/cavernreborn/models/item/ore_compass.json");
         String readme = Files.readString(resolveProjectFile("README.md"));
         String oreCompassDoc = Files.readString(resolveProjectFile("docs", "ore-compass-mvp.md"));
         String minerOrbDoc = Files.readString(resolveProjectFile("docs", "miner-orb-mvp.md"));
         String runtimeSmokeDoc = Files.readString(resolveProjectFile("docs", "runtime-smoke.md"));
         String itemSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "item", "OreCompassItem.java"
+        );
+        String stateAccessSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "compass", "OreCompassStateAccess.java"
+        );
+        String clientResolverSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "compass", "OreCompassClientAngleResolver.java"
+        );
+        String clientEventsSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "client", "CavernClientModEvents.java"
         );
         String scannerSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "compass", "OreCompassScanner.java"
@@ -61,7 +72,11 @@ class OreCompassResourcesTest {
 
         assertEquals("Ore Compass", lang.get("item.cavernreborn.ore_compass").getAsString());
         assertEquals("minecraft:item/generated", model.get("parent").getAsString());
-        assertEquals("cavernreborn:item/ore_compass", model.getAsJsonObject("textures").get("layer0").getAsString());
+        assertEquals("cavernreborn:item/ore_compass_16", model.getAsJsonObject("textures").get("layer0").getAsString());
+        assertEquals(33, model.getAsJsonArray("overrides").size());
+        assertTrue(modelRaw.contains("\"angle\""));
+        assertTrue(modelRaw.contains("cavernreborn:item/ore_compass_00"));
+        assertTrue(modelRaw.contains("cavernreborn:item/ore_compass_31"));
         assertTrue(lang.has("message.cavernreborn.ore_compass.found"));
         assertTrue(lang.has("message.cavernreborn.ore_compass.no_target"));
         assertTrue(lang.has("message.cavernreborn.ore_compass.wrong_dimension"));
@@ -101,9 +116,22 @@ class OreCompassResourcesTest {
         assertTrue(tagSource.contains("ORE_COMPASS_TARGETS"));
         assertTrue(itemSource.contains("player.getCooldowns().addCooldown(this, OreCompassScanPolicy.COOLDOWN_TICKS)"));
         assertTrue(itemSource.contains("CavernDimensions.CAVERN_DIMENSION_ID"));
-        assertTrue(itemSource.contains("scanner.findNearestTarget("));
+        assertTrue(itemSource.contains("performServerScan("));
+        assertTrue(itemSource.contains("OreCompassStateAccess.writeTarget("));
+        assertTrue(itemSource.contains("OreCompassStateAccess.clear("));
         assertFalse(itemSource.contains(".shrink("));
         assertFalse(itemSource.contains("hurtAndBreak("));
+        assertTrue(stateAccessSource.contains("DataComponents.CUSTOM_DATA"));
+        assertTrue(stateAccessSource.contains("readTarget"));
+        assertTrue(stateAccessSource.contains("writeTarget"));
+        assertTrue(clientResolverSource.contains("new CompassItemPropertyFunction("));
+        assertTrue(clientResolverSource.contains("OreCompassTrackingPolicy.evaluate("));
+        assertTrue(clientResolverSource.contains("OreCompassStateAccess.readTarget("));
+        assertTrue(clientEventsSource.contains("ItemProperties.register("));
+        assertTrue(clientEventsSource.contains("ORE_COMPASS_CLIENT_ANGLE_RESOLVER::resolveAngle"));
+        assertFalse(clientResolverSource.contains("FriendlyByteBuf"));
+        assertFalse(clientResolverSource.contains("CustomPacketPayload"));
+        assertFalse(clientResolverSource.contains("Screen"));
         assertTrue(scannerSource.contains("ModBlockTags.ORE_COMPASS_TARGETS"));
         assertTrue(scannerSource.contains("level.isLoaded("));
         assertFalse(scannerSource.contains("setChunkForced"));
@@ -111,33 +139,55 @@ class OreCompassResourcesTest {
 
         assertTrue(readme.contains("Ore Compass MVP"));
         assertTrue(readme.contains("miner_orb"));
-        assertTrue(readme.contains("server-side `CAVERN` ore scan"));
+        assertTrue(readme.contains("bounded tracking UX follow-up"));
+        assertTrue(readme.contains("track that target visually"));
         assertTrue(readme.contains("docs/ore-compass-mvp.md"));
         assertTrue(oreCompassDoc.contains("cavernreborn:ore_compass"));
         assertTrue(oreCompassDoc.contains("cavernreborn:miner_orb"));
         assertTrue(oreCompassDoc.contains("loaded blocks only"));
         assertTrue(oreCompassDoc.contains("32"));
         assertTrue(oreCompassDoc.contains("24"));
+        assertTrue(oreCompassDoc.contains("stored last target"));
+        assertTrue(oreCompassDoc.contains("tracking radius"));
+        assertTrue(oreCompassDoc.contains("50"));
+        assertTrue(oreCompassDoc.contains("client-visible pointing"));
         assertTrue(oreCompassDoc.contains("ore_compass_targets"));
-        assertTrue(oreCompassDoc.contains("no live compass needle"));
+        assertTrue(oreCompassDoc.contains("wrong dimension"));
+        assertTrue(oreCompassDoc.contains("out of range"));
+        assertTrue(oreCompassDoc.contains("block mismatch"));
+        assertTrue(oreCompassDoc.contains("unloaded client context"));
         assertTrue(oreCompassDoc.contains("no GUI"));
         assertTrue(oreCompassDoc.contains("no client packets"));
         assertTrue(minerOrbDoc.contains("Ore Compass MVP now exists"));
+        assertTrue(minerOrbDoc.contains("tracking UX follow-up"));
         assertTrue(minerOrbDoc.contains("recipe ingredient"));
         assertTrue(minerOrbDoc.contains("bonus behavior remains unchanged"));
         assertTrue(runtimeSmokeDoc.contains("ore_compass runtime registry availability"));
         assertTrue(runtimeSmokeDoc.contains("ore_compass target tag resolution"));
         assertTrue(runtimeSmokeDoc.contains("ore_compass scanner nearest-target behavior"));
+        assertTrue(runtimeSmokeDoc.contains("ore_compass stored-target state round-trip"));
+        assertTrue(runtimeSmokeDoc.contains("ore_compass tracking policy/runtime ids"));
+        assertTrue(runtimeSmokeDoc.contains("actual client-visible needle feel still requires manual smoke"));
         assertTrue(runtimeSmokeDoc.contains("unsupported/fissured/storage exclusion"));
     }
 
     @Test
     void oreCompassResourcesResolveFromRuntimeClasspath() {
         assertClassPathOrigin(resourceUrl("assets/cavernreborn/models/item/ore_compass.json"), "assets/cavernreborn/models/item/ore_compass.json");
-        assertClassPathOrigin(resourceUrl("assets/cavernreborn/textures/item/ore_compass.png"), "assets/cavernreborn/textures/item/ore_compass.png");
         assertClassPathOrigin(resourceUrl("data/cavernreborn/recipe/ore_compass.json"), "data/cavernreborn/recipe/ore_compass.json");
         assertClassPathOrigin(resourceUrl("data/cavernreborn/tags/block/ore_compass_targets.json"), "data/cavernreborn/tags/block/ore_compass_targets.json");
         assertClassPathOrigin(resourceUrl("data/cavernreborn/tags/blocks/ore_compass_targets.json"), "data/cavernreborn/tags/blocks/ore_compass_targets.json");
+        IntStream.range(0, 32).forEach(frame -> {
+            String suffix = String.format("%02d", frame);
+            assertClassPathOrigin(
+                resourceUrl("assets/cavernreborn/models/item/ore_compass_" + suffix + ".json"),
+                "assets/cavernreborn/models/item/ore_compass_" + suffix + ".json"
+            );
+            assertClassPathOrigin(
+                resourceUrl("assets/cavernreborn/textures/item/ore_compass_" + suffix + ".png"),
+                "assets/cavernreborn/textures/item/ore_compass_" + suffix + ".png"
+            );
+        });
     }
 
     private static JsonObject readJsonResource(String path) throws IOException {

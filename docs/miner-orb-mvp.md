@@ -23,6 +23,7 @@ It builds on top of `docs/cavern-special-ore-content-parity.md`, `docs/hexcite-t
 - The bonus does not apply to Mining Assist extra blocks.
 - No `cavenic_orb` is added here.
 - Ore Compass MVP now exists separately in `docs/ore-compass-mvp.md` and uses `miner_orb` as a recipe ingredient.
+- The bounded Ore Compass tracking UX follow-up still uses `miner_orb` only as a recipe ingredient and does not change the Miner's Orb bonus path.
 - The Miner's Orb bonus behavior remains unchanged by that follow-up item slice.
 - No particles, sounds, client GUI or keybinds are added in this MVP.
 
