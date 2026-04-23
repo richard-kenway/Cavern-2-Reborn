@@ -124,7 +124,7 @@ class HexciteToolResourcesTest {
             "cavernreborn:hexcite_shovel",
             "cavernreborn:hexcite_hoe"
         ));
-        assertTagContainsExactly(durabilityEnchantableTag, List.of(
+        assertTagContainsAll(durabilityEnchantableTag, List.of(
             "cavernreborn:hexcite_pickaxe",
             "cavernreborn:hexcite_axe",
             "cavernreborn:hexcite_shovel",
@@ -186,6 +186,12 @@ class HexciteToolResourcesTest {
     private static void assertTagContainsExactly(JsonObject tag, Collection<String> expectedValues) {
         assertTrue(!tag.get("replace").getAsBoolean(), "Expected additive tag merge");
         assertEquals(List.copyOf(expectedValues), arrayStrings(tag.getAsJsonArray("values")));
+    }
+
+    private static void assertTagContainsAll(JsonObject tag, Collection<String> expectedValues) {
+        assertTrue(!tag.get("replace").getAsBoolean(), "Expected additive tag merge");
+        List<String> actualValues = arrayStrings(tag.getAsJsonArray("values"));
+        assertTrue(actualValues.containsAll(expectedValues), "Expected tag values " + actualValues + " to contain " + expectedValues);
     }
 
     private static JsonObject readJsonResource(String path) throws IOException {

@@ -8,6 +8,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.HoeItem;
@@ -101,6 +102,26 @@ public final class ModRegistries {
         () -> new SwordItem(
             ModToolTiers.HEXCITE,
             new Item.Properties().attributes(SwordItem.createAttributes(ModToolTiers.HEXCITE, 3, -2.4F))));
+    public static final DeferredItem<Item> HEXCITE_HELMET = ITEMS.register("hexcite_helmet",
+        () -> new ArmorItem(
+            ModArmorMaterials.HEXCITE,
+            ArmorItem.Type.HELMET,
+            new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(ModArmorMaterials.HEXCITE_DURABILITY_MULTIPLIER))));
+    public static final DeferredItem<Item> HEXCITE_CHESTPLATE = ITEMS.register("hexcite_chestplate",
+        () -> new ArmorItem(
+            ModArmorMaterials.HEXCITE,
+            ArmorItem.Type.CHESTPLATE,
+            new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(ModArmorMaterials.HEXCITE_DURABILITY_MULTIPLIER))));
+    public static final DeferredItem<Item> HEXCITE_LEGGINGS = ITEMS.register("hexcite_leggings",
+        () -> new ArmorItem(
+            ModArmorMaterials.HEXCITE,
+            ArmorItem.Type.LEGGINGS,
+            new Item.Properties().durability(ArmorItem.Type.LEGGINGS.getDurability(ModArmorMaterials.HEXCITE_DURABILITY_MULTIPLIER))));
+    public static final DeferredItem<Item> HEXCITE_BOOTS = ITEMS.register("hexcite_boots",
+        () -> new ArmorItem(
+            ModArmorMaterials.HEXCITE,
+            ArmorItem.Type.BOOTS,
+            new Item.Properties().durability(ArmorItem.Type.BOOTS.getDurability(ModArmorMaterials.HEXCITE_DURABILITY_MULTIPLIER))));
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MAIN_TAB = CREATIVE_MODE_TABS.register("main",
         () -> CreativeModeTab.builder()
@@ -127,6 +148,10 @@ public final class ModRegistries {
                 output.accept(HEXCITE_SHOVEL.get());
                 output.accept(HEXCITE_HOE.get());
                 output.accept(HEXCITE_SWORD.get());
+                output.accept(HEXCITE_HELMET.get());
+                output.accept(HEXCITE_CHESTPLATE.get());
+                output.accept(HEXCITE_LEGGINGS.get());
+                output.accept(HEXCITE_BOOTS.get());
             })
             .build());
 
@@ -134,6 +159,7 @@ public final class ModRegistries {
     }
 
     public static void register(IEventBus modEventBus) {
+        ModArmorMaterials.register(modEventBus);
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);

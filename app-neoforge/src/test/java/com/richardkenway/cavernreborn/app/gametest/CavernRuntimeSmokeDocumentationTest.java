@@ -32,6 +32,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/ore-compass-mvp.md"));
         assertTrue(readme.contains("bounded tracking UX follow-up"));
         assertTrue(readme.contains("track that target visually"));
+        assertTrue(readme.contains("Hexcite Armor MVP"));
+        assertTrue(readme.contains("docs/hexcite-armor-mvp.md"));
     }
 
     @Test
@@ -43,6 +45,10 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("hexcite normal and Silk Touch loot paths"));
         assertTrue(doc.contains("randomite curated runtime loot output"));
         assertTrue(doc.contains("hexcite pickaxe enchantment applicability"));
+        assertTrue(doc.contains("hexcite armor runtime registry ids"));
+        assertTrue(doc.contains("hexcite armor repairability with `cavernreborn:hexcite`"));
+        assertTrue(doc.contains("hexcite armor durability and slot/equippable runtime behavior"));
+        assertTrue(doc.contains("hexcite armor enchantment applicability"));
         assertTrue(doc.contains("miner_orb runtime registry availability"));
         assertTrue(doc.contains("randomite allowed-drop runtime coverage that now includes miner_orb in the curated pool"));
         assertTrue(doc.contains("miner_orb bonus policy/runtime smoke"));
@@ -75,6 +81,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("does not change gameplay behavior"));
         assertTrue(doc.contains("manual client smoke is still needed"));
         assertTrue(doc.contains("actual client-visible needle feel still requires manual smoke"));
+        assertTrue(doc.contains("actual worn hexcite armor appearance"));
         assertTrue(doc.contains("portal UX"));
         assertTrue(doc.contains("rendering"));
     }

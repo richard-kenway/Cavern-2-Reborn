@@ -1,6 +1,6 @@
 # Hexcite Tool Parity
 
-This note fixes the first bounded `hexcite` equipment slice for `CAVERN`.
+This note fixes the first bounded `hexcite` tool slice for `CAVERN`.
 
 It builds directly on `docs/cavern-special-ore-content-parity.md`.
 
@@ -21,7 +21,7 @@ It builds directly on `docs/cavern-special-ore-content-parity.md`.
 
 - This is the first hexcite tool set MVP, not full legacy equipment parity.
 - The current slice adds only the five core tools.
-- armor remains out of scope.
+- The tool slice remains tool-only; armor is now documented separately in `docs/hexcite-armor-mvp.md`.
 - No special tool abilities are added in this pass.
 - No mining assist, vein mining, area mining, particles or custom sounds are added here.
 - Mining Assist is documented separately as the follow-up functional slice in `docs/mining-assist-mvp.md`.

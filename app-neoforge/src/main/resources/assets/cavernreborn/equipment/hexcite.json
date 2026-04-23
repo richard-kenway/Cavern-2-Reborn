@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "cavernreborn:hexcite/outer"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "cavernreborn:hexcite/inner"
+      }
+    ]
+  }
+}

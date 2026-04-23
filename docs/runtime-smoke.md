@@ -1,6 +1,6 @@
 # Runtime Smoke
 
-This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the follow-up `hexcite` tool-set MVP, the bounded Mining Assist slice, the first Miner's Orb MVP and the Ore Compass MVP plus tracking UX follow-up.
+This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the follow-up `hexcite` tool-set MVP, the bounded `Hexcite Armor MVP`, the bounded Mining Assist slice, the first Miner's Orb MVP and the Ore Compass MVP plus tracking UX follow-up.
 
 It is intentionally a NeoForge GameTest server pass, not a visual client smoke pass.
 
@@ -10,10 +10,14 @@ NeoForge GameTest runtime smoke covers:
 
 - runtime registry availability for tranche 2 content
 - hexcite tool runtime registry ids
+- hexcite armor runtime registry ids
 - hexcite normal and Silk Touch loot paths
 - hexcite pickaxe enchantment applicability for mining and durability enchantments
 - hexcite pickaxe normal mining path for special ores
 - hexcite pickaxe Silk Touch path for hexcite ore
+- hexcite armor repairability with `cavernreborn:hexcite`
+- hexcite armor durability and slot/equippable runtime behavior
+- hexcite armor enchantment applicability for the expected vanilla armor families
 - miner_orb runtime registry availability
 - randomite allowed-drop runtime coverage that now includes miner_orb in the curated pool
 - miner_orb bonus policy/runtime smoke
@@ -40,6 +44,7 @@ NeoForge GameTest runtime smoke covers:
 
 - visual portal UX
 - block, model and texture appearance in the client
+- actual worn hexcite armor appearance on a player or mob
 - particle and sound feel
 - full player portal loop through a real client session
 - restart persistence with a real dedicated-server save
@@ -91,6 +96,7 @@ docker compose run --rm gradle ./gradlew --no-daemon build
 - The same GameTest layer now also covers the bounded Mining Assist MVP runtime path.
 - The same GameTest layer now also covers the bounded Ore Compass server-side scan path.
 - The same GameTest layer now also covers the bounded Ore Compass stored-target and tracking-policy runtime path.
+- The same GameTest layer now also covers the bounded Hexcite Armor MVP runtime path.
 - The run is intentionally small and server-only; it should not require a GUI client or a human player.
 
 ## Registration Workaround

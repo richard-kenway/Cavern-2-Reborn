@@ -20,10 +20,11 @@ This note fixes the second narrow special-ore/content tranche for `CAVERN` (Tran
 ## Follow-Up Tool Slice
 
 - The first hexcite tool set MVP is documented separately in `docs/hexcite-tool-parity.md`.
+- The first hexcite armor MVP is documented separately in `docs/hexcite-armor-mvp.md`.
 - The first Miner's Orb follow-up is documented separately in `docs/miner-orb-mvp.md`.
 - The first Ore Compass follow-up is documented separately in `docs/ore-compass-mvp.md`.
 - That follow-up slice adds the five core `hexcite` tools only.
-- Armor remains out of scope there as well.
+- Armor is now handled by the separate bounded `docs/hexcite-armor-mvp.md` follow-up.
 - No special tool abilities were added on top of the special ore tranche.
 
 ## Modern Reborn Slice
