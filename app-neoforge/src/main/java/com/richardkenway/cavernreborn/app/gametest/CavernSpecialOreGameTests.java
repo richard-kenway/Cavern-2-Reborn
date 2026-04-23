@@ -84,6 +84,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos MINING_ASSIST_SNEAKING_ANCHOR = new BlockPos(64, 96, 0);
     private static final BlockPos MINING_ASSIST_FISSURE_ANCHOR = new BlockPos(96, 96, 0);
     private static final BlockPos MINING_ASSIST_DURABILITY_ANCHOR = new BlockPos(128, 96, 0);
+    private static final BlockPos MAGNITE_NO_ASSIST_ANCHOR = new BlockPos(160, 96, 0);
     private static final BlockPos ORE_COMPASS_NEAREST_ANCHOR = new BlockPos(256, 96, 0);
     private static final BlockPos ORE_COMPASS_FILTERED_ANCHOR = new BlockPos(352, 96, 0);
     private static final BlockPos ORE_COMPASS_EMPTY_ANCHOR = new BlockPos(448, 96, 0);
@@ -232,6 +233,91 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(boostedWithAffinity.adjustedSpeed() == 10.0F, "Expected Aqua Affinity dampener to halve the aquamarine boost");
         helper.assertTrue(notSubmerged.decision() == AquamarineAquaToolDecision.NOT_SUBMERGED, "Expected dry aquamarine tool use to stay unchanged");
         helper.assertTrue(notSubmerged.adjustedSpeed() == 2.0F, "Expected dry aquamarine tool use to keep the incoming speed");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void magniteToolsRegisterAtRuntime(GameTestHelper helper) {
+        helper.assertTrue(ModRegistries.MAGNITE_SWORD.get() != null, "Missing magnite sword");
+        helper.assertTrue(ModRegistries.MAGNITE_PICKAXE.get() != null, "Missing magnite pickaxe");
+        helper.assertTrue(ModRegistries.MAGNITE_AXE.get() != null, "Missing magnite axe");
+        helper.assertTrue(ModRegistries.MAGNITE_SHOVEL.get() != null, "Missing magnite shovel");
+
+        assertRegistryId(helper, ModRegistries.MAGNITE_SWORD.get(), "cavernreborn:magnite_sword");
+        assertRegistryId(helper, ModRegistries.MAGNITE_PICKAXE.get(), "cavernreborn:magnite_pickaxe");
+        assertRegistryId(helper, ModRegistries.MAGNITE_AXE.get(), "cavernreborn:magnite_axe");
+        assertRegistryId(helper, ModRegistries.MAGNITE_SHOVEL.get(), "cavernreborn:magnite_shovel");
+
+        helper.assertTrue(!magniteSword().isEmpty(), "Expected magnite sword stack to be constructible");
+        helper.assertTrue(!magnitePickaxe().isEmpty(), "Expected magnite pickaxe stack to be constructible");
+        helper.assertTrue(!magniteAxe().isEmpty(), "Expected magnite axe stack to be constructible");
+        helper.assertTrue(!magniteShovel().isEmpty(), "Expected magnite shovel stack to be constructible");
+        helper.assertTrue(magniteSword().is(ModItemTags.MAGNITE_TOOLS), "Expected magnite sword to resolve through magnite_tools");
+        helper.assertTrue(magnitePickaxe().is(ModItemTags.MAGNITE_TOOLS), "Expected magnite pickaxe to resolve through magnite_tools");
+        helper.assertTrue(magniteAxe().is(ModItemTags.MAGNITE_TOOLS), "Expected magnite axe to resolve through magnite_tools");
+        helper.assertTrue(magniteShovel().is(ModItemTags.MAGNITE_TOOLS), "Expected magnite shovel to resolve through magnite_tools");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void magniteToolsAreRepairableWithMagnite(GameTestHelper helper) {
+        ItemStack repairStack = new ItemStack(ModRegistries.MAGNITE_INGOT.get());
+        ItemStack wrongRepairStack = new ItemStack(Items.STICK);
+        List<ItemStack> tools = List.of(magniteSword(), magnitePickaxe(), magniteAxe(), magniteShovel());
+
+        for (ItemStack tool : tools) {
+            helper.assertTrue(tool.getItem().isValidRepairItem(tool, repairStack), "Expected magnite repair support for " + itemId(tool));
+            helper.assertFalse(tool.getItem().isValidRepairItem(tool, wrongRepairStack), "Stick must not repair " + itemId(tool));
+        }
+
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void magniteToolsExposeBrittleDurabilityAndRuntimeIds(GameTestHelper helper) {
+        List<ItemStack> tools = List.of(magniteSword(), magnitePickaxe(), magniteAxe(), magniteShovel());
+
+        for (ItemStack tool : tools) {
+            helper.assertTrue(tool.isDamageableItem(), "Expected damageable magnite tool: " + itemId(tool));
+            helper.assertTrue(tool.getMaxDamage() == ModToolTiers.MAGNITE.getUses(), "Unexpected max damage for " + itemId(tool));
+        }
+
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void magniteToolsSupportExpectedEnchantments(GameTestHelper helper) {
+        HolderLookup.RegistryLookup<Enchantment> enchantments = helper.getLevel().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        ItemStack sword = magniteSword();
+        ItemStack pickaxe = magnitePickaxe();
+        ItemStack axe = magniteAxe();
+        ItemStack shovel = magniteShovel();
+
+        assertSupportsEnchantment(helper, pickaxe, enchantments.getOrThrow(Enchantments.EFFICIENCY), true);
+        assertSupportsEnchantment(helper, pickaxe, enchantments.getOrThrow(Enchantments.SILK_TOUCH), true);
+        assertSupportsEnchantment(helper, pickaxe, enchantments.getOrThrow(Enchantments.FORTUNE), true);
+        assertSupportsEnchantment(helper, pickaxe, enchantments.getOrThrow(Enchantments.UNBREAKING), true);
+        assertSupportsEnchantment(helper, pickaxe, enchantments.getOrThrow(Enchantments.MENDING), true);
+        assertSupportsEnchantment(helper, pickaxe, enchantments.getOrThrow(Enchantments.PROTECTION), false);
+
+        assertSupportsEnchantment(helper, shovel, enchantments.getOrThrow(Enchantments.EFFICIENCY), true);
+        assertSupportsEnchantment(helper, shovel, enchantments.getOrThrow(Enchantments.SILK_TOUCH), true);
+        assertSupportsEnchantment(helper, shovel, enchantments.getOrThrow(Enchantments.UNBREAKING), true);
+        assertSupportsEnchantment(helper, shovel, enchantments.getOrThrow(Enchantments.MENDING), true);
+        assertSupportsEnchantment(helper, shovel, enchantments.getOrThrow(Enchantments.PROTECTION), false);
+
+        assertSupportsEnchantment(helper, sword, enchantments.getOrThrow(Enchantments.SHARPNESS), true);
+        assertSupportsEnchantment(helper, sword, enchantments.getOrThrow(Enchantments.UNBREAKING), true);
+        assertSupportsEnchantment(helper, sword, enchantments.getOrThrow(Enchantments.MENDING), true);
+        assertSupportsEnchantment(helper, sword, enchantments.getOrThrow(Enchantments.PROTECTION), false);
+
+        assertSupportsEnchantment(helper, axe, enchantments.getOrThrow(Enchantments.EFFICIENCY), true);
+        assertSupportsEnchantment(helper, axe, enchantments.getOrThrow(Enchantments.SILK_TOUCH), true);
+        assertSupportsEnchantment(helper, axe, enchantments.getOrThrow(Enchantments.FORTUNE), true);
+        assertSupportsEnchantment(helper, axe, enchantments.getOrThrow(Enchantments.UNBREAKING), true);
+        assertSupportsEnchantment(helper, axe, enchantments.getOrThrow(Enchantments.MENDING), true);
+        assertSupportsEnchantment(helper, axe, enchantments.getOrThrow(Enchantments.SHARPNESS), true);
+        assertSupportsEnchantment(helper, axe, enchantments.getOrThrow(Enchantments.PROTECTION), false);
         helper.succeed();
     }
 
@@ -426,6 +512,24 @@ public final class CavernSpecialOreGameTests {
         for (ItemStack stack : randomiteDrops) {
             String itemId = itemId(stack);
             helper.assertTrue(ALLOWED_RANDOMITE_DROPS.contains(itemId), "Unexpected randomite drop for hexcite pickaxe: " + itemId);
+        }
+
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void magnitePickaxeCanMineSpecialCavernOres(GameTestHelper helper) {
+        helper.killAllEntities();
+
+        List<ItemStack> hexciteDrops = dropsForBlock(helper, ModRegistries.HEXCITE_ORE.get(), magnitePickaxe());
+        helper.assertTrue(!hexciteDrops.isEmpty(), "Expected magnite pickaxe to mine hexcite ore");
+        assertContainsItem(helper, hexciteDrops, "cavernreborn:hexcite");
+
+        List<ItemStack> randomiteDrops = dropsForBlock(helper, ModRegistries.RANDOMITE_ORE.get(), magnitePickaxe());
+        helper.assertTrue(!randomiteDrops.isEmpty(), "Expected magnite pickaxe to mine randomite ore");
+        for (ItemStack stack : randomiteDrops) {
+            String itemId = itemId(stack);
+            helper.assertTrue(ALLOWED_RANDOMITE_DROPS.contains(itemId), "Unexpected randomite drop for magnite pickaxe: " + itemId);
         }
 
         helper.succeed();
@@ -1084,6 +1188,27 @@ public final class CavernSpecialOreGameTests {
         });
     }
 
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void magnitePickaxeDoesNotTriggerMiningAssist(GameTestHelper helper) {
+        ServerLevel cavernLevel = helper.getLevel();
+        BlockPos origin = MAGNITE_NO_ASSIST_ANCHOR;
+        List<BlockPos> vein = hexciteVein(origin);
+
+        resetMiningArea(cavernLevel, origin, 8.0D);
+        placeBlockSet(cavernLevel, vein, ModRegistries.HEXCITE_ORE.get());
+
+        Player player = makeMockPlayer(helper, cavernLevel, GameType.SURVIVAL, magnitePickaxe(), origin);
+        grantMiningAssistUnlock(helper, player);
+        helper.assertTrue(applyMiningAssist(helper, cavernLevel, player, origin) == 0, "magnite_pickaxe must not trigger Mining Assist");
+        CavernMiningAssistEvents.breakBlockWithTool(cavernLevel, player, origin, cavernLevel.getBlockState(origin), player.getMainHandItem(), true);
+
+        helper.runAfterDelay(5, () -> {
+            helper.assertTrue(countBlocks(cavernLevel, vein, ModRegistries.HEXCITE_ORE.get()) == 7, "magnite_pickaxe must only break the origin block");
+            clearProgression(player);
+            helper.succeed();
+        });
+    }
+
     private static ItemStack normalPickaxe(ServerLevel level) {
         return new ItemStack(Items.IRON_PICKAXE);
     }
@@ -1105,6 +1230,22 @@ public final class CavernSpecialOreGameTests {
 
     private static ItemStack aquamarineShovel() {
         return new ItemStack(ModRegistries.AQUAMARINE_SHOVEL.get());
+    }
+
+    private static ItemStack magniteSword() {
+        return new ItemStack(ModRegistries.MAGNITE_SWORD.get());
+    }
+
+    private static ItemStack magnitePickaxe() {
+        return new ItemStack(ModRegistries.MAGNITE_PICKAXE.get());
+    }
+
+    private static ItemStack magniteAxe() {
+        return new ItemStack(ModRegistries.MAGNITE_AXE.get());
+    }
+
+    private static ItemStack magniteShovel() {
+        return new ItemStack(ModRegistries.MAGNITE_SHOVEL.get());
     }
 
     private static ItemStack hexcitePickaxe() {

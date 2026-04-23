@@ -24,6 +24,7 @@ It builds directly on `docs/cavern-special-ore-content-parity.md`.
 - The tool slice remains tool-only; armor is now documented separately in `docs/hexcite-armor-mvp.md`.
 - The hexcite line remains the main combat/mining equipment line.
 - The bounded aquamarine utility follow-up is documented separately in `docs/aquamarine-tool-mvp.md`.
+- The bounded magnite specialist side-grade is documented separately in `docs/magnite-tool-mvp.md`.
 - No special tool abilities are added in this pass.
 - No mining assist, vein mining, area mining, particles or custom sounds are added here.
 - Mining Assist is documented separately as the follow-up functional slice in `docs/mining-assist-mvp.md`.

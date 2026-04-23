@@ -94,6 +94,22 @@ public final class ModRegistries {
         () -> new ShovelItem(
             ModToolTiers.AQUAMARINE,
             new Item.Properties().attributes(ShovelItem.createAttributes(ModToolTiers.AQUAMARINE, 1.5F, -3.0F))));
+    public static final DeferredItem<Item> MAGNITE_PICKAXE = ITEMS.register("magnite_pickaxe",
+        () -> new PickaxeItem(
+            ModToolTiers.MAGNITE,
+            new Item.Properties().attributes(PickaxeItem.createAttributes(ModToolTiers.MAGNITE, 1.0F, -2.8F))));
+    public static final DeferredItem<Item> MAGNITE_AXE = ITEMS.register("magnite_axe",
+        () -> new AxeItem(
+            ModToolTiers.MAGNITE,
+            new Item.Properties().attributes(AxeItem.createAttributes(ModToolTiers.MAGNITE, 7.0F, -3.1F))));
+    public static final DeferredItem<Item> MAGNITE_SHOVEL = ITEMS.register("magnite_shovel",
+        () -> new ShovelItem(
+            ModToolTiers.MAGNITE,
+            new Item.Properties().attributes(ShovelItem.createAttributes(ModToolTiers.MAGNITE, 1.5F, -3.0F))));
+    public static final DeferredItem<Item> MAGNITE_SWORD = ITEMS.register("magnite_sword",
+        () -> new SwordItem(
+            ModToolTiers.MAGNITE,
+            new Item.Properties().attributes(SwordItem.createAttributes(ModToolTiers.MAGNITE, 3, -2.4F))));
     public static final DeferredItem<Item> HEXCITE_PICKAXE = ITEMS.register("hexcite_pickaxe",
         () -> new PickaxeItem(
             ModToolTiers.HEXCITE,
@@ -155,6 +171,10 @@ public final class ModRegistries {
                 output.accept(AQUAMARINE_AXE.get());
                 output.accept(AQUAMARINE_SHOVEL.get());
                 output.accept(MAGNITE_INGOT.get());
+                output.accept(MAGNITE_PICKAXE.get());
+                output.accept(MAGNITE_AXE.get());
+                output.accept(MAGNITE_SHOVEL.get());
+                output.accept(MAGNITE_SWORD.get());
                 output.accept(HEXCITE.get());
                 output.accept(MINER_ORB.get());
                 output.accept(ORE_COMPASS.get());

@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "cavernreborn:magnite_sword",
+    "cavernreborn:magnite_pickaxe",
+    "cavernreborn:magnite_axe",
+    "cavernreborn:magnite_shovel"
+  ]
+}

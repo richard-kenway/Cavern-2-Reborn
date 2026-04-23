@@ -17,7 +17,8 @@ This repository currently contains the project skeleton and a minimal content re
 - a terrain-signature parity pass on top of `contained_caves`: denser stone mass, a stronger tunnel/chamber band, broader ravine cuts, an upper extreme-like chamber band and a lower hot band that stays below the current portal safe-arrival window
 - a first population-parity pass on top of that terrain slice: slightly stronger monster-room pressure, biome-biased water/lava spring passes and extra mushroom scatter so `CAVERN` reads as a more populated underground world without adding a new content roster
 - a first ore/content-parity pass on top of the terrain and population baselines: `aquamarine` and `magnite` now exist as cavern-native ore families with registered blocks/items, minimal storage loops and narrow `CAVERN` worldgen wiring instead of relying only on vanilla ore identity
-- a first bounded Aquamarine Utility Tools MVP on top of that ore-family slice: `aquamarine_pickaxe`, `aquamarine_axe` and `aquamarine_shovel` now exist as repairable utility equipment with underwater break-speed utility only, while aquamarine sword/hoe/armor and magnite tools remain out of scope
+- a first bounded Aquamarine Utility Tools MVP on top of that ore-family slice: `aquamarine_pickaxe`, `aquamarine_axe` and `aquamarine_shovel` now exist as repairable utility equipment with underwater break-speed utility only, while aquamarine sword/hoe/armor remain out of scope
+- a first bounded Magnite Tool Set MVP on top of that same ore-family slice: `magnite_sword`, `magnite_pickaxe`, `magnite_axe` and `magnite_shovel` now exist as repairable brittle/high-speed specialist equipment, while magnite armor remains out of scope
 - a second special ore/content tranche on top of that slice: `hexcite`, `randomite` and `fissured_stone` now exist as bounded custom `CAVERN` content with checked-in assets, loot, recipes, worldgen and non-griefing fissure behavior instead of broad legacy-system ports
 - a first hexcite tool-set MVP on top of that special ore slice: `hexcite_pickaxe`, `hexcite_axe`, `hexcite_shovel`, `hexcite_hoe` and `hexcite_sword` now exist as bounded craftable equipment with `hexcite` repair support, while special abilities remain out of scope
 - a first bounded Hexcite Armor MVP on top of that same equipment line: `hexcite_helmet`, `hexcite_chestplate`, `hexcite_leggings` and `hexcite_boots` now exist as craftable, repairable, diamond-adjacent armor that does not add a set bonus or other new gameplay systems
@@ -156,12 +157,13 @@ No full legacy-parity `CAVERN` gameplay stack is implemented yet.
 - Or run the executable wrapper directly:
   - `scripts/runtime-smoke.sh`
 - The runtime smoke scope is documented in `docs/runtime-smoke.md`.
-- The current GameTest slice covers runtime registry availability, `aquamarine` tool runtime ids/repairability/enchantability, `aquamarine` underwater utility policy smoke, `hexcite` normal and Silk Touch loot, `hexcite` tool runtime registry/mining paths, `hexcite` armor runtime ids/repairability/enchantability, `miner_orb` runtime registry/policy smoke, `ore_compass` runtime registry/scanner paths, curated `randomite` runtime drops, `fissured_stone` no-drop/effect/creative-guard/non-destructive behavior, progression policy ids/scores and special-ore worldgen key resolution.
+- The current GameTest slice covers runtime registry availability, `aquamarine` tool runtime ids/repairability/enchantability, `aquamarine` underwater utility policy smoke, `magnite` tool runtime ids/repairability/enchantability plus brittle no-Assist smoke, `hexcite` normal and Silk Touch loot, `hexcite` tool runtime registry/mining paths, `hexcite` armor runtime ids/repairability/enchantability, `miner_orb` runtime registry/policy smoke, `ore_compass` runtime registry/scanner paths, curated `randomite` runtime drops, `fissured_stone` no-drop/effect/creative-guard/non-destructive behavior, progression policy ids/scores and special-ore worldgen key resolution.
 - The same runtime smoke slice now also covers `ore_compass` stored-target state round-trip and tracking policy/runtime-id smoke, while actual client-visible needle feel still remains on the manual smoke checklist.
 - The current GameTest slice also covers Mining Assist runtime ids, bounded same-block vein breaks with `hexcite_pickaxe`, unlock-gated/no-unlock behavior, `fissured_stone` exclusion and target-preservation smoke.
 - The first Ore Compass MVP is documented in `docs/ore-compass-mvp.md`.
 - The first Hexcite Armor MVP is documented in `docs/hexcite-armor-mvp.md`.
 - The first Aquamarine Utility Tools MVP is documented in `docs/aquamarine-tool-mvp.md`.
+- The first Magnite Tool Set MVP is documented in `docs/magnite-tool-mvp.md`.
 - This is still a server-side smoke layer, not a substitute for manual client validation of portal UX, rendering, particles, sounds or overall player feel.
 
 ## Progression Baseline

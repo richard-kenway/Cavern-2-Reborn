@@ -39,6 +39,8 @@ class AquamarineToolDocumentationTest {
         assertTrue(doc.contains("repairable with aquamarine"));
         assertTrue(doc.contains("iron-adjacent"));
         assertTrue(doc.contains("underwater break-speed only"));
+        assertTrue(doc.contains("utility-oriented"));
+        assertTrue(doc.contains("docs/magnite-tool-mvp.md"));
         assertTrue(doc.contains("No water breathing"));
         assertTrue(doc.contains("No swim-speed bonus"));
         assertTrue(doc.contains("No progression changes"));
@@ -47,7 +49,7 @@ class AquamarineToolDocumentationTest {
 
         assertTrue(oreContentDoc.contains("docs/aquamarine-tool-mvp.md"));
         assertTrue(oreContentDoc.contains("aquamarine now also has a bounded tool follow-up"));
-        assertTrue(oreContentDoc.contains("magnite tools remain out of scope"));
+        assertTrue(oreContentDoc.contains("docs/magnite-tool-mvp.md"));
         assertTrue(hexciteToolDoc.contains("docs/aquamarine-tool-mvp.md"));
         assertTrue(hexciteToolDoc.contains("main combat/mining equipment line"));
         assertTrue(runtimeSmokeDoc.contains("aquamarine tool runtime registry ids"));

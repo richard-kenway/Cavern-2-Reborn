@@ -40,7 +40,8 @@ The bounded aquamarine tool follow-up now lives in `docs/aquamarine-tool-mvp.md`
 ## Follow-Up Status
 
 - aquamarine now also has a bounded tool follow-up in `docs/aquamarine-tool-mvp.md`.
-- magnite tools remain out of scope.
+- magnite now also has a bounded tool follow-up in `docs/magnite-tool-mvp.md`.
+- magnite armor still remains out of scope.
 
 ## Modern Reborn Slice
 

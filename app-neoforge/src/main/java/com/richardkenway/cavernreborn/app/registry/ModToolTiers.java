@@ -15,6 +15,10 @@ public final class ModToolTiers {
         Registries.BLOCK,
         ResourceLocation.parse(CavernReborn.MOD_ID + ":incorrect_for_aquamarine_tool")
     );
+    public static final TagKey<Block> INCORRECT_FOR_MAGNITE_TOOL = TagKey.create(
+        Registries.BLOCK,
+        ResourceLocation.parse(CavernReborn.MOD_ID + ":incorrect_for_magnite_tool")
+    );
     public static final TagKey<Block> INCORRECT_FOR_HEXCITE_TOOL = TagKey.create(
         Registries.BLOCK,
         ResourceLocation.parse(CavernReborn.MOD_ID + ":incorrect_for_hexcite_tool")
@@ -27,6 +31,15 @@ public final class ModToolTiers {
         1.5F,
         15,
         () -> Ingredient.of(ModRegistries.AQUAMARINE.get())
+    );
+
+    public static final Tier MAGNITE = new SimpleTier(
+        INCORRECT_FOR_MAGNITE_TOOL,
+        48,
+        18.0F,
+        2.5F,
+        24,
+        () -> Ingredient.of(ModRegistries.MAGNITE_INGOT.get())
     );
 
     public static final Tier HEXCITE = new SimpleTier(

@@ -107,15 +107,18 @@ class HexciteToolResourcesTest {
         assertTrue(incorrectTagValues.contains("#minecraft:incorrect_for_diamond_tool"));
         assertEquals(incorrectTagValues, arrayStrings(incorrectForHexciteToolCompat.getAsJsonArray("values")));
 
-        assertTagContainsExactly(pickaxesTag, List.of("cavernreborn:aquamarine_pickaxe", "cavernreborn:hexcite_pickaxe"));
-        assertTagContainsExactly(axesTag, List.of("cavernreborn:aquamarine_axe", "cavernreborn:hexcite_axe"));
-        assertTagContainsExactly(shovelsTag, List.of("cavernreborn:aquamarine_shovel", "cavernreborn:hexcite_shovel"));
+        assertTagContainsExactly(pickaxesTag, List.of("cavernreborn:aquamarine_pickaxe", "cavernreborn:magnite_pickaxe", "cavernreborn:hexcite_pickaxe"));
+        assertTagContainsExactly(axesTag, List.of("cavernreborn:aquamarine_axe", "cavernreborn:magnite_axe", "cavernreborn:hexcite_axe"));
+        assertTagContainsExactly(shovelsTag, List.of("cavernreborn:aquamarine_shovel", "cavernreborn:magnite_shovel", "cavernreborn:hexcite_shovel"));
         assertTagContainsExactly(hoesTag, List.of("cavernreborn:hexcite_hoe"));
-        assertTagContainsExactly(swordsTag, List.of("cavernreborn:hexcite_sword"));
+        assertTagContainsExactly(swordsTag, List.of("cavernreborn:magnite_sword", "cavernreborn:hexcite_sword"));
         assertTagContainsExactly(miningEnchantableTag, List.of(
             "cavernreborn:aquamarine_pickaxe",
             "cavernreborn:aquamarine_axe",
             "cavernreborn:aquamarine_shovel",
+            "cavernreborn:magnite_pickaxe",
+            "cavernreborn:magnite_axe",
+            "cavernreborn:magnite_shovel",
             "cavernreborn:hexcite_pickaxe",
             "cavernreborn:hexcite_axe",
             "cavernreborn:hexcite_shovel",
@@ -125,6 +128,9 @@ class HexciteToolResourcesTest {
             "cavernreborn:aquamarine_pickaxe",
             "cavernreborn:aquamarine_axe",
             "cavernreborn:aquamarine_shovel",
+            "cavernreborn:magnite_pickaxe",
+            "cavernreborn:magnite_axe",
+            "cavernreborn:magnite_shovel",
             "cavernreborn:hexcite_pickaxe",
             "cavernreborn:hexcite_axe",
             "cavernreborn:hexcite_shovel",
@@ -134,15 +140,19 @@ class HexciteToolResourcesTest {
             "cavernreborn:aquamarine_pickaxe",
             "cavernreborn:aquamarine_axe",
             "cavernreborn:aquamarine_shovel",
+            "cavernreborn:magnite_pickaxe",
+            "cavernreborn:magnite_axe",
+            "cavernreborn:magnite_shovel",
+            "cavernreborn:magnite_sword",
             "cavernreborn:hexcite_pickaxe",
             "cavernreborn:hexcite_axe",
             "cavernreborn:hexcite_shovel",
             "cavernreborn:hexcite_hoe",
             "cavernreborn:hexcite_sword"
         ));
-        assertTagContainsExactly(swordEnchantableTag, List.of("cavernreborn:hexcite_sword"));
-        assertTagContainsExactly(sharpWeaponEnchantableTag, List.of("cavernreborn:hexcite_axe", "cavernreborn:hexcite_sword"));
-        assertTagContainsExactly(weaponEnchantableTag, List.of("cavernreborn:hexcite_axe", "cavernreborn:hexcite_sword"));
+        assertTagContainsExactly(swordEnchantableTag, List.of("cavernreborn:magnite_sword", "cavernreborn:hexcite_sword"));
+        assertTagContainsExactly(sharpWeaponEnchantableTag, List.of("cavernreborn:magnite_axe", "cavernreborn:magnite_sword", "cavernreborn:hexcite_axe", "cavernreborn:hexcite_sword"));
+        assertTagContainsExactly(weaponEnchantableTag, List.of("cavernreborn:magnite_axe", "cavernreborn:magnite_sword", "cavernreborn:hexcite_axe", "cavernreborn:hexcite_sword"));
     }
 
     @Test

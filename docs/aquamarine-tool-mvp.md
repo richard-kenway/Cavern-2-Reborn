@@ -16,7 +16,8 @@ It builds directly on `docs/cavern-ore-content-parity.md`.
 - The current pass adds only `aquamarine_pickaxe`, `aquamarine_axe` and `aquamarine_shovel`.
 - The tools are repairable with aquamarine.
 - No aquamarine sword/hoe/armor is added in this pass.
-- Magnite tools remain out of scope.
+- Aquamarine remains the utility-oriented side-grade line.
+- Magnite is now documented separately in `docs/magnite-tool-mvp.md`.
 - The underwater utility is underwater break-speed only.
 - No water breathing is added.
 - No swim-speed bonus is added.
