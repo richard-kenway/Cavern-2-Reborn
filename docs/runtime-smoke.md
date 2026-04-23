@@ -1,6 +1,6 @@
 # Runtime Smoke
 
-This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the bounded Aquamarine Utility Tools MVP, the bounded Magnite Tool Set MVP, the bounded `Magnite Armor MVP`, the follow-up `hexcite` tool-set MVP, the bounded `Hexcite Armor MVP`, the bounded Mining Assist slice, the first Miner's Orb MVP and the Ore Compass MVP plus tracking UX follow-up.
+This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the bounded `Acresia Crop & Food MVP`, the bounded Aquamarine Utility Tools MVP, the bounded Magnite Tool Set MVP, the bounded `Magnite Armor MVP`, the follow-up `hexcite` tool-set MVP, the bounded `Hexcite Armor MVP`, the bounded Mining Assist slice, the first Miner's Orb MVP and the Ore Compass MVP plus tracking UX follow-up.
 
 It is intentionally a NeoForge GameTest server pass, not a visual client smoke pass.
 
@@ -9,6 +9,12 @@ It is intentionally a NeoForge GameTest server pass, not a visual client smoke p
 NeoForge GameTest runtime smoke covers:
 
 - runtime registry availability for tranche 2 content
+- acresia runtime registry ids
+- acresia seed planting smoke
+- acresia mature normal harvest smoke
+- acresia shear-harvest regrowth smoke
+- acresia edible fruit wiring
+- acresia worldgen configured/placed key resolution
 - aquamarine tool runtime registry ids
 - aquamarine tool repairability with `cavernreborn:aquamarine`
 - aquamarine tool enchantment applicability
@@ -59,6 +65,7 @@ NeoForge GameTest runtime smoke covers:
 - block, model and texture appearance in the client
 - actual worn hexcite armor appearance on a player or mob
 - actual worn magnite armor appearance on a player or mob
+- actual Acresia in-world farming feel and growth cadence
 - actual underwater aquamarine mining feel
 - actual brittle magnite mining feel
 - particle and sound feel
@@ -113,6 +120,7 @@ docker compose run --rm gradle ./gradlew --no-daemon build
 - The same GameTest layer now also covers the bounded Ore Compass server-side scan path.
 - The same GameTest layer now also covers the bounded Ore Compass stored-target and tracking-policy runtime path.
 - The same GameTest layer now also covers the bounded Hexcite Armor MVP runtime path.
+- The same GameTest layer now also covers the bounded Acresia crop planting/harvest/regrowth runtime path.
 - The run is intentionally small and server-only; it should not require a GUI client or a human player.
 
 ## Registration Workaround
@@ -137,6 +145,7 @@ Even when the runtime-smoke pass is green, manual client smoke is still needed f
 
 - portal UX
 - rendering and block/model appearance
+- actual Acresia patch discovery and crop growth feel
 - actual client-visible Ore Compass needle feel
 - particle and sound feel
 - end-to-end player movement through the portal loop

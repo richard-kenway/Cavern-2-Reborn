@@ -40,6 +40,10 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/magnite-tool-mvp.md"));
         assertTrue(readme.contains("Magnite Armor MVP"));
         assertTrue(readme.contains("docs/magnite-armor-mvp.md"));
+        assertTrue(readme.contains("Acresia Crop & Food MVP"));
+        assertTrue(readme.contains("docs/acresia-crop-mvp.md"));
+        assertTrue(readme.contains("renewable cave snack crop"));
+        assertTrue(readme.contains("full farming system"));
     }
 
     @Test
@@ -48,6 +52,12 @@ class CavernRuntimeSmokeDocumentationTest {
 
         assertTrue(doc.contains("NeoForge GameTest runtime smoke"));
         assertTrue(doc.contains("runtime registry availability for tranche 2 content"));
+        assertTrue(doc.contains("acresia runtime registry ids"));
+        assertTrue(doc.contains("acresia seed planting smoke"));
+        assertTrue(doc.contains("acresia mature normal harvest smoke"));
+        assertTrue(doc.contains("acresia shear-harvest regrowth smoke"));
+        assertTrue(doc.contains("acresia edible fruit wiring"));
+        assertTrue(doc.contains("acresia worldgen configured/placed key resolution"));
         assertTrue(doc.contains("aquamarine tool runtime registry ids"));
         assertTrue(doc.contains("aquamarine tool repairability with `cavernreborn:aquamarine`"));
         assertTrue(doc.contains("aquamarine tool enchantment applicability"));
@@ -102,6 +112,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("actual client-visible needle feel still requires manual smoke"));
         assertTrue(doc.contains("actual worn hexcite armor appearance"));
         assertTrue(doc.contains("actual worn magnite armor appearance"));
+        assertTrue(doc.contains("actual Acresia in-world farming feel and growth cadence"));
         assertTrue(doc.contains("actual underwater aquamarine mining feel"));
         assertTrue(doc.contains("actual brittle magnite mining feel"));
         assertTrue(doc.contains("portal UX"));

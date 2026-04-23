@@ -8,6 +8,10 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 public final class ModItemTags {
+    public static final TagKey<Item> ACRESIA_ITEMS = TagKey.create(
+        Registries.ITEM,
+        ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "acresia_items")
+    );
     public static final TagKey<Item> AQUA_TOOLS = TagKey.create(
         Registries.ITEM,
         ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "aqua_tools")

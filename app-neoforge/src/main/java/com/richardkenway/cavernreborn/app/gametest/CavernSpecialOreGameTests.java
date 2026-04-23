@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.richardkenway.cavernreborn.CavernReborn;
+import com.richardkenway.cavernreborn.app.block.AcresiaCropBlock;
 import com.richardkenway.cavernreborn.app.compass.OreCompassStateAccess;
 import com.richardkenway.cavernreborn.app.compass.OreCompassScanner;
 import com.richardkenway.cavernreborn.app.compass.OreCompassTarget;
@@ -25,6 +26,7 @@ import com.richardkenway.cavernreborn.core.compass.OreCompassScanResult;
 import com.richardkenway.cavernreborn.core.compass.OreCompassTrackingDecision;
 import com.richardkenway.cavernreborn.core.compass.OreCompassTrackingPolicy;
 import com.richardkenway.cavernreborn.core.compass.OreCompassTrackingResult;
+import com.richardkenway.cavernreborn.core.farming.AcresiaHarvestPolicy;
 import com.richardkenway.cavernreborn.core.mining.AquamarineAquaToolDecision;
 import com.richardkenway.cavernreborn.core.mining.AquamarineAquaToolPolicy;
 import com.richardkenway.cavernreborn.core.mining.AquamarineAquaToolResult;
@@ -41,6 +43,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
@@ -54,21 +57,27 @@ import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -90,6 +99,9 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos ORE_COMPASS_EMPTY_ANCHOR = new BlockPos(448, 96, 0);
     private static final BlockPos ORE_COMPASS_USE_ANCHOR = new BlockPos(544, 96, 0);
     private static final BlockPos ORE_COMPASS_STATE_ANCHOR = new BlockPos(640, 96, 0);
+    private static final BlockPos ACRESIA_PLANTING_ANCHOR = new BlockPos(736, 96, 0);
+    private static final BlockPos ACRESIA_HARVEST_ANCHOR = new BlockPos(832, 96, 0);
+    private static final BlockPos ACRESIA_SHEAR_ANCHOR = new BlockPos(928, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -140,6 +152,120 @@ public final class CavernSpecialOreGameTests {
         assertRegistryId(helper, ModRegistries.RANDOMITE_ORE.get(), "cavernreborn:randomite_ore");
         assertRegistryId(helper, ModRegistries.FISSURED_STONE.get(), "cavernreborn:fissured_stone");
         assertRegistryId(helper, ModRegistries.HEXCITE.get(), "cavernreborn:hexcite");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void acresiaRegistersAtRuntime(GameTestHelper helper) {
+        helper.assertTrue(ModRegistries.ACRESIA.get() != null, "Missing acresia crop block");
+        helper.assertTrue(ModRegistries.ACRESIA_SEEDS.get() != null, "Missing acresia seeds item");
+        helper.assertTrue(ModRegistries.ACRESIA_FRUITS.get() != null, "Missing acresia fruits item");
+
+        assertRegistryId(helper, ModRegistries.ACRESIA.get(), "cavernreborn:acresia");
+        assertRegistryId(helper, ModRegistries.ACRESIA_SEEDS.get(), "cavernreborn:acresia_seeds");
+        assertRegistryId(helper, ModRegistries.ACRESIA_FRUITS.get(), "cavernreborn:acresia_fruits");
+
+        helper.assertTrue(!acresiaSeeds().isEmpty(), "Expected acresia seeds stack to be constructible");
+        helper.assertTrue(!acresiaFruits().isEmpty(), "Expected acresia fruits stack to be constructible");
+        helper.assertTrue(acresiaSeeds().is(ModItemTags.ACRESIA_ITEMS), "Expected acresia seeds to resolve through acresia_items");
+        helper.assertTrue(acresiaFruits().is(ModItemTags.ACRESIA_ITEMS), "Expected acresia fruits to resolve through acresia_items");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void acresiaSeedsPlantCrop(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos soilPos = ACRESIA_PLANTING_ANCHOR;
+        BlockPos cropPos = soilPos.above();
+
+        resetMiningArea(level, soilPos, 6.0D);
+        level.setBlock(soilPos, Blocks.DIRT.defaultBlockState(), Block.UPDATE_ALL);
+
+        Player player = makeMockPlayer(helper, level, GameType.SURVIVAL, acresiaSeeds(), soilPos);
+        InteractionResult result = player.getMainHandItem().useOn(new UseOnContext(player, InteractionHand.MAIN_HAND, hitResult(soilPos)));
+
+        helper.assertTrue(result.consumesAction(), "Expected acresia seeds to plant the crop");
+        helper.assertTrue(level.getBlockState(cropPos).is(ModRegistries.ACRESIA.get()), "Expected acresia seeds to place the crop block");
+        helper.assertTrue(level.getBlockState(cropPos).getValue(AcresiaCropBlock.AGE) == 0, "Expected newly planted acresia to start at age 0");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void acresiaMatureCropDropsFruitAndSeeds(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos soilPos = ACRESIA_HARVEST_ANCHOR;
+        BlockPos cropPos = soilPos.above();
+
+        resetMiningArea(level, soilPos, 6.0D);
+        level.setBlock(soilPos, Blocks.DIRT.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(cropPos, matureAcresiaState(), Block.UPDATE_ALL);
+
+        List<ItemStack> drops = dropsForState(helper, matureAcresiaState(), cropPos, ItemStack.EMPTY);
+
+        helper.assertTrue(!drops.isEmpty(), "Expected mature acresia to produce drops");
+        assertContainsItem(helper, drops, "cavernreborn:acresia_seeds");
+        assertContainsItem(helper, drops, "cavernreborn:acresia_fruits");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void acresiaShearHarvestYieldsBonusFruitAndRegrows(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos playerAnchor = ACRESIA_SHEAR_ANCHOR;
+        BlockPos soilPos = playerAnchor.east(2);
+        BlockPos cropPos = soilPos.above();
+        ItemStack shears = new ItemStack(Items.SHEARS);
+
+        resetMiningArea(level, playerAnchor, 8.0D);
+        level.setBlock(soilPos, Blocks.MOSS_BLOCK.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(cropPos, matureAcresiaState(), Block.UPDATE_ALL);
+
+        Player player = makeMockPlayer(helper, level, GameType.SURVIVAL, shears, playerAnchor);
+        AcresiaCropBlock cropBlock = (AcresiaCropBlock) ModRegistries.ACRESIA.get();
+        InteractionResult result = cropBlock.tryShearHarvest(
+            shears,
+            level.getBlockState(cropPos),
+            level,
+            cropPos,
+            player,
+            InteractionHand.MAIN_HAND
+        ).result();
+
+        helper.assertTrue(result.consumesAction(), "Expected mature acresia to support the shear-harvest path");
+        helper.runAfterDelay(5, () -> {
+            BlockState cropState = level.getBlockState(cropPos);
+            helper.assertTrue(cropState.is(ModRegistries.ACRESIA.get()), "Expected shear harvest to keep the crop placed");
+            helper.assertTrue(cropState.getValue(AcresiaCropBlock.AGE) == AcresiaHarvestPolicy.REGROWTH_AGE, "Expected shear harvest to reset acresia to age 2");
+            helper.assertTrue(shears.getDamageValue() == 1, "Expected shear harvest to damage shears by one");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void acresiaFruitIsEdibleAndNonSpecial(GameTestHelper helper) {
+        ItemStack fruits = acresiaFruits();
+        FoodProperties food = fruits.get(DataComponents.FOOD);
+
+        helper.assertTrue(food != null, "Expected acresia fruits to expose a food component");
+        helper.assertTrue(food.nutrition() == 2, "Expected acresia fruits to stay a small snack");
+        helper.assertTrue(Math.abs(food.saturation() - 0.4F) < 1.0e-6F, "Expected acresia fruits to keep bounded saturation");
+        helper.assertTrue(food.effects().isEmpty(), "Expected acresia fruits to avoid potion-effect side behavior");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void acresiaPatchWorldgenKeysResolve(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Registry<ConfiguredFeature<?, ?>> configuredFeatures = level.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
+        Registry<PlacedFeature> placedFeatures = level.registryAccess().registryOrThrow(Registries.PLACED_FEATURE);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+
+        assertRegistryKeyPresent(helper, configuredFeatures, Registries.CONFIGURED_FEATURE, "cavernreborn:acresia_patch");
+        assertRegistryKeyPresent(helper, placedFeatures, Registries.PLACED_FEATURE, "cavernreborn:cavern_acresia_patch_lush");
+        helper.assertTrue(
+            biomes.containsKey(ResourceKey.create(Registries.BIOME, ResourceLocation.parse("cavernreborn:lush_grotto"))),
+            "Expected lush_grotto biome key to resolve at runtime with Acresia patch wiring"
+        );
         helper.succeed();
     }
 
@@ -1318,6 +1444,14 @@ public final class CavernSpecialOreGameTests {
         return new ItemStack(ModRegistries.AQUAMARINE_PICKAXE.get());
     }
 
+    private static ItemStack acresiaSeeds() {
+        return new ItemStack(ModRegistries.ACRESIA_SEEDS.get());
+    }
+
+    private static ItemStack acresiaFruits() {
+        return new ItemStack(ModRegistries.ACRESIA_FRUITS.get());
+    }
+
     private static ItemStack aquamarineAxe() {
         return new ItemStack(ModRegistries.AQUAMARINE_AXE.get());
     }
@@ -1361,6 +1495,14 @@ public final class CavernSpecialOreGameTests {
         return tool;
     }
 
+    private static BlockState matureAcresiaState() {
+        return ModRegistries.ACRESIA.get().defaultBlockState().setValue(AcresiaCropBlock.AGE, AcresiaHarvestPolicy.MAX_AGE);
+    }
+
+    private static BlockHitResult hitResult(BlockPos pos) {
+        return new BlockHitResult(Vec3.atCenterOf(pos), net.minecraft.core.Direction.UP, pos, false);
+    }
+
     private static List<ItemStack> dropsForBlock(GameTestHelper helper, Block block, ItemStack tool) {
         ServerLevel level = helper.getLevel();
         helper.setBlock(PRIMARY_BLOCK_POS, block);
@@ -1368,6 +1510,13 @@ public final class CavernSpecialOreGameTests {
         BlockState state = level.getBlockState(absolutePos);
         Entity entity = helper.makeMockPlayer(GameType.SURVIVAL);
         return Block.getDrops(state, level, absolutePos, null, entity, tool);
+    }
+
+    private static List<ItemStack> dropsForState(GameTestHelper helper, BlockState state, BlockPos pos, ItemStack tool) {
+        ServerLevel level = helper.getLevel();
+        level.setBlock(pos, state, Block.UPDATE_ALL);
+        Entity entity = helper.makeMockPlayer(GameType.SURVIVAL);
+        return Block.getDrops(state, level, pos, null, entity, tool);
     }
 
     private static void destroyBlockWithPlayer(GameTestHelper helper, BlockPos relativePos, Player player, ItemStack tool) {

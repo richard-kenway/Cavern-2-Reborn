@@ -8,6 +8,10 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
 public final class ModBlockTags {
+    public static final TagKey<Block> ACRESIA_PLANTABLE_ON = TagKey.create(
+        Registries.BLOCK,
+        ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "acresia_plantable_on")
+    );
     public static final TagKey<Block> MINING_ASSIST_TARGETS = TagKey.create(
         Registries.BLOCK,
         ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "mining_assist_targets")

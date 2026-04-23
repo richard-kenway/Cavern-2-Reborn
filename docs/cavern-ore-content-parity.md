@@ -43,6 +43,7 @@ The bounded aquamarine tool follow-up now lives in `docs/aquamarine-tool-mvp.md`
 - magnite now also has a bounded tool follow-up in `docs/magnite-tool-mvp.md`.
 - magnite now also has a bounded armor follow-up in `docs/magnite-armor-mvp.md`.
 - the first ore-family slice now has both aquamarine utility and magnite specialist follow-ups.
+- later non-equipment cave-content follow-ups now also include the bounded `Acresia Crop & Food MVP` in `docs/acresia-crop-mvp.md`.
 
 ## Modern Reborn Slice
 

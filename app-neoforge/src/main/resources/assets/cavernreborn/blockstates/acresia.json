@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "age=0": {
+      "model": "cavernreborn:block/acresia_stage0"
+    },
+    "age=1": {
+      "model": "cavernreborn:block/acresia_stage1"
+    },
+    "age=2": {
+      "model": "cavernreborn:block/acresia_stage2"
+    },
+    "age=3": {
+      "model": "cavernreborn:block/acresia_stage3"
+    },
+    "age=4": {
+      "model": "cavernreborn:block/acresia_stage4"
+    }
+  }
+}

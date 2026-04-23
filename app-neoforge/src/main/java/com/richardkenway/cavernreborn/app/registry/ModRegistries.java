@@ -1,6 +1,7 @@
 package com.richardkenway.cavernreborn.app.registry;
 
 import com.richardkenway.cavernreborn.CavernReborn;
+import com.richardkenway.cavernreborn.app.block.AcresiaCropBlock;
 import com.richardkenway.cavernreborn.app.block.CavernPortalBlock;
 import com.richardkenway.cavernreborn.app.block.FissuredStoneBlock;
 import com.richardkenway.cavernreborn.app.item.OreCompassItem;
@@ -11,8 +12,10 @@ import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemNameBlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.ShovelItem;
@@ -54,6 +57,8 @@ public final class ModRegistries {
             BlockBehaviour.Properties.of().strength(3.0F).sound(SoundType.STONE).requiresCorrectToolForDrops()));
     public static final DeferredBlock<Block> HEXCITE_BLOCK = BLOCKS.register("hexcite_block",
         () -> new Block(BlockBehaviour.Properties.of().strength(3.5F).sound(SoundType.METAL).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> ACRESIA = BLOCKS.register("acresia",
+        () -> new AcresiaCropBlock(BlockBehaviour.Properties.of().noCollission().instabreak().sound(SoundType.CROP).randomTicks()));
     public static final DeferredBlock<Block> FISSURED_STONE = BLOCKS.register("fissured_stone",
         () -> new FissuredStoneBlock(
             UniformInt.of(3, 5),
@@ -77,6 +82,14 @@ public final class ModRegistries {
     public static final DeferredItem<Item> AQUAMARINE = ITEMS.register("aquamarine", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> MAGNITE_INGOT = ITEMS.register("magnite_ingot", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> HEXCITE = ITEMS.register("hexcite", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<ItemNameBlockItem> ACRESIA_SEEDS = ITEMS.register(
+        "acresia_seeds",
+        () -> new ItemNameBlockItem(ACRESIA.get(), new Item.Properties())
+    );
+    public static final DeferredItem<Item> ACRESIA_FRUITS = ITEMS.register(
+        "acresia_fruits",
+        () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(2).saturationModifier(0.1F).build()))
+    );
     public static final DeferredItem<Item> MINER_ORB = ITEMS.register("miner_orb", () -> new Item(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<Item> ORE_COMPASS = ITEMS.register(
         "ore_compass",
@@ -200,6 +213,8 @@ public final class ModRegistries {
                 output.accept(MAGNITE_LEGGINGS.get());
                 output.accept(MAGNITE_BOOTS.get());
                 output.accept(HEXCITE.get());
+                output.accept(ACRESIA_SEEDS.get());
+                output.accept(ACRESIA_FRUITS.get());
                 output.accept(MINER_ORB.get());
                 output.accept(ORE_COMPASS.get());
                 output.accept(HEXCITE_PICKAXE.get());
