@@ -12,6 +12,10 @@ public final class ModBlockTags {
         Registries.BLOCK,
         ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "mining_assist_targets")
     );
+    public static final TagKey<Block> ORE_COMPASS_TARGETS = TagKey.create(
+        Registries.BLOCK,
+        ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "ore_compass_targets")
+    );
 
     private ModBlockTags() {
     }

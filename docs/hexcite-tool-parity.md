@@ -26,6 +26,7 @@ It builds directly on `docs/cavern-special-ore-content-parity.md`.
 - No mining assist, vein mining, area mining, particles or custom sounds are added here.
 - Mining Assist is documented separately as the follow-up functional slice in `docs/mining-assist-mvp.md`.
 - Miner's Orb is documented separately as the item-based progression follow-up in `docs/miner-orb-mvp.md`.
+- Ore Compass is documented separately as the server-side scan follow-up in `docs/ore-compass-mvp.md`.
 
 ## Tier Policy
 

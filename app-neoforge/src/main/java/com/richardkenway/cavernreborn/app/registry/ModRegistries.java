@@ -3,6 +3,7 @@ package com.richardkenway.cavernreborn.app.registry;
 import com.richardkenway.cavernreborn.CavernReborn;
 import com.richardkenway.cavernreborn.app.block.CavernPortalBlock;
 import com.richardkenway.cavernreborn.app.block.FissuredStoneBlock;
+import com.richardkenway.cavernreborn.app.item.OreCompassItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -76,6 +77,10 @@ public final class ModRegistries {
     public static final DeferredItem<Item> MAGNITE_INGOT = ITEMS.register("magnite_ingot", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> HEXCITE = ITEMS.register("hexcite", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> MINER_ORB = ITEMS.register("miner_orb", () -> new Item(new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<Item> ORE_COMPASS = ITEMS.register(
+        "ore_compass",
+        () -> new OreCompassItem(new Item.Properties().stacksTo(1))
+    );
     public static final DeferredItem<Item> HEXCITE_PICKAXE = ITEMS.register("hexcite_pickaxe",
         () -> new PickaxeItem(
             ModToolTiers.HEXCITE,
@@ -116,6 +121,7 @@ public final class ModRegistries {
                 output.accept(MAGNITE_INGOT.get());
                 output.accept(HEXCITE.get());
                 output.accept(MINER_ORB.get());
+                output.accept(ORE_COMPASS.get());
                 output.accept(HEXCITE_PICKAXE.get());
                 output.accept(HEXCITE_AXE.get());
                 output.accept(HEXCITE_SHOVEL.get());

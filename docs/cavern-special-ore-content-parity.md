@@ -21,6 +21,7 @@ This note fixes the second narrow special-ore/content tranche for `CAVERN` (Tran
 
 - The first hexcite tool set MVP is documented separately in `docs/hexcite-tool-parity.md`.
 - The first Miner's Orb follow-up is documented separately in `docs/miner-orb-mvp.md`.
+- The first Ore Compass follow-up is documented separately in `docs/ore-compass-mvp.md`.
 - That follow-up slice adds the five core `hexcite` tools only.
 - Armor remains out of scope there as well.
 - No special tool abilities were added on top of the special ore tranche.
@@ -44,5 +45,5 @@ This note fixes the second narrow special-ore/content tranche for `CAVERN` (Tran
 ## Asset Provenance
 
 - The copied legacy source code baseline was GPLv3.
-- The copied legacy visual assets for `hexcite`, `randomite`, `fissured_stone` and `miner_orb` came from the original `Cavern 2` asset set, which was distributed under CC-BY-NC 4.0.
+- The copied legacy visual assets for `hexcite`, `randomite`, `fissured_stone`, `miner_orb` and `ore_compass` came from the original `Cavern 2` asset set, which was distributed under CC-BY-NC 4.0.
 - This repository keeps its main code license baseline unchanged; this note only records provenance for the imported legacy textures.

@@ -21,6 +21,7 @@ This repository currently contains the project skeleton and a minimal content re
 - a first hexcite tool-set MVP on top of that special ore slice: `hexcite_pickaxe`, `hexcite_axe`, `hexcite_shovel`, `hexcite_hoe` and `hexcite_sword` now exist as bounded craftable equipment with `hexcite` repair support, while armor and special abilities remain out of scope
 - a first progression-gated Mining Assist MVP on top of the progression baseline and the hexcite tool slice: `Mining Assist` now unlocks at `journeyman` and lets `hexcite_pickaxe` break up to 6 extra connected ore blocks inside `CAVERN`, while sneaking disables the assist for that break and assisted extra blocks do not grant extra progression score
 - a first Miner's Orb MVP on top of the progression and mining loop: `miner_orb` now exists as a rare `randomite_ore` drop and can occasionally grant a small extra `CAVERN` progression-score bonus without being consumed
+- a first Ore Compass MVP on top of that mining loop: `ore_compass` is now crafted from `miner_orb` and provides a bounded server-side `CAVERN` ore scan with text feedback, while live compass animation and GUI target selection remain out of scope
 - a conscious four-biome `CAVERN` family closer to the old mining dimension baseline: dominant `stone_depths`, plus `lush_grotto`, `dripstone_grotto` and `highland_hollows`
 - a mining-oriented worldgen baseline for `CAVERN`: dense coal/iron passes, biome-shaped gold/emerald bias, denser monster rooms and mineshaft-enabled cave biomes
 - basic portal UX feedback for `cooldown`, failed cavern entry and missing return-state denial cases, plus an overworld fallback return target when no saved return-state exists
@@ -152,8 +153,9 @@ No full legacy-parity `CAVERN` gameplay stack is implemented yet.
 - Or run the executable wrapper directly:
   - `scripts/runtime-smoke.sh`
 - The runtime smoke scope is documented in `docs/runtime-smoke.md`.
-- The current GameTest slice covers runtime registry availability, `hexcite` normal and Silk Touch loot, `hexcite` tool runtime registry/mining paths, `miner_orb` runtime registry/policy smoke, curated `randomite` runtime drops, `fissured_stone` no-drop/effect/creative-guard/non-destructive behavior, progression policy ids/scores and special-ore worldgen key resolution.
+- The current GameTest slice covers runtime registry availability, `hexcite` normal and Silk Touch loot, `hexcite` tool runtime registry/mining paths, `miner_orb` runtime registry/policy smoke, `ore_compass` runtime registry/scanner paths, curated `randomite` runtime drops, `fissured_stone` no-drop/effect/creative-guard/non-destructive behavior, progression policy ids/scores and special-ore worldgen key resolution.
 - The current GameTest slice also covers Mining Assist runtime ids, bounded same-block vein breaks with `hexcite_pickaxe`, unlock-gated/no-unlock behavior, `fissured_stone` exclusion and target-preservation smoke.
+- The first Ore Compass MVP is documented in `docs/ore-compass-mvp.md`.
 - This is still a server-side smoke layer, not a substitute for manual client validation of portal UX, rendering, particles, sounds or overall player feel.
 
 ## Progression Baseline
@@ -235,4 +237,4 @@ This project is licensed under the GNU General Public License v3.0 only (`GPL-3.
 
 The licensing baseline for the original `Cavern II` project is GPLv3 as listed on CurseForge, and this repository is published under GPLv3 accordingly.
 
-Copied legacy texture assets used for `hexcite`, `randomite`, `fissured_stone` and `miner_orb` are documented for provenance in `docs/cavern-special-ore-content-parity.md` and `docs/miner-orb-mvp.md`. The original legacy code baseline was GPLv3, and the original legacy visual/audio asset pack was distributed under CC-BY-NC 4.0.
+Copied legacy texture assets used for `hexcite`, `randomite`, `fissured_stone`, `miner_orb` and `ore_compass` are documented for provenance in `docs/cavern-special-ore-content-parity.md`, `docs/miner-orb-mvp.md` and `docs/ore-compass-mvp.md`. The original legacy code baseline was GPLv3, and the original legacy visual/audio asset pack was distributed under CC-BY-NC 4.0.

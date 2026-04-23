@@ -28,6 +28,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("Mining Assist"));
         assertTrue(readme.contains("Miner's Orb MVP"));
         assertTrue(readme.contains("docs/miner-orb-mvp.md"));
+        assertTrue(readme.contains("Ore Compass MVP"));
+        assertTrue(readme.contains("docs/ore-compass-mvp.md"));
     }
 
     @Test
@@ -42,6 +44,10 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("miner_orb runtime registry availability"));
         assertTrue(doc.contains("randomite allowed-drop runtime coverage that now includes miner_orb in the curated pool"));
         assertTrue(doc.contains("miner_orb bonus policy/runtime smoke"));
+        assertTrue(doc.contains("ore_compass runtime registry availability"));
+        assertTrue(doc.contains("ore_compass target tag resolution"));
+        assertTrue(doc.contains("ore_compass scanner nearest-target behavior"));
+        assertTrue(doc.contains("unsupported/fissured/storage exclusion during ore_compass scans"));
         assertTrue(doc.contains("Mining Assist policy/runtime ids"));
         assertTrue(doc.contains("bounded same-block vein assist with hexcite_pickaxe"));
         assertTrue(doc.contains("no unlock means no assist"));
@@ -58,7 +64,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("scripts/runtime-smoke.sh"));
         assertTrue(doc.contains("minecraft:empty"));
         assertTrue(doc.contains("app-neoforge/src/gameteststructures/empty.snbt"));
-        assertTrue(doc.contains("registered unconditionally"));
+        assertTrue(doc.contains("GameTestRegistry.register(CavernSpecialOreGameTests.class)"));
+        assertTrue(doc.contains("unguarded `GameTestRegistry.register"));
         assertTrue(doc.contains("GameTestHooks.isGametestEnabled()"));
         assertTrue(doc.contains("infrastructure workaround"));
         assertTrue(doc.contains("does not change gameplay behavior"));

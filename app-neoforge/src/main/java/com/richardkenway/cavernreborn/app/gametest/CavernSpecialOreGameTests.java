@@ -3,14 +3,21 @@ package com.richardkenway.cavernreborn.app.gametest;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import com.richardkenway.cavernreborn.CavernReborn;
+import com.richardkenway.cavernreborn.app.compass.OreCompassScanner;
+import com.richardkenway.cavernreborn.app.compass.OreCompassTarget;
 import com.richardkenway.cavernreborn.app.mining.CavernMiningAssistEvents;
 import com.richardkenway.cavernreborn.app.registry.ModBlockTags;
 import com.richardkenway.cavernreborn.app.registry.ModItemTags;
 import com.richardkenway.cavernreborn.app.registry.ModRegistries;
 import com.richardkenway.cavernreborn.app.registry.ModToolTiers;
+import com.richardkenway.cavernreborn.core.compass.OreCompassDirection;
+import com.richardkenway.cavernreborn.core.compass.OreCompassScanDecision;
+import com.richardkenway.cavernreborn.core.compass.OreCompassScanPolicy;
+import com.richardkenway.cavernreborn.core.compass.OreCompassScanResult;
 import com.richardkenway.cavernreborn.core.mining.MiningAssistPolicy;
 import com.richardkenway.cavernreborn.core.mining.MinerOrbBonusDecision;
 import com.richardkenway.cavernreborn.core.mining.MinerOrbBonusPolicy;
@@ -65,6 +72,10 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos MINING_ASSIST_SNEAKING_ANCHOR = new BlockPos(64, 96, 0);
     private static final BlockPos MINING_ASSIST_FISSURE_ANCHOR = new BlockPos(96, 96, 0);
     private static final BlockPos MINING_ASSIST_DURABILITY_ANCHOR = new BlockPos(128, 96, 0);
+    private static final BlockPos ORE_COMPASS_NEAREST_ANCHOR = new BlockPos(256, 96, 0);
+    private static final BlockPos ORE_COMPASS_FILTERED_ANCHOR = new BlockPos(352, 96, 0);
+    private static final BlockPos ORE_COMPASS_EMPTY_ANCHOR = new BlockPos(448, 96, 0);
+    private static final BlockPos ORE_COMPASS_USE_ANCHOR = new BlockPos(544, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -142,6 +153,30 @@ public final class CavernSpecialOreGameTests {
         ItemStack stack = new ItemStack(ModRegistries.MINER_ORB.get());
         helper.assertTrue(!stack.isEmpty(), "Expected miner_orb stack to be constructible");
         helper.assertTrue(stack.is(ModItemTags.MINING_BONUS_ORBS), "miner_orb must resolve through the mining bonus orb tag");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void oreCompassRegistersAtRuntime(GameTestHelper helper) {
+        helper.assertTrue(ModRegistries.ORE_COMPASS.get() != null, "Missing ore_compass item");
+        assertRegistryId(helper, ModRegistries.ORE_COMPASS.get(), "cavernreborn:ore_compass");
+
+        ItemStack stack = new ItemStack(ModRegistries.ORE_COMPASS.get());
+        helper.assertTrue(!stack.isEmpty(), "Expected ore_compass stack to be constructible");
+        helper.assertTrue(stack.getMaxStackSize() == 1, "Ore Compass must stay non-stackable in this MVP");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void oreCompassTargetsResolveAtRuntime(GameTestHelper helper) {
+        helper.assertTrue(ModRegistries.HEXCITE_ORE.get().defaultBlockState().is(ModBlockTags.ORE_COMPASS_TARGETS), "hexcite ore must be a compass target");
+        helper.assertTrue(ModRegistries.RANDOMITE_ORE.get().defaultBlockState().is(ModBlockTags.ORE_COMPASS_TARGETS), "randomite ore must be a compass target");
+        helper.assertTrue(ModRegistries.AQUAMARINE_ORE.get().defaultBlockState().is(ModBlockTags.ORE_COMPASS_TARGETS), "aquamarine ore must be a compass target");
+        helper.assertTrue(ModRegistries.MAGNITE_ORE.get().defaultBlockState().is(ModBlockTags.ORE_COMPASS_TARGETS), "magnite ore must be a compass target");
+        helper.assertTrue(Blocks.DIAMOND_ORE.defaultBlockState().is(ModBlockTags.ORE_COMPASS_TARGETS), "diamond ore must be a compass target");
+        helper.assertFalse(ModRegistries.FISSURED_STONE.get().defaultBlockState().is(ModBlockTags.ORE_COMPASS_TARGETS), "fissured stone must stay outside Ore Compass targets");
+        helper.assertFalse(ModRegistries.HEXCITE_BLOCK.get().defaultBlockState().is(ModBlockTags.ORE_COMPASS_TARGETS), "storage blocks must stay outside Ore Compass targets");
+        helper.assertFalse(ModRegistries.CAVERN_PORTAL_BLOCK.get().defaultBlockState().is(ModBlockTags.ORE_COMPASS_TARGETS), "cavern portal must stay outside Ore Compass targets");
         helper.succeed();
     }
 
@@ -471,6 +506,105 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void oreCompassScannerFindsNearestTarget(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = ORE_COMPASS_NEAREST_ANCHOR;
+        BlockPos nearerHexcite = origin.east(4);
+        BlockPos fartherDiamond = origin.east(9).north(2);
+        BlockPos unsupportedStone = origin.north(1);
+
+        resetMiningArea(level, origin, 10.0D);
+        level.setBlock(nearerHexcite, ModRegistries.HEXCITE_ORE.get().defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(fartherDiamond, Blocks.DIAMOND_ORE.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(unsupportedStone, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+
+        Optional<OreCompassTarget> target = oreCompassScanner().findNearestTarget(
+            level,
+            origin,
+            OreCompassScanPolicy.HORIZONTAL_RADIUS,
+            OreCompassScanPolicy.VERTICAL_RADIUS
+        );
+
+        helper.assertTrue(target.isPresent(), "Expected Ore Compass scanner to find a target");
+        helper.assertTrue(target.get().blockId().equals("cavernreborn:hexcite_ore"), "Expected nearest target to be hexcite ore");
+        helper.assertTrue(target.get().pos().equals(nearerHexcite), "Expected scanner to choose the nearest target position");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void oreCompassScannerIgnoresFissuredStoneAndStorageBlocks(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = ORE_COMPASS_FILTERED_ANCHOR;
+        BlockPos fissured = origin.east(2);
+        BlockPos storage = origin.west(2);
+        BlockPos targetPos = origin.south(5);
+
+        resetMiningArea(level, origin, 10.0D);
+        level.setBlock(fissured, ModRegistries.FISSURED_STONE.get().defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(storage, ModRegistries.HEXCITE_BLOCK.get().defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(targetPos, ModRegistries.RANDOMITE_ORE.get().defaultBlockState(), Block.UPDATE_ALL);
+
+        Optional<OreCompassTarget> target = oreCompassScanner().findNearestTarget(
+            level,
+            origin,
+            OreCompassScanPolicy.HORIZONTAL_RADIUS,
+            OreCompassScanPolicy.VERTICAL_RADIUS
+        );
+
+        helper.assertTrue(target.isPresent(), "Expected filtered Ore Compass scan to find a target");
+        helper.assertTrue(target.get().blockId().equals("cavernreborn:randomite_ore"), "Expected scanner to ignore fissured stone and storage blocks");
+        helper.assertTrue(target.get().pos().equals(targetPos), "Expected scanner to resolve the remaining valid ore target");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void oreCompassScannerReportsNoTargetWhenOnlyUnsupportedBlocksExist(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = ORE_COMPASS_EMPTY_ANCHOR;
+
+        resetMiningArea(level, origin, 10.0D);
+        level.setBlock(origin.east(2), Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(origin.west(2), Blocks.COAL_ORE.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(origin.north(2), Blocks.IRON_ORE.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(origin.south(2), Blocks.COPPER_ORE.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(origin.above(), ModRegistries.FISSURED_STONE.get().defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(origin.below(), ModRegistries.HEXCITE_BLOCK.get().defaultBlockState(), Block.UPDATE_ALL);
+
+        helper.assertTrue(
+            oreCompassScanner().findNearestTarget(level, origin, OreCompassScanPolicy.HORIZONTAL_RADIUS, OreCompassScanPolicy.VERTICAL_RADIUS).isEmpty(),
+            "Expected no target when only unsupported blocks are nearby"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void oreCompassPolicyRuntimeSmoke(GameTestHelper helper) {
+        OreCompassScanResult wrongDimension = OreCompassScanPolicy.evaluate(
+            CavernDimensions.OVERWORLD_DIMENSION_ID,
+            true,
+            "cavernreborn:hexcite_ore",
+            0,
+            0,
+            -4
+        );
+        OreCompassScanResult found = OreCompassScanPolicy.evaluate(
+            CavernDimensions.CAVERN_DIMENSION_ID,
+            true,
+            "cavernreborn:hexcite_ore",
+            0,
+            -6,
+            -5
+        );
+
+        helper.assertTrue(wrongDimension.decision() == OreCompassScanDecision.WRONG_DIMENSION, "Expected wrong dimension to skip the scan");
+        helper.assertTrue(found.decision() == OreCompassScanDecision.FOUND, "Expected cavern target to be reported as found");
+        helper.assertTrue(found.horizontalDistance() == 5, "Expected north target to report a five-block horizontal distance");
+        helper.assertTrue(found.verticalOffset() == -6, "Expected vertical relation to stay negative for targets below");
+        helper.assertTrue(found.direction() == OreCompassDirection.NORTH, "Expected dz<0 target to report north");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void specialOreWorldgenKeysResolveAtRuntime(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Registry<ConfiguredFeature<?, ?>> configuredFeatures = level.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
@@ -625,6 +759,10 @@ public final class CavernSpecialOreGameTests {
         return new ItemStack(ModRegistries.HEXCITE_PICKAXE.get());
     }
 
+    private static OreCompassScanner oreCompassScanner() {
+        return new OreCompassScanner();
+    }
+
     private static ItemStack silkTouchHexcitePickaxe(ServerLevel level) {
         ItemStack tool = hexcitePickaxe();
         HolderLookup.RegistryLookup<Enchantment> enchantments = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
@@ -716,6 +854,7 @@ public final class CavernSpecialOreGameTests {
         player.teleportTo(level, origin.getX() + 0.5D, origin.getY() + 1.0D, origin.getZ() + 0.5D, EnumSet.noneOf(RelativeMovement.class), 0.0F, 0.0F);
         return player;
     }
+
 
     private static int applyMiningAssist(GameTestHelper helper, ServerLevel level, Player player, BlockPos origin) {
         CavernMiningAssistEvents events = new CavernMiningAssistEvents(CavernReborn.cavernStateBootstrap().cavernProgressionService());

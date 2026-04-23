@@ -1,6 +1,6 @@
 # Runtime Smoke
 
-This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the follow-up `hexcite` tool-set MVP, the bounded Mining Assist slice and the first Miner's Orb MVP.
+This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the follow-up `hexcite` tool-set MVP, the bounded Mining Assist slice, the first Miner's Orb MVP and the first Ore Compass MVP.
 
 It is intentionally a NeoForge GameTest server pass, not a visual client smoke pass.
 
@@ -17,6 +17,10 @@ NeoForge GameTest runtime smoke covers:
 - miner_orb runtime registry availability
 - randomite allowed-drop runtime coverage that now includes miner_orb in the curated pool
 - miner_orb bonus policy/runtime smoke
+- ore_compass runtime registry availability
+- ore_compass target tag resolution
+- ore_compass scanner nearest-target behavior
+- unsupported/fissured/storage exclusion during ore_compass scans
 - Mining Assist policy/runtime ids
 - bounded same-block vein assist with hexcite_pickaxe
 - no unlock means no assist
@@ -83,14 +87,15 @@ docker compose run --rm gradle ./gradlew --no-daemon build
 - `:app-neoforge:runGameTestServer` must fail if a required special-ore GameTest fails.
 - The GameTest server run is the automated runtime layer for tranche 2 special ores and progression/worldgen wiring.
 - The same GameTest layer now also covers the bounded Mining Assist MVP runtime path.
+- The same GameTest layer now also covers the bounded Ore Compass server-side scan path.
 - The run is intentionally small and server-only; it should not require a GUI client or a human player.
 
 ## Registration Workaround
 
-- `CavernSpecialOreGameTests` is currently registered unconditionally in `CavernReborn.registerGameTests()`.
+- `CavernSpecialOreGameTests` is currently registered from an unguarded `GameTestRegistry.register(CavernSpecialOreGameTests.class)` call in `CavernReborn.registerGameTests()`.
 - This is an infrastructure workaround for the current project setup: guarding registration with `GameTestHooks.isGametestEnabled()` prevents `:app-neoforge:runGameTestServer` from discovering any tests.
 - The workaround is limited to GameTest bootstrap wiring and does not change gameplay behavior.
-- If the NeoForge/GameTest discovery path becomes stable for this repository later, the unconditional registration can be revisited.
+- If the NeoForge/GameTest discovery path becomes stable for this repository later, the unguarded registration path can be revisited.
 
 ## Template Strategy
 

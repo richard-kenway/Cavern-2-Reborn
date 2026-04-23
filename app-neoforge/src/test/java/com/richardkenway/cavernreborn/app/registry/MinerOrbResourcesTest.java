@@ -81,7 +81,8 @@ class MinerOrbResourcesTest {
         assertTrue(doc.contains("10%"));
         assertTrue(doc.contains("max(base score / 2, 1)"));
         assertTrue(doc.contains("No `cavenic_orb`"));
-        assertTrue(doc.contains("No Ore Compass"));
+        assertTrue(doc.contains("Ore Compass MVP now exists separately"));
+        assertTrue(doc.contains("bonus behavior remains unchanged"));
         assertTrue(runtimeSmokeDoc.contains("miner_orb runtime registry availability"));
         assertTrue(runtimeSmokeDoc.contains("randomite allowed-drop runtime coverage that now includes miner_orb in the curated pool"));
         assertTrue(runtimeSmokeDoc.contains("miner_orb bonus policy/runtime smoke"));
