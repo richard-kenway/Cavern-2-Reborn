@@ -18,7 +18,23 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 public final class ModArmorMaterials {
     public static final DeferredRegister<ArmorMaterial> ARMOR_MATERIALS = DeferredRegister.create(Registries.ARMOR_MATERIAL, CavernReborn.MOD_ID);
+    public static final int MAGNITE_DURABILITY_MULTIPLIER = 12;
     public static final int HEXCITE_DURABILITY_MULTIPLIER = 20;
+
+    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> MAGNITE = ARMOR_MATERIALS.register("magnite", () -> new ArmorMaterial(
+        Util.make(new EnumMap<>(ArmorItem.Type.class), defense -> {
+            defense.put(ArmorItem.Type.HELMET, 2);
+            defense.put(ArmorItem.Type.CHESTPLATE, 5);
+            defense.put(ArmorItem.Type.LEGGINGS, 4);
+            defense.put(ArmorItem.Type.BOOTS, 2);
+        }),
+        24,
+        SoundEvents.ARMOR_EQUIP_CHAIN,
+        () -> Ingredient.of(ModRegistries.MAGNITE_INGOT.get()),
+        List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "magnite"))),
+        0.0F,
+        0.0F
+    ));
 
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> HEXCITE = ARMOR_MATERIALS.register("hexcite", () -> new ArmorMaterial(
         Util.make(new EnumMap<>(ArmorItem.Type.class), defense -> {

@@ -110,6 +110,26 @@ public final class ModRegistries {
         () -> new SwordItem(
             ModToolTiers.MAGNITE,
             new Item.Properties().attributes(SwordItem.createAttributes(ModToolTiers.MAGNITE, 3, -2.4F))));
+    public static final DeferredItem<Item> MAGNITE_HELMET = ITEMS.register("magnite_helmet",
+        () -> new ArmorItem(
+            ModArmorMaterials.MAGNITE,
+            ArmorItem.Type.HELMET,
+            new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(ModArmorMaterials.MAGNITE_DURABILITY_MULTIPLIER))));
+    public static final DeferredItem<Item> MAGNITE_CHESTPLATE = ITEMS.register("magnite_chestplate",
+        () -> new ArmorItem(
+            ModArmorMaterials.MAGNITE,
+            ArmorItem.Type.CHESTPLATE,
+            new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(ModArmorMaterials.MAGNITE_DURABILITY_MULTIPLIER))));
+    public static final DeferredItem<Item> MAGNITE_LEGGINGS = ITEMS.register("magnite_leggings",
+        () -> new ArmorItem(
+            ModArmorMaterials.MAGNITE,
+            ArmorItem.Type.LEGGINGS,
+            new Item.Properties().durability(ArmorItem.Type.LEGGINGS.getDurability(ModArmorMaterials.MAGNITE_DURABILITY_MULTIPLIER))));
+    public static final DeferredItem<Item> MAGNITE_BOOTS = ITEMS.register("magnite_boots",
+        () -> new ArmorItem(
+            ModArmorMaterials.MAGNITE,
+            ArmorItem.Type.BOOTS,
+            new Item.Properties().durability(ArmorItem.Type.BOOTS.getDurability(ModArmorMaterials.MAGNITE_DURABILITY_MULTIPLIER))));
     public static final DeferredItem<Item> HEXCITE_PICKAXE = ITEMS.register("hexcite_pickaxe",
         () -> new PickaxeItem(
             ModToolTiers.HEXCITE,
@@ -175,6 +195,10 @@ public final class ModRegistries {
                 output.accept(MAGNITE_AXE.get());
                 output.accept(MAGNITE_SHOVEL.get());
                 output.accept(MAGNITE_SWORD.get());
+                output.accept(MAGNITE_HELMET.get());
+                output.accept(MAGNITE_CHESTPLATE.get());
+                output.accept(MAGNITE_LEGGINGS.get());
+                output.accept(MAGNITE_BOOTS.get());
                 output.accept(HEXCITE.get());
                 output.accept(MINER_ORB.get());
                 output.accept(ORE_COMPASS.get());

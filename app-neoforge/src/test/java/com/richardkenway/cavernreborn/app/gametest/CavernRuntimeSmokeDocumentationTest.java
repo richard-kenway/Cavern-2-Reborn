@@ -38,6 +38,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/aquamarine-tool-mvp.md"));
         assertTrue(readme.contains("Magnite Tool Set MVP"));
         assertTrue(readme.contains("docs/magnite-tool-mvp.md"));
+        assertTrue(readme.contains("Magnite Armor MVP"));
+        assertTrue(readme.contains("docs/magnite-armor-mvp.md"));
     }
 
     @Test
@@ -55,6 +57,10 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("magnite tool enchantment applicability"));
         assertTrue(doc.contains("magnite brittle max-damage/runtime smoke"));
         assertTrue(doc.contains("magnite no-unintended-Mining-Assist runtime smoke"));
+        assertTrue(doc.contains("magnite armor runtime registry ids"));
+        assertTrue(doc.contains("magnite armor repairability with `cavernreborn:magnite_ingot`"));
+        assertTrue(doc.contains("magnite armor enchantment applicability"));
+        assertTrue(doc.contains("magnite armor durability and slot/equippable runtime behavior"));
         assertTrue(doc.contains("hexcite normal and Silk Touch loot paths"));
         assertTrue(doc.contains("randomite curated runtime loot output"));
         assertTrue(doc.contains("hexcite pickaxe enchantment applicability"));
@@ -95,6 +101,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("manual client smoke is still needed"));
         assertTrue(doc.contains("actual client-visible needle feel still requires manual smoke"));
         assertTrue(doc.contains("actual worn hexcite armor appearance"));
+        assertTrue(doc.contains("actual worn magnite armor appearance"));
         assertTrue(doc.contains("actual underwater aquamarine mining feel"));
         assertTrue(doc.contains("actual brittle magnite mining feel"));
         assertTrue(doc.contains("portal UX"));

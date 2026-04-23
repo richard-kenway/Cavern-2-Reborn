@@ -41,7 +41,8 @@ The bounded aquamarine tool follow-up now lives in `docs/aquamarine-tool-mvp.md`
 
 - aquamarine now also has a bounded tool follow-up in `docs/aquamarine-tool-mvp.md`.
 - magnite now also has a bounded tool follow-up in `docs/magnite-tool-mvp.md`.
-- magnite armor still remains out of scope.
+- magnite now also has a bounded armor follow-up in `docs/magnite-armor-mvp.md`.
+- the first ore-family slice now has both aquamarine utility and magnite specialist follow-ups.
 
 ## Modern Reborn Slice
 

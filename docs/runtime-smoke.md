@@ -1,6 +1,6 @@
 # Runtime Smoke
 
-This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the bounded Aquamarine Utility Tools MVP, the bounded Magnite Tool Set MVP, the follow-up `hexcite` tool-set MVP, the bounded `Hexcite Armor MVP`, the bounded Mining Assist slice, the first Miner's Orb MVP and the Ore Compass MVP plus tracking UX follow-up.
+This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the bounded Aquamarine Utility Tools MVP, the bounded Magnite Tool Set MVP, the bounded `Magnite Armor MVP`, the follow-up `hexcite` tool-set MVP, the bounded `Hexcite Armor MVP`, the bounded Mining Assist slice, the first Miner's Orb MVP and the Ore Compass MVP plus tracking UX follow-up.
 
 It is intentionally a NeoForge GameTest server pass, not a visual client smoke pass.
 
@@ -18,6 +18,10 @@ NeoForge GameTest runtime smoke covers:
 - magnite tool enchantment applicability
 - magnite brittle max-damage/runtime smoke
 - magnite no-unintended-Mining-Assist runtime smoke
+- magnite armor runtime registry ids
+- magnite armor repairability with `cavernreborn:magnite_ingot`
+- magnite armor enchantment applicability
+- magnite armor durability and slot/equippable runtime behavior
 - hexcite tool runtime registry ids
 - hexcite armor runtime registry ids
 - hexcite normal and Silk Touch loot paths
@@ -54,6 +58,7 @@ NeoForge GameTest runtime smoke covers:
 - visual portal UX
 - block, model and texture appearance in the client
 - actual worn hexcite armor appearance on a player or mob
+- actual worn magnite armor appearance on a player or mob
 - actual underwater aquamarine mining feel
 - actual brittle magnite mining feel
 - particle and sound feel

@@ -18,6 +18,7 @@ It builds directly on `docs/cavern-ore-content-parity.md`.
 - No aquamarine sword/hoe/armor is added in this pass.
 - Aquamarine remains the utility-oriented side-grade line.
 - Magnite is now documented separately in `docs/magnite-tool-mvp.md`.
+- Magnite armor is now documented separately in `docs/magnite-armor-mvp.md`.
 - The underwater utility is underwater break-speed only.
 - No water breathing is added.
 - No swim-speed bonus is added.

@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "cavernreborn:magnite/outer"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "cavernreborn:magnite/inner"
+      }
+    ]
+  }
+}

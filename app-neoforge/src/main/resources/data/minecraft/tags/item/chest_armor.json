@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "cavernreborn:hexcite_chestplate"
+    "cavernreborn:hexcite_chestplate",
+    "cavernreborn:magnite_chestplate"
   ]
 }

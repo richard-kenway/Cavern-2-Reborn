@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "cavernreborn:hexcite_helmet"
+    "cavernreborn:hexcite_helmet",
+    "cavernreborn:magnite_helmet"
   ]
 }

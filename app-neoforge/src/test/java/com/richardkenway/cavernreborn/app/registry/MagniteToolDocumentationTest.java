@@ -23,7 +23,7 @@ class MagniteToolDocumentationTest {
         assertTrue(readme.contains("Magnite Tool Set MVP"));
         assertTrue(readme.contains("docs/magnite-tool-mvp.md"));
         assertTrue(readme.contains("brittle/high-speed specialist"));
-        assertTrue(readme.contains("magnite armor remains out of scope"));
+        assertTrue(readme.contains("Magnite Armor MVP"));
     }
 
     @Test
@@ -44,7 +44,7 @@ class MagniteToolDocumentationTest {
         assertTrue(doc.contains("very fast and overclocked"));
         assertTrue(doc.contains("specialist side-grade"));
         assertTrue(doc.contains("No magnite hoe"));
-        assertTrue(doc.contains("No magnite armor"));
+        assertTrue(doc.contains("docs/magnite-armor-mvp.md"));
         assertTrue(doc.contains("No Mining Assist changes"));
         assertTrue(doc.contains("No Miner's Orb changes"));
         assertTrue(doc.contains("No Ore Compass changes"));
@@ -52,10 +52,11 @@ class MagniteToolDocumentationTest {
 
         assertTrue(oreContentDoc.contains("docs/magnite-tool-mvp.md"));
         assertTrue(oreContentDoc.contains("magnite now also has a bounded tool follow-up"));
-        assertTrue(oreContentDoc.contains("magnite armor still remains out of scope"));
+        assertTrue(oreContentDoc.contains("docs/magnite-armor-mvp.md"));
         assertTrue(aquamarineDoc.contains("docs/magnite-tool-mvp.md"));
         assertTrue(aquamarineDoc.contains("utility-oriented"));
         assertTrue(hexciteDoc.contains("docs/magnite-tool-mvp.md"));
+        assertTrue(hexciteDoc.contains("docs/magnite-armor-mvp.md"));
         assertTrue(hexciteDoc.contains("main combat/mining equipment line"));
         assertTrue(runtimeSmokeDoc.contains("magnite tool runtime registry ids"));
         assertTrue(runtimeSmokeDoc.contains("magnite tool repairability with `cavernreborn:magnite_ingot`"));

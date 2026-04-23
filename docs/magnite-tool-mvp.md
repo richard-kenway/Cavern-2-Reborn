@@ -14,13 +14,13 @@ It builds directly on `docs/cavern-ore-content-parity.md`.
 ## Bounded Modern Scope
 
 - This is the first bounded magnite tool slice, not full legacy equipment parity.
+- The tools remain the first magnite slice; armor is now documented separately in `docs/magnite-armor-mvp.md`.
 - The current pass adds only `magnite_sword`, `magnite_pickaxe`, `magnite_axe` and `magnite_shovel`.
 - The tools are repairable with `magnite_ingot`.
 - The line is intentionally brittle and low-durability.
 - The line is intentionally very fast and overclocked.
 - The magnite line is a specialist side-grade, not the main combat/mining line.
 - No magnite hoe is added in this pass.
-- No magnite armor is added in this pass.
 - No special abilities are added in this pass.
 - No Mining Assist changes are added.
 - No Miner's Orb changes are added.

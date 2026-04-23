@@ -322,6 +322,25 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void magniteArmorRegistersAtRuntime(GameTestHelper helper) {
+        helper.assertTrue(ModRegistries.MAGNITE_HELMET.get() != null, "Missing magnite helmet");
+        helper.assertTrue(ModRegistries.MAGNITE_CHESTPLATE.get() != null, "Missing magnite chestplate");
+        helper.assertTrue(ModRegistries.MAGNITE_LEGGINGS.get() != null, "Missing magnite leggings");
+        helper.assertTrue(ModRegistries.MAGNITE_BOOTS.get() != null, "Missing magnite boots");
+
+        assertRegistryId(helper, ModRegistries.MAGNITE_HELMET.get(), "cavernreborn:magnite_helmet");
+        assertRegistryId(helper, ModRegistries.MAGNITE_CHESTPLATE.get(), "cavernreborn:magnite_chestplate");
+        assertRegistryId(helper, ModRegistries.MAGNITE_LEGGINGS.get(), "cavernreborn:magnite_leggings");
+        assertRegistryId(helper, ModRegistries.MAGNITE_BOOTS.get(), "cavernreborn:magnite_boots");
+
+        helper.assertTrue(!new ItemStack(ModRegistries.MAGNITE_HELMET.get()).isEmpty(), "Expected magnite helmet stack to be constructible");
+        helper.assertTrue(!new ItemStack(ModRegistries.MAGNITE_CHESTPLATE.get()).isEmpty(), "Expected magnite chestplate stack to be constructible");
+        helper.assertTrue(!new ItemStack(ModRegistries.MAGNITE_LEGGINGS.get()).isEmpty(), "Expected magnite leggings stack to be constructible");
+        helper.assertTrue(!new ItemStack(ModRegistries.MAGNITE_BOOTS.get()).isEmpty(), "Expected magnite boots stack to be constructible");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void hexciteToolsRegisterAtRuntime(GameTestHelper helper) {
         helper.assertTrue(ModRegistries.HEXCITE_PICKAXE.get() != null, "Missing hexcite pickaxe");
         helper.assertTrue(ModRegistries.HEXCITE_AXE.get() != null, "Missing hexcite axe");
@@ -619,11 +638,39 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void magniteArmorIsRepairableWithMagnite(GameTestHelper helper) {
+        ItemStack repairStack = new ItemStack(ModRegistries.MAGNITE_INGOT.get());
+        ItemStack wrongRepairStack = new ItemStack(Items.STICK);
+        List<ItemStack> armor = List.of(
+            new ItemStack(ModRegistries.MAGNITE_HELMET.get()),
+            new ItemStack(ModRegistries.MAGNITE_CHESTPLATE.get()),
+            new ItemStack(ModRegistries.MAGNITE_LEGGINGS.get()),
+            new ItemStack(ModRegistries.MAGNITE_BOOTS.get())
+        );
+
+        for (ItemStack stack : armor) {
+            helper.assertTrue(stack.getItem().isValidRepairItem(stack, repairStack), "Expected magnite repair support for " + itemId(stack));
+            helper.assertFalse(stack.getItem().isValidRepairItem(stack, wrongRepairStack), "Stick must not repair " + itemId(stack));
+        }
+
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void hexciteArmorExposesDurabilityAndEquippableComponents(GameTestHelper helper) {
-        assertArmorRuntime(helper, new ItemStack(ModRegistries.HEXCITE_HELMET.get()), ArmorItem.Type.HELMET, EquipmentSlot.HEAD);
-        assertArmorRuntime(helper, new ItemStack(ModRegistries.HEXCITE_CHESTPLATE.get()), ArmorItem.Type.CHESTPLATE, EquipmentSlot.CHEST);
-        assertArmorRuntime(helper, new ItemStack(ModRegistries.HEXCITE_LEGGINGS.get()), ArmorItem.Type.LEGGINGS, EquipmentSlot.LEGS);
-        assertArmorRuntime(helper, new ItemStack(ModRegistries.HEXCITE_BOOTS.get()), ArmorItem.Type.BOOTS, EquipmentSlot.FEET);
+        assertArmorRuntime(helper, new ItemStack(ModRegistries.HEXCITE_HELMET.get()), ArmorItem.Type.HELMET, EquipmentSlot.HEAD, ModArmorMaterials.HEXCITE_DURABILITY_MULTIPLIER);
+        assertArmorRuntime(helper, new ItemStack(ModRegistries.HEXCITE_CHESTPLATE.get()), ArmorItem.Type.CHESTPLATE, EquipmentSlot.CHEST, ModArmorMaterials.HEXCITE_DURABILITY_MULTIPLIER);
+        assertArmorRuntime(helper, new ItemStack(ModRegistries.HEXCITE_LEGGINGS.get()), ArmorItem.Type.LEGGINGS, EquipmentSlot.LEGS, ModArmorMaterials.HEXCITE_DURABILITY_MULTIPLIER);
+        assertArmorRuntime(helper, new ItemStack(ModRegistries.HEXCITE_BOOTS.get()), ArmorItem.Type.BOOTS, EquipmentSlot.FEET, ModArmorMaterials.HEXCITE_DURABILITY_MULTIPLIER);
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void magniteArmorExposesDurabilityAndEquippableComponents(GameTestHelper helper) {
+        assertArmorRuntime(helper, new ItemStack(ModRegistries.MAGNITE_HELMET.get()), ArmorItem.Type.HELMET, EquipmentSlot.HEAD, ModArmorMaterials.MAGNITE_DURABILITY_MULTIPLIER);
+        assertArmorRuntime(helper, new ItemStack(ModRegistries.MAGNITE_CHESTPLATE.get()), ArmorItem.Type.CHESTPLATE, EquipmentSlot.CHEST, ModArmorMaterials.MAGNITE_DURABILITY_MULTIPLIER);
+        assertArmorRuntime(helper, new ItemStack(ModRegistries.MAGNITE_LEGGINGS.get()), ArmorItem.Type.LEGGINGS, EquipmentSlot.LEGS, ModArmorMaterials.MAGNITE_DURABILITY_MULTIPLIER);
+        assertArmorRuntime(helper, new ItemStack(ModRegistries.MAGNITE_BOOTS.get()), ArmorItem.Type.BOOTS, EquipmentSlot.FEET, ModArmorMaterials.MAGNITE_DURABILITY_MULTIPLIER);
         helper.succeed();
     }
 
@@ -662,6 +709,40 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void magniteArmorSupportsExpectedEnchantments(GameTestHelper helper) {
+        HolderLookup.RegistryLookup<Enchantment> enchantments = helper.getLevel().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        ItemStack helmet = new ItemStack(ModRegistries.MAGNITE_HELMET.get());
+        ItemStack chestplate = new ItemStack(ModRegistries.MAGNITE_CHESTPLATE.get());
+        ItemStack leggings = new ItemStack(ModRegistries.MAGNITE_LEGGINGS.get());
+        ItemStack boots = new ItemStack(ModRegistries.MAGNITE_BOOTS.get());
+
+        assertSupportsEnchantment(helper, helmet, enchantments.getOrThrow(Enchantments.UNBREAKING), true);
+        assertSupportsEnchantment(helper, helmet, enchantments.getOrThrow(Enchantments.MENDING), true);
+        assertSupportsEnchantment(helper, helmet, enchantments.getOrThrow(Enchantments.PROTECTION), true);
+        assertSupportsEnchantment(helper, helmet, enchantments.getOrThrow(Enchantments.RESPIRATION), true);
+        assertSupportsEnchantment(helper, helmet, enchantments.getOrThrow(Enchantments.AQUA_AFFINITY), true);
+        assertSupportsEnchantment(helper, helmet, enchantments.getOrThrow(Enchantments.SHARPNESS), false);
+
+        assertSupportsEnchantment(helper, chestplate, enchantments.getOrThrow(Enchantments.UNBREAKING), true);
+        assertSupportsEnchantment(helper, chestplate, enchantments.getOrThrow(Enchantments.MENDING), true);
+        assertSupportsEnchantment(helper, chestplate, enchantments.getOrThrow(Enchantments.PROTECTION), true);
+        assertSupportsEnchantment(helper, chestplate, enchantments.getOrThrow(Enchantments.SHARPNESS), false);
+
+        assertSupportsEnchantment(helper, leggings, enchantments.getOrThrow(Enchantments.UNBREAKING), true);
+        assertSupportsEnchantment(helper, leggings, enchantments.getOrThrow(Enchantments.MENDING), true);
+        assertSupportsEnchantment(helper, leggings, enchantments.getOrThrow(Enchantments.PROTECTION), true);
+        assertSupportsEnchantment(helper, leggings, enchantments.getOrThrow(Enchantments.SWIFT_SNEAK), true);
+        assertSupportsEnchantment(helper, leggings, enchantments.getOrThrow(Enchantments.SHARPNESS), false);
+
+        assertSupportsEnchantment(helper, boots, enchantments.getOrThrow(Enchantments.UNBREAKING), true);
+        assertSupportsEnchantment(helper, boots, enchantments.getOrThrow(Enchantments.MENDING), true);
+        assertSupportsEnchantment(helper, boots, enchantments.getOrThrow(Enchantments.PROTECTION), true);
+        assertSupportsEnchantment(helper, boots, enchantments.getOrThrow(Enchantments.FEATHER_FALLING), true);
+        assertSupportsEnchantment(helper, boots, enchantments.getOrThrow(Enchantments.SHARPNESS), false);
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void hexciteArmorEquipmentAssetsResolveAtRuntime(GameTestHelper helper) {
         helper.assertTrue(
             ModArmorMaterials.HEXCITE.get().layers().getFirst().texture(false).toString().endsWith("textures/models/armor/hexcite_layer_1.png"),
@@ -670,6 +751,19 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             ModArmorMaterials.HEXCITE.get().layers().getFirst().texture(true).toString().endsWith("textures/models/armor/hexcite_layer_2.png"),
             "Expected current humanoid leggings runtime to resolve hexcite layer 2 texture"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void magniteArmorEquipmentAssetsResolveAtRuntime(GameTestHelper helper) {
+        helper.assertTrue(
+            ModArmorMaterials.MAGNITE.get().layers().getFirst().texture(false).toString().endsWith("textures/models/armor/magnite_layer_1.png"),
+            "Expected current humanoid armor runtime to resolve magnite layer 1 texture"
+        );
+        helper.assertTrue(
+            ModArmorMaterials.MAGNITE.get().layers().getFirst().texture(true).toString().endsWith("textures/models/armor/magnite_layer_2.png"),
+            "Expected current humanoid leggings runtime to resolve magnite layer 2 texture"
         );
         helper.succeed();
     }
@@ -1345,9 +1439,15 @@ public final class CavernSpecialOreGameTests {
         }
     }
 
-    private static void assertArmorRuntime(GameTestHelper helper, ItemStack stack, ArmorItem.Type expectedType, EquipmentSlot expectedSlot) {
-        helper.assertTrue(stack.isDamageableItem(), "Expected damageable hexcite armor: " + itemId(stack));
-        helper.assertTrue(stack.getMaxDamage() == expectedType.getDurability(ModArmorMaterials.HEXCITE_DURABILITY_MULTIPLIER), "Unexpected max damage for " + itemId(stack));
+    private static void assertArmorRuntime(
+        GameTestHelper helper,
+        ItemStack stack,
+        ArmorItem.Type expectedType,
+        EquipmentSlot expectedSlot,
+        int expectedDurabilityMultiplier
+    ) {
+        helper.assertTrue(stack.isDamageableItem(), "Expected damageable armor: " + itemId(stack));
+        helper.assertTrue(stack.getMaxDamage() == expectedType.getDurability(expectedDurabilityMultiplier), "Unexpected max damage for " + itemId(stack));
         helper.assertTrue(stack.getItem() instanceof ArmorItem, "Expected armor item runtime for " + itemId(stack));
         ArmorItem armorItem = (ArmorItem) stack.getItem();
         helper.assertTrue(armorItem.getType() == expectedType, "Unexpected armor type for " + itemId(stack));
