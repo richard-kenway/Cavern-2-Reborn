@@ -31,7 +31,7 @@ base {
     archivesName = mod_id
 }
 
-def syncRuntimeMergedClasses = tasks.register('syncRuntimeMergedClasses', Sync) {
+def syncRuntimeMergedClasses = tasks.register('syncRuntimeMergedClasses', Copy) {
     dependsOn project(':core').tasks.named('classes')
     dependsOn project(':data').tasks.named('classes')
     dependsOn tasks.named('compileJava')

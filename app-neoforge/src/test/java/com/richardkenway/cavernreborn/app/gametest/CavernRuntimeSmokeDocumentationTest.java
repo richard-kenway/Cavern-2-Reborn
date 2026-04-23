@@ -44,6 +44,10 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/acresia-crop-mvp.md"));
         assertTrue(readme.contains("renewable cave snack crop"));
         assertTrue(readme.contains("full farming system"));
+        assertTrue(readme.contains("Cavenic Shroom & Orb MVP"));
+        assertTrue(readme.contains("docs/cavenic-shroom-mvp.md"));
+        assertTrue(readme.contains("hazardous flora"));
+        assertTrue(readme.contains("cavenic weapons, mobs or Cavenia"));
     }
 
     @Test
@@ -58,6 +62,11 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("acresia shear-harvest regrowth smoke"));
         assertTrue(doc.contains("acresia edible fruit wiring"));
         assertTrue(doc.contains("acresia worldgen configured/placed key resolution"));
+        assertTrue(doc.contains("cavenic shroom runtime registry ids"));
+        assertTrue(doc.contains("cavenic shroom bounded collision nausea"));
+        assertTrue(doc.contains("cavenic shroom bounded shear-harvest helper wiring"));
+        assertTrue(doc.contains("cavenic orb drop policy/runtime smoke"));
+        assertTrue(doc.contains("cavenic shroom worldgen configured/placed key resolution"));
         assertTrue(doc.contains("aquamarine tool runtime registry ids"));
         assertTrue(doc.contains("aquamarine tool repairability with `cavernreborn:aquamarine`"));
         assertTrue(doc.contains("aquamarine tool enchantment applicability"));
@@ -113,6 +122,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("actual worn hexcite armor appearance"));
         assertTrue(doc.contains("actual worn magnite armor appearance"));
         assertTrue(doc.contains("actual Acresia in-world farming feel and growth cadence"));
+        assertTrue(doc.contains("actual Cavenic Shroom hazard feel, sparse spread feel and harvest feel"));
         assertTrue(doc.contains("actual underwater aquamarine mining feel"));
         assertTrue(doc.contains("actual brittle magnite mining feel"));
         assertTrue(doc.contains("portal UX"));

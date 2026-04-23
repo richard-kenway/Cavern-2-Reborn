@@ -12,6 +12,10 @@ public final class ModItemTags {
         Registries.ITEM,
         ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "acresia_items")
     );
+    public static final TagKey<Item> CAVENIC_ITEMS = TagKey.create(
+        Registries.ITEM,
+        ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "cavenic_items")
+    );
     public static final TagKey<Item> AQUA_TOOLS = TagKey.create(
         Registries.ITEM,
         ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "aqua_tools")

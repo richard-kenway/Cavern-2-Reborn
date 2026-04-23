@@ -59,6 +59,7 @@ It is intentionally a small renewable cave snack crop, not a full farming system
 - No large agriculture system.
 - No new progression unlock.
 - No GUI, packets or client-side farming systems.
+- `Cavenic Shroom` is now a separate hazardous flora slice in `docs/cavenic-shroom-mvp.md`; Acresia remains the renewable snack crop.
 
 ## Runtime Smoke Boundary
 

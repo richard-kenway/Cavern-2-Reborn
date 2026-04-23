@@ -8,6 +8,7 @@ import java.util.Set;
 
 import com.richardkenway.cavernreborn.CavernReborn;
 import com.richardkenway.cavernreborn.app.block.AcresiaCropBlock;
+import com.richardkenway.cavernreborn.app.block.CavenicShroomBlock;
 import com.richardkenway.cavernreborn.app.compass.OreCompassStateAccess;
 import com.richardkenway.cavernreborn.app.compass.OreCompassScanner;
 import com.richardkenway.cavernreborn.app.compass.OreCompassTarget;
@@ -26,6 +27,7 @@ import com.richardkenway.cavernreborn.core.compass.OreCompassScanResult;
 import com.richardkenway.cavernreborn.core.compass.OreCompassTrackingDecision;
 import com.richardkenway.cavernreborn.core.compass.OreCompassTrackingPolicy;
 import com.richardkenway.cavernreborn.core.compass.OreCompassTrackingResult;
+import com.richardkenway.cavernreborn.core.flora.CavenicOrbDropPolicy;
 import com.richardkenway.cavernreborn.core.farming.AcresiaHarvestPolicy;
 import com.richardkenway.cavernreborn.core.mining.AquamarineAquaToolDecision;
 import com.richardkenway.cavernreborn.core.mining.AquamarineAquaToolPolicy;
@@ -51,6 +53,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.RelativeMovement;
@@ -102,6 +105,8 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos ACRESIA_PLANTING_ANCHOR = new BlockPos(736, 96, 0);
     private static final BlockPos ACRESIA_HARVEST_ANCHOR = new BlockPos(832, 96, 0);
     private static final BlockPos ACRESIA_SHEAR_ANCHOR = new BlockPos(928, 96, 0);
+    private static final BlockPos CAVENIC_COLLISION_ANCHOR = new BlockPos(1024, 96, 0);
+    private static final BlockPos CAVENIC_SHEAR_ANCHOR = new BlockPos(1120, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -265,6 +270,94 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             biomes.containsKey(ResourceKey.create(Registries.BIOME, ResourceLocation.parse("cavernreborn:lush_grotto"))),
             "Expected lush_grotto biome key to resolve at runtime with Acresia patch wiring"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicShroomRegistersAtRuntime(GameTestHelper helper) {
+        helper.assertTrue(ModRegistries.CAVENIC_SHROOM.get() != null, "Missing cavenic shroom block");
+        helper.assertTrue(ModRegistries.CAVENIC_SHROOM_ITEM.get() != null, "Missing cavenic shroom block item");
+        helper.assertTrue(ModRegistries.CAVENIC_ORB.get() != null, "Missing cavenic orb item");
+
+        assertRegistryId(helper, ModRegistries.CAVENIC_SHROOM.get(), "cavernreborn:cavenic_shroom");
+        assertRegistryId(helper, ModRegistries.CAVENIC_SHROOM_ITEM.get(), "cavernreborn:cavenic_shroom");
+        assertRegistryId(helper, ModRegistries.CAVENIC_ORB.get(), "cavernreborn:cavenic_orb");
+
+        helper.assertTrue(!cavenicShroomItem().isEmpty(), "Expected cavenic shroom item stack to be constructible");
+        helper.assertTrue(!cavenicOrb().isEmpty(), "Expected cavenic orb stack to be constructible");
+        helper.assertTrue(cavenicShroomItem().is(ModItemTags.CAVENIC_ITEMS), "Expected cavenic shroom item to resolve through cavenic_items");
+        helper.assertTrue(cavenicOrb().is(ModItemTags.CAVENIC_ITEMS), "Expected cavenic orb to resolve through cavenic_items");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicShroomCollisionAppliesBoundedNausea(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos supportPos = CAVENIC_COLLISION_ANCHOR;
+        BlockPos shroomPos = supportPos.above();
+
+        resetMiningArea(level, supportPos, 6.0D);
+        level.setBlock(supportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(shroomPos, ModRegistries.CAVENIC_SHROOM.get().defaultBlockState(), Block.UPDATE_ALL);
+
+        Player player = makeMockPlayer(helper, level, GameType.SURVIVAL, ItemStack.EMPTY, shroomPos);
+        ((CavenicShroomBlock) ModRegistries.CAVENIC_SHROOM.get()).applyCollisionEffect(level, player);
+
+        helper.runAfterDelay(2, () -> {
+            helper.assertTrue(player.hasEffect(MobEffects.CONFUSION), "Expected cavenic shroom collision to apply bounded nausea");
+            helper.assertFalse(player.hasEffect(MobEffects.POISON), "Cavenic shroom must not apply poison");
+            helper.assertTrue(player.getHealth() == player.getMaxHealth(), "Cavenic shroom collision must stay non-damaging");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicShroomOrbHarvestPathIsBounded(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos playerAnchor = CAVENIC_SHEAR_ANCHOR;
+        BlockPos supportPos = playerAnchor.east(2);
+        BlockPos shroomPos = supportPos.above();
+        ItemStack shears = new ItemStack(Items.SHEARS);
+
+        resetMiningArea(level, playerAnchor, 8.0D);
+        level.setBlock(supportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(shroomPos, ModRegistries.CAVENIC_SHROOM.get().defaultBlockState(), Block.UPDATE_ALL);
+
+        Player player = makeMockPlayer(helper, level, GameType.SURVIVAL, shears, playerAnchor);
+        CavenicShroomBlock shroomBlock = (CavenicShroomBlock) ModRegistries.CAVENIC_SHROOM.get();
+        InteractionResult result = shroomBlock.tryShearHarvest(
+            shears,
+            level.getBlockState(shroomPos),
+            level,
+            shroomPos,
+            player,
+            InteractionHand.MAIN_HAND,
+            0
+        ).result();
+
+        helper.assertTrue(result.consumesAction(), "Expected cavenic shroom to support the bounded shears harvest path");
+        helper.runAfterDelay(5, () -> {
+            helper.assertBlockNotPresent(ModRegistries.CAVENIC_SHROOM.get(), shroomPos);
+            helper.assertTrue(shears.getDamageValue() == 1, "Expected cavenic shroom shears harvest to damage shears by one");
+            helper.assertTrue(countEntities(level, EntityType.EXPERIENCE_ORB, shroomPos, 4.0D) == 0, "Cavenic shroom harvest must not create XP");
+            helper.assertTrue(countEntities(level, EntityType.ITEM, shroomPos, 4.0D) <= 2, "Cavenic shroom harvest must stay bounded to the shroom drop and at most one orb");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicShroomPatchWorldgenKeysResolve(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Registry<ConfiguredFeature<?, ?>> configuredFeatures = level.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
+        Registry<PlacedFeature> placedFeatures = level.registryAccess().registryOrThrow(Registries.PLACED_FEATURE);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+
+        assertRegistryKeyPresent(helper, configuredFeatures, Registries.CONFIGURED_FEATURE, "cavernreborn:cavenic_shroom_patch");
+        assertRegistryKeyPresent(helper, placedFeatures, Registries.PLACED_FEATURE, "cavernreborn:cavern_cavenic_shroom_patch");
+        helper.assertTrue(
+            biomes.containsKey(ResourceKey.create(Registries.BIOME, ResourceLocation.parse("cavernreborn:stone_depths"))),
+            "Expected stone_depths biome key to resolve at runtime with cavenic shroom patch wiring"
         );
         helper.succeed();
     }
@@ -1450,6 +1543,14 @@ public final class CavernSpecialOreGameTests {
 
     private static ItemStack acresiaFruits() {
         return new ItemStack(ModRegistries.ACRESIA_FRUITS.get());
+    }
+
+    private static ItemStack cavenicShroomItem() {
+        return new ItemStack(ModRegistries.CAVENIC_SHROOM_ITEM.get());
+    }
+
+    private static ItemStack cavenicOrb() {
+        return new ItemStack(ModRegistries.CAVENIC_ORB.get());
     }
 
     private static ItemStack aquamarineAxe() {

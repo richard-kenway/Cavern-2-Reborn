@@ -1,6 +1,6 @@
 # Runtime Smoke
 
-This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the bounded `Acresia Crop & Food MVP`, the bounded Aquamarine Utility Tools MVP, the bounded Magnite Tool Set MVP, the bounded `Magnite Armor MVP`, the follow-up `hexcite` tool-set MVP, the bounded `Hexcite Armor MVP`, the bounded Mining Assist slice, the first Miner's Orb MVP and the Ore Compass MVP plus tracking UX follow-up.
+This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the bounded `Acresia Crop & Food MVP`, the bounded `Cavenic Shroom & Orb MVP`, the bounded Aquamarine Utility Tools MVP, the bounded Magnite Tool Set MVP, the bounded `Magnite Armor MVP`, the follow-up `hexcite` tool-set MVP, the bounded `Hexcite Armor MVP`, the bounded Mining Assist slice, the first Miner's Orb MVP and the Ore Compass MVP plus tracking UX follow-up.
 
 It is intentionally a NeoForge GameTest server pass, not a visual client smoke pass.
 
@@ -15,6 +15,11 @@ NeoForge GameTest runtime smoke covers:
 - acresia shear-harvest regrowth smoke
 - acresia edible fruit wiring
 - acresia worldgen configured/placed key resolution
+- cavenic shroom runtime registry ids
+- cavenic shroom bounded collision nausea
+- cavenic shroom bounded shear-harvest helper wiring
+- cavenic orb drop policy/runtime smoke
+- cavenic shroom worldgen configured/placed key resolution
 - aquamarine tool runtime registry ids
 - aquamarine tool repairability with `cavernreborn:aquamarine`
 - aquamarine tool enchantment applicability
@@ -66,6 +71,7 @@ NeoForge GameTest runtime smoke covers:
 - actual worn hexcite armor appearance on a player or mob
 - actual worn magnite armor appearance on a player or mob
 - actual Acresia in-world farming feel and growth cadence
+- actual Cavenic Shroom hazard feel, sparse spread feel and harvest feel
 - actual underwater aquamarine mining feel
 - actual brittle magnite mining feel
 - particle and sound feel
