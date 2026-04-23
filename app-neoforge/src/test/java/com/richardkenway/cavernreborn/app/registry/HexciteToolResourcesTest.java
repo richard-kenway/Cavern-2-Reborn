@@ -107,24 +107,33 @@ class HexciteToolResourcesTest {
         assertTrue(incorrectTagValues.contains("#minecraft:incorrect_for_diamond_tool"));
         assertEquals(incorrectTagValues, arrayStrings(incorrectForHexciteToolCompat.getAsJsonArray("values")));
 
-        assertTagContainsExactly(pickaxesTag, List.of("cavernreborn:hexcite_pickaxe"));
-        assertTagContainsExactly(axesTag, List.of("cavernreborn:hexcite_axe"));
-        assertTagContainsExactly(shovelsTag, List.of("cavernreborn:hexcite_shovel"));
+        assertTagContainsExactly(pickaxesTag, List.of("cavernreborn:aquamarine_pickaxe", "cavernreborn:hexcite_pickaxe"));
+        assertTagContainsExactly(axesTag, List.of("cavernreborn:aquamarine_axe", "cavernreborn:hexcite_axe"));
+        assertTagContainsExactly(shovelsTag, List.of("cavernreborn:aquamarine_shovel", "cavernreborn:hexcite_shovel"));
         assertTagContainsExactly(hoesTag, List.of("cavernreborn:hexcite_hoe"));
         assertTagContainsExactly(swordsTag, List.of("cavernreborn:hexcite_sword"));
         assertTagContainsExactly(miningEnchantableTag, List.of(
+            "cavernreborn:aquamarine_pickaxe",
+            "cavernreborn:aquamarine_axe",
+            "cavernreborn:aquamarine_shovel",
             "cavernreborn:hexcite_pickaxe",
             "cavernreborn:hexcite_axe",
             "cavernreborn:hexcite_shovel",
             "cavernreborn:hexcite_hoe"
         ));
         assertTagContainsExactly(miningLootEnchantableTag, List.of(
+            "cavernreborn:aquamarine_pickaxe",
+            "cavernreborn:aquamarine_axe",
+            "cavernreborn:aquamarine_shovel",
             "cavernreborn:hexcite_pickaxe",
             "cavernreborn:hexcite_axe",
             "cavernreborn:hexcite_shovel",
             "cavernreborn:hexcite_hoe"
         ));
         assertTagContainsAll(durabilityEnchantableTag, List.of(
+            "cavernreborn:aquamarine_pickaxe",
+            "cavernreborn:aquamarine_axe",
+            "cavernreborn:aquamarine_shovel",
             "cavernreborn:hexcite_pickaxe",
             "cavernreborn:hexcite_axe",
             "cavernreborn:hexcite_shovel",

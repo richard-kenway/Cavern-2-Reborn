@@ -1,6 +1,9 @@
 {
   "replace": false,
   "values": [
+    "cavernreborn:aquamarine_pickaxe",
+    "cavernreborn:aquamarine_axe",
+    "cavernreborn:aquamarine_shovel",
     "cavernreborn:hexcite_pickaxe",
     "cavernreborn:hexcite_axe",
     "cavernreborn:hexcite_shovel",

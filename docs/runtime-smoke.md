@@ -1,6 +1,6 @@
 # Runtime Smoke
 
-This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the follow-up `hexcite` tool-set MVP, the bounded `Hexcite Armor MVP`, the bounded Mining Assist slice, the first Miner's Orb MVP and the Ore Compass MVP plus tracking UX follow-up.
+This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the bounded Aquamarine Utility Tools MVP, the follow-up `hexcite` tool-set MVP, the bounded `Hexcite Armor MVP`, the bounded Mining Assist slice, the first Miner's Orb MVP and the Ore Compass MVP plus tracking UX follow-up.
 
 It is intentionally a NeoForge GameTest server pass, not a visual client smoke pass.
 
@@ -9,6 +9,10 @@ It is intentionally a NeoForge GameTest server pass, not a visual client smoke p
 NeoForge GameTest runtime smoke covers:
 
 - runtime registry availability for tranche 2 content
+- aquamarine tool runtime registry ids
+- aquamarine tool repairability with `cavernreborn:aquamarine`
+- aquamarine tool enchantment applicability
+- aquamarine underwater utility policy/runtime smoke
 - hexcite tool runtime registry ids
 - hexcite armor runtime registry ids
 - hexcite normal and Silk Touch loot paths
@@ -45,6 +49,7 @@ NeoForge GameTest runtime smoke covers:
 - visual portal UX
 - block, model and texture appearance in the client
 - actual worn hexcite armor appearance on a player or mob
+- actual underwater aquamarine mining feel
 - particle and sound feel
 - full player portal loop through a real client session
 - restart persistence with a real dedicated-server save

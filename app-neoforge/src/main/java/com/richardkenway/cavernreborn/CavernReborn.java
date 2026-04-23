@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
 
 import com.richardkenway.cavernreborn.app.gametest.CavernSpecialOreGameTests;
+import com.richardkenway.cavernreborn.app.mining.CavernAquamarineToolEvents;
 import com.richardkenway.cavernreborn.app.mining.CavernMiningAssistEvents;
 import com.richardkenway.cavernreborn.app.progression.CavernMiningProgressionEvents;
 import com.richardkenway.cavernreborn.app.progression.CavernRewardGranter;
@@ -35,6 +36,7 @@ public final class CavernReborn {
         ModRegistries.register(modEventBus);
         cavernStateBootstrap = new CavernStateBootstrap();
         NeoForge.EVENT_BUS.register(new CavernPortalFrameActivationEvents());
+        NeoForge.EVENT_BUS.register(new CavernAquamarineToolEvents());
         NeoForge.EVENT_BUS.register(new CavernMiningAssistEvents(cavernStateBootstrap.cavernProgressionService()));
         NeoForge.EVENT_BUS.register(new CavernMiningProgressionEvents(cavernStateBootstrap.cavernProgressionService()));
         NeoForge.EVENT_BUS.register(

@@ -25,6 +25,9 @@ import com.richardkenway.cavernreborn.core.compass.OreCompassScanResult;
 import com.richardkenway.cavernreborn.core.compass.OreCompassTrackingDecision;
 import com.richardkenway.cavernreborn.core.compass.OreCompassTrackingPolicy;
 import com.richardkenway.cavernreborn.core.compass.OreCompassTrackingResult;
+import com.richardkenway.cavernreborn.core.mining.AquamarineAquaToolDecision;
+import com.richardkenway.cavernreborn.core.mining.AquamarineAquaToolPolicy;
+import com.richardkenway.cavernreborn.core.mining.AquamarineAquaToolResult;
 import com.richardkenway.cavernreborn.core.mining.MiningAssistPolicy;
 import com.richardkenway.cavernreborn.core.mining.MinerOrbBonusDecision;
 import com.richardkenway.cavernreborn.core.mining.MinerOrbBonusPolicy;
@@ -136,6 +139,99 @@ public final class CavernSpecialOreGameTests {
         assertRegistryId(helper, ModRegistries.RANDOMITE_ORE.get(), "cavernreborn:randomite_ore");
         assertRegistryId(helper, ModRegistries.FISSURED_STONE.get(), "cavernreborn:fissured_stone");
         assertRegistryId(helper, ModRegistries.HEXCITE.get(), "cavernreborn:hexcite");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void aquamarineToolsRegisterAtRuntime(GameTestHelper helper) {
+        helper.assertTrue(ModRegistries.AQUAMARINE_PICKAXE.get() != null, "Missing aquamarine pickaxe");
+        helper.assertTrue(ModRegistries.AQUAMARINE_AXE.get() != null, "Missing aquamarine axe");
+        helper.assertTrue(ModRegistries.AQUAMARINE_SHOVEL.get() != null, "Missing aquamarine shovel");
+
+        assertRegistryId(helper, ModRegistries.AQUAMARINE_PICKAXE.get(), "cavernreborn:aquamarine_pickaxe");
+        assertRegistryId(helper, ModRegistries.AQUAMARINE_AXE.get(), "cavernreborn:aquamarine_axe");
+        assertRegistryId(helper, ModRegistries.AQUAMARINE_SHOVEL.get(), "cavernreborn:aquamarine_shovel");
+
+        helper.assertTrue(!new ItemStack(ModRegistries.AQUAMARINE_PICKAXE.get()).isEmpty(), "Expected aquamarine pickaxe stack to be constructible");
+        helper.assertTrue(!new ItemStack(ModRegistries.AQUAMARINE_AXE.get()).isEmpty(), "Expected aquamarine axe stack to be constructible");
+        helper.assertTrue(!new ItemStack(ModRegistries.AQUAMARINE_SHOVEL.get()).isEmpty(), "Expected aquamarine shovel stack to be constructible");
+        helper.assertTrue(new ItemStack(ModRegistries.AQUAMARINE_PICKAXE.get()).is(ModItemTags.AQUA_TOOLS), "Expected aquamarine pickaxe to resolve through aqua_tools");
+        helper.assertTrue(new ItemStack(ModRegistries.AQUAMARINE_AXE.get()).is(ModItemTags.AQUA_TOOLS), "Expected aquamarine axe to resolve through aqua_tools");
+        helper.assertTrue(new ItemStack(ModRegistries.AQUAMARINE_SHOVEL.get()).is(ModItemTags.AQUA_TOOLS), "Expected aquamarine shovel to resolve through aqua_tools");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void aquamarineToolsAreRepairableWithAquamarine(GameTestHelper helper) {
+        ItemStack repairStack = new ItemStack(ModRegistries.AQUAMARINE.get());
+        ItemStack wrongRepairStack = new ItemStack(Items.STICK);
+        List<ItemStack> tools = List.of(
+            new ItemStack(ModRegistries.AQUAMARINE_PICKAXE.get()),
+            new ItemStack(ModRegistries.AQUAMARINE_AXE.get()),
+            new ItemStack(ModRegistries.AQUAMARINE_SHOVEL.get())
+        );
+
+        for (ItemStack tool : tools) {
+            helper.assertTrue(tool.getItem().isValidRepairItem(tool, repairStack), "Expected aquamarine repair support for " + itemId(tool));
+            helper.assertFalse(tool.getItem().isValidRepairItem(tool, wrongRepairStack), "Stick must not repair " + itemId(tool));
+        }
+
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void aquamarineToolsExposeDurabilityAndRuntimeIds(GameTestHelper helper) {
+        List<ItemStack> tools = List.of(aquamarinePickaxe(), aquamarineAxe(), aquamarineShovel());
+
+        for (ItemStack tool : tools) {
+            helper.assertTrue(tool.isDamageableItem(), "Expected damageable aquamarine tool: " + itemId(tool));
+            helper.assertTrue(tool.getMaxDamage() == ModToolTiers.AQUAMARINE.getUses(), "Unexpected max damage for " + itemId(tool));
+        }
+
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void aquamarineToolsSupportExpectedEnchantments(GameTestHelper helper) {
+        HolderLookup.RegistryLookup<Enchantment> enchantments = helper.getLevel().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        ItemStack pickaxe = aquamarinePickaxe();
+        ItemStack axe = aquamarineAxe();
+        ItemStack shovel = aquamarineShovel();
+
+        assertSupportsEnchantment(helper, pickaxe, enchantments.getOrThrow(Enchantments.EFFICIENCY), true);
+        assertSupportsEnchantment(helper, pickaxe, enchantments.getOrThrow(Enchantments.SILK_TOUCH), true);
+        assertSupportsEnchantment(helper, pickaxe, enchantments.getOrThrow(Enchantments.FORTUNE), true);
+        assertSupportsEnchantment(helper, pickaxe, enchantments.getOrThrow(Enchantments.UNBREAKING), true);
+        assertSupportsEnchantment(helper, pickaxe, enchantments.getOrThrow(Enchantments.MENDING), true);
+        assertSupportsEnchantment(helper, pickaxe, enchantments.getOrThrow(Enchantments.PROTECTION), false);
+
+        assertSupportsEnchantment(helper, axe, enchantments.getOrThrow(Enchantments.EFFICIENCY), true);
+        assertSupportsEnchantment(helper, axe, enchantments.getOrThrow(Enchantments.SILK_TOUCH), true);
+        assertSupportsEnchantment(helper, axe, enchantments.getOrThrow(Enchantments.FORTUNE), true);
+        assertSupportsEnchantment(helper, axe, enchantments.getOrThrow(Enchantments.UNBREAKING), true);
+        assertSupportsEnchantment(helper, axe, enchantments.getOrThrow(Enchantments.MENDING), true);
+        assertSupportsEnchantment(helper, axe, enchantments.getOrThrow(Enchantments.SHARPNESS), true);
+
+        assertSupportsEnchantment(helper, shovel, enchantments.getOrThrow(Enchantments.EFFICIENCY), true);
+        assertSupportsEnchantment(helper, shovel, enchantments.getOrThrow(Enchantments.SILK_TOUCH), true);
+        assertSupportsEnchantment(helper, shovel, enchantments.getOrThrow(Enchantments.UNBREAKING), true);
+        assertSupportsEnchantment(helper, shovel, enchantments.getOrThrow(Enchantments.MENDING), true);
+        assertSupportsEnchantment(helper, shovel, enchantments.getOrThrow(Enchantments.PROTECTION), false);
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void aquamarineAquaToolPolicyRuntimeSmoke(GameTestHelper helper) {
+        AquamarineAquaToolResult boosted = AquamarineAquaToolPolicy.evaluate(true, true, false, 2.0F);
+        AquamarineAquaToolResult boostedWithAffinity = AquamarineAquaToolPolicy.evaluate(true, true, true, 2.0F);
+        AquamarineAquaToolResult notSubmerged = AquamarineAquaToolPolicy.evaluate(true, false, false, 2.0F);
+
+        helper.assertTrue(boosted.decision() == AquamarineAquaToolDecision.BOOSTED, "Expected submerged aquamarine tool to get a speed boost");
+        helper.assertTrue(boosted.adjustedSpeed() == 20.0F, "Expected submerged aquamarine tool speed to be multiplied by 10");
+        helper.assertTrue(boostedWithAffinity.decision() == AquamarineAquaToolDecision.BOOSTED, "Expected Aqua Affinity aquamarine tool path to stay boosted");
+        helper.assertTrue(boostedWithAffinity.adjustedSpeed() == 10.0F, "Expected Aqua Affinity dampener to halve the aquamarine boost");
+        helper.assertTrue(notSubmerged.decision() == AquamarineAquaToolDecision.NOT_SUBMERGED, "Expected dry aquamarine tool use to stay unchanged");
+        helper.assertTrue(notSubmerged.adjustedSpeed() == 2.0F, "Expected dry aquamarine tool use to keep the incoming speed");
         helper.succeed();
     }
 
@@ -997,6 +1093,18 @@ public final class CavernSpecialOreGameTests {
         HolderLookup.RegistryLookup<Enchantment> enchantments = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
         tool.enchant(enchantments.getOrThrow(Enchantments.SILK_TOUCH), 1);
         return tool;
+    }
+
+    private static ItemStack aquamarinePickaxe() {
+        return new ItemStack(ModRegistries.AQUAMARINE_PICKAXE.get());
+    }
+
+    private static ItemStack aquamarineAxe() {
+        return new ItemStack(ModRegistries.AQUAMARINE_AXE.get());
+    }
+
+    private static ItemStack aquamarineShovel() {
+        return new ItemStack(ModRegistries.AQUAMARINE_SHOVEL.get());
     }
 
     private static ItemStack hexcitePickaxe() {

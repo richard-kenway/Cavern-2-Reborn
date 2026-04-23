@@ -11,9 +11,22 @@ import net.neoforged.neoforge.common.SimpleTier;
 import com.richardkenway.cavernreborn.CavernReborn;
 
 public final class ModToolTiers {
+    public static final TagKey<Block> INCORRECT_FOR_AQUAMARINE_TOOL = TagKey.create(
+        Registries.BLOCK,
+        ResourceLocation.parse(CavernReborn.MOD_ID + ":incorrect_for_aquamarine_tool")
+    );
     public static final TagKey<Block> INCORRECT_FOR_HEXCITE_TOOL = TagKey.create(
         Registries.BLOCK,
         ResourceLocation.parse(CavernReborn.MOD_ID + ":incorrect_for_hexcite_tool")
+    );
+
+    public static final Tier AQUAMARINE = new SimpleTier(
+        INCORRECT_FOR_AQUAMARINE_TOOL,
+        200,
+        8.0F,
+        1.5F,
+        15,
+        () -> Ingredient.of(ModRegistries.AQUAMARINE.get())
     );
 
     public static final Tier HEXCITE = new SimpleTier(

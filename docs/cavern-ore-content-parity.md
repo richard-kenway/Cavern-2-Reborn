@@ -3,6 +3,7 @@
 This note fixes the first narrow ore/content tranche for `CAVERN`.
 
 The special-ore follow-up tranche that adds `hexcite`, `randomite` and `fissured_stone` now lives in `docs/cavern-special-ore-content-parity.md`.
+The bounded aquamarine tool follow-up now lives in `docs/aquamarine-tool-mvp.md`.
 
 ## Chosen Families
 
@@ -35,6 +36,11 @@ The special-ore follow-up tranche that adds `hexcite`, `randomite` and `fissured
 - Full old vein-provider parity.
 - Tool, weapon, armor or progression integration.
 - Special-case ore mechanics, rewards or economy hooks.
+
+## Follow-Up Status
+
+- aquamarine now also has a bounded tool follow-up in `docs/aquamarine-tool-mvp.md`.
+- magnite tools remain out of scope.
 
 ## Modern Reborn Slice
 

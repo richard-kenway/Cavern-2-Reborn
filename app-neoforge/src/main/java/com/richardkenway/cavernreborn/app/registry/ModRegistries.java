@@ -82,6 +82,18 @@ public final class ModRegistries {
         "ore_compass",
         () -> new OreCompassItem(new Item.Properties().stacksTo(1))
     );
+    public static final DeferredItem<Item> AQUAMARINE_PICKAXE = ITEMS.register("aquamarine_pickaxe",
+        () -> new PickaxeItem(
+            ModToolTiers.AQUAMARINE,
+            new Item.Properties().attributes(PickaxeItem.createAttributes(ModToolTiers.AQUAMARINE, 1.0F, -2.8F))));
+    public static final DeferredItem<Item> AQUAMARINE_AXE = ITEMS.register("aquamarine_axe",
+        () -> new AxeItem(
+            ModToolTiers.AQUAMARINE,
+            new Item.Properties().attributes(AxeItem.createAttributes(ModToolTiers.AQUAMARINE, 5.0F, -3.0F))));
+    public static final DeferredItem<Item> AQUAMARINE_SHOVEL = ITEMS.register("aquamarine_shovel",
+        () -> new ShovelItem(
+            ModToolTiers.AQUAMARINE,
+            new Item.Properties().attributes(ShovelItem.createAttributes(ModToolTiers.AQUAMARINE, 1.5F, -3.0F))));
     public static final DeferredItem<Item> HEXCITE_PICKAXE = ITEMS.register("hexcite_pickaxe",
         () -> new PickaxeItem(
             ModToolTiers.HEXCITE,
@@ -139,6 +151,9 @@ public final class ModRegistries {
                 output.accept(FISSURED_STONE_ITEM.get());
                 output.accept(CAVERN_PORTAL_BLOCK_ITEM.get());
                 output.accept(AQUAMARINE.get());
+                output.accept(AQUAMARINE_PICKAXE.get());
+                output.accept(AQUAMARINE_AXE.get());
+                output.accept(AQUAMARINE_SHOVEL.get());
                 output.accept(MAGNITE_INGOT.get());
                 output.accept(HEXCITE.get());
                 output.accept(MINER_ORB.get());

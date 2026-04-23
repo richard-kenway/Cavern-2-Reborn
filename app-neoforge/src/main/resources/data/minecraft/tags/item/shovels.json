@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "cavernreborn:aquamarine_shovel",
     "cavernreborn:hexcite_shovel"
   ]
 }
