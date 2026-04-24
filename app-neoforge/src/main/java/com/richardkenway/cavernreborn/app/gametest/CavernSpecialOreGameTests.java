@@ -22,6 +22,7 @@ import com.richardkenway.cavernreborn.app.registry.ModItemTags;
 import com.richardkenway.cavernreborn.app.registry.ModRegistries;
 import com.richardkenway.cavernreborn.app.registry.ModToolTiers;
 import com.richardkenway.cavernreborn.core.combat.CavenicBowMode;
+import com.richardkenway.cavernreborn.core.combat.CavenicBowSnipePolicy;
 import com.richardkenway.cavernreborn.core.compass.OreCompassDirection;
 import com.richardkenway.cavernreborn.core.compass.OreCompassScanDecision;
 import com.richardkenway.cavernreborn.core.compass.OreCompassScanPolicy;
@@ -62,10 +63,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArrowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -112,6 +115,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_COLLISION_ANCHOR = new BlockPos(1024, 96, 0);
     private static final BlockPos CAVENIC_SHEAR_ANCHOR = new BlockPos(1120, 96, 0);
     private static final BlockPos CAVENIC_BOW_MODE_ANCHOR = new BlockPos(1216, 96, 0);
+    private static final BlockPos CAVENIC_BOW_SNIPE_ANCHOR = new BlockPos(1312, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -485,6 +489,116 @@ public final class CavernSpecialOreGameTests {
         assertSupportsEnchantment(helper, bow, enchantments.getOrThrow(Enchantments.UNBREAKING), true);
         assertSupportsEnchantment(helper, bow, enchantments.getOrThrow(Enchantments.MENDING), true);
         assertSupportsEnchantment(helper, bow, enchantments.getOrThrow(Enchantments.SHARPNESS), false);
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBowSnipeModeBoostsFullChargeShotsAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos normalOrigin = CAVENIC_BOW_SNIPE_ANCHOR;
+        BlockPos snipeOrigin = CAVENIC_BOW_SNIPE_ANCHOR.east(32);
+        float fullChargePower = 1.0F;
+        float baseVelocity = 3.0F;
+
+        resetMiningArea(level, normalOrigin, 10.0D);
+        resetMiningArea(level, snipeOrigin, 10.0D);
+
+        Player normalPlayer = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), normalOrigin);
+        Player snipePlayer = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), snipeOrigin);
+        ItemStack normalBow = normalPlayer.getMainHandItem();
+        ItemStack snipeBow = snipePlayer.getMainHandItem();
+        CavenicBowItem bowItem = (CavenicBowItem) ModRegistries.CAVENIC_BOW.get();
+
+        bowItem.setMode(snipeBow, CavenicBowMode.SNIPE);
+
+        AbstractArrow normalArrow = createRuntimeArrow(level, normalPlayer, normalBow);
+        AbstractArrow snipeArrow = createRuntimeArrow(level, snipePlayer, snipeBow);
+
+        normalArrow.shootFromRotation(normalPlayer, normalPlayer.getXRot(), normalPlayer.getYRot(), 0.0F, bowItem.resolveProjectileVelocity(normalBow, baseVelocity, fullChargePower), 1.0F);
+        snipeArrow.shootFromRotation(snipePlayer, snipePlayer.getXRot(), snipePlayer.getYRot(), 0.0F, bowItem.resolveProjectileVelocity(snipeBow, baseVelocity, fullChargePower), 1.0F);
+
+        helper.assertFalse(bowItem.applySnipeBoost(normalBow, normalArrow, fullChargePower), "NORMAL mode must not apply the bounded Snipe damage boost");
+        helper.assertTrue(bowItem.applySnipeBoost(snipeBow, snipeArrow, fullChargePower), "SNIPE mode must apply the bounded Snipe damage boost");
+
+        level.addFreshEntity(normalArrow);
+        level.addFreshEntity(snipeArrow);
+
+        helper.assertTrue("minecraft:arrow".equals(entityTypeId(normalArrow)), "NORMAL mode must still spawn a vanilla arrow");
+        helper.assertTrue("minecraft:arrow".equals(entityTypeId(snipeArrow)), "SNIPE mode must still spawn a vanilla arrow");
+        helper.assertTrue(bowItem.getMode(normalBow) == CavenicBowMode.NORMAL, "NORMAL mode must remain stored on the bow stack");
+        helper.assertTrue(bowItem.getMode(snipeBow) == CavenicBowMode.SNIPE, "SNIPE mode must remain stored after firing");
+
+        normalBow.hurtAndBreak(1 + bowItem.resolveAdditionalDurabilityCost(normalBow, fullChargePower), normalPlayer, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
+        snipeBow.hurtAndBreak(1 + bowItem.resolveAdditionalDurabilityCost(snipeBow, fullChargePower), snipePlayer, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
+
+        helper.assertTrue(normalBow.getDamageValue() == 1, "NORMAL shots must keep the vanilla single durability cost");
+        helper.assertTrue(
+            snipeBow.getDamageValue() == 1 + CavenicBowSnipePolicy.EXTRA_DURABILITY_COST,
+            "SNIPE shots must apply the vanilla bow durability cost plus the bounded Snipe surcharge"
+        );
+        helper.assertTrue(snipeArrow.getBaseDamage() > normalArrow.getBaseDamage(), "SNIPE mode must increase arrow base damage on full-charge shots");
+        helper.assertTrue(
+            snipeArrow.getDeltaMovement().length() > normalArrow.getDeltaMovement().length(),
+            "SNIPE mode must increase projectile velocity on full-charge shots"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBowOnlyAppliesSnipeBoostForFullChargeSnipeModeAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_BOW_SNIPE_ANCHOR.east(64);
+
+        resetMiningArea(level, origin, 8.0D);
+
+        Player player = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), origin);
+        CavenicBowItem bowItem = (CavenicBowItem) ModRegistries.CAVENIC_BOW.get();
+
+        ItemStack normalBow = cavenicBow();
+        ItemStack rapidBow = cavenicBow();
+        ItemStack lowChargeSnipeBow = cavenicBow();
+        ItemStack torchBow = cavenicBow();
+
+        bowItem.setMode(rapidBow, CavenicBowMode.RAPID);
+        bowItem.setMode(lowChargeSnipeBow, CavenicBowMode.SNIPE);
+        bowItem.setMode(torchBow, CavenicBowMode.TORCH);
+
+        AbstractArrow normalArrow = createRuntimeArrow(level, player, normalBow);
+        AbstractArrow rapidArrow = createRuntimeArrow(level, player, rapidBow);
+        AbstractArrow lowChargeSnipeArrow = createRuntimeArrow(level, player, lowChargeSnipeBow);
+        AbstractArrow torchArrow = createRuntimeArrow(level, player, torchBow);
+
+        double normalDamage = normalArrow.getBaseDamage();
+        double rapidDamage = rapidArrow.getBaseDamage();
+        double lowChargeSnipeDamage = lowChargeSnipeArrow.getBaseDamage();
+        double torchDamage = torchArrow.getBaseDamage();
+
+        helper.assertFalse(bowItem.applySnipeBoost(normalBow, normalArrow, 1.0F), "NORMAL mode must not apply Snipe damage");
+        helper.assertFalse(bowItem.applySnipeBoost(rapidBow, rapidArrow, 1.0F), "RAPID mode must remain vanilla for now");
+        helper.assertFalse(bowItem.applySnipeBoost(lowChargeSnipeBow, lowChargeSnipeArrow, 0.95F), "Undercharged SNIPE shots must remain vanilla");
+        helper.assertFalse(bowItem.applySnipeBoost(torchBow, torchArrow, 1.0F), "TORCH mode must remain vanilla for now");
+
+        helper.assertTrue(normalArrow.getBaseDamage() == normalDamage, "NORMAL mode must not change arrow base damage");
+        helper.assertTrue(rapidArrow.getBaseDamage() == rapidDamage, "RAPID mode must not change arrow base damage");
+        helper.assertTrue(lowChargeSnipeArrow.getBaseDamage() == lowChargeSnipeDamage, "Undercharged SNIPE shots must not change arrow base damage");
+        helper.assertTrue(torchArrow.getBaseDamage() == torchDamage, "TORCH mode must not change arrow base damage");
+
+        helper.assertTrue(
+            bowItem.resolveProjectileVelocity(normalBow, 3.0F, 1.0F) == 3.0F,
+            "NORMAL mode must keep vanilla projectile velocity"
+        );
+        helper.assertTrue(
+            bowItem.resolveProjectileVelocity(rapidBow, 3.0F, 1.0F) == 3.0F,
+            "RAPID mode must keep vanilla projectile velocity in this slice"
+        );
+        helper.assertTrue(
+            bowItem.resolveProjectileVelocity(lowChargeSnipeBow, 3.0F, 0.95F) == 3.0F,
+            "Undercharged SNIPE shots must keep vanilla projectile velocity"
+        );
+        helper.assertTrue(
+            bowItem.resolveProjectileVelocity(torchBow, 3.0F, 1.0F) == 3.0F,
+            "TORCH mode must keep vanilla projectile velocity in this slice"
+        );
         helper.succeed();
     }
 
@@ -1768,6 +1882,10 @@ public final class CavernSpecialOreGameTests {
         return new ItemStack(ModRegistries.CAVENIC_BOW.get());
     }
 
+    private static AbstractArrow createRuntimeArrow(ServerLevel level, Player player, ItemStack bow) {
+        return ((ArrowItem) Items.ARROW).createArrow(level, new ItemStack(Items.ARROW), player, bow);
+    }
+
     private static ItemStack aquamarineAxe() {
         return new ItemStack(ModRegistries.AQUAMARINE_AXE.get());
     }
@@ -1857,6 +1975,10 @@ public final class CavernSpecialOreGameTests {
 
     private static String itemId(ItemStack stack) {
         return BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
+    }
+
+    private static String entityTypeId(Entity entity) {
+        return BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString();
     }
 
     private static void assertNoUnexpectedTerrainDamage(GameTestHelper helper, List<BlockPos> surroundingPositions) {

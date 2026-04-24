@@ -33,6 +33,9 @@ class CavenicBowResourcesTest {
         String modeSource = readProjectFile(
             "core", "src", "main", "java", "com", "richardkenway", "cavernreborn", "core", "combat", "CavenicBowMode.java"
         );
+        String snipePolicySource = readProjectFile(
+            "core", "src", "main", "java", "com", "richardkenway", "cavernreborn", "core", "combat", "CavenicBowSnipePolicy.java"
+        );
 
         assertTrue(registriesSource.contains("ITEMS.register(\"cavenic_bow\""));
         assertTrue(registriesSource.contains("new CavenicBowItem("));
@@ -50,10 +53,17 @@ class CavenicBowResourcesTest {
         assertTrue(bowSource.contains("public CavenicBowMode getMode(ItemStack stack)"));
         assertTrue(bowSource.contains("public void setMode(ItemStack stack, CavenicBowMode mode)"));
         assertTrue(bowSource.contains("public CavenicBowMode cycleMode(ItemStack stack)"));
+        assertTrue(bowSource.contains("public float resolveProjectileVelocity(ItemStack stack, float baseVelocity, float power)"));
+        assertTrue(bowSource.contains("public boolean applySnipeBoost(ItemStack stack, AbstractArrow arrow, float power)"));
+        assertTrue(bowSource.contains("public int resolveAdditionalDurabilityCost(ItemStack stack, float power)"));
         assertTrue(bowSource.contains("DataComponents.CUSTOM_DATA"));
         assertTrue(bowSource.contains("player.isShiftKeyDown()"));
         assertTrue(bowSource.contains("player.displayClientMessage(Component.translatable(MODE_CHANGED_KEY, modeLabel(nextMode)), true)"));
         assertTrue(bowSource.contains("tooltipComponents.add(Component.translatable(MODE_LINE_KEY, modeLabel(getMode(stack))))"));
+        assertTrue(bowSource.contains("public void releaseUsing(ItemStack stack, Level level, LivingEntity livingEntity, int timeLeft)"));
+        assertTrue(bowSource.contains("public AbstractArrow customArrow(AbstractArrow arrow, ItemStack projectileStack, ItemStack weaponStack)"));
+        assertTrue(bowSource.contains("CavenicBowSnipePolicy"));
+        assertTrue(bowSource.contains("CURRENT_SHOT_CONTEXT"));
         assertTrue(bowSource.contains("repairCandidate.is(ModRegistries.CAVENIC_ORB.get())"));
         assertTrue(bowSource.contains("ModToolTiers.CAVENIC.getEnchantmentValue()"));
         assertTrue(modeSource.contains("NORMAL(\"normal\")"));
@@ -61,6 +71,10 @@ class CavenicBowResourcesTest {
         assertTrue(modeSource.contains("SNIPE(\"snipe\")"));
         assertTrue(modeSource.contains("TORCH(\"torch\")"));
         assertTrue(modeSource.contains("return NORMAL;"));
+        assertTrue(snipePolicySource.contains("MIN_POWER_THRESHOLD = 1.0F"));
+        assertTrue(snipePolicySource.contains("VELOCITY_MULTIPLIER = 1.5F"));
+        assertTrue(snipePolicySource.contains("BASE_DAMAGE_MULTIPLIER = 1.5D"));
+        assertTrue(snipePolicySource.contains("EXTRA_DURABILITY_COST = 1"));
         assertFalse(bowSource.contains("EntityRapidArrow"));
         assertFalse(bowSource.contains("EntityTorchArrow"));
         assertFalse(registriesSource.contains("rapid_arrow"));

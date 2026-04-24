@@ -3,6 +3,7 @@
 This slice adds the first bounded `cavernreborn:cavenic_bow` item on top of the existing `cavenic_orb` material line.
 
 The later stack-local mode-state and cycling follow-up is documented separately in `docs/cavenic-bow-mode-state-mvp.md`.
+The first bounded Snipe-only behavior follow-up is documented separately in `docs/cavenic-bow-snipe-mode-mvp.md`.
 
 ## What Was Ported
 
@@ -47,7 +48,7 @@ The later stack-local mode-state and cycling follow-up is documented separately 
 - Mode-specific predicates beyond normal vanilla pull states
 - Keybinds, packets, GUI or client networking
 
-This note intentionally documents only the safe baseline bow slice. Legacy custom bow behavior remains follow-up work, even though the later mode-state follow-up now exists separately.
+This note intentionally documents only the safe baseline bow slice. Legacy custom bow behavior remains follow-up work, even though the later mode-state and bounded Snipe follow-ups now exist separately.
 
 ## Testing
 

@@ -5,26 +5,35 @@ import java.util.List;
 import com.richardkenway.cavernreborn.app.registry.ModRegistries;
 import com.richardkenway.cavernreborn.app.registry.ModToolTiers;
 import com.richardkenway.cavernreborn.core.combat.CavenicBowMode;
+import com.richardkenway.cavernreborn.core.combat.CavenicBowSnipePolicy;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.event.EventHooks;
 
 public final class CavenicBowItem extends BowItem {
     private static final String MODE_KEY = "cavernreborn:cavenic_bow_mode";
     private static final String MODE_KEY_PREFIX = "item.cavernreborn.cavenic_bow.mode.";
     private static final String MODE_LINE_KEY = "item.cavernreborn.cavenic_bow.mode";
     private static final String MODE_CHANGED_KEY = "item.cavernreborn.cavenic_bow.mode_changed";
+    private static final ThreadLocal<ShotContext> CURRENT_SHOT_CONTEXT = new ThreadLocal<>();
 
     public CavenicBowItem(Properties properties) {
         super(properties);
@@ -54,6 +63,24 @@ public final class CavenicBowItem extends BowItem {
         return nextMode;
     }
 
+    public float resolveProjectileVelocity(ItemStack stack, float baseVelocity, float power) {
+        return CavenicBowSnipePolicy.adjustedVelocity(getMode(stack), baseVelocity, power);
+    }
+
+    public boolean applySnipeBoost(ItemStack stack, AbstractArrow arrow, float power) {
+        CavenicBowMode mode = getMode(stack);
+        if (!CavenicBowSnipePolicy.applies(mode, power)) {
+            return false;
+        }
+
+        arrow.setBaseDamage(CavenicBowSnipePolicy.adjustedBaseDamage(mode, arrow.getBaseDamage(), power));
+        return true;
+    }
+
+    public int resolveAdditionalDurabilityCost(ItemStack stack, float power) {
+        return CavenicBowSnipePolicy.applies(getMode(stack), power) ? CavenicBowSnipePolicy.EXTRA_DURABILITY_COST : 0;
+    }
+
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         ItemStack stack = player.getItemInHand(usedHand);
@@ -66,6 +93,77 @@ public final class CavenicBowItem extends BowItem {
         }
 
         return super.use(level, player, usedHand);
+    }
+
+    @Override
+    public void releaseUsing(ItemStack stack, Level level, LivingEntity livingEntity, int timeLeft) {
+        if (!(livingEntity instanceof Player player)) {
+            return;
+        }
+
+        ItemStack projectile = player.getProjectile(stack);
+        if (projectile.isEmpty()) {
+            return;
+        }
+
+        int charge = getUseDuration(stack, livingEntity) - timeLeft;
+        charge = EventHooks.onArrowLoose(stack, level, player, charge, true);
+        if (charge < 0) {
+            return;
+        }
+
+        float power = getPowerForTime(charge);
+        if ((double) power < 0.1D) {
+            return;
+        }
+
+        List<ItemStack> drawnProjectiles = draw(stack, projectile, livingEntity);
+        if (level instanceof ServerLevel serverLevel && !drawnProjectiles.isEmpty()) {
+            ShotContext shotContext = new ShotContext(power);
+            CURRENT_SHOT_CONTEXT.set(shotContext);
+            try {
+                shoot(
+                    serverLevel,
+                    livingEntity,
+                    player.getUsedItemHand(),
+                    stack,
+                    drawnProjectiles,
+                    resolveProjectileVelocity(stack, power * 3.0F, power),
+                    1.0F,
+                    power == 1.0F,
+                    null
+                );
+            } finally {
+                CURRENT_SHOT_CONTEXT.remove();
+            }
+
+            int additionalDurabilityCost = resolveAdditionalDurabilityCost(stack, power);
+            if (additionalDurabilityCost > 0 && !stack.isEmpty()) {
+                stack.hurtAndBreak(additionalDurabilityCost, livingEntity, LivingEntity.getSlotForHand(player.getUsedItemHand()));
+            }
+        }
+
+        level.playSound(
+            null,
+            player.getX(),
+            player.getY(),
+            player.getZ(),
+            SoundEvents.ARROW_SHOOT,
+            SoundSource.PLAYERS,
+            1.0F,
+            1.0F / (level.getRandom().nextFloat() * 0.4F + 1.2F) + power * 0.5F
+        );
+        player.awardStat(Stats.ITEM_USED.get(this));
+    }
+
+    @Override
+    public AbstractArrow customArrow(AbstractArrow arrow, ItemStack projectileStack, ItemStack weaponStack) {
+        AbstractArrow customizedArrow = super.customArrow(arrow, projectileStack, weaponStack);
+        ShotContext shotContext = CURRENT_SHOT_CONTEXT.get();
+        if (shotContext != null) {
+            applySnipeBoost(weaponStack, customizedArrow, shotContext.power());
+        }
+        return customizedArrow;
     }
 
     @Override
@@ -86,5 +184,8 @@ public final class CavenicBowItem extends BowItem {
 
     private static Component modeLabel(CavenicBowMode mode) {
         return Component.translatable(MODE_KEY_PREFIX + mode.serializedId());
+    }
+
+    private record ShotContext(float power) {
     }
 }
