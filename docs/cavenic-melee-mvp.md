@@ -24,7 +24,7 @@ Legacy `ItemAxeCavenic` damaged nearby hostile mobs for 4.0 damage in a 2.5 bloc
 
 ## Out Of Scope
 
-That melee-specific increment did not add `cavenic_bow`; the later baseline bow follow-up is documented separately in `docs/cavenic-bow-baseline-mvp.md`.
+That melee-specific increment did not add `cavenic_bow`; the later baseline bow and mode-state follow-ups are documented separately in `docs/cavenic-bow-baseline-mvp.md` and `docs/cavenic-bow-mode-state-mvp.md`.
 
 The melee slice still does not add bow modes, custom arrows, client predicates, cavenic mobs, Cavenia, cavenic shroom transformation systems, economy hooks, GUI, packets, keybinds, worldgen changes or broad combat rewrites.
 

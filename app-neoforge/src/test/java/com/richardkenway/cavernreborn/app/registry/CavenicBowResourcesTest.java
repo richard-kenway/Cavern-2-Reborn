@@ -30,6 +30,9 @@ class CavenicBowResourcesTest {
         String bowSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "item", "CavenicBowItem.java"
         );
+        String modeSource = readProjectFile(
+            "core", "src", "main", "java", "com", "richardkenway", "cavernreborn", "core", "combat", "CavenicBowMode.java"
+        );
 
         assertTrue(registriesSource.contains("ITEMS.register(\"cavenic_bow\""));
         assertTrue(registriesSource.contains("new CavenicBowItem("));
@@ -44,12 +47,22 @@ class CavenicBowResourcesTest {
         ));
 
         assertTrue(bowSource.contains("extends BowItem"));
+        assertTrue(bowSource.contains("public CavenicBowMode getMode(ItemStack stack)"));
+        assertTrue(bowSource.contains("public void setMode(ItemStack stack, CavenicBowMode mode)"));
+        assertTrue(bowSource.contains("public CavenicBowMode cycleMode(ItemStack stack)"));
+        assertTrue(bowSource.contains("DataComponents.CUSTOM_DATA"));
+        assertTrue(bowSource.contains("player.isShiftKeyDown()"));
+        assertTrue(bowSource.contains("player.displayClientMessage(Component.translatable(MODE_CHANGED_KEY, modeLabel(nextMode)), true)"));
+        assertTrue(bowSource.contains("tooltipComponents.add(Component.translatable(MODE_LINE_KEY, modeLabel(getMode(stack))))"));
         assertTrue(bowSource.contains("repairCandidate.is(ModRegistries.CAVENIC_ORB.get())"));
         assertTrue(bowSource.contains("ModToolTiers.CAVENIC.getEnchantmentValue()"));
+        assertTrue(modeSource.contains("NORMAL(\"normal\")"));
+        assertTrue(modeSource.contains("RAPID(\"rapid\")"));
+        assertTrue(modeSource.contains("SNIPE(\"snipe\")"));
+        assertTrue(modeSource.contains("TORCH(\"torch\")"));
+        assertTrue(modeSource.contains("return NORMAL;"));
         assertFalse(bowSource.contains("EntityRapidArrow"));
         assertFalse(bowSource.contains("EntityTorchArrow"));
-        assertFalse(bowSource.contains("Mode"));
-        assertFalse(bowSource.contains("DataComponents"));
         assertFalse(registriesSource.contains("rapid_arrow"));
         assertFalse(registriesSource.contains("torch_arrow"));
     }
@@ -70,6 +83,12 @@ class CavenicBowResourcesTest {
         JsonObject durabilityEnchantableTag = readJsonResource("data/minecraft/tags/item/enchantable/durability.json");
 
         assertEquals("Cavenic Bow", lang.get("item.cavernreborn.cavenic_bow").getAsString());
+        assertEquals("Normal", lang.get("item.cavernreborn.cavenic_bow.mode.normal").getAsString());
+        assertEquals("Rapid Fire", lang.get("item.cavernreborn.cavenic_bow.mode.rapid").getAsString());
+        assertEquals("Sniper", lang.get("item.cavernreborn.cavenic_bow.mode.snipe").getAsString());
+        assertEquals("Torch Shot", lang.get("item.cavernreborn.cavenic_bow.mode.torch").getAsString());
+        assertEquals("Mode: %s", lang.get("item.cavernreborn.cavenic_bow.mode").getAsString());
+        assertEquals("Cavenic Bow Mode: %s", lang.get("item.cavernreborn.cavenic_bow.mode_changed").getAsString());
 
         assertEquals("minecraft:item/generated", bowModel.get("parent").getAsString());
         assertEquals("cavernreborn:item/cavenic_bow", bowModel.getAsJsonObject("textures").get("layer0").getAsString());
@@ -77,6 +96,9 @@ class CavenicBowResourcesTest {
         assertPullingModel(pulling0Model, "cavernreborn:item/cavenic_bow_pulling_0");
         assertPullingModel(pulling1Model, "cavernreborn:item/cavenic_bow_pulling_1");
         assertPullingModel(pulling2Model, "cavernreborn:item/cavenic_bow_pulling_2");
+        assertFalse(bowModel.toString().contains("rapid"), "Bow model must not add rapid-mode predicates or assets in this slice");
+        assertFalse(bowModel.toString().contains("snipe"), "Bow model must not add snipe-mode predicates or assets in this slice");
+        assertFalse(bowModel.toString().contains("torch"), "Bow model must not add torch-mode predicates or assets in this slice");
 
         assertEquals("minecraft:crafting_shaped", recipe.get("type").getAsString());
         assertEquals("equipment", recipe.get("category").getAsString());
@@ -119,6 +141,12 @@ class CavenicBowResourcesTest {
         assertClassPathOrigin(resourceUrl("data/minecraft/tags/item/bows.json"), "data/minecraft/tags/item/bows.json");
         assertClassPathOrigin(resourceUrl("data/minecraft/tags/item/enchantable/bow.json"), "data/minecraft/tags/item/enchantable/bow.json");
         assertClassPathOrigin(resourceUrl("data/minecraft/tags/item/enchantable/durability.json"), "data/minecraft/tags/item/enchantable/durability.json");
+        assertMissingResource("assets/cavernreborn/models/item/cavenic_bow_rapid.json");
+        assertMissingResource("assets/cavernreborn/models/item/cavenic_bow_snipe.json");
+        assertMissingResource("assets/cavernreborn/models/item/cavenic_bow_torch.json");
+        assertMissingResource("assets/cavernreborn/textures/item/cavenic_bow_rapid.png");
+        assertMissingResource("assets/cavernreborn/textures/item/cavenic_bow_snipe.png");
+        assertMissingResource("assets/cavernreborn/textures/item/cavenic_bow_torch.png");
     }
 
     private static void assertBowOverrides(JsonArray overrides) {
@@ -160,6 +188,10 @@ class CavenicBowResourcesTest {
         URL url = CavenicBowResourcesTest.class.getClassLoader().getResource(path);
         assertNotNull(url, "Missing resource URL: " + path);
         return url;
+    }
+
+    private static void assertMissingResource(String path) {
+        assertTrue(CavenicBowResourcesTest.class.getClassLoader().getResource(path) == null, "Did not expect resource: " + path);
     }
 
     private static void assertClassPathOrigin(URL url, String expectedPathSuffix) {

@@ -2,6 +2,8 @@
 
 This slice adds the first bounded `cavernreborn:cavenic_bow` item on top of the existing `cavenic_orb` material line.
 
+The later stack-local mode-state and cycling follow-up is documented separately in `docs/cavenic-bow-mode-state-mvp.md`.
+
 ## What Was Ported
 
 - `cavernreborn:cavenic_bow`
@@ -36,8 +38,6 @@ This slice adds the first bounded `cavernreborn:cavenic_bow` item on top of the 
 
 ## Intentionally Out Of Scope
 
-- Legacy bow mode cycling
-- Normal / rapid / snipe / torch mode state
 - `EntityRapidArrow`
 - `EntityTorchArrow`
 - Custom projectile entities
@@ -47,7 +47,7 @@ This slice adds the first bounded `cavernreborn:cavenic_bow` item on top of the 
 - Mode-specific predicates beyond normal vanilla pull states
 - Keybinds, packets, GUI or client networking
 
-This note intentionally documents only the safe baseline bow slice. Legacy custom bow behavior remains follow-up work.
+This note intentionally documents only the safe baseline bow slice. Legacy custom bow behavior remains follow-up work, even though the later mode-state follow-up now exists separately.
 
 ## Testing
 

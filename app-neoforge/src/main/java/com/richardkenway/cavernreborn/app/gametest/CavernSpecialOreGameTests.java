@@ -13,6 +13,7 @@ import com.richardkenway.cavernreborn.app.compass.OreCompassStateAccess;
 import com.richardkenway.cavernreborn.app.compass.OreCompassScanner;
 import com.richardkenway.cavernreborn.app.compass.OreCompassTarget;
 import com.richardkenway.cavernreborn.app.compass.StoredOreCompassTarget;
+import com.richardkenway.cavernreborn.app.item.CavenicBowItem;
 import com.richardkenway.cavernreborn.app.item.OreCompassItem;
 import com.richardkenway.cavernreborn.app.mining.CavernMiningAssistEvents;
 import com.richardkenway.cavernreborn.app.registry.ModArmorMaterials;
@@ -20,6 +21,7 @@ import com.richardkenway.cavernreborn.app.registry.ModBlockTags;
 import com.richardkenway.cavernreborn.app.registry.ModItemTags;
 import com.richardkenway.cavernreborn.app.registry.ModRegistries;
 import com.richardkenway.cavernreborn.app.registry.ModToolTiers;
+import com.richardkenway.cavernreborn.core.combat.CavenicBowMode;
 import com.richardkenway.cavernreborn.core.compass.OreCompassDirection;
 import com.richardkenway.cavernreborn.core.compass.OreCompassScanDecision;
 import com.richardkenway.cavernreborn.core.compass.OreCompassScanPolicy;
@@ -62,6 +64,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -108,6 +111,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos ACRESIA_SHEAR_ANCHOR = new BlockPos(928, 96, 0);
     private static final BlockPos CAVENIC_COLLISION_ANCHOR = new BlockPos(1024, 96, 0);
     private static final BlockPos CAVENIC_SHEAR_ANCHOR = new BlockPos(1120, 96, 0);
+    private static final BlockPos CAVENIC_BOW_MODE_ANCHOR = new BlockPos(1216, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -435,6 +439,41 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBowModeStateCyclesAndPersistsAtRuntime(GameTestHelper helper) {
+        CavenicBowItem bowItem = (CavenicBowItem) ModRegistries.CAVENIC_BOW.get();
+        ItemStack bow = cavenicBow();
+
+        helper.assertTrue(bowItem.getMode(bow) == CavenicBowMode.NORMAL, "New cavenic bow stacks must default to NORMAL mode");
+        helper.assertTrue(bowItem.cycleMode(bow) == CavenicBowMode.RAPID, "Expected NORMAL to cycle into RAPID");
+        helper.assertTrue(bowItem.getMode(bow) == CavenicBowMode.RAPID, "Expected RAPID mode to persist on the stack");
+        helper.assertTrue(bowItem.cycleMode(bow) == CavenicBowMode.SNIPE, "Expected RAPID to cycle into SNIPE");
+        helper.assertTrue(bowItem.cycleMode(bow) == CavenicBowMode.TORCH, "Expected SNIPE to cycle into TORCH");
+        helper.assertTrue(bowItem.cycleMode(bow) == CavenicBowMode.NORMAL, "Expected TORCH to wrap back to NORMAL");
+        helper.assertTrue(bowItem.getMode(bow) == CavenicBowMode.NORMAL, "Expected wrapped NORMAL mode to persist on the stack");
+        helper.assertTrue(bow.getDamageValue() == 0, "Mode cycling must not damage the cavenic bow");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBowSneakUseCyclesModeWithoutArrows(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_BOW_MODE_ANCHOR;
+        Player player = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), origin);
+        CavenicBowItem bowItem = (CavenicBowItem) player.getMainHandItem().getItem();
+
+        player.setShiftKeyDown(true);
+        InteractionResultHolder<ItemStack> result = bowItem.use(level, player, InteractionHand.MAIN_HAND);
+        player.setShiftKeyDown(false);
+
+        helper.assertTrue(result.getResult().consumesAction(), "Sneak + use should consume the interaction for mode cycling");
+        helper.assertTrue(bowItem.getMode(player.getMainHandItem()) == CavenicBowMode.RAPID, "Sneak + use must cycle the cavenic bow mode");
+        helper.assertTrue(player.getMainHandItem().getDamageValue() == 0, "Sneak + use must not damage the bow");
+        helper.assertTrue(!player.isUsingItem(), "Sneak + use must not start the vanilla draw path");
+        helper.assertTrue(itemIdsAround(level, origin, 6.0D).stream().noneMatch(id -> id.equals("minecraft:arrow")), "Mode cycling must not create or consume arrows");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void cavenicBowSupportsExpectedEnchantments(GameTestHelper helper) {
         HolderLookup.RegistryLookup<Enchantment> enchantments = helper.getLevel().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
         ItemStack bow = cavenicBow();
@@ -505,12 +544,13 @@ public final class CavernSpecialOreGameTests {
         LivingEntity nearbyHostile = spawnLivingEntity(helper, EntityType.ZOMBIE, new BlockPos(4, 1, 1));
         LivingEntity nearbyPassive = spawnLivingEntity(helper, EntityType.COW, new BlockPos(4, 1, 2));
         LivingEntity distantHostile = spawnLivingEntity(helper, EntityType.ZOMBIE, new BlockPos(7, 1, 1));
-        float primaryHealth = primary.getHealth();
-        float nearbyHostileHealth = nearbyHostile.getHealth();
-        float nearbyPassiveHealth = nearbyPassive.getHealth();
-        float distantHostileHealth = distantHostile.getHealth();
 
         helper.runAfterDelay(2, () -> {
+            float primaryHealth = primary.getHealth();
+            float nearbyHostileHealth = nearbyHostile.getHealth();
+            float nearbyPassiveHealth = nearbyPassive.getHealth();
+            float distantHostileHealth = distantHostile.getHealth();
+
             axe.getItem().postHurtEnemy(axe, primary, player);
 
             helper.assertTrue(primary.getHealth() == primaryHealth, "Cavenic axe smash must not damage the primary target twice");
