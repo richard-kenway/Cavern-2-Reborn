@@ -4,6 +4,7 @@ import com.richardkenway.cavernreborn.CavernReborn;
 import com.richardkenway.cavernreborn.app.block.AcresiaCropBlock;
 import com.richardkenway.cavernreborn.app.block.CavenicShroomBlock;
 import com.richardkenway.cavernreborn.app.block.CavernPortalBlock;
+import com.richardkenway.cavernreborn.app.entity.CavenicZombie;
 import com.richardkenway.cavernreborn.app.block.FissuredStoneBlock;
 import com.richardkenway.cavernreborn.app.item.CavenicAxeItem;
 import com.richardkenway.cavernreborn.app.item.CavenicBowItem;
@@ -11,7 +12,10 @@ import com.richardkenway.cavernreborn.app.item.CavenicSwordItem;
 import com.richardkenway.cavernreborn.app.item.OreCompassItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BlockItem;
@@ -29,6 +33,7 @@ import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -37,6 +42,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 public final class ModRegistries {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(CavernReborn.MOD_ID);
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(CavernReborn.MOD_ID);
+    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(Registries.ENTITY_TYPE, CavernReborn.MOD_ID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, CavernReborn.MOD_ID);
 
     public static final DeferredBlock<Block> BOOTSTRAP_BLOCK = BLOCKS.register("bootstrap_block",
@@ -97,6 +103,16 @@ public final class ModRegistries {
         "acresia_fruits",
         () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(2).saturationModifier(0.1F).build()))
     );
+    public static final DeferredHolder<EntityType<?>, EntityType<CavenicZombie>> CAVENIC_ZOMBIE = ENTITY_TYPES.register(
+        "cavenic_zombie",
+        () -> EntityType.Builder.of(CavenicZombie::new, MobCategory.MONSTER)
+            .sized(0.6F, 1.95F)
+            .eyeHeight(1.74F)
+            .passengerAttachments(2.0125F)
+            .ridingOffset(-0.7F)
+            .clientTrackingRange(8)
+            .build(ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "cavenic_zombie").toString())
+    );
     public static final DeferredItem<Item> MINER_ORB = ITEMS.register("miner_orb", () -> new Item(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<Item> CAVENIC_ORB = ITEMS.register("cavenic_orb", () -> new Item(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<Item> CAVENIC_SWORD = ITEMS.register("cavenic_sword",
@@ -112,6 +128,10 @@ public final class ModRegistries {
             new Item.Properties()
                 .durability(ModToolTiers.CAVENIC.getUses())
                 .stacksTo(1)));
+    public static final DeferredItem<Item> CAVENIC_ZOMBIE_SPAWN_EGG = ITEMS.register(
+        "cavenic_zombie_spawn_egg",
+        () -> new DeferredSpawnEggItem(() -> CAVENIC_ZOMBIE.get(), 0xAAAAAA, 0x00A0A0, new Item.Properties())
+    );
     public static final DeferredItem<Item> ORE_COMPASS = ITEMS.register(
         "ore_compass",
         () -> new OreCompassItem(new Item.Properties().stacksTo(1))
@@ -242,6 +262,7 @@ public final class ModRegistries {
                 output.accept(CAVENIC_SWORD.get());
                 output.accept(CAVENIC_AXE.get());
                 output.accept(CAVENIC_BOW.get());
+                output.accept(CAVENIC_ZOMBIE_SPAWN_EGG.get());
                 output.accept(ORE_COMPASS.get());
                 output.accept(HEXCITE_PICKAXE.get());
                 output.accept(HEXCITE_AXE.get());
@@ -262,6 +283,7 @@ public final class ModRegistries {
         ModArmorMaterials.register(modEventBus);
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
+        ENTITY_TYPES.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
     }
 }

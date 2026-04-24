@@ -164,7 +164,7 @@ public final class CavenicBowItem extends BowItem {
                 markTorchShot = false;
             }
 
-            ShotContext shotContext = new ShotContext(shotPower, markTorchShot);
+            ShotContext shotContext = new ShotContext(shotPower, markTorchShot, livingEntity);
             CURRENT_SHOT_CONTEXT.set(shotContext);
             try {
                 shoot(
@@ -206,6 +206,9 @@ public final class CavenicBowItem extends BowItem {
         AbstractArrow customizedArrow = super.customArrow(arrow, projectileStack, weaponStack);
         ShotContext shotContext = CURRENT_SHOT_CONTEXT.get();
         if (shotContext != null) {
+            if (shotContext.shooter() != null) {
+                customizedArrow.setOwner(shotContext.shooter());
+            }
             if (shotContext.markTorchShot()) {
                 markTorchArrow(customizedArrow);
             }
@@ -254,6 +257,6 @@ public final class CavenicBowItem extends BowItem {
         return ItemStack.EMPTY;
     }
 
-    private record ShotContext(float power, boolean markTorchShot) {
+    private record ShotContext(float power, boolean markTorchShot, LivingEntity shooter) {
     }
 }

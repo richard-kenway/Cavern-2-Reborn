@@ -14,6 +14,7 @@ import com.richardkenway.cavernreborn.app.compass.OreCompassStateAccess;
 import com.richardkenway.cavernreborn.app.compass.OreCompassScanner;
 import com.richardkenway.cavernreborn.app.compass.OreCompassTarget;
 import com.richardkenway.cavernreborn.app.compass.StoredOreCompassTarget;
+import com.richardkenway.cavernreborn.app.entity.CavenicZombie;
 import com.richardkenway.cavernreborn.app.item.CavenicBowTorchEvents;
 import com.richardkenway.cavernreborn.app.item.CavenicBowItem;
 import com.richardkenway.cavernreborn.app.item.OreCompassItem;
@@ -65,8 +66,13 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.RelativeMovement;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.InteractionHand;
@@ -79,6 +85,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -128,6 +135,8 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_BOW_RAPID_ANCHOR = new BlockPos(1408, 96, 0);
     private static final BlockPos CAVENIC_BOW_TORCH_ANCHOR = new BlockPos(1504, 96, 0);
     private static final BlockPos CAVENIC_BOW_RELEASE_ANCHOR = new BlockPos(1600, 96, 0);
+    private static final BlockPos CAVENIC_ZOMBIE_ANCHOR = new BlockPos(1696, 96, 0);
+    private static final BlockPos CAVENIC_ZOMBIE_SPAWN_EGG_ANCHOR = new BlockPos(1792, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -380,6 +389,65 @@ public final class CavernSpecialOreGameTests {
             biomes.containsKey(ResourceKey.create(Registries.BIOME, ResourceLocation.parse("cavernreborn:stone_depths"))),
             "Expected stone_depths biome key to resolve at runtime with cavenic shroom patch wiring"
         );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicZombieRegistersAtRuntime(GameTestHelper helper) {
+        helper.assertTrue(ModRegistries.CAVENIC_ZOMBIE.get() != null, "Missing cavenic zombie entity type");
+        helper.assertTrue(ModRegistries.CAVENIC_ZOMBIE_SPAWN_EGG.get() != null, "Missing cavenic zombie spawn egg");
+
+        assertRegistryId(helper, ModRegistries.CAVENIC_ZOMBIE.get(), "cavernreborn:cavenic_zombie");
+        assertRegistryId(helper, ModRegistries.CAVENIC_ZOMBIE_SPAWN_EGG.get(), "cavernreborn:cavenic_zombie_spawn_egg");
+
+        ItemStack spawnEgg = cavenicZombieSpawnEgg();
+        helper.assertTrue(!spawnEgg.isEmpty(), "Expected cavenic zombie spawn egg to be constructible");
+        helper.assertTrue(spawnEgg.getItem() instanceof SpawnEggItem, "Expected cavenic zombie spawn egg runtime item");
+        helper.assertTrue(
+            ((SpawnEggItem) spawnEgg.getItem()).spawnsEntity(spawnEgg, ModRegistries.CAVENIC_ZOMBIE.get()),
+            "Expected cavenic zombie spawn egg to resolve the cavenic zombie entity type"
+        );
+        helper.assertTrue(
+            ModRegistries.CAVENIC_ZOMBIE.get().getCategory() == MobCategory.MONSTER,
+            "Expected cavenic zombie type category to stay MONSTER"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicZombieSpawnsWithExpectedAttributesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_ZOMBIE_ANCHOR;
+
+        resetMiningArea(level, origin, 8.0D);
+        CavenicZombie zombie = spawnLivingEntity(helper, ModRegistries.CAVENIC_ZOMBIE.get(), origin);
+
+        helper.assertTrue(zombie instanceof Monster, "Expected cavenic zombie to remain a hostile monster");
+        helper.assertTrue(zombie instanceof Zombie, "Expected cavenic zombie to keep vanilla zombie behavior");
+        helper.assertTrue(zombie.getType().getCategory() == MobCategory.MONSTER, "Expected cavenic zombie type category to stay MONSTER");
+        helper.assertTrue(Math.abs(zombie.getMaxHealth() - 50.0D) < 1.0E-6D, "Expected cavenic zombie max health to map to legacy 50.0");
+        helper.assertTrue(Math.abs(zombie.getAttributeValue(Attributes.MAX_HEALTH) - 50.0D) < 1.0E-6D, "Expected cavenic zombie MAX_HEALTH attribute to be 50.0");
+        helper.assertTrue(Math.abs(zombie.getAttributeValue(Attributes.MOVEMENT_SPEED) - 0.23D) < 1.0E-6D, "Expected cavenic zombie movement speed to keep the vanilla zombie baseline");
+        helper.assertTrue(Math.abs(zombie.getAttributeValue(Attributes.FOLLOW_RANGE) - 50.0D) < 1.0E-6D, "Expected cavenic zombie follow range to map to legacy 50.0");
+        helper.assertTrue(Math.abs(zombie.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) - 1.0D) < 1.0E-6D, "Expected cavenic zombie knockback resistance to map to legacy 1.0");
+        helper.assertTrue(Math.abs(zombie.getAttributeValue(Attributes.ATTACK_DAMAGE) - 5.0D) < 1.0E-6D, "Expected cavenic zombie attack damage to map to legacy 5.0");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicZombieSpawnEggCreatesRuntimeEntity(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos supportPos = CAVENIC_ZOMBIE_SPAWN_EGG_ANCHOR;
+
+        resetMiningArea(level, supportPos, 8.0D);
+        level.setBlock(supportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+
+        ItemStack spawnEgg = cavenicZombieSpawnEgg();
+        Player player = makeMockPlayer(helper, level, GameType.SURVIVAL, spawnEgg.copy(), supportPos.south(2));
+        Entity spawnedEntity = ModRegistries.CAVENIC_ZOMBIE.get().spawn(level, spawnEgg, player, supportPos.above(), MobSpawnType.SPAWN_EGG, true, true);
+
+        helper.assertTrue(spawnedEntity instanceof CavenicZombie, "Expected spawn egg to create a CavenicZombie runtime entity");
+        helper.assertTrue(spawnedEntity != null && spawnedEntity.isAlive(), "Expected spawned cavenic zombie to be alive");
         helper.succeed();
     }
 
@@ -2218,6 +2286,10 @@ public final class CavernSpecialOreGameTests {
         return new ItemStack(ModRegistries.CAVENIC_BOW.get());
     }
 
+    private static ItemStack cavenicZombieSpawnEgg() {
+        return new ItemStack(ModRegistries.CAVENIC_ZOMBIE_SPAWN_EGG.get());
+    }
+
     private static AbstractArrow createRuntimeArrow(ServerLevel level, Player player, ItemStack bow) {
         return ((ArrowItem) Items.ARROW).createArrow(level, new ItemStack(Items.ARROW), player, bow);
     }
@@ -2435,6 +2507,11 @@ public final class CavernSpecialOreGameTests {
     private static void assertRegistryId(GameTestHelper helper, Item item, String expectedId) {
         ResourceLocation actual = BuiltInRegistries.ITEM.getKey(item);
         helper.assertTrue(expectedId.equals(actual.toString()), "Expected item id " + expectedId + " but got " + actual);
+    }
+
+    private static void assertRegistryId(GameTestHelper helper, EntityType<?> entityType, String expectedId) {
+        ResourceLocation actual = BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
+        helper.assertTrue(expectedId.equals(actual.toString()), "Expected entity type id " + expectedId + " but got " + actual);
     }
 
     private static void assertSupportsEnchantment(GameTestHelper helper, ItemStack stack, Holder<Enchantment> enchantment, boolean expected) {

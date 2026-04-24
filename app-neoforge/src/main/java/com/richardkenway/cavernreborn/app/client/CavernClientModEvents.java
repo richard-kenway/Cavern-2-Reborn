@@ -2,6 +2,7 @@ package com.richardkenway.cavernreborn.app.client;
 
 import com.richardkenway.cavernreborn.CavernReborn;
 import com.richardkenway.cavernreborn.app.compass.OreCompassClientAngleResolver;
+import com.richardkenway.cavernreborn.app.client.renderer.CavenicZombieRenderer;
 import com.richardkenway.cavernreborn.app.dimension.CavernNeoForgeDimensions;
 import com.richardkenway.cavernreborn.app.registry.ModRegistries;
 
@@ -11,6 +12,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
 
 @EventBusSubscriber(modid = CavernReborn.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -23,6 +25,11 @@ public final class CavernClientModEvents {
     @SubscribeEvent
     public static void registerDimensionSpecialEffects(RegisterDimensionSpecialEffectsEvent event) {
         event.register(CavernNeoForgeDimensions.CAVERN_LOCATION, new CavernDimensionSpecialEffects());
+    }
+
+    @SubscribeEvent
+    public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(ModRegistries.CAVENIC_ZOMBIE.get(), CavenicZombieRenderer::new);
     }
 
     @SubscribeEvent
