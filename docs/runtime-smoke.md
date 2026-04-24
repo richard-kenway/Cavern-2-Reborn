@@ -1,6 +1,6 @@
 # Runtime Smoke
 
-This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the bounded `Acresia Crop & Food MVP`, the bounded `Cavenic Shroom & Orb MVP`, the bounded Aquamarine Utility Tools MVP, the bounded Magnite Tool Set MVP, the bounded `Magnite Armor MVP`, the follow-up `hexcite` tool-set MVP, the bounded `Hexcite Armor MVP`, the bounded Mining Assist slice, the first Miner's Orb MVP and the Ore Compass MVP plus tracking UX follow-up.
+This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the bounded `Acresia Crop & Food MVP`, the bounded `Cavenic Shroom & Orb MVP`, the bounded Cavenic Melee MVP, the bounded Aquamarine Utility Tools MVP, the bounded Magnite Tool Set MVP, the bounded `Magnite Armor MVP`, the follow-up `hexcite` tool-set MVP, the bounded `Hexcite Armor MVP`, the bounded Mining Assist slice, the first Miner's Orb MVP and the Ore Compass MVP plus tracking UX follow-up.
 
 It is intentionally a NeoForge GameTest server pass, not a visual client smoke pass.
 
@@ -19,6 +19,12 @@ NeoForge GameTest runtime smoke covers:
 - cavenic shroom bounded collision nausea
 - cavenic shroom bounded shear-harvest helper wiring
 - cavenic orb drop policy/runtime smoke
+- cavenic sword and cavenic axe runtime registry ids
+- cavenic sword and cavenic axe repairability with `cavernreborn:cavenic_orb`
+- cavenic sword and cavenic axe cavenic item tag resolution
+- cavenic sword and cavenic axe recipe manager resolution
+- bounded cavenic sword cooldown-reset runtime smoke
+- bounded cavenic axe hostile-nearby-target runtime smoke
 - cavenic shroom worldgen configured/placed key resolution
 - aquamarine tool runtime registry ids
 - aquamarine tool repairability with `cavernreborn:aquamarine`
@@ -72,6 +78,7 @@ NeoForge GameTest runtime smoke covers:
 - actual worn magnite armor appearance on a player or mob
 - actual Acresia in-world farming feel and growth cadence
 - actual Cavenic Shroom hazard feel, sparse spread feel and harvest feel
+- actual Cavenic Sword and Cavenic Axe visual/client combat feel
 - actual underwater aquamarine mining feel
 - actual brittle magnite mining feel
 - particle and sound feel

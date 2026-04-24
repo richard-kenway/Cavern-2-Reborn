@@ -5,6 +5,8 @@ import com.richardkenway.cavernreborn.app.block.AcresiaCropBlock;
 import com.richardkenway.cavernreborn.app.block.CavenicShroomBlock;
 import com.richardkenway.cavernreborn.app.block.CavernPortalBlock;
 import com.richardkenway.cavernreborn.app.block.FissuredStoneBlock;
+import com.richardkenway.cavernreborn.app.item.CavenicAxeItem;
+import com.richardkenway.cavernreborn.app.item.CavenicSwordItem;
 import com.richardkenway.cavernreborn.app.item.OreCompassItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -96,6 +98,14 @@ public final class ModRegistries {
     );
     public static final DeferredItem<Item> MINER_ORB = ITEMS.register("miner_orb", () -> new Item(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<Item> CAVENIC_ORB = ITEMS.register("cavenic_orb", () -> new Item(new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<Item> CAVENIC_SWORD = ITEMS.register("cavenic_sword",
+        () -> new CavenicSwordItem(
+            ModToolTiers.CAVENIC,
+            new Item.Properties().attributes(SwordItem.createAttributes(ModToolTiers.CAVENIC, 3, -2.4F))));
+    public static final DeferredItem<Item> CAVENIC_AXE = ITEMS.register("cavenic_axe",
+        () -> new CavenicAxeItem(
+            ModToolTiers.CAVENIC,
+            new Item.Properties().attributes(AxeItem.createAttributes(ModToolTiers.CAVENIC, 5.0F, -3.0F))));
     public static final DeferredItem<Item> ORE_COMPASS = ITEMS.register(
         "ore_compass",
         () -> new OreCompassItem(new Item.Properties().stacksTo(1))
@@ -223,6 +233,8 @@ public final class ModRegistries {
                 output.accept(CAVENIC_SHROOM_ITEM.get());
                 output.accept(MINER_ORB.get());
                 output.accept(CAVENIC_ORB.get());
+                output.accept(CAVENIC_SWORD.get());
+                output.accept(CAVENIC_AXE.get());
                 output.accept(ORE_COMPASS.get());
                 output.accept(HEXCITE_PICKAXE.get());
                 output.accept(HEXCITE_AXE.get());

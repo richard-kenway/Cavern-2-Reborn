@@ -23,6 +23,10 @@ public final class ModToolTiers {
         Registries.BLOCK,
         ResourceLocation.parse(CavernReborn.MOD_ID + ":incorrect_for_hexcite_tool")
     );
+    public static final TagKey<Block> INCORRECT_FOR_CAVENIC_TOOL = TagKey.create(
+        Registries.BLOCK,
+        ResourceLocation.parse(CavernReborn.MOD_ID + ":incorrect_for_cavenic_tool")
+    );
 
     public static final Tier AQUAMARINE = new SimpleTier(
         INCORRECT_FOR_AQUAMARINE_TOOL,
@@ -49,6 +53,15 @@ public final class ModToolTiers {
         3.0F,
         18,
         () -> Ingredient.of(ModRegistries.HEXCITE.get())
+    );
+
+    public static final Tier CAVENIC = new SimpleTier(
+        INCORRECT_FOR_CAVENIC_TOOL,
+        278,
+        7.0F,
+        2.5F,
+        30,
+        () -> Ingredient.of(ModRegistries.CAVENIC_ORB.get())
     );
 
     private ModToolTiers() {

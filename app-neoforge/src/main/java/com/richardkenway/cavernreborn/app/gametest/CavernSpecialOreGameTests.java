@@ -56,6 +56,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -360,6 +361,103 @@ public final class CavernSpecialOreGameTests {
             "Expected stone_depths biome key to resolve at runtime with cavenic shroom patch wiring"
         );
         helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicMeleeRegistersAtRuntime(GameTestHelper helper) {
+        helper.assertTrue(ModRegistries.CAVENIC_SWORD.get() != null, "Missing cavenic sword");
+        helper.assertTrue(ModRegistries.CAVENIC_AXE.get() != null, "Missing cavenic axe");
+
+        assertRegistryId(helper, ModRegistries.CAVENIC_SWORD.get(), "cavernreborn:cavenic_sword");
+        assertRegistryId(helper, ModRegistries.CAVENIC_AXE.get(), "cavernreborn:cavenic_axe");
+
+        ItemStack sword = cavenicSword();
+        ItemStack axe = cavenicAxe();
+        helper.assertTrue(!sword.isEmpty(), "Expected cavenic sword stack to be constructible");
+        helper.assertTrue(!axe.isEmpty(), "Expected cavenic axe stack to be constructible");
+        helper.assertTrue(sword.isDamageableItem(), "Expected cavenic sword to be damageable");
+        helper.assertTrue(axe.isDamageableItem(), "Expected cavenic axe to be damageable");
+        helper.assertTrue(sword.getMaxDamage() == ModToolTiers.CAVENIC.getUses(), "Unexpected cavenic sword durability");
+        helper.assertTrue(axe.getMaxDamage() == ModToolTiers.CAVENIC.getUses(), "Unexpected cavenic axe durability");
+        helper.assertTrue(sword.is(ModItemTags.CAVENIC_ITEMS), "Expected cavenic sword to resolve through cavenic_items");
+        helper.assertTrue(axe.is(ModItemTags.CAVENIC_ITEMS), "Expected cavenic axe to resolve through cavenic_items");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicMeleeRepairAndRecipesResolveAtRuntime(GameTestHelper helper) {
+        ItemStack repairStack = cavenicOrb();
+        ItemStack wrongRepairStack = new ItemStack(Items.STICK);
+        List<ItemStack> tools = List.of(cavenicSword(), cavenicAxe());
+
+        for (ItemStack tool : tools) {
+            helper.assertTrue(tool.getItem().isValidRepairItem(tool, repairStack), "Expected cavenic_orb repair support for " + itemId(tool));
+            helper.assertFalse(tool.getItem().isValidRepairItem(tool, wrongRepairStack), "Stick must not repair " + itemId(tool));
+        }
+
+        helper.assertTrue(
+            helper.getLevel().getRecipeManager().byKey(ResourceLocation.parse("cavernreborn:cavenic_sword")).isPresent(),
+            "Expected runtime recipe manager to resolve cavenic_sword"
+        );
+        helper.assertTrue(
+            helper.getLevel().getRecipeManager().byKey(ResourceLocation.parse("cavernreborn:cavenic_axe")).isPresent(),
+            "Expected runtime recipe manager to resolve cavenic_axe"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicSwordCooldownResetRuntimeSmoke(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos playerPos = helper.absolutePos(new BlockPos(1, 1, 1));
+
+        helper.killAllEntities();
+        ItemStack sword = cavenicSword();
+        Player player = makeMockPlayer(helper, level, GameType.SURVIVAL, sword, playerPos);
+        LivingEntity target = spawnLivingEntity(helper, EntityType.ZOMBIE, new BlockPos(3, 1, 1));
+        target.invulnerableTime = 12;
+        target.hurtTime = 6;
+        target.hurtDuration = 6;
+
+        sword.getItem().postHurtEnemy(sword, target, player);
+
+        helper.assertTrue(target.invulnerableTime == 0, "Expected cavenic sword to reset target invulnerability cooldown");
+        helper.assertTrue(target.hurtTime == 0, "Expected cavenic sword to reset target hurt cooldown");
+        helper.assertTrue(target.hurtDuration == 0, "Expected cavenic sword to reset target hurt duration");
+        helper.assertTrue(sword.getDamageValue() == 1, "Expected cavenic sword to take one durability when reset applies");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicAxeSmashRuntimeSmoke(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos playerPos = helper.absolutePos(new BlockPos(1, 1, 1));
+
+        helper.killAllEntities();
+        ItemStack axe = cavenicAxe();
+        Player player = makeMockPlayer(helper, level, GameType.SURVIVAL, axe, playerPos);
+        LivingEntity primary = spawnLivingEntity(helper, EntityType.ZOMBIE, new BlockPos(3, 1, 1));
+        LivingEntity nearbyHostile = spawnLivingEntity(helper, EntityType.ZOMBIE, new BlockPos(4, 1, 1));
+        LivingEntity nearbyPassive = spawnLivingEntity(helper, EntityType.COW, new BlockPos(4, 1, 2));
+        LivingEntity distantHostile = spawnLivingEntity(helper, EntityType.ZOMBIE, new BlockPos(7, 1, 1));
+        float primaryHealth = primary.getHealth();
+        float nearbyHostileHealth = nearbyHostile.getHealth();
+        float nearbyPassiveHealth = nearbyPassive.getHealth();
+        float distantHostileHealth = distantHostile.getHealth();
+
+        helper.runAfterDelay(2, () -> {
+            axe.getItem().postHurtEnemy(axe, primary, player);
+
+            helper.assertTrue(primary.getHealth() == primaryHealth, "Cavenic axe smash must not damage the primary target twice");
+            helper.assertTrue(
+                nearbyHostile.getHealth() < nearbyHostileHealth,
+                "Expected cavenic axe smash to damage a nearby hostile mob"
+            );
+            helper.assertTrue(nearbyPassive.getHealth() == nearbyPassiveHealth, "Cavenic axe smash must not damage nearby passive mobs");
+            helper.assertTrue(distantHostile.getHealth() == distantHostileHealth, "Cavenic axe smash must respect the bounded radius");
+            helper.assertTrue(axe.getDamageValue() >= 1 && axe.getDamageValue() <= 3, "Cavenic axe durability cost must stay bounded");
+            helper.succeed();
+        });
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
@@ -1553,6 +1651,14 @@ public final class CavernSpecialOreGameTests {
         return new ItemStack(ModRegistries.CAVENIC_ORB.get());
     }
 
+    private static ItemStack cavenicSword() {
+        return new ItemStack(ModRegistries.CAVENIC_SWORD.get());
+    }
+
+    private static ItemStack cavenicAxe() {
+        return new ItemStack(ModRegistries.CAVENIC_AXE.get());
+    }
+
     private static ItemStack aquamarineAxe() {
         return new ItemStack(ModRegistries.AQUAMARINE_AXE.get());
     }
@@ -1709,6 +1815,12 @@ public final class CavernSpecialOreGameTests {
         player.setItemInHand(InteractionHand.MAIN_HAND, tool);
         player.teleportTo(level, origin.getX() + 0.5D, origin.getY() + 1.0D, origin.getZ() + 0.5D, EnumSet.noneOf(RelativeMovement.class), 0.0F, 0.0F);
         return player;
+    }
+
+    private static <T extends LivingEntity> T spawnLivingEntity(GameTestHelper helper, EntityType<T> type, BlockPos pos) {
+        T entity = helper.spawn(type, pos);
+        helper.assertTrue(entity.isAlive(), "Expected spawned entity to be alive: " + BuiltInRegistries.ENTITY_TYPE.getKey(type));
+        return entity;
     }
 
 

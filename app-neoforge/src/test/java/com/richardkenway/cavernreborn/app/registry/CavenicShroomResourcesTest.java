@@ -122,7 +122,9 @@ class CavenicShroomResourcesTest {
         assertEquals(cavenicItemValues, arrayStrings(cavenicItemsCompatTag.getAsJsonArray("values")));
         assertEquals(List.of(
             "cavernreborn:cavenic_shroom",
-            "cavernreborn:cavenic_orb"
+            "cavernreborn:cavenic_orb",
+            "cavernreborn:cavenic_sword",
+            "cavernreborn:cavenic_axe"
         ), cavenicItemValues);
 
         List<String> placeableValues = arrayStrings(placeableTag.getAsJsonArray("values"));
