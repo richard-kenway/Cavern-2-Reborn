@@ -62,8 +62,8 @@ It does not add a new mob. It only makes the already registered `cavernreborn:ca
 
 ## Still Out Of Scope
 
-- custom loot remains out of scope
-- `cavenic_orb` mob drops remain out of scope
+- custom loot was out of scope in this natural-spawn slice and is now documented separately in `docs/cavenic-zombie-orb-drop-mvp.md`
+- `cavenic_orb` mob drops were out of scope for this natural-spawn slice
 - custom AI remains out of scope
 - additional Cavenic mobs remain out of scope
 - Cavenia remains out of scope

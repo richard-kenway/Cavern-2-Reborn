@@ -31,6 +31,12 @@ class CavenicZombieResourcesTest {
         String entityEventSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModEntityEvents.java"
         );
+        String dropEventSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "CavenicZombieLootEvents.java"
+        );
+        String mainEntrypoint = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "CavernReborn.java"
+        );
         String clientSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "client", "CavernClientModEvents.java"
         );
@@ -67,6 +73,8 @@ class CavenicZombieResourcesTest {
         assertTrue(entitySource.contains("CavernNeoForgeDimensions.isCavern"));
         assertTrue(entitySource.contains("Monster.checkMonsterSpawnRules"));
         assertTrue(entitySource.contains("return EntityType.ZOMBIE.getDefaultLootTable();"));
+        assertFalse(entitySource.contains("entities/cavenic_zombie"));
+        assertFalse(entitySource.contains("cavenic_orb"));
 
         assertTrue(entityEventSource.contains("EntityAttributeCreationEvent"));
         assertTrue(entityEventSource.contains("event.put(ModRegistries.CAVENIC_ZOMBIE.get(), CavenicZombie.createAttributes().build())"));
@@ -75,6 +83,16 @@ class CavenicZombieResourcesTest {
         assertTrue(entityEventSource.contains("Heightmap.Types.MOTION_BLOCKING_NO_LEAVES"));
         assertTrue(entityEventSource.contains("CavenicZombie::checkCavenicZombieSpawnRules"));
         assertTrue(entityEventSource.contains("RegisterSpawnPlacementsEvent.Operation.REPLACE"));
+        assertTrue(mainEntrypoint.contains("NeoForge.EVENT_BUS.register(new CavenicZombieLootEvents());"));
+        assertTrue(dropEventSource.contains("LivingDropsEvent"));
+        assertTrue(dropEventSource.contains("event.getEntity() instanceof CavenicZombie zombie"));
+        assertTrue(dropEventSource.contains("CavenicZombieLootPolicy.ORB_DROP_ROLL_BOUND"));
+        assertTrue(dropEventSource.contains("CavenicZombieLootPolicy.shouldDropOrb(orbRoll)"));
+        assertTrue(dropEventSource.contains("new ItemStack(ModRegistries.CAVENIC_ORB.get())"));
+        assertTrue(dropEventSource.contains("zombie.getY() + 0.5D"));
+        assertFalse(dropEventSource.contains("EntityRapidArrow"));
+        assertFalse(dropEventSource.contains("EntityTorchArrow"));
+        assertFalse(dropEventSource.toLowerCase().contains("economy"));
 
         assertTrue(clientSource.contains("event.registerEntityRenderer(ModRegistries.CAVENIC_ZOMBIE.get(), CavenicZombieRenderer::new);"));
         assertTrue(rendererSource.contains("extends ZombieRenderer"));
@@ -126,6 +144,7 @@ class CavenicZombieResourcesTest {
         assertClassPathOrigin(resourceUrl("data/cavernreborn/neoforge/biome_modifier/cavenic_zombie_spawns.json"), "data/cavernreborn/neoforge/biome_modifier/cavenic_zombie_spawns.json");
         assertClassPathOrigin(resourceUrl("data/cavernreborn/tags/worldgen/biome/spawns_cavenic_zombie.json"), "data/cavernreborn/tags/worldgen/biome/spawns_cavenic_zombie.json");
         assertMissingResource("data/cavernreborn/loot_table/entities/cavenic_zombie.json");
+        assertMissingResource("data/cavernreborn/loot_tables/entities/cavenic_zombie.json");
     }
 
     private static boolean generatedResourcesContain(String needle) throws IOException {

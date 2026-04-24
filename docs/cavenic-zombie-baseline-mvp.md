@@ -50,8 +50,9 @@ The legacy repo contains a direct `EntityCavenicZombie`, so this increment keeps
 ## Loot Decision
 
 - Legacy `EntityCavenicZombie` also dropped `cavenic_orb` with a `1/8` chance and included extra fall/fire damage behavior.
-- Reborn intentionally does not port those extra combat or orb-drop rules in this baseline entity slice.
-- The bounded baseline reuses the vanilla zombie loot table so the mob has safe hostile drops without dragging in broader Cavenic progression balance yet.
+- Reborn intentionally did not port those extra combat or orb-drop rules in the first baseline entity slice.
+- The bounded baseline reuses the vanilla zombie loot table as its base drop source so the mob has safe hostile drops without dragging in broader Cavenic progression balance yet.
+- Legacy orb-drop parity is now documented separately in `docs/cavenic-zombie-orb-drop-mvp.md`.
 
 ## Natural Spawning
 

@@ -1,5 +1,6 @@
 package com.richardkenway.cavernreborn.app.gametest;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import com.richardkenway.cavernreborn.app.compass.OreCompassTarget;
 import com.richardkenway.cavernreborn.app.compass.StoredOreCompassTarget;
 import com.richardkenway.cavernreborn.app.dimension.CavernNeoForgeDimensions;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombie;
+import com.richardkenway.cavernreborn.app.entity.CavenicZombieLootEvents;
 import com.richardkenway.cavernreborn.app.item.CavenicBowTorchEvents;
 import com.richardkenway.cavernreborn.app.item.CavenicBowItem;
 import com.richardkenway.cavernreborn.app.item.OreCompassItem;
@@ -38,6 +40,7 @@ import com.richardkenway.cavernreborn.core.compass.OreCompassTrackingPolicy;
 import com.richardkenway.cavernreborn.core.compass.OreCompassTrackingResult;
 import com.richardkenway.cavernreborn.core.flora.CavenicOrbDropPolicy;
 import com.richardkenway.cavernreborn.core.farming.AcresiaHarvestPolicy;
+import com.richardkenway.cavernreborn.core.loot.CavenicZombieLootPolicy;
 import com.richardkenway.cavernreborn.core.mining.AquamarineAquaToolDecision;
 import com.richardkenway.cavernreborn.core.mining.AquamarineAquaToolPolicy;
 import com.richardkenway.cavernreborn.core.mining.AquamarineAquaToolResult;
@@ -146,6 +149,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_ZOMBIE_ANCHOR = new BlockPos(1696, 96, 0);
     private static final BlockPos CAVENIC_ZOMBIE_SPAWN_EGG_ANCHOR = new BlockPos(1792, 96, 0);
     private static final BlockPos CAVENIC_ZOMBIE_NATURAL_SPAWN_ANCHOR = new BlockPos(1888, 96, 0);
+    private static final BlockPos CAVENIC_ZOMBIE_LOOT_ANCHOR = new BlockPos(1984, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -521,6 +525,45 @@ public final class CavernSpecialOreGameTests {
                 "cavernreborn:highland_hollows"
             )),
             "Expected cavenic zombie natural-spawn tag to stay scoped to the four CAVERN biomes"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicZombieLegacyOrbDropWiresAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_ZOMBIE_LOOT_ANCHOR;
+        CavenicZombieLootEvents lootEvents = new CavenicZombieLootEvents();
+        List<ItemEntity> drops = new ArrayList<>();
+
+        resetMiningArea(level, origin, 8.0D);
+        CavenicZombie zombie = spawnLivingEntity(helper, ModRegistries.CAVENIC_ZOMBIE.get(), origin);
+
+        helper.assertTrue(
+            zombie.getLootTable().equals(EntityType.ZOMBIE.getDefaultLootTable()),
+            "Expected cavenic zombie to keep the vanilla zombie loot table as its baseline"
+        );
+        helper.assertTrue(
+            CavenicZombieLootPolicy.ORB_DROP_ROLL_BOUND == 8,
+            "Expected cavenic zombie orb drop roll bound to stay pinned to the legacy 1/8 chance"
+        );
+        helper.assertFalse(
+            lootEvents.tryAppendLegacyOrbDrop(zombie, drops, 1),
+            "Non-winning orb roll must not append a cavenic orb drop"
+        );
+        helper.assertTrue(drops.isEmpty(), "Non-winning orb roll must leave the drop list unchanged");
+        helper.assertTrue(
+            lootEvents.tryAppendLegacyOrbDrop(zombie, drops, 0),
+            "Winning orb roll must append a cavenic orb drop"
+        );
+        helper.assertTrue(drops.size() == 1, "Winning orb roll must append exactly one cavenic orb drop");
+        helper.assertTrue(
+            drops.getFirst().getItem().is(ModRegistries.CAVENIC_ORB.get()),
+            "Winning orb roll must append cavernreborn:cavenic_orb"
+        );
+        helper.assertTrue(
+            Math.abs(drops.getFirst().getY() - (zombie.getY() + 0.5D)) < 1.0E-6D,
+            "Expected cavenic orb drop Y offset to stay aligned with the legacy 0.5 offset"
         );
         helper.succeed();
     }
