@@ -2,6 +2,7 @@ package com.richardkenway.cavernreborn.app.client;
 
 import com.richardkenway.cavernreborn.CavernReborn;
 import com.richardkenway.cavernreborn.app.compass.OreCompassClientAngleResolver;
+import com.richardkenway.cavernreborn.app.client.renderer.CavenicSkeletonRenderer;
 import com.richardkenway.cavernreborn.app.client.renderer.CavenicZombieRenderer;
 import com.richardkenway.cavernreborn.app.dimension.CavernNeoForgeDimensions;
 import com.richardkenway.cavernreborn.app.registry.ModRegistries;
@@ -30,6 +31,7 @@ public final class CavernClientModEvents {
     @SubscribeEvent
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModRegistries.CAVENIC_ZOMBIE.get(), CavenicZombieRenderer::new);
+        event.registerEntityRenderer(ModRegistries.CAVENIC_SKELETON.get(), CavenicSkeletonRenderer::new);
     }
 
     @SubscribeEvent

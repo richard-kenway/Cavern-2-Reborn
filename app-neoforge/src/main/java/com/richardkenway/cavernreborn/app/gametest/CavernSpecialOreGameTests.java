@@ -16,6 +16,7 @@ import com.richardkenway.cavernreborn.app.compass.OreCompassScanner;
 import com.richardkenway.cavernreborn.app.compass.OreCompassTarget;
 import com.richardkenway.cavernreborn.app.compass.StoredOreCompassTarget;
 import com.richardkenway.cavernreborn.app.dimension.CavernNeoForgeDimensions;
+import com.richardkenway.cavernreborn.app.entity.CavenicSkeleton;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombie;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombieLootEvents;
 import com.richardkenway.cavernreborn.app.item.CavenicBowTorchEvents;
@@ -80,6 +81,7 @@ import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -151,6 +153,8 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_ZOMBIE_NATURAL_SPAWN_ANCHOR = new BlockPos(1888, 96, 0);
     private static final BlockPos CAVENIC_ZOMBIE_LOOT_ANCHOR = new BlockPos(1984, 96, 0);
     private static final BlockPos CAVENIC_ZOMBIE_DAMAGE_ANCHOR = new BlockPos(2080, 96, 0);
+    private static final BlockPos CAVENIC_SKELETON_ANCHOR = new BlockPos(2176, 96, 0);
+    private static final BlockPos CAVENIC_SKELETON_SPAWN_EGG_ANCHOR = new BlockPos(2272, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -663,6 +667,73 @@ public final class CavernSpecialOreGameTests {
             cavenicZombie.getLootTable().equals(EntityType.ZOMBIE.getDefaultLootTable()),
             "Expected cavenic zombie damage follow-up to keep the vanilla zombie loot-table baseline"
         );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicSkeletonRegistersAtRuntime(GameTestHelper helper) {
+        helper.assertTrue(ModRegistries.CAVENIC_SKELETON.get() != null, "Missing cavenic skeleton entity type");
+        helper.assertTrue(ModRegistries.CAVENIC_SKELETON_SPAWN_EGG.get() != null, "Missing cavenic skeleton spawn egg");
+
+        assertRegistryId(helper, ModRegistries.CAVENIC_SKELETON.get(), "cavernreborn:cavenic_skeleton");
+        assertRegistryId(helper, ModRegistries.CAVENIC_SKELETON_SPAWN_EGG.get(), "cavernreborn:cavenic_skeleton_spawn_egg");
+
+        ItemStack spawnEgg = cavenicSkeletonSpawnEgg();
+        helper.assertTrue(!spawnEgg.isEmpty(), "Expected cavenic skeleton spawn egg to be constructible");
+        helper.assertTrue(spawnEgg.getItem() instanceof SpawnEggItem, "Expected cavenic skeleton spawn egg runtime item");
+        helper.assertTrue(
+            ((SpawnEggItem) spawnEgg.getItem()).spawnsEntity(spawnEgg, ModRegistries.CAVENIC_SKELETON.get()),
+            "Expected cavenic skeleton spawn egg to resolve the cavenic skeleton entity type"
+        );
+        helper.assertTrue(
+            ModRegistries.CAVENIC_SKELETON.get().getCategory() == MobCategory.MONSTER,
+            "Expected cavenic skeleton type category to stay MONSTER"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicSkeletonSpawnsWithExpectedAttributesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_SKELETON_ANCHOR;
+
+        resetMiningArea(level, origin, 8.0D);
+        CavenicSkeleton cavenicSkeleton = spawnLivingEntity(helper, ModRegistries.CAVENIC_SKELETON.get(), origin);
+        Skeleton vanillaSkeleton = spawnLivingEntity(helper, EntityType.SKELETON, origin.east(4));
+
+        helper.assertTrue(cavenicSkeleton instanceof Monster, "Expected cavenic skeleton to remain a hostile monster");
+        helper.assertTrue(cavenicSkeleton instanceof Skeleton, "Expected cavenic skeleton to keep vanilla skeleton behavior");
+        helper.assertTrue(cavenicSkeleton.getType().getCategory() == MobCategory.MONSTER, "Expected cavenic skeleton type category to stay MONSTER");
+        helper.assertTrue(Math.abs(cavenicSkeleton.getMaxHealth() - 40.0D) < 1.0E-6D, "Expected cavenic skeleton max health to map to legacy 40.0");
+        helper.assertTrue(Math.abs(cavenicSkeleton.getAttributeValue(Attributes.MAX_HEALTH) - 40.0D) < 1.0E-6D, "Expected cavenic skeleton MAX_HEALTH attribute to be 40.0");
+        helper.assertTrue(Math.abs(cavenicSkeleton.getAttributeValue(Attributes.MOVEMENT_SPEED) - 0.2D) < 1.0E-6D, "Expected cavenic skeleton movement speed to map to legacy 0.2");
+        helper.assertTrue(Math.abs(cavenicSkeleton.getAttributeValue(Attributes.FOLLOW_RANGE) - 21.0D) < 1.0E-6D, "Expected cavenic skeleton follow range to map to legacy 21.0");
+        helper.assertTrue(Math.abs(cavenicSkeleton.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) - 1.0D) < 1.0E-6D, "Expected cavenic skeleton knockback resistance to map to legacy 1.0");
+        helper.assertTrue(
+            Math.abs(cavenicSkeleton.getAttributeValue(Attributes.ATTACK_DAMAGE) - vanillaSkeleton.getAttributeValue(Attributes.ATTACK_DAMAGE)) < 1.0E-6D,
+            "Expected cavenic skeleton attack damage to stay on the vanilla skeleton baseline"
+        );
+        helper.assertTrue(
+            cavenicSkeleton.getLootTable().equals(EntityType.SKELETON.getDefaultLootTable()),
+            "Expected cavenic skeleton to keep the vanilla skeleton loot table as its baseline"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicSkeletonSpawnEggCreatesRuntimeEntity(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos supportPos = CAVENIC_SKELETON_SPAWN_EGG_ANCHOR;
+
+        resetMiningArea(level, supportPos, 8.0D);
+        level.setBlock(supportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+
+        ItemStack spawnEgg = cavenicSkeletonSpawnEgg();
+        Player player = makeMockPlayer(helper, level, GameType.SURVIVAL, spawnEgg.copy(), supportPos.south(2));
+        Entity spawnedEntity = ModRegistries.CAVENIC_SKELETON.get().spawn(level, spawnEgg, player, supportPos.above(), MobSpawnType.SPAWN_EGG, true, true);
+
+        helper.assertTrue(spawnedEntity instanceof CavenicSkeleton, "Expected spawn egg to create a CavenicSkeleton runtime entity");
+        helper.assertTrue(spawnedEntity != null && spawnedEntity.isAlive(), "Expected spawned cavenic skeleton to be alive");
         helper.succeed();
     }
 
@@ -2503,6 +2574,10 @@ public final class CavernSpecialOreGameTests {
 
     private static ItemStack cavenicZombieSpawnEgg() {
         return new ItemStack(ModRegistries.CAVENIC_ZOMBIE_SPAWN_EGG.get());
+    }
+
+    private static ItemStack cavenicSkeletonSpawnEgg() {
+        return new ItemStack(ModRegistries.CAVENIC_SKELETON_SPAWN_EGG.get());
     }
 
     private static AbstractArrow createRuntimeArrow(ServerLevel level, Player player, ItemStack bow) {
