@@ -23,7 +23,7 @@ class CavenicShroomDocumentationTest {
         assertTrue(readme.contains("docs/cavenic-shroom-mvp.md"));
         assertTrue(readme.contains("hazardous flora"));
         assertTrue(readme.contains("cavenic_orb"));
-        assertTrue(readme.contains("cavenic weapons, mobs or Cavenia"));
+        assertTrue(readme.contains("docs/cavenic-bow-baseline-mvp.md"));
     }
 
     @Test
@@ -37,7 +37,8 @@ class CavenicShroomDocumentationTest {
         assertTrue(doc.contains("spreads slowly"));
         assertTrue(doc.contains("`stone_depths`"));
         assertTrue(doc.contains("bounded modern Reborn bridge"));
-        assertTrue(doc.contains("No cavenic weapons yet"));
+        assertTrue(doc.contains("docs/cavenic-bow-baseline-mvp.md"));
+        assertTrue(doc.contains("No cavenic weapons are added by this flora slice itself"));
         assertTrue(doc.contains("No cavenic mobs yet"));
         assertTrue(doc.contains("No Cavenia yet"));
         assertTrue(doc.contains("NeoForge GameTest runtime smoke"));

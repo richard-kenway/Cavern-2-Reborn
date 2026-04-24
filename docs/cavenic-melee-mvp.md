@@ -24,12 +24,14 @@ Legacy `ItemAxeCavenic` damaged nearby hostile mobs for 4.0 damage in a 2.5 bloc
 
 ## Out Of Scope
 
-This increment does not add `cavenic_bow`, bow modes, custom arrows, client predicates, cavenic mobs, Cavenia, cavenic shroom transformation systems, economy hooks, GUI, packets, keybinds, worldgen changes or broad combat rewrites.
+That melee-specific increment did not add `cavenic_bow`; the later baseline bow follow-up is documented separately in `docs/cavenic-bow-baseline-mvp.md`.
+
+The melee slice still does not add bow modes, custom arrows, client predicates, cavenic mobs, Cavenia, cavenic shroom transformation systems, economy hooks, GUI, packets, keybinds, worldgen changes or broad combat rewrites.
 
 ## Testing
 
 Coverage is split across:
 
 - pure core policy tests for sword cooldown reset eligibility and axe target, radius, cap and durability rules;
-- resource tests for registration, models, textures, recipes, tags, localization and the absence of `cavenic_bow`;
+- resource tests for registration, models, textures, recipes, tags and localization for the sword/axe slice;
 - NeoForge GameTest runtime smoke for registry resolution, repair behavior, cavenic item tags, recipe manager resolution and small server-side hit behavior checks.

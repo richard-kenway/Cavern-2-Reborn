@@ -36,12 +36,13 @@ It is intentionally a small hazardous flora block plus a rare collectible founda
 ## Cavenic Orb Bridge
 
 - `cavenic_orb` is introduced here as a rare collectible foundation item.
-- The orb does not add gameplay behavior by itself in this MVP.
+- The orb does not add gameplay behavior by itself in this flora MVP.
 - Orb acquisition from `cavenic_shroom` is a bounded modern Reborn bridge for later cavenic equipment work, not full legacy ecosystem parity.
+- Later bounded follow-ups now reuse that bridge in `docs/cavenic-melee-mvp.md` and `docs/cavenic-bow-baseline-mvp.md`.
 
 ## Explicit Non-Goals
 
-- No cavenic weapons yet.
+- No cavenic weapons are added by this flora slice itself.
 - No cavenic mobs yet.
 - No entity transformation yet.
 - No Cavenia yet.

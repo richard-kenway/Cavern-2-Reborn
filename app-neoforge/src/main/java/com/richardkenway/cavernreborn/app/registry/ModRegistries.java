@@ -6,6 +6,7 @@ import com.richardkenway.cavernreborn.app.block.CavenicShroomBlock;
 import com.richardkenway.cavernreborn.app.block.CavernPortalBlock;
 import com.richardkenway.cavernreborn.app.block.FissuredStoneBlock;
 import com.richardkenway.cavernreborn.app.item.CavenicAxeItem;
+import com.richardkenway.cavernreborn.app.item.CavenicBowItem;
 import com.richardkenway.cavernreborn.app.item.CavenicSwordItem;
 import com.richardkenway.cavernreborn.app.item.OreCompassItem;
 import net.minecraft.core.registries.Registries;
@@ -106,6 +107,11 @@ public final class ModRegistries {
         () -> new CavenicAxeItem(
             ModToolTiers.CAVENIC,
             new Item.Properties().attributes(AxeItem.createAttributes(ModToolTiers.CAVENIC, 8.0F, -3.05F))));
+    public static final DeferredItem<Item> CAVENIC_BOW = ITEMS.register("cavenic_bow",
+        () -> new CavenicBowItem(
+            new Item.Properties()
+                .durability(ModToolTiers.CAVENIC.getUses())
+                .stacksTo(1)));
     public static final DeferredItem<Item> ORE_COMPASS = ITEMS.register(
         "ore_compass",
         () -> new OreCompassItem(new Item.Properties().stacksTo(1))
@@ -235,6 +241,7 @@ public final class ModRegistries {
                 output.accept(CAVENIC_ORB.get());
                 output.accept(CAVENIC_SWORD.get());
                 output.accept(CAVENIC_AXE.get());
+                output.accept(CAVENIC_BOW.get());
                 output.accept(ORE_COMPASS.get());
                 output.accept(HEXCITE_PICKAXE.get());
                 output.accept(HEXCITE_AXE.get());

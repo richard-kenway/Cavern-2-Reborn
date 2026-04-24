@@ -22,7 +22,7 @@ class CavenicMeleeDocumentationTest {
         assertTrue(doc.contains("Legacy `ItemAxeCavenic`"));
         assertTrue(doc.contains("server-side reset"));
         assertTrue(doc.contains("cap of six extra hostile targets"));
-        assertTrue(doc.contains("does not add `cavenic_bow`"));
+        assertTrue(doc.contains("docs/cavenic-bow-baseline-mvp.md"));
         assertTrue(doc.contains("NeoForge GameTest runtime smoke"));
     }
 

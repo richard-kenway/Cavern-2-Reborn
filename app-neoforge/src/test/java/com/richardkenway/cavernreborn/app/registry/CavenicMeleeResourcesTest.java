@@ -38,11 +38,11 @@ class CavenicMeleeResourcesTest {
         assertTrue(registriesSource.contains("ModToolTiers.CAVENIC"));
         assertTrue(registriesSource.contains("SwordItem.createAttributes(ModToolTiers.CAVENIC, 3, -1.0F)"));
         assertTrue(registriesSource.contains("AxeItem.createAttributes(ModToolTiers.CAVENIC, 8.0F, -3.05F)"));
-        assertFalse(registriesSource.contains("cavenic_bow"));
         assertInOrder(registriesSource, List.of(
             "output.accept(CAVENIC_ORB.get())",
             "output.accept(CAVENIC_SWORD.get())",
             "output.accept(CAVENIC_AXE.get())",
+            "output.accept(CAVENIC_BOW.get())",
             "output.accept(ORE_COMPASS.get())"
         ));
 
@@ -89,7 +89,8 @@ class CavenicMeleeResourcesTest {
             "cavernreborn:cavenic_shroom",
             "cavernreborn:cavenic_orb",
             "cavernreborn:cavenic_sword",
-            "cavernreborn:cavenic_axe"
+            "cavernreborn:cavenic_axe",
+            "cavernreborn:cavenic_bow"
         ), cavenicItemValues);
         assertEquals(List.of("cavernreborn:cavenic_orb"), arrayStrings(commonOrbTag.getAsJsonArray("values")));
 

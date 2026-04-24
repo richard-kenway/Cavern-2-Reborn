@@ -124,7 +124,8 @@ class CavenicShroomResourcesTest {
             "cavernreborn:cavenic_shroom",
             "cavernreborn:cavenic_orb",
             "cavernreborn:cavenic_sword",
-            "cavernreborn:cavenic_axe"
+            "cavernreborn:cavenic_axe",
+            "cavernreborn:cavenic_bow"
         ), cavenicItemValues);
 
         List<String> placeableValues = arrayStrings(placeableTag.getAsJsonArray("values"));

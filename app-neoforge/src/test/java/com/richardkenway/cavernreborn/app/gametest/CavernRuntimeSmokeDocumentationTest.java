@@ -47,7 +47,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("Cavenic Shroom & Orb MVP"));
         assertTrue(readme.contains("docs/cavenic-shroom-mvp.md"));
         assertTrue(readme.contains("hazardous flora"));
-        assertTrue(readme.contains("cavenic weapons, mobs or Cavenia"));
+        assertTrue(readme.contains("Cavenic Bow Baseline MVP"));
+        assertTrue(readme.contains("docs/cavenic-bow-baseline-mvp.md"));
     }
 
     @Test
@@ -66,6 +67,13 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("cavenic shroom bounded collision nausea"));
         assertTrue(doc.contains("cavenic shroom bounded shear-harvest helper wiring"));
         assertTrue(doc.contains("cavenic orb drop policy/runtime smoke"));
+        assertTrue(doc.contains("cavenic bow runtime registry id"));
+        assertTrue(doc.contains("cavenic bow max-damage and damageable-item smoke"));
+        assertTrue(doc.contains("cavenic bow repairability with `cavernreborn:cavenic_orb`"));
+        assertTrue(doc.contains("cavenic bow no-repair-with-stick smoke"));
+        assertTrue(doc.contains("cavenic bow enchantment applicability"));
+        assertTrue(doc.contains("cavenic bow cavenic item tag resolution"));
+        assertTrue(doc.contains("cavenic bow recipe manager resolution"));
         assertTrue(doc.contains("cavenic shroom worldgen configured/placed key resolution"));
         assertTrue(doc.contains("aquamarine tool runtime registry ids"));
         assertTrue(doc.contains("aquamarine tool repairability with `cavernreborn:aquamarine`"));
@@ -123,6 +131,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("actual worn magnite armor appearance"));
         assertTrue(doc.contains("actual Acresia in-world farming feel and growth cadence"));
         assertTrue(doc.contains("actual Cavenic Shroom hazard feel, sparse spread feel and harvest feel"));
+        assertTrue(doc.contains("actual Cavenic Bow draw, release and visual client feel"));
+        assertTrue(doc.contains("legacy Cavenic Bow modes and custom projectile behavior"));
         assertTrue(doc.contains("actual underwater aquamarine mining feel"));
         assertTrue(doc.contains("actual brittle magnite mining feel"));
         assertTrue(doc.contains("portal UX"));

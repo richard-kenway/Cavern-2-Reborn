@@ -407,6 +407,49 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBowRegistersAtRuntime(GameTestHelper helper) {
+        helper.assertTrue(ModRegistries.CAVENIC_BOW.get() != null, "Missing cavenic bow");
+        assertRegistryId(helper, ModRegistries.CAVENIC_BOW.get(), "cavernreborn:cavenic_bow");
+
+        ItemStack bow = cavenicBow();
+        helper.assertTrue(!bow.isEmpty(), "Expected cavenic bow stack to be constructible");
+        helper.assertTrue(bow.isDamageableItem(), "Expected cavenic bow to be damageable");
+        helper.assertTrue(bow.getMaxDamage() == ModToolTiers.CAVENIC.getUses(), "Unexpected cavenic bow durability");
+        helper.assertTrue(bow.is(ModItemTags.CAVENIC_ITEMS), "Expected cavenic bow to resolve through cavenic_items");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBowRepairsWithOrbAndRecipeResolvesAtRuntime(GameTestHelper helper) {
+        ItemStack bow = cavenicBow();
+        ItemStack repairStack = cavenicOrb();
+        ItemStack wrongRepairStack = new ItemStack(Items.STICK);
+
+        helper.assertTrue(bow.getItem().isValidRepairItem(bow, repairStack), "Expected cavenic_orb repair support for cavenic bow");
+        helper.assertFalse(bow.getItem().isValidRepairItem(bow, wrongRepairStack), "Stick must not repair cavenic bow");
+        helper.assertTrue(
+            helper.getLevel().getRecipeManager().byKey(ResourceLocation.parse("cavernreborn:cavenic_bow")).isPresent(),
+            "Expected runtime recipe manager to resolve cavenic_bow"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBowSupportsExpectedEnchantments(GameTestHelper helper) {
+        HolderLookup.RegistryLookup<Enchantment> enchantments = helper.getLevel().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        ItemStack bow = cavenicBow();
+
+        assertSupportsEnchantment(helper, bow, enchantments.getOrThrow(Enchantments.POWER), true);
+        assertSupportsEnchantment(helper, bow, enchantments.getOrThrow(Enchantments.PUNCH), true);
+        assertSupportsEnchantment(helper, bow, enchantments.getOrThrow(Enchantments.FLAME), true);
+        assertSupportsEnchantment(helper, bow, enchantments.getOrThrow(Enchantments.INFINITY), true);
+        assertSupportsEnchantment(helper, bow, enchantments.getOrThrow(Enchantments.UNBREAKING), true);
+        assertSupportsEnchantment(helper, bow, enchantments.getOrThrow(Enchantments.MENDING), true);
+        assertSupportsEnchantment(helper, bow, enchantments.getOrThrow(Enchantments.SHARPNESS), false);
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void cavenicSwordCooldownResetRuntimeSmoke(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos playerPos = helper.absolutePos(new BlockPos(1, 1, 1));
@@ -1679,6 +1722,10 @@ public final class CavernSpecialOreGameTests {
 
     private static ItemStack cavenicAxe() {
         return new ItemStack(ModRegistries.CAVENIC_AXE.get());
+    }
+
+    private static ItemStack cavenicBow() {
+        return new ItemStack(ModRegistries.CAVENIC_BOW.get());
     }
 
     private static ItemStack aquamarineAxe() {
