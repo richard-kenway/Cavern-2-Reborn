@@ -53,6 +53,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/cavenic-bow-mode-state-mvp.md"));
         assertTrue(readme.contains("Cavenic Bow Snipe Mode MVP"));
         assertTrue(readme.contains("docs/cavenic-bow-snipe-mode-mvp.md"));
+        assertTrue(readme.contains("Cavenic Bow Rapid Mode MVP"));
+        assertTrue(readme.contains("docs/cavenic-bow-rapid-mode-mvp.md"));
     }
 
     @Test
@@ -78,10 +80,15 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("cavenic bow default mode/runtime stack-state smoke"));
         assertTrue(doc.contains("cavenic bow mode cycling order and persistence"));
         assertTrue(doc.contains("cavenic bow sneak-use mode-cycling smoke"));
+        assertTrue(doc.contains("cavenic bow RAPID adjusted-shot-power smoke"));
+        assertTrue(doc.contains("cavenic bow RAPID higher-velocity vanilla-arrow smoke"));
+        assertTrue(doc.contains("cavenic bow RAPID no-extra-durability smoke"));
+        assertTrue(doc.contains("cavenic bow RAPID still spawning a vanilla arrow entity"));
+        assertTrue(doc.contains("cavenic bow RAPID not inheriting the SNIPE damage multiplier"));
         assertTrue(doc.contains("cavenic bow full-charge SNIPE projectile boost smoke"));
         assertTrue(doc.contains("cavenic bow full-charge SNIPE extra-durability smoke"));
         assertTrue(doc.contains("cavenic bow full-charge SNIPE still spawning a vanilla arrow entity"));
-        assertTrue(doc.contains("cavenic bow non-SNIPE modes staying on the vanilla baseline"));
+        assertTrue(doc.contains("cavenic bow TORCH mode staying on the vanilla baseline"));
         assertTrue(doc.contains("cavenic bow enchantment applicability"));
         assertTrue(doc.contains("cavenic bow cavenic item tag resolution"));
         assertTrue(doc.contains("cavenic bow recipe manager resolution"));
@@ -143,7 +150,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("actual Acresia in-world farming feel and growth cadence"));
         assertTrue(doc.contains("actual Cavenic Shroom hazard feel, sparse spread feel and harvest feel"));
         assertTrue(doc.contains("actual Cavenic Bow draw, release and visual client feel"));
-        assertTrue(doc.contains("legacy Cavenic Bow custom projectile behavior and client feel beyond the current bounded Snipe slice"));
+        assertTrue(doc.contains("legacy Cavenic Bow Rapid/Torch custom projectile behavior and client feel beyond the current bounded Snipe and Rapid slices"));
         assertTrue(doc.contains("actual underwater aquamarine mining feel"));
         assertTrue(doc.contains("actual brittle magnite mining feel"));
         assertTrue(doc.contains("portal UX"));

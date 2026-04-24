@@ -5,6 +5,7 @@ import java.util.List;
 import com.richardkenway.cavernreborn.app.registry.ModRegistries;
 import com.richardkenway.cavernreborn.app.registry.ModToolTiers;
 import com.richardkenway.cavernreborn.core.combat.CavenicBowMode;
+import com.richardkenway.cavernreborn.core.combat.CavenicBowRapidPolicy;
 import com.richardkenway.cavernreborn.core.combat.CavenicBowSnipePolicy;
 
 import net.minecraft.core.component.DataComponents;
@@ -63,6 +64,10 @@ public final class CavenicBowItem extends BowItem {
         return nextMode;
     }
 
+    public float resolveShotPower(ItemStack stack, float rawPower) {
+        return CavenicBowRapidPolicy.adjustedPower(getMode(stack), rawPower);
+    }
+
     public float resolveProjectileVelocity(ItemStack stack, float baseVelocity, float power) {
         return CavenicBowSnipePolicy.adjustedVelocity(getMode(stack), baseVelocity, power);
     }
@@ -112,14 +117,16 @@ public final class CavenicBowItem extends BowItem {
             return;
         }
 
-        float power = getPowerForTime(charge);
-        if ((double) power < 0.1D) {
+        float rawPower = getPowerForTime(charge);
+        if ((double) rawPower < 0.1D) {
             return;
         }
 
+        float shotPower = resolveShotPower(stack, rawPower);
+
         List<ItemStack> drawnProjectiles = draw(stack, projectile, livingEntity);
         if (level instanceof ServerLevel serverLevel && !drawnProjectiles.isEmpty()) {
-            ShotContext shotContext = new ShotContext(power);
+            ShotContext shotContext = new ShotContext(shotPower);
             CURRENT_SHOT_CONTEXT.set(shotContext);
             try {
                 shoot(
@@ -128,16 +135,16 @@ public final class CavenicBowItem extends BowItem {
                     player.getUsedItemHand(),
                     stack,
                     drawnProjectiles,
-                    resolveProjectileVelocity(stack, power * 3.0F, power),
+                    resolveProjectileVelocity(stack, shotPower * 3.0F, shotPower),
                     1.0F,
-                    power == 1.0F,
+                    shotPower == 1.0F,
                     null
                 );
             } finally {
                 CURRENT_SHOT_CONTEXT.remove();
             }
 
-            int additionalDurabilityCost = resolveAdditionalDurabilityCost(stack, power);
+            int additionalDurabilityCost = resolveAdditionalDurabilityCost(stack, shotPower);
             if (additionalDurabilityCost > 0 && !stack.isEmpty()) {
                 stack.hurtAndBreak(additionalDurabilityCost, livingEntity, LivingEntity.getSlotForHand(player.getUsedItemHand()));
             }
@@ -151,7 +158,7 @@ public final class CavenicBowItem extends BowItem {
             SoundEvents.ARROW_SHOOT,
             SoundSource.PLAYERS,
             1.0F,
-            1.0F / (level.getRandom().nextFloat() * 0.4F + 1.2F) + power * 0.5F
+            1.0F / (level.getRandom().nextFloat() * 0.4F + 1.2F) + rawPower * 0.5F
         );
         player.awardStat(Stats.ITEM_USED.get(this));
     }

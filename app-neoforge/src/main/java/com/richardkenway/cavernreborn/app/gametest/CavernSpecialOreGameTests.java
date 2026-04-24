@@ -22,6 +22,7 @@ import com.richardkenway.cavernreborn.app.registry.ModItemTags;
 import com.richardkenway.cavernreborn.app.registry.ModRegistries;
 import com.richardkenway.cavernreborn.app.registry.ModToolTiers;
 import com.richardkenway.cavernreborn.core.combat.CavenicBowMode;
+import com.richardkenway.cavernreborn.core.combat.CavenicBowRapidPolicy;
 import com.richardkenway.cavernreborn.core.combat.CavenicBowSnipePolicy;
 import com.richardkenway.cavernreborn.core.compass.OreCompassDirection;
 import com.richardkenway.cavernreborn.core.compass.OreCompassScanDecision;
@@ -116,6 +117,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_SHEAR_ANCHOR = new BlockPos(1120, 96, 0);
     private static final BlockPos CAVENIC_BOW_MODE_ANCHOR = new BlockPos(1216, 96, 0);
     private static final BlockPos CAVENIC_BOW_SNIPE_ANCHOR = new BlockPos(1312, 96, 0);
+    private static final BlockPos CAVENIC_BOW_RAPID_ANCHOR = new BlockPos(1408, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -493,6 +495,64 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBowRapidModeBoostsShotPowerAndKeepsVanillaArrowAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos normalOrigin = CAVENIC_BOW_RAPID_ANCHOR;
+        BlockPos rapidOrigin = CAVENIC_BOW_RAPID_ANCHOR.east(32);
+        float uncappedRawPower = 0.3F;
+        float cappedRawPower = 0.5F;
+
+        resetMiningArea(level, normalOrigin, 10.0D);
+        resetMiningArea(level, rapidOrigin, 10.0D);
+
+        Player normalPlayer = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), normalOrigin);
+        Player rapidPlayer = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), rapidOrigin);
+        ItemStack normalBow = normalPlayer.getMainHandItem();
+        ItemStack rapidBow = rapidPlayer.getMainHandItem();
+        CavenicBowItem bowItem = (CavenicBowItem) ModRegistries.CAVENIC_BOW.get();
+
+        bowItem.setMode(rapidBow, CavenicBowMode.RAPID);
+
+        float normalShotPower = bowItem.resolveShotPower(normalBow, uncappedRawPower);
+        float rapidShotPower = bowItem.resolveShotPower(rapidBow, uncappedRawPower);
+
+        AbstractArrow normalArrow = createRuntimeArrow(level, normalPlayer, normalBow);
+        AbstractArrow rapidArrow = createRuntimeArrow(level, rapidPlayer, rapidBow);
+
+        normalArrow.shootFromRotation(normalPlayer, normalPlayer.getXRot(), normalPlayer.getYRot(), 0.0F, bowItem.resolveProjectileVelocity(normalBow, normalShotPower * 3.0F, normalShotPower), 1.0F);
+        rapidArrow.shootFromRotation(rapidPlayer, rapidPlayer.getXRot(), rapidPlayer.getYRot(), 0.0F, bowItem.resolveProjectileVelocity(rapidBow, rapidShotPower * 3.0F, rapidShotPower), 1.0F);
+
+        level.addFreshEntity(normalArrow);
+        level.addFreshEntity(rapidArrow);
+
+        helper.assertTrue(Math.abs(normalShotPower - uncappedRawPower) < 1.0e-6F, "NORMAL mode must keep raw vanilla shot power");
+        helper.assertTrue(rapidShotPower > normalShotPower, "RAPID mode must increase shot power for the same draw");
+        helper.assertTrue(
+            Math.abs(rapidShotPower - uncappedRawPower * CavenicBowRapidPolicy.POWER_MULTIPLIER) < 1.0e-6F,
+            "RAPID mode must use the bounded power multiplier"
+        );
+        helper.assertTrue(
+            Math.abs(bowItem.resolveShotPower(rapidBow, cappedRawPower) - CavenicBowRapidPolicy.MAX_POWER) < 1.0e-6F,
+            "RAPID mode must cap adjusted shot power at 1.0F"
+        );
+        helper.assertTrue("minecraft:arrow".equals(entityTypeId(normalArrow)), "NORMAL mode must keep spawning a vanilla arrow");
+        helper.assertTrue("minecraft:arrow".equals(entityTypeId(rapidArrow)), "RAPID mode must keep spawning a vanilla arrow");
+        helper.assertTrue(rapidArrow.getBaseDamage() == normalArrow.getBaseDamage(), "RAPID mode must not add a SNIPE-style damage multiplier");
+        helper.assertTrue(
+            rapidArrow.getDeltaMovement().length() > normalArrow.getDeltaMovement().length(),
+            "RAPID mode must increase projectile velocity for the same raw draw power"
+        );
+        helper.assertTrue(bowItem.getMode(rapidBow) == CavenicBowMode.RAPID, "RAPID mode must remain stored on the bow stack");
+
+        normalBow.hurtAndBreak(1 + bowItem.resolveAdditionalDurabilityCost(normalBow, uncappedRawPower), normalPlayer, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
+        rapidBow.hurtAndBreak(1 + bowItem.resolveAdditionalDurabilityCost(rapidBow, rapidShotPower), rapidPlayer, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
+
+        helper.assertTrue(normalBow.getDamageValue() == 1, "NORMAL shots must keep the vanilla single durability cost");
+        helper.assertTrue(rapidBow.getDamageValue() == 1, "RAPID shots must not add extra durability cost");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void cavenicBowSnipeModeBoostsFullChargeShotsAtRuntime(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos normalOrigin = CAVENIC_BOW_SNIPE_ANCHOR;
@@ -545,7 +605,7 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
-    public static void cavenicBowOnlyAppliesSnipeBoostForFullChargeSnipeModeAtRuntime(GameTestHelper helper) {
+    public static void cavenicBowOnlyAppliesSnipeBoostForSnipeModeAtRuntime(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos origin = CAVENIC_BOW_SNIPE_ANCHOR.east(64);
 
@@ -582,14 +642,15 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(rapidArrow.getBaseDamage() == rapidDamage, "RAPID mode must not change arrow base damage");
         helper.assertTrue(lowChargeSnipeArrow.getBaseDamage() == lowChargeSnipeDamage, "Undercharged SNIPE shots must not change arrow base damage");
         helper.assertTrue(torchArrow.getBaseDamage() == torchDamage, "TORCH mode must not change arrow base damage");
+        helper.assertTrue(
+            Math.abs(bowItem.resolveShotPower(rapidBow, 0.5F) - CavenicBowRapidPolicy.MAX_POWER) < 1.0e-6F,
+            "RAPID mode must cap adjusted shot power independently from SNIPE"
+        );
+        helper.assertTrue(bowItem.resolveAdditionalDurabilityCost(rapidBow, 1.0F) == CavenicBowRapidPolicy.EXTRA_DURABILITY_COST, "RAPID mode must not add extra durability cost");
 
         helper.assertTrue(
             bowItem.resolveProjectileVelocity(normalBow, 3.0F, 1.0F) == 3.0F,
             "NORMAL mode must keep vanilla projectile velocity"
-        );
-        helper.assertTrue(
-            bowItem.resolveProjectileVelocity(rapidBow, 3.0F, 1.0F) == 3.0F,
-            "RAPID mode must keep vanilla projectile velocity in this slice"
         );
         helper.assertTrue(
             bowItem.resolveProjectileVelocity(lowChargeSnipeBow, 3.0F, 0.95F) == 3.0F,

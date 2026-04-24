@@ -4,6 +4,8 @@ This slice adds the first bounded behavioral follow-up for `cavernreborn:cavenic
 
 It builds on the existing baseline bow plus stack-local mode-state/cycling slices and makes only `SNIPE` mode behave differently.
 
+The later bounded Rapid-only follow-up is documented separately in `docs/cavenic-bow-rapid-mode-mvp.md`.
+
 ## What This Increment Adds
 
 - a pure `CavenicBowSnipePolicy` with pinned constants and activation rules
@@ -56,7 +58,7 @@ The current values are a bounded modern stand-in that is easier to test and less
 ## Runtime Wiring
 
 - `NORMAL` still uses vanilla bow behavior.
-- `RAPID` still uses vanilla bow behavior.
+- `RAPID` is now documented separately in `docs/cavenic-bow-rapid-mode-mvp.md`.
 - `SNIPE` now boosts only fully charged shots.
 - `TORCH` still uses vanilla bow behavior.
 - Mode state stays stored on the stack after firing.
