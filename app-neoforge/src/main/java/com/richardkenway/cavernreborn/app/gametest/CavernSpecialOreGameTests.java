@@ -150,6 +150,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_ZOMBIE_SPAWN_EGG_ANCHOR = new BlockPos(1792, 96, 0);
     private static final BlockPos CAVENIC_ZOMBIE_NATURAL_SPAWN_ANCHOR = new BlockPos(1888, 96, 0);
     private static final BlockPos CAVENIC_ZOMBIE_LOOT_ANCHOR = new BlockPos(1984, 96, 0);
+    private static final BlockPos CAVENIC_ZOMBIE_DAMAGE_ANCHOR = new BlockPos(2080, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -564,6 +565,103 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             Math.abs(drops.getFirst().getY() - (zombie.getY() + 0.5D)) < 1.0E-6D,
             "Expected cavenic orb drop Y offset to stay aligned with the legacy 0.5 offset"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicZombieLegacyFallAndFireDamageBehaviorAppliesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_ZOMBIE_DAMAGE_ANCHOR;
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CavenicZombie cavenicFallZombie = spawnLivingEntity(helper, ModRegistries.CAVENIC_ZOMBIE.get(), origin);
+        Zombie vanillaFallZombie = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.east(4));
+        clearEquipment(cavenicFallZombie);
+        clearEquipment(vanillaFallZombie);
+        float fallDamage = 10.0F;
+        float cavenicFallHealthBefore = cavenicFallZombie.getHealth();
+        float vanillaFallHealthBefore = vanillaFallZombie.getHealth();
+
+        helper.assertTrue(
+            cavenicFallZombie.hurt(level.damageSources().fall(), fallDamage),
+            "Expected cavenic zombie to still accept fall damage hits through the normal server damage path"
+        );
+        helper.assertTrue(
+            vanillaFallZombie.hurt(level.damageSources().fall(), fallDamage),
+            "Expected vanilla zombie baseline to accept fall damage hits"
+        );
+        helper.assertTrue(
+            Math.abs((cavenicFallHealthBefore - cavenicFallZombie.getHealth()) - (fallDamage * CavenicZombie.LEGACY_FALL_DAMAGE_MULTIPLIER)) < 1.0E-6F,
+            "Expected cavenic zombie fall damage to stay pinned to the legacy 0.35 multiplier"
+        );
+        helper.assertTrue(
+            Math.abs((vanillaFallHealthBefore - vanillaFallZombie.getHealth()) - fallDamage) < 1.0E-6F,
+            "Expected vanilla zombie baseline to keep full fall damage"
+        );
+
+        CavenicZombie cavenicFireZombie = spawnLivingEntity(helper, ModRegistries.CAVENIC_ZOMBIE.get(), origin.south(8));
+        Zombie vanillaFireZombie = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.south(8).east(4));
+        clearEquipment(cavenicFireZombie);
+        clearEquipment(vanillaFireZombie);
+        float fireDamage = 4.0F;
+        float cavenicFireHealthBefore = cavenicFireZombie.getHealth();
+        float vanillaFireHealthBefore = vanillaFireZombie.getHealth();
+
+        helper.assertFalse(
+            cavenicFireZombie.hurt(level.damageSources().lava(), fireDamage),
+            "Expected cavenic zombie to reject fire-tagged damage sources like lava"
+        );
+        helper.assertTrue(
+            vanillaFireZombie.hurt(level.damageSources().lava(), fireDamage),
+            "Expected vanilla zombie baseline to take lava damage"
+        );
+        helper.assertTrue(
+            Math.abs(cavenicFireHealthBefore - cavenicFireZombie.getHealth()) < 1.0E-6F,
+            "Expected cavenic zombie health to stay unchanged after fire-tagged damage"
+        );
+        helper.assertTrue(
+            vanillaFireZombie.getHealth() < vanillaFireHealthBefore,
+            "Expected vanilla zombie baseline to lose health from lava damage"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicZombieLegacyDamageBehaviorKeepsGenericDamageVanillaLikeAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_ZOMBIE_DAMAGE_ANCHOR.north(12);
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CavenicZombie cavenicZombie = spawnLivingEntity(helper, ModRegistries.CAVENIC_ZOMBIE.get(), origin);
+        Zombie vanillaZombie = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.east(4));
+        clearEquipment(cavenicZombie);
+        clearEquipment(vanillaZombie);
+        float genericDamage = 6.0F;
+        float cavenicHealthBefore = cavenicZombie.getHealth();
+        float vanillaHealthBefore = vanillaZombie.getHealth();
+
+        helper.assertTrue(
+            cavenicZombie.hurt(level.damageSources().generic(), genericDamage),
+            "Expected cavenic zombie to remain vulnerable to generic non-fire damage"
+        );
+        helper.assertTrue(
+            vanillaZombie.hurt(level.damageSources().generic(), genericDamage),
+            "Expected vanilla zombie baseline to remain vulnerable to generic non-fire damage"
+        );
+        helper.assertTrue(
+            Math.abs((cavenicHealthBefore - cavenicZombie.getHealth()) - genericDamage) < 1.0E-6F,
+            "Expected cavenic zombie generic damage intake to stay vanilla-like"
+        );
+        helper.assertTrue(
+            Math.abs((vanillaHealthBefore - vanillaZombie.getHealth()) - genericDamage) < 1.0E-6F,
+            "Expected vanilla zombie generic damage intake to stay unchanged"
+        );
+        helper.assertTrue(
+            cavenicZombie.getLootTable().equals(EntityType.ZOMBIE.getDefaultLootTable()),
+            "Expected cavenic zombie damage follow-up to keep the vanilla zombie loot-table baseline"
         );
         helper.succeed();
     }
@@ -2688,6 +2786,12 @@ public final class CavernSpecialOreGameTests {
         T entity = helper.spawn(type, pos);
         helper.assertTrue(entity.isAlive(), "Expected spawned entity to be alive: " + BuiltInRegistries.ENTITY_TYPE.getKey(type));
         return entity;
+    }
+
+    private static void clearEquipment(LivingEntity entity) {
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            entity.setItemSlot(slot, ItemStack.EMPTY);
+        }
     }
 
 

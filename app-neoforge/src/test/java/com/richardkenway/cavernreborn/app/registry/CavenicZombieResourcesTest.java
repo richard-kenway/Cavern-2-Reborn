@@ -68,11 +68,17 @@ class CavenicZombieResourcesTest {
         assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_WEIGHT = 30;"));
         assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_MIN_COUNT = 2;"));
         assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_MAX_COUNT = 2;"));
+        assertTrue(entitySource.contains("public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;"));
         assertTrue(entitySource.contains("canNaturallySpawnInDimension"));
         assertTrue(entitySource.contains("checkCavenicZombieSpawnRules"));
         assertTrue(entitySource.contains("CavernNeoForgeDimensions.isCavern"));
         assertTrue(entitySource.contains("Monster.checkMonsterSpawnRules"));
         assertTrue(entitySource.contains("return EntityType.ZOMBIE.getDefaultLootTable();"));
+        assertTrue(entitySource.contains("public boolean hurt(DamageSource source, float damage)"));
+        assertTrue(entitySource.contains("source.is(DamageTypeTags.IS_FALL)"));
+        assertTrue(entitySource.contains("damage *= LEGACY_FALL_DAMAGE_MULTIPLIER;"));
+        assertTrue(entitySource.contains("source.is(DamageTypeTags.IS_FIRE)"));
+        assertTrue(entitySource.contains("return super.hurt(source, damage);"));
         assertFalse(entitySource.contains("entities/cavenic_zombie"));
         assertFalse(entitySource.contains("cavenic_orb"));
 

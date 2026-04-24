@@ -5,6 +5,8 @@ import com.richardkenway.cavernreborn.app.dimension.CavernNeoForgeDimensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -19,6 +21,7 @@ public final class CavenicZombie extends Zombie {
     public static final int NATURAL_SPAWN_WEIGHT = 30;
     public static final int NATURAL_SPAWN_MIN_COUNT = 2;
     public static final int NATURAL_SPAWN_MAX_COUNT = 2;
+    public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;
 
     public CavenicZombie(EntityType<? extends Zombie> entityType, Level level) {
         super(entityType, level);
@@ -36,6 +39,19 @@ public final class CavenicZombie extends Zombie {
     @Override
     protected ResourceKey<LootTable> getDefaultLootTable() {
         return EntityType.ZOMBIE.getDefaultLootTable();
+    }
+
+    @Override
+    public boolean hurt(DamageSource source, float damage) {
+        if (source.is(DamageTypeTags.IS_FALL)) {
+            damage *= LEGACY_FALL_DAMAGE_MULTIPLIER;
+        }
+
+        if (source.is(DamageTypeTags.IS_FIRE)) {
+            return false;
+        }
+
+        return super.hurt(source, damage);
     }
 
     public static boolean canNaturallySpawnInDimension(ResourceKey<Level> levelKey) {

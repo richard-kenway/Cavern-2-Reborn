@@ -13,10 +13,11 @@ class CavenicZombieDocumentationTest {
     private static final Path CAVENIC_ZOMBIE_BASELINE_MVP = resolveProjectFile("docs", "cavenic-zombie-baseline-mvp.md");
     private static final Path CAVENIC_ZOMBIE_NATURAL_SPAWN_MVP = resolveProjectFile("docs", "cavenic-zombie-natural-spawn-mvp.md");
     private static final Path CAVENIC_ZOMBIE_ORB_DROP_MVP = resolveProjectFile("docs", "cavenic-zombie-orb-drop-mvp.md");
+    private static final Path CAVENIC_ZOMBIE_DAMAGE_BEHAVIOR_MVP = resolveProjectFile("docs", "cavenic-zombie-damage-behavior-mvp.md");
     private static final Path RUNTIME_SMOKE = resolveProjectFile("docs", "runtime-smoke.md");
 
     @Test
-    void readmeMentionsCavenicZombieBaselineNaturalSpawnAndOrbDropFollowUps() throws IOException {
+    void readmeMentionsCavenicZombieBaselineNaturalSpawnOrbDropAndDamageFollowUps() throws IOException {
         String readme = Files.readString(README);
 
         assertTrue(readme.contains("Cavenic Zombie Baseline MVP"));
@@ -25,8 +26,11 @@ class CavenicZombieDocumentationTest {
         assertTrue(readme.contains("docs/cavenic-zombie-natural-spawn-mvp.md"));
         assertTrue(readme.contains("Cavenic Zombie Legacy Orb Drop MVP"));
         assertTrue(readme.contains("docs/cavenic-zombie-orb-drop-mvp.md"));
+        assertTrue(readme.contains("Cavenic Zombie Legacy Damage Behavior MVP"));
+        assertTrue(readme.contains("docs/cavenic-zombie-damage-behavior-mvp.md"));
         assertTrue(readme.contains("cavenic_zombie"));
         assertTrue(readme.contains("legacy `1/8` `cavenic_orb` drop"));
+        assertTrue(readme.contains("legacy fall-damage reduction and fire-damage immunity"));
     }
 
     @Test
@@ -48,6 +52,8 @@ class CavenicZombieDocumentationTest {
         assertTrue(doc.contains("reuses the vanilla zombie loot table as its base drop source"));
         assertTrue(doc.contains("Legacy orb-drop parity is now documented separately"));
         assertTrue(doc.contains("`docs/cavenic-zombie-orb-drop-mvp.md`"));
+        assertTrue(doc.contains("Legacy fall/fire damage behavior is now documented separately"));
+        assertTrue(doc.contains("`docs/cavenic-zombie-damage-behavior-mvp.md`"));
         assertTrue(doc.contains("Natural spawning is now documented separately"));
         assertTrue(doc.contains("`docs/cavenic-zombie-natural-spawn-mvp.md`"));
         assertTrue(doc.contains("Additional Cavenic mobs"));
@@ -75,6 +81,8 @@ class CavenicZombieDocumentationTest {
         assertTrue(doc.contains("CAVERN-only"));
         assertTrue(doc.contains("custom loot was out of scope in this natural-spawn slice"));
         assertTrue(doc.contains("`docs/cavenic-zombie-orb-drop-mvp.md`"));
+        assertTrue(doc.contains("legacy fall/fire damage behavior was out of scope in this natural-spawn slice"));
+        assertTrue(doc.contains("`docs/cavenic-zombie-damage-behavior-mvp.md`"));
         assertTrue(doc.contains("custom AI remains out of scope"));
     }
 
@@ -93,12 +101,34 @@ class CavenicZombieDocumentationTest {
         assertTrue(doc.contains("Looting does not affect the orb chance"));
         assertTrue(doc.contains("The orb drop does not require a player kill"));
         assertTrue(doc.contains("No progression, dimension or economy hook changes"));
+        assertTrue(doc.contains("The legacy fall/fire damage behavior remains documented separately"));
+        assertTrue(doc.contains("`docs/cavenic-zombie-damage-behavior-mvp.md`"));
         assertTrue(doc.contains("Additional Cavenic mobs remain out of scope"));
         assertTrue(doc.contains("Cavenia remains out of scope"));
     }
 
     @Test
-    void runtimeSmokeMentionsCavenicZombieOrbDropCoverageAndManualBoundary() throws IOException {
+    void cavenicZombieDamageBehaviorDocStatesLegacyMappingBoundariesAndTests() throws IOException {
+        String doc = Files.readString(CAVENIC_ZOMBIE_DAMAGE_BEHAVIOR_MVP);
+
+        assertTrue(doc.contains("`cavern.entity.monster.EntityCavenicZombie`"));
+        assertTrue(doc.contains("`attackEntityFrom(DamageSource source, float damage)`"));
+        assertTrue(doc.contains("`source == DamageSource.FALL`"));
+        assertTrue(doc.contains("`damage *= 0.35F`"));
+        assertTrue(doc.contains("`!source.isFireDamage()`"));
+        assertTrue(doc.contains("`DamageTypeTags.IS_FALL`"));
+        assertTrue(doc.contains("`DamageTypeTags.IS_FIRE`"));
+        assertTrue(doc.contains("`LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F`"));
+        assertTrue(doc.contains("all modern fire-tagged damage sources"));
+        assertTrue(doc.contains("lava"));
+        assertTrue(doc.contains("vanilla zombie AI remains unchanged"));
+        assertTrue(doc.contains("attributes, natural spawning and orb-drop behavior remain unchanged"));
+        assertTrue(doc.contains("Additional Cavenic mobs remain out of scope"));
+        assertTrue(doc.contains("Cavenia remains out of scope"));
+    }
+
+    @Test
+    void runtimeSmokeMentionsCavenicZombieDamageAndOrbDropCoverageAndManualBoundary() throws IOException {
         String runtimeSmoke = Files.readString(RUNTIME_SMOKE);
 
         assertTrue(runtimeSmoke.contains("cavenic zombie runtime registry id"));
@@ -113,7 +143,11 @@ class CavenicZombieDocumentationTest {
         assertTrue(runtimeSmoke.contains("cavenic zombie vanilla loot-table baseline smoke"));
         assertTrue(runtimeSmoke.contains("cavenic zombie legacy orb-drop event wiring smoke"));
         assertTrue(runtimeSmoke.contains("cavenic zombie legacy orb-drop deterministic winning/losing roll smoke"));
+        assertTrue(runtimeSmoke.contains("cavenic zombie legacy fall-damage reduction smoke"));
+        assertTrue(runtimeSmoke.contains("cavenic zombie legacy fire-damage immunity smoke"));
+        assertTrue(runtimeSmoke.contains("cavenic zombie generic-damage baseline smoke"));
         assertTrue(runtimeSmoke.contains("actual long-run cavenic zombie orb-drop rate balance"));
+        assertTrue(runtimeSmoke.contains("actual long-running Cavenic Zombie fire/lava gameplay feel"));
         assertTrue(runtimeSmoke.contains("actual Cavenic Zombie renderer/model visual feel"));
         assertTrue(runtimeSmoke.contains("actual long-run Cavenic Zombie population balance inside CAVERN"));
     }

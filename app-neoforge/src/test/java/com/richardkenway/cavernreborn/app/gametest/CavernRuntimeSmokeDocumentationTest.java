@@ -63,7 +63,10 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/cavenic-zombie-natural-spawn-mvp.md"));
         assertTrue(readme.contains("Cavenic Zombie Legacy Orb Drop MVP"));
         assertTrue(readme.contains("docs/cavenic-zombie-orb-drop-mvp.md"));
+        assertTrue(readme.contains("Cavenic Zombie Legacy Damage Behavior MVP"));
+        assertTrue(readme.contains("docs/cavenic-zombie-damage-behavior-mvp.md"));
         assertTrue(readme.contains("legacy `1/8` `cavenic_orb` drop"));
+        assertTrue(readme.contains("legacy fall-damage reduction and fire-damage immunity"));
     }
 
     @Test
@@ -115,6 +118,9 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("cavenic zombie vanilla loot-table baseline smoke"));
         assertTrue(doc.contains("cavenic zombie legacy orb-drop event wiring smoke"));
         assertTrue(doc.contains("cavenic zombie legacy orb-drop deterministic winning/losing roll smoke"));
+        assertTrue(doc.contains("cavenic zombie legacy fall-damage reduction smoke"));
+        assertTrue(doc.contains("cavenic zombie legacy fire-damage immunity smoke"));
+        assertTrue(doc.contains("cavenic zombie generic-damage baseline smoke"));
         assertTrue(doc.contains("cavenic bow enchantment applicability"));
         assertTrue(doc.contains("cavenic bow cavenic item tag resolution"));
         assertTrue(doc.contains("cavenic bow recipe manager resolution"));
@@ -178,6 +184,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("actual Cavenic Bow draw, release and visual client feel"));
         assertTrue(doc.contains("actual Cavenic Zombie renderer/model visual feel"));
         assertTrue(doc.contains("actual long-run cavenic zombie orb-drop rate balance"));
+        assertTrue(doc.contains("actual long-running Cavenic Zombie fire/lava gameplay feel"));
         assertTrue(doc.contains("legacy Cavenic Bow Rapid/Torch custom projectile behavior and client feel beyond the current bounded Snipe, Rapid and Torch slices"));
         assertTrue(doc.contains("actual long-run Cavenic Zombie population balance inside CAVERN"));
         assertTrue(doc.contains("actual underwater aquamarine mining feel"));

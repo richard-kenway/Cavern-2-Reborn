@@ -60,6 +60,7 @@ It does not add a new mob, new AI, new spawn rules or broader Cavenic progressio
 
 ## Still Out Of Scope
 
+- The legacy fall/fire damage behavior remains documented separately in `docs/cavenic-zombie-damage-behavior-mvp.md`
 - Additional Cavenic mobs remain out of scope
 - Custom Cavenic Zombie AI remains out of scope
 - Cavenia remains out of scope
