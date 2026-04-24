@@ -4,6 +4,8 @@ This slice adds the first bounded Torch-only behavioral follow-up for `cavernreb
 
 It keeps the projectile entity vanilla and builds on the existing baseline bow, mode-state, Snipe and Rapid slices.
 
+The later release-path stabilization follow-up is documented separately in `docs/cavenic-bow-release-semantics-mvp.md`.
+
 ## What This Increment Adds
 
 - a pure `CavenicBowTorchPolicy` with pinned zero-modifier constants and Torch-shot eligibility rules
@@ -49,12 +51,14 @@ When a marked vanilla arrow hits a block on the server:
 
 - a top-face hit may place a standing `minecraft:torch`
 - a horizontal-face hit may place a horizontal `minecraft:wall_torch`
+- wall torch orientation must match the impacted horizontal face
 - bottom-face hits are ignored
 - entity hits are ignored
 - the target position must stay air-or-replaceable
 - Torch mode never replaces liquids
 - the chosen torch block state must be able to survive at that position
 - no impacted support block is replaced or broken
+- no opposite-wall fallback may attach to an unrelated support block
 - no placement happens outside loaded chunks
 
 This keeps Torch mode non-destructive and grief-safe for the current MVP.
@@ -88,3 +92,4 @@ Coverage is split across:
   - valid horizontal-face `minecraft:wall_torch` placement
   - no placement on entity hits, occupied targets or liquids
   - continued vanilla-arrow runtime identity
+- The later real release-path regression coverage is documented separately in `docs/cavenic-bow-release-semantics-mvp.md`.

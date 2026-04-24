@@ -32,6 +32,10 @@ NeoForge GameTest runtime smoke covers:
 - cavenic bow default mode/runtime stack-state smoke
 - cavenic bow mode cycling order and persistence
 - cavenic bow sneak-use mode-cycling smoke
+- cavenic bow real release-path NORMAL survival arrow-consumption smoke
+- cavenic bow real release-path survival no-arrow smoke
+- cavenic bow real release-path creative no-arrow smoke
+- cavenic bow real release-path Infinity smoke
 - cavenic bow RAPID adjusted-shot-power smoke
 - cavenic bow RAPID higher-velocity vanilla-arrow smoke
 - cavenic bow RAPID no-extra-durability smoke
@@ -44,6 +48,7 @@ NeoForge GameTest runtime smoke covers:
 - cavenic bow TORCH valid block-placement smoke
 - cavenic bow TORCH invalid-target no-placement smoke
 - cavenic bow TORCH torch-consumption smoke
+- cavenic bow TORCH wall-torch orientation smoke
 - cavenic bow TORCH no-custom-entity smoke
 - cavenic bow TORCH not inheriting RAPID or SNIPE behavior
 - cavenic bow enchantment applicability
@@ -105,6 +110,7 @@ NeoForge GameTest runtime smoke covers:
 - actual Cavenic Sword and Cavenic Axe visual/client combat feel
 - actual Cavenic Bow draw, release and visual client feel
 - legacy Cavenic Bow Rapid/Torch custom projectile behavior and client feel beyond the current bounded Snipe, Rapid and Torch slices
+- the current Cavenic Bow release-semantics coverage is still server-side GameTest only, not a substitute for manual client feel validation
 - actual underwater aquamarine mining feel
 - actual brittle magnite mining feel
 - particle and sound feel

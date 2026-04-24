@@ -6,6 +6,7 @@ The later stack-local mode-state and cycling follow-up is documented separately 
 The first bounded Rapid-only behavior follow-up is documented separately in `docs/cavenic-bow-rapid-mode-mvp.md`.
 The first bounded Snipe-only behavior follow-up is documented separately in `docs/cavenic-bow-snipe-mode-mvp.md`.
 The first bounded Torch-only behavior follow-up is documented separately in `docs/cavenic-bow-torch-mode-mvp.md`.
+The later release-path stabilization follow-up is documented separately in `docs/cavenic-bow-release-semantics-mvp.md`.
 
 ## What Was Ported
 
@@ -58,6 +59,7 @@ Coverage is split across:
 - resource tests for registration, repair wiring, model and pulling texture references, recipe contents, tag contents and the absence of custom projectile or mode-state wiring;
 - documentation tests for the bounded scope and explicit legacy follow-up boundary;
 - NeoForge GameTest runtime smoke for registry id resolution, durability, repair behavior, expected bow enchantment applicability, cavenic item tag resolution and recipe manager resolution.
+- NeoForge GameTest runtime smoke for the later release-path follow-up is documented separately in `docs/cavenic-bow-release-semantics-mvp.md`.
 
 ## Asset Provenance
 

@@ -6,6 +6,7 @@ It builds on the existing baseline bow plus stack-local mode-state/cycling slice
 
 The later bounded Rapid-only follow-up is documented separately in `docs/cavenic-bow-rapid-mode-mvp.md`.
 The later bounded Torch-only follow-up is documented separately in `docs/cavenic-bow-torch-mode-mvp.md`.
+The later release-path stabilization follow-up is documented separately in `docs/cavenic-bow-release-semantics-mvp.md`.
 
 ## What This Increment Adds
 
@@ -90,3 +91,4 @@ Coverage is split across:
   - extra durability cost only when Snipe applies
   - unchanged RAPID and TORCH baseline behavior
   - continued mode persistence after firing
+- The later real release-path regression coverage is documented separately in `docs/cavenic-bow-release-semantics-mvp.md`.

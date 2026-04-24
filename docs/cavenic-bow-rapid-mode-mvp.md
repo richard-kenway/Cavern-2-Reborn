@@ -5,6 +5,7 @@ This slice adds the first bounded behavioral follow-up for `cavernreborn:cavenic
 It keeps the projectile path vanilla and changes only `RAPID` mode behavior.
 
 The later bounded Torch-only follow-up is documented separately in `docs/cavenic-bow-torch-mode-mvp.md`.
+The later release-path stabilization follow-up is documented separately in `docs/cavenic-bow-release-semantics-mvp.md`.
 
 ## What This Increment Adds
 
@@ -88,3 +89,4 @@ Coverage is split across:
   - a higher-velocity RAPID vanilla arrow entity at the same raw draw power
   - no extra durability cost in RAPID mode
   - continued SNIPE and TORCH boundaries
+- The later real release-path regression coverage is documented separately in `docs/cavenic-bow-release-semantics-mvp.md`.

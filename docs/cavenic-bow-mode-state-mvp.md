@@ -5,6 +5,7 @@ This slice adds the next bounded identity layer for `cavernreborn:cavenic_bow` w
 The first bounded Rapid-only behavior follow-up is documented separately in `docs/cavenic-bow-rapid-mode-mvp.md`.
 The first bounded Snipe-only behavior follow-up is documented separately in `docs/cavenic-bow-snipe-mode-mvp.md`.
 The first bounded Torch-only behavior follow-up is documented separately in `docs/cavenic-bow-torch-mode-mvp.md`.
+The later release-path stabilization follow-up is documented separately in `docs/cavenic-bow-release-semantics-mvp.md`.
 
 ## What This Increment Adds
 
@@ -83,3 +84,4 @@ Coverage is split across:
 - pure core tests for serialized ids, legacy mode order, wraparound and unknown-value fallback;
 - resource tests for item-state helper wiring, lang entries, unchanged pull-state assets and the absence of custom projectile or mode-specific model wiring;
 - NeoForge GameTest runtime smoke for default mode, cycling order, stack persistence, no-durability-loss cycling, no-arrow requirement for cycling and the server-side `Sneak + use` branch.
+- The later real release-path regression coverage is documented separately in `docs/cavenic-bow-release-semantics-mvp.md`.

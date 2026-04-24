@@ -73,16 +73,6 @@ public final class CavenicBowTorchEvents {
         }
 
         BlockState directState = Blocks.WALL_TORCH.defaultBlockState().setValue(WallTorchBlock.FACING, face);
-        if (directState.canSurvive(level, targetPos)) {
-            return directState;
-        }
-
-        Direction opposite = face.getOpposite();
-        if (!opposite.getAxis().isHorizontal()) {
-            return null;
-        }
-
-        BlockState oppositeState = Blocks.WALL_TORCH.defaultBlockState().setValue(WallTorchBlock.FACING, opposite);
-        return oppositeState.canSurvive(level, targetPos) ? oppositeState : null;
+        return directState.canSurvive(level, targetPos) ? directState : null;
     }
 }

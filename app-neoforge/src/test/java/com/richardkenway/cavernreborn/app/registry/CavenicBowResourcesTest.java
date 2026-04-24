@@ -84,6 +84,8 @@ class CavenicBowResourcesTest {
         assertTrue(bowSource.contains("CavenicBowSnipePolicy"));
         assertTrue(bowSource.contains("CavenicBowTorchPolicy"));
         assertTrue(bowSource.contains("TORCH_ARROW_MARKER"));
+        assertTrue(bowSource.contains("ItemStack projectile = player.getProjectile(stack);"));
+        assertTrue(bowSource.contains("List<ItemStack> drawnProjectiles = draw(stack, projectile, livingEntity);"));
         assertTrue(bowSource.contains("float rawPower = getPowerForTime(charge);"));
         assertTrue(bowSource.contains("float shotPower = resolveShotPower(stack, rawPower);"));
         assertTrue(bowSource.contains("CURRENT_SHOT_CONTEXT"));
@@ -116,6 +118,7 @@ class CavenicBowResourcesTest {
         assertTrue(torchEventSource.contains("Blocks.WALL_TORCH.defaultBlockState().setValue(WallTorchBlock.FACING, face)"));
         assertTrue(torchEventSource.contains("arrow.discard();"));
         assertTrue(torchEventSource.contains("event.setCanceled(true);"));
+        assertFalse(torchEventSource.contains("oppositeState"), "Torch placement must not fallback-attach to an unrelated opposite support");
         assertTrue(modSource.contains("NeoForge.EVENT_BUS.register(new CavenicBowTorchEvents())"));
         assertFalse(bowSource.contains("EntityRapidArrow"));
         assertFalse(bowSource.contains("EntityTorchArrow"));

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import com.richardkenway.cavernreborn.CavernReborn;
 import com.richardkenway.cavernreborn.app.block.AcresiaCropBlock;
@@ -77,6 +78,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -86,6 +88,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.WallTorchBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
@@ -124,6 +127,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_BOW_SNIPE_ANCHOR = new BlockPos(1312, 96, 0);
     private static final BlockPos CAVENIC_BOW_RAPID_ANCHOR = new BlockPos(1408, 96, 0);
     private static final BlockPos CAVENIC_BOW_TORCH_ANCHOR = new BlockPos(1504, 96, 0);
+    private static final BlockPos CAVENIC_BOW_RELEASE_ANCHOR = new BlockPos(1600, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -501,113 +505,241 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
-    public static void cavenicBowRapidModeBoostsShotPowerAndKeepsVanillaArrowAtRuntime(GameTestHelper helper) {
+    public static void cavenicBowNormalReleaseSemanticsStayVanillaAtRuntime(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
-        BlockPos normalOrigin = CAVENIC_BOW_RAPID_ANCHOR;
-        BlockPos rapidOrigin = CAVENIC_BOW_RAPID_ANCHOR.east(32);
-        float uncappedRawPower = 0.3F;
-        float cappedRawPower = 0.5F;
+        CavenicBowItem bowItem = (CavenicBowItem) ModRegistries.CAVENIC_BOW.get();
+        BlockPos survivalOrigin = CAVENIC_BOW_RELEASE_ANCHOR;
+        BlockPos noArrowOrigin = CAVENIC_BOW_RELEASE_ANCHOR.east(32);
+        BlockPos creativeOrigin = CAVENIC_BOW_RELEASE_ANCHOR.east(64);
+
+        resetMiningArea(level, survivalOrigin, 10.0D);
+        resetMiningArea(level, noArrowOrigin, 10.0D);
+        resetMiningArea(level, creativeOrigin, 10.0D);
+
+        Player survivalPlayer = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), survivalOrigin);
+        survivalPlayer.getInventory().add(new ItemStack(Items.ARROW, 2));
+        double defaultArrowDamage = createRuntimeArrow(level, survivalPlayer, survivalPlayer.getMainHandItem()).getBaseDamage();
+
+        BowReleaseResult survivalResult = releaseBowThroughRealUse(helper, survivalPlayer, BowItem.MAX_DRAW_DURATION);
+        AbstractArrow survivalArrow = singleSpawnedArrow(helper, survivalResult, "Expected NORMAL survival release to spawn exactly one arrow");
+
+        helper.assertTrue(survivalResult.useResult().consumesAction(), "Survival NORMAL use must enter the vanilla draw path when arrows are available");
+        helper.assertTrue(survivalResult.usingStarted(), "Survival NORMAL use must start item use before release");
+        helper.assertTrue("minecraft:arrow".equals(entityTypeId(survivalArrow)), "Survival NORMAL release must spawn a vanilla arrow");
+        helper.assertTrue(survivalResult.arrowCountBefore() - survivalResult.arrowCountAfter() == 1, "Survival NORMAL release must consume exactly one arrow");
+        helper.assertTrue(survivalResult.bowDamageAfter() - survivalResult.bowDamageBefore() == 1, "Survival NORMAL release must apply the vanilla single durability cost");
+        helper.assertTrue(survivalResult.torchCountBefore() == survivalResult.torchCountAfter(), "Survival NORMAL release must not consume torches");
+        helper.assertFalse(CavenicBowItem.isTorchArrow(survivalArrow), "Survival NORMAL release must not Torch-mark the projectile");
+        helper.assertTrue(Math.abs(survivalArrow.getBaseDamage() - defaultArrowDamage) < 1.0E-6D, "Survival NORMAL release must keep vanilla arrow base damage");
+        helper.assertTrue(survivalResult.modeAfter() == CavenicBowMode.NORMAL, "Survival NORMAL release must keep NORMAL mode stored");
+
+        Player noArrowPlayer = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), noArrowOrigin);
+        BowReleaseResult noArrowResult = releaseBowThroughRealUse(helper, noArrowPlayer, BowItem.MAX_DRAW_DURATION);
+
+        helper.assertTrue(noArrowResult.useResult() == InteractionResult.FAIL, "Survival NORMAL use without arrows must fail like vanilla BowItem");
+        helper.assertFalse(noArrowResult.usingStarted(), "Survival NORMAL use without arrows must not start using");
+        helper.assertTrue(newArrowCount(noArrowResult) == 0, "Survival NORMAL use without arrows must not spawn an arrow");
+        helper.assertTrue(noArrowResult.bowDamageBefore() == noArrowResult.bowDamageAfter(), "Survival NORMAL use without arrows must not damage the bow");
+        helper.assertTrue(noArrowResult.torchCountBefore() == noArrowResult.torchCountAfter(), "Survival NORMAL use without arrows must not consume torches");
+        helper.assertTrue(noArrowResult.modeAfter() == CavenicBowMode.NORMAL, "Survival NORMAL use without arrows must keep NORMAL mode stored");
+
+        Player creativePlayer = makeMockPlayer(helper, level, GameType.CREATIVE, cavenicBow(), creativeOrigin);
+        BowReleaseResult creativeResult = releaseBowThroughRealUse(helper, creativePlayer, BowItem.MAX_DRAW_DURATION);
+
+        helper.assertTrue(creativeResult.useResult().consumesAction(), "Creative NORMAL use without arrows must still start the vanilla draw path");
+        helper.assertTrue(creativeResult.usingStarted(), "Creative NORMAL use without arrows must start using");
+        helper.assertTrue(newArrowCount(creativeResult) == 0, "Creative NORMAL release without arrows must still spawn no projectile in this version");
+        helper.assertTrue(creativeResult.arrowCountBefore() == creativeResult.arrowCountAfter(), "Creative NORMAL release without arrows must not change arrow inventory");
+        helper.assertTrue(creativeResult.bowDamageBefore() == creativeResult.bowDamageAfter(), "Creative NORMAL release without arrows must not damage the bow");
+        helper.assertTrue(creativeResult.torchCountBefore() == creativeResult.torchCountAfter(), "Creative NORMAL release without arrows must not consume torches");
+        helper.assertTrue(creativeResult.modeAfter() == CavenicBowMode.NORMAL, "Creative NORMAL release without arrows must keep NORMAL mode stored");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBowInfinityNormalReleaseSemanticsStayVanillaAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        HolderLookup.RegistryLookup<Enchantment> enchantments = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        BlockPos normalOrigin = CAVENIC_BOW_RELEASE_ANCHOR.east(96);
 
         resetMiningArea(level, normalOrigin, 10.0D);
-        resetMiningArea(level, rapidOrigin, 10.0D);
 
         Player normalPlayer = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), normalOrigin);
-        Player rapidPlayer = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), rapidOrigin);
         ItemStack normalBow = normalPlayer.getMainHandItem();
+        normalBow.enchant(enchantments.getOrThrow(Enchantments.INFINITY), 1);
+        normalPlayer.getInventory().add(new ItemStack(Items.ARROW));
+
+        BowReleaseResult normalResult = releaseBowThroughRealUse(helper, normalPlayer, BowItem.MAX_DRAW_DURATION);
+
+        helper.runAfterDelay(1, () -> {
+            AbstractArrow normalArrow = singleSpawnedArrow(helper, normalResult, "Infinity NORMAL release must still fire exactly one arrow");
+            helper.assertTrue("minecraft:arrow".equals(entityTypeId(normalArrow)), "Infinity NORMAL release must keep the vanilla arrow entity");
+            helper.assertTrue(normalResult.arrowCountBefore() == normalResult.arrowCountAfter(), "Infinity NORMAL release must keep the single arrow stack intact");
+            helper.assertTrue(normalResult.bowDamageAfter() - normalResult.bowDamageBefore() == 1, "Infinity NORMAL release must still apply normal bow durability");
+            helper.assertFalse(CavenicBowItem.isTorchArrow(normalArrow), "Infinity NORMAL release must not Torch-mark the arrow");
+            helper.assertTrue(normalResult.modeAfter() == CavenicBowMode.NORMAL, "Infinity NORMAL release must keep NORMAL mode stored");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBowInfinityTorchWithoutTorchStaysUnmarkedAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        HolderLookup.RegistryLookup<Enchantment> enchantments = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        CavenicBowItem bowItem = (CavenicBowItem) ModRegistries.CAVENIC_BOW.get();
+        CavenicBowTorchEvents torchEvents = new CavenicBowTorchEvents();
+        BlockPos noTorchOrigin = CAVENIC_BOW_RELEASE_ANCHOR.east(128);
+        BlockPos torchlessSupportPos = noTorchOrigin.east(4);
+        BlockPos torchlessTargetPos = torchlessSupportPos.above();
+
+        resetMiningArea(level, noTorchOrigin, 10.0D);
+        level.setBlock(torchlessSupportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+
+        Player noTorchPlayer = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), noTorchOrigin);
+        ItemStack noTorchBow = noTorchPlayer.getMainHandItem();
+        bowItem.setMode(noTorchBow, CavenicBowMode.TORCH);
+        noTorchBow.enchant(enchantments.getOrThrow(Enchantments.INFINITY), 1);
+        noTorchPlayer.getInventory().add(new ItemStack(Items.ARROW));
+
+        BowReleaseResult noTorchResult = releaseBowThroughRealUse(helper, noTorchPlayer, BowItem.MAX_DRAW_DURATION);
+
+        helper.runAfterDelay(1, () -> {
+            AbstractArrow noTorchArrow = singleSpawnedArrow(helper, noTorchResult, "Infinity TORCH release without torches must still fire one vanilla arrow");
+            helper.assertTrue("minecraft:arrow".equals(entityTypeId(noTorchArrow)), "Infinity TORCH release without torches must keep the vanilla arrow entity");
+            helper.assertFalse(CavenicBowItem.isTorchArrow(noTorchArrow), "Infinity must not create a free Torch-marked shot when no torch item is present");
+            helper.assertTrue(noTorchResult.arrowCountBefore() == noTorchResult.arrowCountAfter(), "Infinity TORCH release without torches must still keep arrow count intact");
+            helper.assertTrue(noTorchResult.torchCountBefore() == noTorchResult.torchCountAfter(), "Infinity TORCH release without torches must not consume torches");
+            helper.assertTrue(noTorchResult.bowDamageAfter() - noTorchResult.bowDamageBefore() == 1, "Infinity TORCH release without torches must keep the normal single durability cost");
+            torchEvents.onProjectileImpact(new ProjectileImpactEvent(noTorchArrow, hitResult(torchlessSupportPos, Direction.UP)));
+            helper.assertFalse(level.getBlockState(torchlessTargetPos).is(Blocks.TORCH), "Unmarked Infinity TORCH shots must not place torches");
+            helper.assertTrue(noTorchResult.modeAfter() == CavenicBowMode.TORCH, "Infinity TORCH release without torches must keep TORCH mode stored");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBowInfinityTorchWithTorchConsumesTorchAndPlacesTorchAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        HolderLookup.RegistryLookup<Enchantment> enchantments = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        CavenicBowItem bowItem = (CavenicBowItem) ModRegistries.CAVENIC_BOW.get();
+        CavenicBowTorchEvents torchEvents = new CavenicBowTorchEvents();
+        BlockPos torchOrigin = CAVENIC_BOW_RELEASE_ANCHOR.east(160);
+        BlockPos torchSupportPos = torchOrigin.east(4);
+        BlockPos torchTargetPos = torchSupportPos.above();
+
+        resetMiningArea(level, torchOrigin, 10.0D);
+        level.setBlock(torchSupportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+
+        Player torchPlayer = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), torchOrigin);
+        ItemStack torchBow = torchPlayer.getMainHandItem();
+        bowItem.setMode(torchBow, CavenicBowMode.TORCH);
+        torchBow.enchant(enchantments.getOrThrow(Enchantments.INFINITY), 1);
+        torchPlayer.getInventory().add(new ItemStack(Items.ARROW));
+        torchPlayer.getInventory().add(new ItemStack(Items.TORCH));
+
+        BowReleaseResult torchResult = releaseBowThroughRealUse(helper, torchPlayer, BowItem.MAX_DRAW_DURATION);
+
+        helper.runAfterDelay(1, () -> {
+            AbstractArrow torchArrow = singleSpawnedArrow(helper, torchResult, "Infinity TORCH release with one torch must still fire one vanilla arrow");
+            helper.assertTrue("minecraft:arrow".equals(entityTypeId(torchArrow)), "Infinity TORCH release with one torch must keep the vanilla arrow entity");
+            helper.assertTrue(CavenicBowItem.isTorchArrow(torchArrow), "Infinity TORCH release with one torch must mark the arrow");
+            helper.assertTrue(torchResult.arrowCountBefore() == torchResult.arrowCountAfter(), "Infinity TORCH release must keep arrow count intact");
+            helper.assertTrue(torchResult.torchCountBefore() - torchResult.torchCountAfter() == 1, "Infinity TORCH release must still consume one torch");
+            helper.assertTrue(torchResult.bowDamageAfter() - torchResult.bowDamageBefore() == 1, "Infinity TORCH release must keep the normal single durability cost");
+            torchEvents.onProjectileImpact(new ProjectileImpactEvent(torchArrow, hitResult(torchSupportPos, Direction.UP)));
+            helper.assertTrue(level.getBlockState(torchTargetPos).is(Blocks.TORCH), "Marked Infinity TORCH shots must still place a standing torch");
+            helper.assertTrue(torchResult.modeAfter() == CavenicBowMode.TORCH, "Infinity TORCH release with one torch must keep TORCH mode stored");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBowRapidModeBoostsShotPowerAndKeepsVanillaArrowAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos rapidOrigin = CAVENIC_BOW_RAPID_ANCHOR.east(32);
+        int drawTicks = 6;
+        float rawPower = BowItem.getPowerForTime(drawTicks);
+        float cappedRawPower = 0.5F;
+        float expectedVanillaVelocity = rawPower * 3.0F;
+
+        resetMiningArea(level, rapidOrigin, 10.0D);
+
+        Player rapidPlayer = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), rapidOrigin);
+        rapidPlayer.getInventory().add(new ItemStack(Items.ARROW, 2));
         ItemStack rapidBow = rapidPlayer.getMainHandItem();
         CavenicBowItem bowItem = (CavenicBowItem) ModRegistries.CAVENIC_BOW.get();
+        double defaultArrowDamage = createRuntimeArrow(level, rapidPlayer, rapidBow).getBaseDamage();
 
         bowItem.setMode(rapidBow, CavenicBowMode.RAPID);
 
-        float normalShotPower = bowItem.resolveShotPower(normalBow, uncappedRawPower);
-        float rapidShotPower = bowItem.resolveShotPower(rapidBow, uncappedRawPower);
+        float rapidShotPower = bowItem.resolveShotPower(rapidBow, rawPower);
 
-        AbstractArrow normalArrow = createRuntimeArrow(level, normalPlayer, normalBow);
-        AbstractArrow rapidArrow = createRuntimeArrow(level, rapidPlayer, rapidBow);
+        BowReleaseResult rapidResult = releaseBowThroughRealUse(helper, rapidPlayer, drawTicks);
 
-        normalArrow.shootFromRotation(normalPlayer, normalPlayer.getXRot(), normalPlayer.getYRot(), 0.0F, bowItem.resolveProjectileVelocity(normalBow, normalShotPower * 3.0F, normalShotPower), 1.0F);
-        rapidArrow.shootFromRotation(rapidPlayer, rapidPlayer.getXRot(), rapidPlayer.getYRot(), 0.0F, bowItem.resolveProjectileVelocity(rapidBow, rapidShotPower * 3.0F, rapidShotPower), 1.0F);
-
-        level.addFreshEntity(normalArrow);
-        level.addFreshEntity(rapidArrow);
-
-        helper.assertTrue(Math.abs(normalShotPower - uncappedRawPower) < 1.0e-6F, "NORMAL mode must keep raw vanilla shot power");
-        helper.assertTrue(rapidShotPower > normalShotPower, "RAPID mode must increase shot power for the same draw");
-        helper.assertTrue(
-            Math.abs(rapidShotPower - uncappedRawPower * CavenicBowRapidPolicy.POWER_MULTIPLIER) < 1.0e-6F,
-            "RAPID mode must use the bounded power multiplier"
-        );
-        helper.assertTrue(
-            Math.abs(bowItem.resolveShotPower(rapidBow, cappedRawPower) - CavenicBowRapidPolicy.MAX_POWER) < 1.0e-6F,
-            "RAPID mode must cap adjusted shot power at 1.0F"
-        );
-        helper.assertTrue("minecraft:arrow".equals(entityTypeId(normalArrow)), "NORMAL mode must keep spawning a vanilla arrow");
-        helper.assertTrue("minecraft:arrow".equals(entityTypeId(rapidArrow)), "RAPID mode must keep spawning a vanilla arrow");
-        helper.assertTrue(rapidArrow.getBaseDamage() == normalArrow.getBaseDamage(), "RAPID mode must not add a SNIPE-style damage multiplier");
-        helper.assertTrue(
-            rapidArrow.getDeltaMovement().length() > normalArrow.getDeltaMovement().length(),
-            "RAPID mode must increase projectile velocity for the same raw draw power"
-        );
-        helper.assertTrue(bowItem.getMode(rapidBow) == CavenicBowMode.RAPID, "RAPID mode must remain stored on the bow stack");
-
-        normalBow.hurtAndBreak(1 + bowItem.resolveAdditionalDurabilityCost(normalBow, uncappedRawPower), normalPlayer, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
-        rapidBow.hurtAndBreak(1 + bowItem.resolveAdditionalDurabilityCost(rapidBow, rapidShotPower), rapidPlayer, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
-
-        helper.assertTrue(normalBow.getDamageValue() == 1, "NORMAL shots must keep the vanilla single durability cost");
-        helper.assertTrue(rapidBow.getDamageValue() == 1, "RAPID shots must not add extra durability cost");
-        helper.succeed();
+        helper.runAfterDelay(1, () -> {
+            AbstractArrow rapidArrow = singleSpawnedArrow(helper, rapidResult, "Expected RAPID short-draw release to spawn exactly one arrow");
+            helper.assertTrue(rapidShotPower > rawPower, "RAPID mode must increase shot power for the same draw");
+            helper.assertTrue(
+                Math.abs(rapidShotPower - rawPower * CavenicBowRapidPolicy.POWER_MULTIPLIER) < 1.0e-6F,
+                "RAPID mode must use the bounded power multiplier"
+            );
+            helper.assertTrue(
+                Math.abs(bowItem.resolveShotPower(rapidBow, cappedRawPower) - CavenicBowRapidPolicy.MAX_POWER) < 1.0e-6F,
+                "RAPID mode must cap adjusted shot power at 1.0F"
+            );
+            helper.assertTrue("minecraft:arrow".equals(entityTypeId(rapidArrow)), "RAPID mode must keep spawning a vanilla arrow");
+            helper.assertTrue(Math.abs(rapidArrow.getBaseDamage() - defaultArrowDamage) < 1.0E-6D, "RAPID mode must not add a SNIPE-style damage multiplier");
+            helper.assertTrue(
+                rapidArrow.getDeltaMovement().length() > expectedVanillaVelocity,
+                "RAPID mode must increase projectile velocity for the same raw draw power"
+            );
+            helper.assertFalse(CavenicBowItem.isTorchArrow(rapidArrow), "RAPID mode must not Torch-mark the arrow");
+            helper.assertTrue(rapidResult.arrowCountBefore() - rapidResult.arrowCountAfter() == 1, "RAPID release must consume one arrow");
+            helper.assertTrue(rapidResult.bowDamageAfter() - rapidResult.bowDamageBefore() == 1, "RAPID release must not add extra durability cost");
+            helper.assertTrue(rapidResult.modeAfter() == CavenicBowMode.RAPID, "RAPID mode must remain stored after real release");
+            helper.succeed();
+        });
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void cavenicBowSnipeModeBoostsFullChargeShotsAtRuntime(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
-        BlockPos normalOrigin = CAVENIC_BOW_SNIPE_ANCHOR;
         BlockPos snipeOrigin = CAVENIC_BOW_SNIPE_ANCHOR.east(32);
         float fullChargePower = 1.0F;
-        float baseVelocity = 3.0F;
+        float expectedVanillaVelocity = 3.0F;
 
-        resetMiningArea(level, normalOrigin, 10.0D);
         resetMiningArea(level, snipeOrigin, 10.0D);
 
-        Player normalPlayer = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), normalOrigin);
         Player snipePlayer = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), snipeOrigin);
-        ItemStack normalBow = normalPlayer.getMainHandItem();
+        snipePlayer.getInventory().add(new ItemStack(Items.ARROW, 2));
         ItemStack snipeBow = snipePlayer.getMainHandItem();
         CavenicBowItem bowItem = (CavenicBowItem) ModRegistries.CAVENIC_BOW.get();
+        double defaultArrowDamage = createRuntimeArrow(level, snipePlayer, snipeBow).getBaseDamage();
 
         bowItem.setMode(snipeBow, CavenicBowMode.SNIPE);
 
-        AbstractArrow normalArrow = createRuntimeArrow(level, normalPlayer, normalBow);
-        AbstractArrow snipeArrow = createRuntimeArrow(level, snipePlayer, snipeBow);
+        BowReleaseResult snipeResult = releaseBowThroughRealUse(helper, snipePlayer, BowItem.MAX_DRAW_DURATION);
 
-        normalArrow.shootFromRotation(normalPlayer, normalPlayer.getXRot(), normalPlayer.getYRot(), 0.0F, bowItem.resolveProjectileVelocity(normalBow, baseVelocity, fullChargePower), 1.0F);
-        snipeArrow.shootFromRotation(snipePlayer, snipePlayer.getXRot(), snipePlayer.getYRot(), 0.0F, bowItem.resolveProjectileVelocity(snipeBow, baseVelocity, fullChargePower), 1.0F);
-
-        helper.assertFalse(bowItem.applySnipeBoost(normalBow, normalArrow, fullChargePower), "NORMAL mode must not apply the bounded Snipe damage boost");
-        helper.assertTrue(bowItem.applySnipeBoost(snipeBow, snipeArrow, fullChargePower), "SNIPE mode must apply the bounded Snipe damage boost");
-
-        level.addFreshEntity(normalArrow);
-        level.addFreshEntity(snipeArrow);
-
-        helper.assertTrue("minecraft:arrow".equals(entityTypeId(normalArrow)), "NORMAL mode must still spawn a vanilla arrow");
-        helper.assertTrue("minecraft:arrow".equals(entityTypeId(snipeArrow)), "SNIPE mode must still spawn a vanilla arrow");
-        helper.assertTrue(bowItem.getMode(normalBow) == CavenicBowMode.NORMAL, "NORMAL mode must remain stored on the bow stack");
-        helper.assertTrue(bowItem.getMode(snipeBow) == CavenicBowMode.SNIPE, "SNIPE mode must remain stored after firing");
-
-        normalBow.hurtAndBreak(1 + bowItem.resolveAdditionalDurabilityCost(normalBow, fullChargePower), normalPlayer, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
-        snipeBow.hurtAndBreak(1 + bowItem.resolveAdditionalDurabilityCost(snipeBow, fullChargePower), snipePlayer, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
-
-        helper.assertTrue(normalBow.getDamageValue() == 1, "NORMAL shots must keep the vanilla single durability cost");
-        helper.assertTrue(
-            snipeBow.getDamageValue() == 1 + CavenicBowSnipePolicy.EXTRA_DURABILITY_COST,
-            "SNIPE shots must apply the vanilla bow durability cost plus the bounded Snipe surcharge"
-        );
-        helper.assertTrue(snipeArrow.getBaseDamage() > normalArrow.getBaseDamage(), "SNIPE mode must increase arrow base damage on full-charge shots");
-        helper.assertTrue(
-            snipeArrow.getDeltaMovement().length() > normalArrow.getDeltaMovement().length(),
-            "SNIPE mode must increase projectile velocity on full-charge shots"
-        );
-        helper.succeed();
+        helper.runAfterDelay(1, () -> {
+            AbstractArrow snipeArrow = singleSpawnedArrow(helper, snipeResult, "Expected SNIPE full-charge release to spawn exactly one arrow");
+            helper.assertTrue("minecraft:arrow".equals(entityTypeId(snipeArrow)), "SNIPE mode must still spawn a vanilla arrow");
+            helper.assertTrue(
+                snipeResult.bowDamageAfter() - snipeResult.bowDamageBefore() == 1 + CavenicBowSnipePolicy.EXTRA_DURABILITY_COST,
+                "SNIPE shots must apply the vanilla bow durability cost plus the bounded Snipe surcharge"
+            );
+            helper.assertTrue(snipeResult.arrowCountBefore() - snipeResult.arrowCountAfter() == 1, "SNIPE full-charge release must consume one arrow");
+            helper.assertFalse(CavenicBowItem.isTorchArrow(snipeArrow), "SNIPE full-charge release must not Torch-mark the arrow");
+            helper.assertTrue(snipeResult.modeAfter() == CavenicBowMode.SNIPE, "SNIPE mode must remain stored after real release");
+            helper.assertTrue(
+                Math.abs(snipeArrow.getBaseDamage() - CavenicBowSnipePolicy.adjustedBaseDamage(CavenicBowMode.SNIPE, defaultArrowDamage, fullChargePower)) < 1.0E-6D,
+                "SNIPE mode must increase arrow base damage on full-charge shots"
+            );
+            helper.assertTrue(
+                snipeArrow.getDeltaMovement().length() > expectedVanillaVelocity,
+                "SNIPE mode must increase projectile velocity on full-charge shots"
+            );
+            helper.succeed();
+        });
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
@@ -627,29 +759,28 @@ public final class CavernSpecialOreGameTests {
         ItemStack bow = player.getMainHandItem();
         CavenicBowItem bowItem = (CavenicBowItem) ModRegistries.CAVENIC_BOW.get();
         CavenicBowTorchEvents torchEvents = new CavenicBowTorchEvents();
+        double defaultArrowDamage = createRuntimeArrow(level, player, bow).getBaseDamage();
         bowItem.setMode(bow, CavenicBowMode.TORCH);
 
-        int initialTorchCount = countPlayerItem(player, Items.TORCH);
-        float shotPower = bowItem.resolveShotPower(bow, 1.0F);
-        AbstractArrow arrow = createRuntimeArrow(level, player, bow);
-        level.addFreshEntity(arrow);
+        BowReleaseResult torchResult = releaseBowThroughRealUse(helper, player, BowItem.MAX_DRAW_DURATION);
 
-        helper.assertTrue(shotPower == 1.0F, "TORCH mode must keep raw vanilla shot power");
-        helper.assertTrue(bowItem.shouldMarkTorchShot(bow, player, shotPower), "TORCH mode should mark a shot when survival inventory contains a torch");
-        helper.assertTrue(bowItem.consumeTorchAmmo(player), "TORCH mode should consume one torch for a marked survival shot");
-        CavenicBowItem.markTorchArrow(arrow);
+        helper.runAfterDelay(1, () -> {
+            AbstractArrow arrow = singleSpawnedArrow(helper, torchResult, "Expected TORCH full-charge release to spawn exactly one arrow");
+            torchEvents.onProjectileImpact(new ProjectileImpactEvent(arrow, hitResult(supportPos, Direction.UP)));
 
-        torchEvents.onProjectileImpact(new ProjectileImpactEvent(arrow, hitResult(supportPos, Direction.UP)));
-
-        helper.assertTrue("minecraft:arrow".equals(entityTypeId(arrow)), "TORCH mode must still use a vanilla arrow entity");
-        helper.assertTrue(bowItem.getMode(bow) == CavenicBowMode.TORCH, "TORCH mode must remain stored on the stack");
-        helper.assertTrue(countPlayerItem(player, Items.TORCH) == initialTorchCount - 1, "Marked TORCH shots must consume exactly one torch in survival");
-        helper.assertTrue(level.getBlockState(torchPos).is(Blocks.TORCH), "TORCH mode should place a standing torch on a valid top-face hit");
-
-        bow.hurtAndBreak(1 + bowItem.resolveAdditionalDurabilityCost(bow, shotPower), player, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
-        helper.assertTrue(bow.getDamageValue() == 1, "TORCH mode must keep the vanilla single durability cost");
-        helper.assertTrue(CavenicBowTorchPolicy.EXTRA_DURABILITY_COST == 0, "TORCH mode must not add extra durability cost");
-        helper.succeed();
+            helper.assertTrue("minecraft:arrow".equals(entityTypeId(arrow)), "TORCH mode must still use a vanilla arrow entity");
+            helper.assertTrue(CavenicBowItem.isTorchArrow(arrow), "TORCH mode must mark the actual vanilla arrow on real release");
+            helper.assertTrue(torchResult.modeAfter() == CavenicBowMode.TORCH, "TORCH mode must remain stored on the stack");
+            helper.assertTrue(torchResult.arrowCountBefore() - torchResult.arrowCountAfter() == 1, "TORCH release must consume one arrow by normal vanilla rules");
+            helper.assertTrue(torchResult.torchCountBefore() - torchResult.torchCountAfter() == 1, "Marked TORCH shots must consume exactly one torch in survival");
+            helper.assertTrue(level.getBlockState(torchPos).is(Blocks.TORCH), "TORCH mode should place a standing torch on a valid top-face hit");
+            helper.assertTrue(torchResult.bowDamageAfter() - torchResult.bowDamageBefore() == 1, "TORCH mode must keep the vanilla single durability cost");
+            helper.assertTrue(CavenicBowTorchPolicy.EXTRA_DURABILITY_COST == 0, "TORCH mode must not add extra durability cost");
+            helper.assertTrue(Math.abs(arrow.getBaseDamage() - defaultArrowDamage) < 1.0E-6D, "TORCH mode must not add a SNIPE-style damage multiplier");
+            helper.assertTrue(arrow.getDeltaMovement().length() > 2.5D, "TORCH mode must keep a normal full-charge vanilla-arrow speed band");
+            helper.assertTrue(arrow.getDeltaMovement().length() < 3.2D, "TORCH mode must not add RAPID or SNIPE projectile speed");
+            helper.succeed();
+        });
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
@@ -658,19 +789,28 @@ public final class CavernSpecialOreGameTests {
         BlockPos origin = CAVENIC_BOW_TORCH_ANCHOR.east(32);
         BlockPos wallSupportPos = origin.east(4);
         BlockPos wallTorchPos = wallSupportPos.east();
-        BlockPos occupiedSupportPos = origin.east(10);
+        BlockPos invalidSupportPos = origin.east(10);
+        BlockPos invalidTargetPos = invalidSupportPos.east();
+        BlockPos oppositeSupportPos = invalidTargetPos.east();
+        BlockPos occupiedSupportPos = origin.east(16);
         BlockPos occupiedTargetPos = occupiedSupportPos.above();
-        BlockPos wetSupportPos = origin.east(16);
+        BlockPos wetSupportPos = origin.east(22);
         BlockPos wetTargetPos = wetSupportPos.above();
-        BlockPos noTorchSupportPos = origin.east(22);
+        BlockPos downSupportPos = origin.east(28);
+        BlockPos downTargetPos = downSupportPos.below();
+        BlockPos entityAnchorPos = origin.east(34);
+        BlockPos noTorchSupportPos = origin.east(40);
         BlockPos noTorchTargetPos = noTorchSupportPos.above();
 
-        resetMiningArea(level, origin, 16.0D);
+        resetMiningArea(level, origin, 24.0D);
         level.setBlock(wallSupportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(invalidSupportPos, Blocks.COBWEB.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(oppositeSupportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
         level.setBlock(occupiedSupportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
         level.setBlock(occupiedTargetPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
         level.setBlock(wetSupportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
         level.setBlock(wetTargetPos, Blocks.WATER.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(downSupportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
         level.setBlock(noTorchSupportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
 
         CavenicBowItem bowItem = (CavenicBowItem) ModRegistries.CAVENIC_BOW.get();
@@ -679,45 +819,56 @@ public final class CavernSpecialOreGameTests {
         Player creativePlayer = makeMockPlayer(helper, level, GameType.CREATIVE, cavenicBow(), origin);
         ItemStack creativeBow = creativePlayer.getMainHandItem();
         bowItem.setMode(creativeBow, CavenicBowMode.TORCH);
+        creativePlayer.getInventory().add(new ItemStack(Items.ARROW));
         helper.assertFalse(bowItem.hasTorchAmmo(creativePlayer), "Creative TORCH-mode smoke should not require a torch stack in inventory");
         helper.assertTrue(bowItem.shouldMarkTorchShot(creativeBow, creativePlayer, 1.0F), "Creative TORCH shots should still be eligible for marking");
 
-        AbstractArrow wallArrow = createRuntimeArrow(level, creativePlayer, creativeBow);
-        level.addFreshEntity(wallArrow);
-        CavenicBowItem.markTorchArrow(wallArrow);
+        BowReleaseResult wallResult = releaseBowThroughRealUse(helper, creativePlayer, BowItem.MAX_DRAW_DURATION);
+        AbstractArrow wallArrow = singleSpawnedArrow(helper, wallResult, "Creative TORCH release must spawn one marked vanilla arrow");
         torchEvents.onProjectileImpact(new ProjectileImpactEvent(wallArrow, hitResult(wallSupportPos, Direction.EAST)));
 
         helper.assertTrue("minecraft:arrow".equals(entityTypeId(wallArrow)), "Creative TORCH mode must still use a vanilla arrow entity");
+        helper.assertTrue(CavenicBowItem.isTorchArrow(wallArrow), "Creative TORCH release must mark the actual vanilla arrow");
         helper.assertTrue(level.getBlockState(wallTorchPos).is(Blocks.WALL_TORCH), "TORCH mode should place a wall torch on a valid horizontal-face hit");
+        helper.assertTrue(level.getBlockState(wallTorchPos).getValue(WallTorchBlock.FACING) == Direction.EAST, "Wall torch orientation must match the impacted horizontal face");
         helper.assertTrue(countPlayerItem(creativePlayer, Items.TORCH) == 0, "Creative TORCH shots must not consume torches");
 
-        AbstractArrow occupiedArrow = createRuntimeArrow(level, creativePlayer, creativeBow);
-        level.addFreshEntity(occupiedArrow);
-        CavenicBowItem.markTorchArrow(occupiedArrow);
+        BowReleaseResult invalidSupportResult = releaseBowThroughRealUse(helper, creativePlayer, BowItem.MAX_DRAW_DURATION);
+        AbstractArrow invalidSupportArrow = singleSpawnedArrow(helper, invalidSupportResult, "Creative TORCH release should keep spawning vanilla arrows for invalid support checks");
+        torchEvents.onProjectileImpact(new ProjectileImpactEvent(invalidSupportArrow, hitResult(invalidSupportPos, Direction.EAST)));
+        helper.assertTrue(level.getBlockState(invalidTargetPos).isAir(), "TORCH placement must not fallback-attach to an unrelated opposite support block");
+
+        BowReleaseResult occupiedResult = releaseBowThroughRealUse(helper, creativePlayer, BowItem.MAX_DRAW_DURATION);
+        AbstractArrow occupiedArrow = singleSpawnedArrow(helper, occupiedResult, "Creative TORCH release should keep spawning vanilla arrows for occupied-target checks");
         torchEvents.onProjectileImpact(new ProjectileImpactEvent(occupiedArrow, hitResult(occupiedSupportPos, Direction.UP)));
         helper.assertTrue(level.getBlockState(occupiedTargetPos).is(Blocks.STONE), "TORCH mode must not replace occupied non-replaceable targets");
 
-        AbstractArrow wetArrow = createRuntimeArrow(level, creativePlayer, creativeBow);
-        level.addFreshEntity(wetArrow);
-        CavenicBowItem.markTorchArrow(wetArrow);
+        BowReleaseResult wetResult = releaseBowThroughRealUse(helper, creativePlayer, BowItem.MAX_DRAW_DURATION);
+        AbstractArrow wetArrow = singleSpawnedArrow(helper, wetResult, "Creative TORCH release should keep spawning vanilla arrows for liquid-target checks");
         torchEvents.onProjectileImpact(new ProjectileImpactEvent(wetArrow, hitResult(wetSupportPos, Direction.UP)));
         helper.assertTrue(level.getBlockState(wetTargetPos).is(Blocks.WATER), "TORCH mode must not replace liquids");
 
-        AbstractArrow entityHitArrow = createRuntimeArrow(level, creativePlayer, creativeBow);
-        level.addFreshEntity(entityHitArrow);
-        CavenicBowItem.markTorchArrow(entityHitArrow);
+        BowReleaseResult downResult = releaseBowThroughRealUse(helper, creativePlayer, BowItem.MAX_DRAW_DURATION);
+        AbstractArrow downArrow = singleSpawnedArrow(helper, downResult, "Creative TORCH release should keep spawning vanilla arrows for bottom-face checks");
+        torchEvents.onProjectileImpact(new ProjectileImpactEvent(downArrow, hitResult(downSupportPos, Direction.DOWN)));
+        helper.assertTrue(level.getBlockState(downTargetPos).isAir(), "TORCH mode must ignore bottom-face hits");
+
+        BowReleaseResult entityHitResult = releaseBowThroughRealUse(helper, creativePlayer, BowItem.MAX_DRAW_DURATION);
+        AbstractArrow entityHitArrow = singleSpawnedArrow(helper, entityHitResult, "Creative TORCH release should keep spawning vanilla arrows for entity-hit checks");
         torchEvents.onProjectileImpact(new ProjectileImpactEvent(entityHitArrow, new EntityHitResult(creativePlayer)));
-        helper.assertTrue(level.getBlockState(origin.above()).isAir(), "Entity hits must not place torches");
+        helper.assertTrue(level.getBlockState(entityAnchorPos.above()).isAir(), "Entity hits must not place torches");
 
         Player survivalPlayer = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), origin.north(6));
         ItemStack survivalBow = survivalPlayer.getMainHandItem();
         bowItem.setMode(survivalBow, CavenicBowMode.TORCH);
+        survivalPlayer.getInventory().add(new ItemStack(Items.ARROW));
         helper.assertFalse(bowItem.shouldMarkTorchShot(survivalBow, survivalPlayer, 1.0F), "Survival TORCH shots without torch ammo must stay unmarked");
 
-        AbstractArrow unmarkedArrow = createRuntimeArrow(level, survivalPlayer, survivalBow);
-        level.addFreshEntity(unmarkedArrow);
+        BowReleaseResult unmarkedResult = releaseBowThroughRealUse(helper, survivalPlayer, BowItem.MAX_DRAW_DURATION);
+        AbstractArrow unmarkedArrow = singleSpawnedArrow(helper, unmarkedResult, "Survival TORCH release without torch ammo must still fire one vanilla arrow");
         torchEvents.onProjectileImpact(new ProjectileImpactEvent(unmarkedArrow, hitResult(noTorchSupportPos, Direction.UP)));
 
+        helper.assertTrue(unmarkedResult.arrowCountBefore() - unmarkedResult.arrowCountAfter() == 1, "Survival TORCH release without torch ammo must still consume one arrow");
         helper.assertFalse(CavenicBowItem.isTorchArrow(unmarkedArrow), "No-torch survival shots must not be Torch-marked");
         helper.assertFalse(level.getBlockState(noTorchTargetPos).is(Blocks.TORCH), "No-torch survival TORCH shots must not place a torch");
         helper.assertTrue(bowItem.resolveShotPower(survivalBow, 0.5F) == 0.5F, "TORCH mode must not inherit RAPID shot power behavior");
@@ -2071,6 +2222,88 @@ public final class CavernSpecialOreGameTests {
         return ((ArrowItem) Items.ARROW).createArrow(level, new ItemStack(Items.ARROW), player, bow);
     }
 
+    private static BowReleaseResult releaseBowThroughRealUse(GameTestHelper helper, Player player, int chargeTicks) {
+        ServerLevel level = helper.getLevel();
+        ItemStack bow = player.getMainHandItem();
+        CavenicBowItem bowItem = (CavenicBowItem) bow.getItem();
+        BlockPos origin = player.blockPosition();
+        Set<UUID> beforeArrowIds = arrowsAround(level, origin, 16.0D).stream()
+            .map(Entity::getUUID)
+            .collect(java.util.stream.Collectors.toSet());
+        int arrowCountBefore = countPlayerItem(player, Items.ARROW);
+        int torchCountBefore = countPlayerItem(player, Items.TORCH);
+        int bowDamageBefore = bow.getDamageValue();
+        InteractionResultHolder<ItemStack> useResult = bowItem.use(level, player, InteractionHand.MAIN_HAND);
+        boolean usingStarted = player.isUsingItem();
+
+        if (usingStarted) {
+            int timeLeft = bowItem.getUseDuration(bow, player) - chargeTicks;
+            bowItem.releaseUsing(bow, level, player, timeLeft);
+            player.stopUsingItem();
+        }
+
+        return new BowReleaseResult(
+            level,
+            origin,
+            player.getUUID(),
+            beforeArrowIds,
+            useResult.getResult(),
+            usingStarted,
+            arrowCountBefore,
+            countPlayerItem(player, Items.ARROW),
+            torchCountBefore,
+            countPlayerItem(player, Items.TORCH),
+            bowDamageBefore,
+            bow.getDamageValue(),
+            bowItem.getMode(bow)
+        );
+    }
+
+    private static AbstractArrow singleSpawnedArrow(GameTestHelper helper, BowReleaseResult result, String message) {
+        List<AbstractArrow> spawnedArrows = newArrows(result);
+        helper.assertTrue(
+            spawnedArrows.size() == 1,
+            message
+                + " but got "
+                + spawnedArrows.size()
+                + " (useResult="
+                + result.useResult()
+                + ", usingStarted="
+                + result.usingStarted()
+                + ", arrows="
+                + result.arrowCountBefore()
+                + "->"
+                + result.arrowCountAfter()
+                + ", torches="
+                + result.torchCountBefore()
+                + "->"
+                + result.torchCountAfter()
+                + ", bowDamage="
+                + result.bowDamageBefore()
+                + "->"
+                + result.bowDamageAfter()
+                + ", modeAfter="
+                + result.modeAfter()
+                + ")"
+        );
+        return spawnedArrows.getFirst();
+    }
+
+    private static int newArrowCount(BowReleaseResult result) {
+        return newArrows(result).size();
+    }
+
+    private static List<AbstractArrow> newArrows(BowReleaseResult result) {
+        return arrowsAround(result.level(), result.origin(), 32.0D).stream()
+            .filter(arrow -> arrow.getOwner() != null && arrow.getOwner().getUUID().equals(result.shooterId()))
+            .filter(arrow -> !result.beforeArrowIds().contains(arrow.getUUID()))
+            .toList();
+    }
+
+    private static List<AbstractArrow> arrowsAround(ServerLevel level, BlockPos center, double radius) {
+        return level.getEntitiesOfClass(AbstractArrow.class, new AABB(center).inflate(radius));
+    }
+
     private static ItemStack aquamarineAxe() {
         return new ItemStack(ModRegistries.AQUAMARINE_AXE.get());
     }
@@ -2232,6 +2465,10 @@ public final class CavernSpecialOreGameTests {
 
     private static Player makeMockPlayer(GameTestHelper helper, ServerLevel level, GameType gameType, ItemStack tool, BlockPos origin) {
         Player player = helper.makeMockPlayer(gameType);
+        player.getAbilities().instabuild = gameType.isCreative();
+        player.getAbilities().mayfly = gameType.isCreative();
+        player.getAbilities().flying = false;
+        player.getAbilities().invulnerable = gameType.isCreative();
         player.setItemInHand(InteractionHand.MAIN_HAND, tool);
         player.teleportTo(level, origin.getX() + 0.5D, origin.getY() + 1.0D, origin.getZ() + 0.5D, EnumSet.noneOf(RelativeMovement.class), 0.0F, 0.0F);
         return player;
@@ -2335,5 +2572,22 @@ public final class CavernSpecialOreGameTests {
                 }
             }
         }
+    }
+
+    private record BowReleaseResult(
+        ServerLevel level,
+        BlockPos origin,
+        UUID shooterId,
+        Set<UUID> beforeArrowIds,
+        InteractionResult useResult,
+        boolean usingStarted,
+        int arrowCountBefore,
+        int arrowCountAfter,
+        int torchCountBefore,
+        int torchCountAfter,
+        int bowDamageBefore,
+        int bowDamageAfter,
+        CavenicBowMode modeAfter
+    ) {
     }
 }
