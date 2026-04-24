@@ -55,8 +55,9 @@ The legacy repo contains a direct `EntityCavenicZombie`, so this increment keeps
 
 ## Natural Spawning
 
-- Natural spawning is intentionally out of scope for this baseline MVP.
-- The current slice is spawn-egg driven so entity registration, attributes, assets and runtime spawning can be stabilized before biome or dimension balance is touched.
+- Natural spawning was intentionally left out of scope for this baseline MVP.
+- The spawn-egg-driven slice stabilized entity registration, attributes, assets and runtime spawning first.
+- Natural spawning is now documented separately in `docs/cavenic-zombie-natural-spawn-mvp.md`.
 
 ## Testing
 

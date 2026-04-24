@@ -14,6 +14,7 @@ import com.richardkenway.cavernreborn.app.compass.OreCompassStateAccess;
 import com.richardkenway.cavernreborn.app.compass.OreCompassScanner;
 import com.richardkenway.cavernreborn.app.compass.OreCompassTarget;
 import com.richardkenway.cavernreborn.app.compass.StoredOreCompassTarget;
+import com.richardkenway.cavernreborn.app.dimension.CavernNeoForgeDimensions;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombie;
 import com.richardkenway.cavernreborn.app.item.CavenicBowTorchEvents;
 import com.richardkenway.cavernreborn.app.item.CavenicBowItem;
@@ -54,6 +55,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
+import net.minecraft.tags.TagKey;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -62,8 +64,11 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.SpawnPlacementTypes;
+import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
@@ -97,15 +102,18 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.WallTorchBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 @GameTestHolder(CavernReborn.MOD_ID)
 @PrefixGameTestTemplate(false)
@@ -137,6 +145,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_BOW_RELEASE_ANCHOR = new BlockPos(1600, 96, 0);
     private static final BlockPos CAVENIC_ZOMBIE_ANCHOR = new BlockPos(1696, 96, 0);
     private static final BlockPos CAVENIC_ZOMBIE_SPAWN_EGG_ANCHOR = new BlockPos(1792, 96, 0);
+    private static final BlockPos CAVENIC_ZOMBIE_NATURAL_SPAWN_ANCHOR = new BlockPos(1888, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -448,6 +457,71 @@ public final class CavernSpecialOreGameTests {
 
         helper.assertTrue(spawnedEntity instanceof CavenicZombie, "Expected spawn egg to create a CavenicZombie runtime entity");
         helper.assertTrue(spawnedEntity != null && spawnedEntity.isAlive(), "Expected spawned cavenic zombie to be alive");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicZombieNaturalSpawnPlacementIsRegisteredAndCavernOnly(GameTestHelper helper) {
+        ServerLevel overworldLevel = helper.getLevel().getServer().getLevel(Level.OVERWORLD);
+        BlockPos spawnPos = CAVENIC_ZOMBIE_NATURAL_SPAWN_ANCHOR;
+        RandomSource random = RandomSource.create(1234L);
+
+        helper.assertTrue(overworldLevel != null, "Expected overworld level to resolve for spawn predicate smoke");
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CAVENIC_ZOMBIE.get()) == SpawnPlacementTypes.ON_GROUND,
+            "Expected cavenic zombie spawn placement type to mirror zombie ground spawning"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getHeightmapType(ModRegistries.CAVENIC_ZOMBIE.get()) == Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+            "Expected cavenic zombie spawn heightmap to mirror zombie spawning"
+        );
+        helper.assertTrue(
+            CavenicZombie.canNaturallySpawnInDimension(CavernNeoForgeDimensions.CAVERN_LEVEL_KEY),
+            "Expected cavenic zombie natural-spawn helper to allow the configured CAVERN level key"
+        );
+        helper.assertFalse(
+            CavenicZombie.canNaturallySpawnInDimension(Level.OVERWORLD),
+            "Expected cavenic zombie natural-spawn helper to reject overworld spawning"
+        );
+
+        prepareNaturalSpawnPlatform(overworldLevel, spawnPos);
+        helper.assertTrue(
+            SpawnPlacements.isSpawnPositionOk(ModRegistries.CAVENIC_ZOMBIE.get(), overworldLevel, spawnPos),
+            "Expected prepared spawn position to satisfy ON_GROUND placement"
+        );
+        helper.assertFalse(
+            SpawnPlacements.checkSpawnRules(ModRegistries.CAVENIC_ZOMBIE.get(), overworldLevel, MobSpawnType.SPAWNER, spawnPos, random),
+            "Expected registered cavenic zombie spawn rules to reject overworld spawning"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicZombieNaturalSpawnDataResolvesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_cavenic_zombie"));
+
+        assertRegistryKeyPresent(helper, biomeModifiers, NeoForgeRegistries.Keys.BIOME_MODIFIERS, "cavernreborn:cavenic_zombie_spawns");
+        helper.assertTrue(biomes.getTag(spawnTag).isPresent(), "Expected cavenic zombie spawn biome tag to resolve at runtime");
+
+        Set<String> taggedBiomes = biomes.getTag(spawnTag)
+            .orElseThrow()
+            .stream()
+            .flatMap(holder -> holder.unwrapKey().stream())
+            .map(key -> key.location().toString())
+            .collect(java.util.stream.Collectors.toSet());
+
+        helper.assertTrue(
+            taggedBiomes.equals(Set.of(
+                "cavernreborn:stone_depths",
+                "cavernreborn:lush_grotto",
+                "cavernreborn:dripstone_grotto",
+                "cavernreborn:highland_hollows"
+            )),
+            "Expected cavenic zombie natural-spawn tag to stay scoped to the four CAVERN biomes"
+        );
         helper.succeed();
     }
 
@@ -2649,6 +2723,13 @@ public final class CavernSpecialOreGameTests {
                 }
             }
         }
+    }
+
+    private static void prepareNaturalSpawnPlatform(ServerLevel level, BlockPos spawnPos) {
+        resetMiningArea(level, spawnPos, 6.0D);
+        level.setBlock(spawnPos.below(), Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(spawnPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(spawnPos.above(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
     }
 
     private record BowReleaseResult(

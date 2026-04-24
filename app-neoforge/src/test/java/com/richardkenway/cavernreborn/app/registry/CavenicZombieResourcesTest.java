@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 import org.junit.jupiter.api.Test;
 
@@ -58,10 +59,22 @@ class CavenicZombieResourcesTest {
         assertTrue(entitySource.contains(".add(Attributes.FOLLOW_RANGE, 50.0D)"));
         assertTrue(entitySource.contains(".add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)"));
         assertTrue(entitySource.contains(".add(Attributes.ATTACK_DAMAGE, 5.0D)"));
+        assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_WEIGHT = 30;"));
+        assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_MIN_COUNT = 2;"));
+        assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_MAX_COUNT = 2;"));
+        assertTrue(entitySource.contains("canNaturallySpawnInDimension"));
+        assertTrue(entitySource.contains("checkCavenicZombieSpawnRules"));
+        assertTrue(entitySource.contains("CavernNeoForgeDimensions.isCavern"));
+        assertTrue(entitySource.contains("Monster.checkMonsterSpawnRules"));
         assertTrue(entitySource.contains("return EntityType.ZOMBIE.getDefaultLootTable();"));
 
         assertTrue(entityEventSource.contains("EntityAttributeCreationEvent"));
         assertTrue(entityEventSource.contains("event.put(ModRegistries.CAVENIC_ZOMBIE.get(), CavenicZombie.createAttributes().build())"));
+        assertTrue(entityEventSource.contains("RegisterSpawnPlacementsEvent"));
+        assertTrue(entityEventSource.contains("SpawnPlacementTypes.ON_GROUND"));
+        assertTrue(entityEventSource.contains("Heightmap.Types.MOTION_BLOCKING_NO_LEAVES"));
+        assertTrue(entityEventSource.contains("CavenicZombie::checkCavenicZombieSpawnRules"));
+        assertTrue(entityEventSource.contains("RegisterSpawnPlacementsEvent.Operation.REPLACE"));
 
         assertTrue(clientSource.contains("event.registerEntityRenderer(ModRegistries.CAVENIC_ZOMBIE.get(), CavenicZombieRenderer::new);"));
         assertTrue(rendererSource.contains("extends ZombieRenderer"));
@@ -73,23 +86,45 @@ class CavenicZombieResourcesTest {
         assertFalse(registriesSource.contains("cavenic_witch"));
         assertFalse(registriesSource.contains("cavenic_bear"));
         assertFalse(registriesSource.toLowerCase().contains("cavenia"));
-        assertFalse(entityEventSource.contains("RegisterSpawnPlacementsEvent"));
         assertFalse(generatedResourcesContain("cavenic_zombie"));
         assertFalse(registriesSource.contains("EntityRapidArrow"));
         assertFalse(registriesSource.contains("EntityTorchArrow"));
     }
 
     @Test
-    void cavenicZombieResourcesCoverLangSpawnEggModelAndTextureClasspath() throws IOException {
+    void cavenicZombieResourcesCoverLangSpawnEggModelTextureAndNaturalSpawnDataClasspath() throws IOException {
         JsonObject lang = readJsonResource("assets/cavernreborn/lang/en_us.json");
         JsonObject spawnEggModel = readJsonResource("assets/cavernreborn/models/item/cavenic_zombie_spawn_egg.json");
+        JsonObject biomeModifier = readJsonResource("data/cavernreborn/neoforge/biome_modifier/cavenic_zombie_spawns.json");
+        JsonObject biomeTag = readJsonResource("data/cavernreborn/tags/worldgen/biome/spawns_cavenic_zombie.json");
 
         assertEquals("Cavenic Zombie", lang.get("entity.cavernreborn.cavenic_zombie").getAsString());
         assertEquals("Cavenic Zombie Spawn Egg", lang.get("item.cavernreborn.cavenic_zombie_spawn_egg").getAsString());
         assertEquals("minecraft:item/template_spawn_egg", spawnEggModel.get("parent").getAsString());
+        assertEquals("neoforge:add_spawns", biomeModifier.get("type").getAsString());
+        assertEquals("#cavernreborn:spawns_cavenic_zombie", biomeModifier.get("biomes").getAsString());
+
+        JsonObject spawner = biomeModifier.getAsJsonObject("spawners");
+        assertEquals("cavernreborn:cavenic_zombie", spawner.get("type").getAsString());
+        assertEquals(30, spawner.get("weight").getAsInt());
+        assertEquals(2, spawner.get("minCount").getAsInt());
+        assertEquals(2, spawner.get("maxCount").getAsInt());
+
+        assertFalse(biomeTag.get("replace").getAsBoolean());
+        List<String> biomeValues = StreamSupport.stream(biomeTag.getAsJsonArray("values").spliterator(), false)
+            .map(element -> element.getAsString())
+            .toList();
+        assertEquals(List.of(
+            "cavernreborn:stone_depths",
+            "cavernreborn:lush_grotto",
+            "cavernreborn:dripstone_grotto",
+            "cavernreborn:highland_hollows"
+        ), biomeValues);
 
         assertClassPathOrigin(resourceUrl("assets/cavernreborn/models/item/cavenic_zombie_spawn_egg.json"), "assets/cavernreborn/models/item/cavenic_zombie_spawn_egg.json");
         assertClassPathOrigin(resourceUrl("assets/cavernreborn/textures/entity/cavenic_zombie.png"), "assets/cavernreborn/textures/entity/cavenic_zombie.png");
+        assertClassPathOrigin(resourceUrl("data/cavernreborn/neoforge/biome_modifier/cavenic_zombie_spawns.json"), "data/cavernreborn/neoforge/biome_modifier/cavenic_zombie_spawns.json");
+        assertClassPathOrigin(resourceUrl("data/cavernreborn/tags/worldgen/biome/spawns_cavenic_zombie.json"), "data/cavernreborn/tags/worldgen/biome/spawns_cavenic_zombie.json");
         assertMissingResource("data/cavernreborn/loot_table/entities/cavenic_zombie.json");
     }
 

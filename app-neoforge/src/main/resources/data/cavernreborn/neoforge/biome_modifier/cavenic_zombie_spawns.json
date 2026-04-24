@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "#cavernreborn:spawns_cavenic_zombie",
+  "spawners": {
+    "type": "cavernreborn:cavenic_zombie",
+    "weight": 30,
+    "minCount": 2,
+    "maxCount": 2
+  }
+}
