@@ -429,6 +429,28 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicSwordDurabilityLossWithoutCooldownRuntimeSmoke(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos playerPos = helper.absolutePos(new BlockPos(1, 1, 1));
+
+        helper.killAllEntities();
+        ItemStack sword = cavenicSword();
+        Player player = makeMockPlayer(helper, level, GameType.SURVIVAL, sword, playerPos);
+        LivingEntity target = spawnLivingEntity(helper, EntityType.ZOMBIE, new BlockPos(3, 1, 1));
+        target.invulnerableTime = 0;
+        target.hurtTime = 0;
+        target.hurtDuration = 0;
+
+        sword.getItem().postHurtEnemy(sword, target, player);
+
+        helper.assertTrue(target.invulnerableTime == 0, "Expected cavenic sword to leave inactive invulnerability cooldown unchanged");
+        helper.assertTrue(target.hurtTime == 0, "Expected cavenic sword to leave inactive hurt cooldown unchanged");
+        helper.assertTrue(target.hurtDuration == 0, "Expected cavenic sword to leave inactive hurt duration unchanged");
+        helper.assertTrue(sword.getDamageValue() == 1, "Expected cavenic sword to take one durability on a server-side hit without cooldown reset");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void cavenicAxeSmashRuntimeSmoke(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos playerPos = helper.absolutePos(new BlockPos(1, 1, 1));

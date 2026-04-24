@@ -101,11 +101,11 @@ public final class ModRegistries {
     public static final DeferredItem<Item> CAVENIC_SWORD = ITEMS.register("cavenic_sword",
         () -> new CavenicSwordItem(
             ModToolTiers.CAVENIC,
-            new Item.Properties().attributes(SwordItem.createAttributes(ModToolTiers.CAVENIC, 3, -2.4F))));
+            new Item.Properties().attributes(SwordItem.createAttributes(ModToolTiers.CAVENIC, 3, -1.0F))));
     public static final DeferredItem<Item> CAVENIC_AXE = ITEMS.register("cavenic_axe",
         () -> new CavenicAxeItem(
             ModToolTiers.CAVENIC,
-            new Item.Properties().attributes(AxeItem.createAttributes(ModToolTiers.CAVENIC, 5.0F, -3.0F))));
+            new Item.Properties().attributes(AxeItem.createAttributes(ModToolTiers.CAVENIC, 8.0F, -3.05F))));
     public static final DeferredItem<Item> ORE_COMPASS = ITEMS.register(
         "ore_compass",
         () -> new OreCompassItem(new Item.Properties().stacksTo(1))

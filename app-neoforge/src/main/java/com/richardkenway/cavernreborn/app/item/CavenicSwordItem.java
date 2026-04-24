@@ -18,13 +18,12 @@ public final class CavenicSwordItem extends SwordItem {
         if (target.level().isClientSide()) {
             return;
         }
-        if (!CavenicSwordHitPolicy.shouldResetCooldown(target.invulnerableTime, target.hurtTime)) {
-            return;
+        if (CavenicSwordHitPolicy.shouldResetCooldown(target.invulnerableTime, target.hurtTime)) {
+            target.invulnerableTime = 0;
+            target.hurtTime = 0;
+            target.hurtDuration = 0;
         }
 
-        target.invulnerableTime = 0;
-        target.hurtTime = 0;
-        target.hurtDuration = 0;
         stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
     }
 }
