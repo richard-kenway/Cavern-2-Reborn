@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 import org.junit.jupiter.api.Test;
 
@@ -57,15 +58,24 @@ class CavenicSkeletonResourcesTest {
         assertTrue(entitySource.contains(".add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)"));
         assertTrue(entitySource.contains(".add(Attributes.MOVEMENT_SPEED, 0.2D)"));
         assertTrue(entitySource.contains(".add(Attributes.FOLLOW_RANGE, 21.0D)"));
+        assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_WEIGHT = 20;"));
+        assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_MIN_COUNT = 1;"));
+        assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_MAX_COUNT = 1;"));
+        assertTrue(entitySource.contains("canNaturallySpawnInDimension"));
+        assertTrue(entitySource.contains("checkCavenicSkeletonSpawnRules"));
+        assertTrue(entitySource.contains("CavernNeoForgeDimensions.isCavern"));
+        assertTrue(entitySource.contains("Monster.checkMonsterSpawnRules"));
         assertTrue(entitySource.contains("return EntityType.SKELETON.getDefaultLootTable();"));
-        assertFalse(entitySource.contains("checkCavenicSkeletonSpawnRules"));
-        assertFalse(entitySource.contains("canNaturallySpawnInDimension"));
         assertFalse(entitySource.contains("cavenic_orb"));
         assertFalse(entitySource.contains("DamageTypeTags.IS_FALL"));
         assertFalse(entitySource.contains("DamageTypeTags.IS_FIRE"));
 
         assertTrue(entityEventSource.contains("event.put(ModRegistries.CAVENIC_SKELETON.get(), CavenicSkeleton.createAttributes().build())"));
-        assertFalse(entityEventSource.contains("CavenicSkeleton::checkCavenicSkeletonSpawnRules"));
+        assertTrue(entityEventSource.contains("RegisterSpawnPlacementsEvent"));
+        assertTrue(entityEventSource.contains("SpawnPlacementTypes.ON_GROUND"));
+        assertTrue(entityEventSource.contains("Heightmap.Types.MOTION_BLOCKING_NO_LEAVES"));
+        assertTrue(entityEventSource.contains("CavenicSkeleton::checkCavenicSkeletonSpawnRules"));
+        assertTrue(entityEventSource.contains("RegisterSpawnPlacementsEvent.Operation.REPLACE"));
 
         assertTrue(clientSource.contains("event.registerEntityRenderer(ModRegistries.CAVENIC_SKELETON.get(), CavenicSkeletonRenderer::new);"));
         assertTrue(rendererSource.contains("extends SkeletonRenderer<CavenicSkeleton>"));
@@ -83,18 +93,36 @@ class CavenicSkeletonResourcesTest {
     }
 
     @Test
-    void cavenicSkeletonResourcesCoverLangSpawnEggModelTextureAndBaselineNoSpawnOrLootClasspath() throws IOException {
+    void cavenicSkeletonResourcesCoverLangSpawnEggModelTextureAndNaturalSpawnDataClasspath() throws IOException {
         JsonObject lang = readJsonResource("assets/cavernreborn/lang/en_us.json");
         JsonObject spawnEggModel = readJsonResource("assets/cavernreborn/models/item/cavenic_skeleton_spawn_egg.json");
+        JsonObject biomeModifier = readJsonResource("data/cavernreborn/neoforge/biome_modifier/cavenic_skeleton_spawns.json");
+        JsonObject biomeTag = readJsonResource("data/cavernreborn/tags/worldgen/biome/spawns_cavenic_skeleton.json");
 
         assertEquals("Cavenic Skeleton", lang.get("entity.cavernreborn.cavenic_skeleton").getAsString());
         assertEquals("Cavenic Skeleton Spawn Egg", lang.get("item.cavernreborn.cavenic_skeleton_spawn_egg").getAsString());
         assertEquals("minecraft:item/template_spawn_egg", spawnEggModel.get("parent").getAsString());
+        assertEquals("neoforge:add_spawns", biomeModifier.get("type").getAsString());
+        assertEquals("#cavernreborn:spawns_cavenic_skeleton", biomeModifier.get("biomes").getAsString());
+
+        JsonObject spawner = biomeModifier.getAsJsonObject("spawners");
+        assertEquals("cavernreborn:cavenic_skeleton", spawner.get("type").getAsString());
+        assertEquals(20, spawner.get("weight").getAsInt());
+        assertEquals(1, spawner.get("minCount").getAsInt());
+        assertEquals(1, spawner.get("maxCount").getAsInt());
+
+        assertFalse(biomeTag.get("replace").getAsBoolean());
+        assertEquals(List.of(
+            "cavernreborn:stone_depths",
+            "cavernreborn:lush_grotto",
+            "cavernreborn:dripstone_grotto",
+            "cavernreborn:highland_hollows"
+        ), StreamSupport.stream(biomeTag.getAsJsonArray("values").spliterator(), false).map(element -> element.getAsString()).toList());
 
         assertClassPathOrigin(resourceUrl("assets/cavernreborn/models/item/cavenic_skeleton_spawn_egg.json"), "assets/cavernreborn/models/item/cavenic_skeleton_spawn_egg.json");
         assertClassPathOrigin(resourceUrl("assets/cavernreborn/textures/entity/cavenic_skeleton.png"), "assets/cavernreborn/textures/entity/cavenic_skeleton.png");
-        assertMissingResource("data/cavernreborn/neoforge/biome_modifier/cavenic_skeleton_spawns.json");
-        assertMissingResource("data/cavernreborn/tags/worldgen/biome/spawns_cavenic_skeleton.json");
+        assertClassPathOrigin(resourceUrl("data/cavernreborn/neoforge/biome_modifier/cavenic_skeleton_spawns.json"), "data/cavernreborn/neoforge/biome_modifier/cavenic_skeleton_spawns.json");
+        assertClassPathOrigin(resourceUrl("data/cavernreborn/tags/worldgen/biome/spawns_cavenic_skeleton.json"), "data/cavernreborn/tags/worldgen/biome/spawns_cavenic_skeleton.json");
         assertMissingResource("data/cavernreborn/loot_table/entities/cavenic_skeleton.json");
         assertMissingResource("data/cavernreborn/loot_tables/entities/cavenic_skeleton.json");
     }

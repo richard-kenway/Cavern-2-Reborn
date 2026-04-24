@@ -155,6 +155,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_ZOMBIE_DAMAGE_ANCHOR = new BlockPos(2080, 96, 0);
     private static final BlockPos CAVENIC_SKELETON_ANCHOR = new BlockPos(2176, 96, 0);
     private static final BlockPos CAVENIC_SKELETON_SPAWN_EGG_ANCHOR = new BlockPos(2272, 96, 0);
+    private static final BlockPos CAVENIC_SKELETON_NATURAL_SPAWN_ANCHOR = new BlockPos(2368, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -734,6 +735,71 @@ public final class CavernSpecialOreGameTests {
 
         helper.assertTrue(spawnedEntity instanceof CavenicSkeleton, "Expected spawn egg to create a CavenicSkeleton runtime entity");
         helper.assertTrue(spawnedEntity != null && spawnedEntity.isAlive(), "Expected spawned cavenic skeleton to be alive");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicSkeletonNaturalSpawnPlacementIsRegisteredAndCavernOnly(GameTestHelper helper) {
+        ServerLevel overworldLevel = helper.getLevel().getServer().getLevel(Level.OVERWORLD);
+        BlockPos spawnPos = CAVENIC_SKELETON_NATURAL_SPAWN_ANCHOR;
+        RandomSource random = RandomSource.create(5678L);
+
+        helper.assertTrue(overworldLevel != null, "Expected overworld level to resolve for spawn predicate smoke");
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CAVENIC_SKELETON.get()) == SpawnPlacementTypes.ON_GROUND,
+            "Expected cavenic skeleton spawn placement type to mirror skeleton ground spawning"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getHeightmapType(ModRegistries.CAVENIC_SKELETON.get()) == Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+            "Expected cavenic skeleton spawn heightmap to mirror skeleton spawning"
+        );
+        helper.assertTrue(
+            CavenicSkeleton.canNaturallySpawnInDimension(CavernNeoForgeDimensions.CAVERN_LEVEL_KEY),
+            "Expected cavenic skeleton natural-spawn helper to allow the configured CAVERN level key"
+        );
+        helper.assertFalse(
+            CavenicSkeleton.canNaturallySpawnInDimension(Level.OVERWORLD),
+            "Expected cavenic skeleton natural-spawn helper to reject overworld spawning"
+        );
+
+        prepareNaturalSpawnPlatform(overworldLevel, spawnPos);
+        helper.assertTrue(
+            SpawnPlacements.isSpawnPositionOk(ModRegistries.CAVENIC_SKELETON.get(), overworldLevel, spawnPos),
+            "Expected prepared spawn position to satisfy ON_GROUND placement"
+        );
+        helper.assertFalse(
+            SpawnPlacements.checkSpawnRules(ModRegistries.CAVENIC_SKELETON.get(), overworldLevel, MobSpawnType.SPAWNER, spawnPos, random),
+            "Expected registered cavenic skeleton spawn rules to reject overworld spawning"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicSkeletonNaturalSpawnDataResolvesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_cavenic_skeleton"));
+
+        assertRegistryKeyPresent(helper, biomeModifiers, NeoForgeRegistries.Keys.BIOME_MODIFIERS, "cavernreborn:cavenic_skeleton_spawns");
+        helper.assertTrue(biomes.getTag(spawnTag).isPresent(), "Expected cavenic skeleton spawn biome tag to resolve at runtime");
+
+        Set<String> taggedBiomes = biomes.getTag(spawnTag)
+            .orElseThrow()
+            .stream()
+            .flatMap(holder -> holder.unwrapKey().stream())
+            .map(key -> key.location().toString())
+            .collect(java.util.stream.Collectors.toSet());
+
+        helper.assertTrue(
+            taggedBiomes.equals(Set.of(
+                "cavernreborn:stone_depths",
+                "cavernreborn:lush_grotto",
+                "cavernreborn:dripstone_grotto",
+                "cavernreborn:highland_hollows"
+            )),
+            "Expected cavenic skeleton natural-spawn tag to stay scoped to the four CAVERN biomes"
+        );
         helper.succeed();
     }
 

@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "#cavernreborn:spawns_cavenic_skeleton",
+  "spawners": {
+    "type": "cavernreborn:cavenic_skeleton",
+    "weight": 20,
+    "minCount": 1,
+    "maxCount": 1
+  }
+}

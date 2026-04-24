@@ -65,7 +65,7 @@ The legacy repo contains a direct `EntityCavenicSkeleton`, so this increment kee
 - Reborn intentionally keeps vanilla skeleton AI and vanilla projectile behavior in this baseline slice.
 - Legacy `EntityCavenicSkeleton` also included the same fall/fire damage behavior later restored for `cavenic_zombie`.
 - That damage behavior is intentionally left for a later skeleton-specific follow-up instead of expanding this baseline slice.
-- Natural spawning was intentionally left out of scope.
+- Natural spawning is now documented separately in `docs/cavenic-skeleton-natural-spawn-mvp.md`.
 - Custom AI and custom projectile behavior remain out of scope.
 
 ## Testing

@@ -31,5 +31,12 @@ public final class ModEntityEvents {
             CavenicZombie::checkCavenicZombieSpawnRules,
             RegisterSpawnPlacementsEvent.Operation.REPLACE
         );
+        event.register(
+            ModRegistries.CAVENIC_SKELETON.get(),
+            SpawnPlacementTypes.ON_GROUND,
+            Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+            CavenicSkeleton::checkCavenicSkeletonSpawnRules,
+            RegisterSpawnPlacementsEvent.Operation.REPLACE
+        );
     }
 }
