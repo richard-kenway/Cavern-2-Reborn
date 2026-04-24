@@ -30,6 +30,12 @@ class CavenicBowResourcesTest {
         String bowSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "item", "CavenicBowItem.java"
         );
+        String torchEventSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "item", "CavenicBowTorchEvents.java"
+        );
+        String modSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "CavernReborn.java"
+        );
         String modeSource = readProjectFile(
             "core", "src", "main", "java", "com", "richardkenway", "cavernreborn", "core", "combat", "CavenicBowMode.java"
         );
@@ -38,6 +44,9 @@ class CavenicBowResourcesTest {
         );
         String rapidPolicySource = readProjectFile(
             "core", "src", "main", "java", "com", "richardkenway", "cavernreborn", "core", "combat", "CavenicBowRapidPolicy.java"
+        );
+        String torchPolicySource = readProjectFile(
+            "core", "src", "main", "java", "com", "richardkenway", "cavernreborn", "core", "combat", "CavenicBowTorchPolicy.java"
         );
 
         assertTrue(registriesSource.contains("ITEMS.register(\"cavenic_bow\""));
@@ -60,6 +69,11 @@ class CavenicBowResourcesTest {
         assertTrue(bowSource.contains("public float resolveProjectileVelocity(ItemStack stack, float baseVelocity, float power)"));
         assertTrue(bowSource.contains("public boolean applySnipeBoost(ItemStack stack, AbstractArrow arrow, float power)"));
         assertTrue(bowSource.contains("public int resolveAdditionalDurabilityCost(ItemStack stack, float power)"));
+        assertTrue(bowSource.contains("public boolean hasTorchAmmo(Player player)"));
+        assertTrue(bowSource.contains("public boolean consumeTorchAmmo(Player player)"));
+        assertTrue(bowSource.contains("public boolean shouldMarkTorchShot(ItemStack stack, Player player, float shotPower)"));
+        assertTrue(bowSource.contains("public static void markTorchArrow(AbstractArrow arrow)"));
+        assertTrue(bowSource.contains("public static boolean isTorchArrow(AbstractArrow arrow)"));
         assertTrue(bowSource.contains("DataComponents.CUSTOM_DATA"));
         assertTrue(bowSource.contains("player.isShiftKeyDown()"));
         assertTrue(bowSource.contains("player.displayClientMessage(Component.translatable(MODE_CHANGED_KEY, modeLabel(nextMode)), true)"));
@@ -68,11 +82,17 @@ class CavenicBowResourcesTest {
         assertTrue(bowSource.contains("public AbstractArrow customArrow(AbstractArrow arrow, ItemStack projectileStack, ItemStack weaponStack)"));
         assertTrue(bowSource.contains("CavenicBowRapidPolicy"));
         assertTrue(bowSource.contains("CavenicBowSnipePolicy"));
+        assertTrue(bowSource.contains("CavenicBowTorchPolicy"));
+        assertTrue(bowSource.contains("TORCH_ARROW_MARKER"));
         assertTrue(bowSource.contains("float rawPower = getPowerForTime(charge);"));
         assertTrue(bowSource.contains("float shotPower = resolveShotPower(stack, rawPower);"));
         assertTrue(bowSource.contains("CURRENT_SHOT_CONTEXT"));
         assertTrue(bowSource.contains("repairCandidate.is(ModRegistries.CAVENIC_ORB.get())"));
         assertTrue(bowSource.contains("ModToolTiers.CAVENIC.getEnchantmentValue()"));
+        assertTrue(bowSource.contains("boolean markTorchShot = shouldMarkTorchShot(stack, player, shotPower);"));
+        assertTrue(bowSource.contains("if (markTorchShot && !consumeTorchAmmo(player))"));
+        assertTrue(bowSource.contains("if (shotContext.markTorchShot())"));
+        assertTrue(bowSource.contains("markTorchArrow(customizedArrow);"));
         assertTrue(modeSource.contains("NORMAL(\"normal\")"));
         assertTrue(modeSource.contains("RAPID(\"rapid\")"));
         assertTrue(modeSource.contains("SNIPE(\"snipe\")"));
@@ -85,10 +105,26 @@ class CavenicBowResourcesTest {
         assertTrue(rapidPolicySource.contains("POWER_MULTIPLIER = 2.4F"));
         assertTrue(rapidPolicySource.contains("MAX_POWER = 1.0F"));
         assertTrue(rapidPolicySource.contains("EXTRA_DURABILITY_COST = 0"));
+        assertTrue(torchPolicySource.contains("VELOCITY_MULTIPLIER = 1.0F"));
+        assertTrue(torchPolicySource.contains("BASE_DAMAGE_MULTIPLIER = 1.0D"));
+        assertTrue(torchPolicySource.contains("EXTRA_DURABILITY_COST = 0"));
+        assertTrue(torchPolicySource.contains("mode == CavenicBowMode.TORCH && (creativeShooter || hasTorchAmmo)"));
+        assertTrue(torchEventSource.contains("public void onProjectileImpact(ProjectileImpactEvent event)"));
+        assertTrue(torchEventSource.contains("tryPlaceTorchFromMarkedArrow"));
+        assertTrue(torchEventSource.contains("CavenicBowItem.isTorchArrow"));
+        assertTrue(torchEventSource.contains("Blocks.TORCH.defaultBlockState()"));
+        assertTrue(torchEventSource.contains("Blocks.WALL_TORCH.defaultBlockState().setValue(WallTorchBlock.FACING, face)"));
+        assertTrue(torchEventSource.contains("arrow.discard();"));
+        assertTrue(torchEventSource.contains("event.setCanceled(true);"));
+        assertTrue(modSource.contains("NeoForge.EVENT_BUS.register(new CavenicBowTorchEvents())"));
         assertFalse(bowSource.contains("EntityRapidArrow"));
         assertFalse(bowSource.contains("EntityTorchArrow"));
+        assertFalse(torchEventSource.contains("EntityRapidArrow"));
+        assertFalse(torchEventSource.contains("EntityTorchArrow"));
         assertFalse(registriesSource.contains("rapid_arrow"));
         assertFalse(registriesSource.contains("torch_arrow"));
+        assertFalse(modSource.contains("rapid_arrow"));
+        assertFalse(modSource.contains("torch_arrow"));
     }
 
     @Test

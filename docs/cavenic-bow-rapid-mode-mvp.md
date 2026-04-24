@@ -4,6 +4,8 @@ This slice adds the first bounded behavioral follow-up for `cavernreborn:cavenic
 
 It keeps the projectile path vanilla and changes only `RAPID` mode behavior.
 
+The later bounded Torch-only follow-up is documented separately in `docs/cavenic-bow-torch-mode-mvp.md`.
+
 ## What This Increment Adds
 
 - a pure `CavenicBowRapidPolicy` with pinned constants and safe raw-power handling
@@ -59,7 +61,7 @@ The current values are a bounded modern stand-in that is easy to test and that k
 - `NORMAL` still uses vanilla bow behavior.
 - `RAPID` now reaches higher projectile velocity at the same draw duration, capped at vanilla full-power strength.
 - `SNIPE` remains documented separately in `docs/cavenic-bow-snipe-mode-mvp.md` and is unchanged by this slice.
-- `TORCH` still uses vanilla bow behavior.
+- `TORCH` is now documented separately in `docs/cavenic-bow-torch-mode-mvp.md`.
 - Mode state stays stored on the stack after firing.
 - The bow still repairs with `cavernreborn:cavenic_orb`.
 

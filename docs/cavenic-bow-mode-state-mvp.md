@@ -4,6 +4,7 @@ This slice adds the next bounded identity layer for `cavernreborn:cavenic_bow` w
 
 The first bounded Rapid-only behavior follow-up is documented separately in `docs/cavenic-bow-rapid-mode-mvp.md`.
 The first bounded Snipe-only behavior follow-up is documented separately in `docs/cavenic-bow-snipe-mode-mvp.md`.
+The first bounded Torch-only behavior follow-up is documented separately in `docs/cavenic-bow-torch-mode-mvp.md`.
 
 ## What This Increment Adds
 
@@ -59,7 +60,7 @@ This MVP uses a safe modern equivalent:
 
 - `cavenic_bow` still extends the modern vanilla bow path through `BowItem`.
 - At the time of this slice, all four modes still used vanilla bow shooting behavior.
-- The later bounded Rapid-only and Snipe-only behavior follow-ups now exist separately, while TORCH still remains on the vanilla baseline.
+- The later bounded Rapid-only, Snipe-only and Torch-only behavior follow-ups now exist separately.
 - Normal use keeps vanilla draw, charge, enchantment and arrow behavior.
 - The tooltip shows the current mode as a translatable `Mode: %s` line.
 
@@ -68,7 +69,6 @@ This MVP uses a safe modern equivalent:
 - `EntityRapidArrow`
 - `EntityTorchArrow`
 - rapid-fire shooting behavior
-- torch-shot behavior
 - custom projectile entities
 - custom ammo logic
 - mode-specific model predicates

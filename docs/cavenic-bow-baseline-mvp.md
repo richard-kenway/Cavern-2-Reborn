@@ -5,6 +5,7 @@ This slice adds the first bounded `cavernreborn:cavenic_bow` item on top of the 
 The later stack-local mode-state and cycling follow-up is documented separately in `docs/cavenic-bow-mode-state-mvp.md`.
 The first bounded Rapid-only behavior follow-up is documented separately in `docs/cavenic-bow-rapid-mode-mvp.md`.
 The first bounded Snipe-only behavior follow-up is documented separately in `docs/cavenic-bow-snipe-mode-mvp.md`.
+The first bounded Torch-only behavior follow-up is documented separately in `docs/cavenic-bow-torch-mode-mvp.md`.
 
 ## What Was Ported
 
@@ -43,13 +44,12 @@ The first bounded Snipe-only behavior follow-up is documented separately in `doc
 - `EntityRapidArrow`
 - `EntityTorchArrow`
 - Custom projectile entities
-- Torch-shot behavior
 - Rapid-fire behavior
 - Sniper-specific behavior
 - Mode-specific predicates beyond normal vanilla pull states
 - Keybinds, packets, GUI or client networking
 
-This note intentionally documents only the safe baseline bow slice. Legacy custom bow behavior remains follow-up work, even though the later mode-state, bounded Rapid and bounded Snipe follow-ups now exist separately.
+This note intentionally documents only the safe baseline bow slice. Legacy custom bow behavior remains follow-up work, even though the later mode-state, bounded Rapid, bounded Snipe and bounded Torch follow-ups now exist separately.
 
 ## Testing
 

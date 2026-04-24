@@ -7,6 +7,7 @@ import com.richardkenway.cavernreborn.app.registry.ModToolTiers;
 import com.richardkenway.cavernreborn.core.combat.CavenicBowMode;
 import com.richardkenway.cavernreborn.core.combat.CavenicBowRapidPolicy;
 import com.richardkenway.cavernreborn.core.combat.CavenicBowSnipePolicy;
+import com.richardkenway.cavernreborn.core.combat.CavenicBowTorchPolicy;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -23,6 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -34,6 +36,7 @@ public final class CavenicBowItem extends BowItem {
     private static final String MODE_KEY_PREFIX = "item.cavernreborn.cavenic_bow.mode.";
     private static final String MODE_LINE_KEY = "item.cavernreborn.cavenic_bow.mode";
     private static final String MODE_CHANGED_KEY = "item.cavernreborn.cavenic_bow.mode_changed";
+    public static final String TORCH_ARROW_MARKER = "cavernreborn:cavenic_bow_torch";
     private static final ThreadLocal<ShotContext> CURRENT_SHOT_CONTEXT = new ThreadLocal<>();
 
     public CavenicBowItem(Properties properties) {
@@ -86,6 +89,36 @@ public final class CavenicBowItem extends BowItem {
         return CavenicBowSnipePolicy.applies(getMode(stack), power) ? CavenicBowSnipePolicy.EXTRA_DURABILITY_COST : 0;
     }
 
+    public boolean hasTorchAmmo(Player player) {
+        return !findTorchAmmo(player).isEmpty();
+    }
+
+    public boolean consumeTorchAmmo(Player player) {
+        if (player.isCreative()) {
+            return true;
+        }
+
+        ItemStack torchAmmo = findTorchAmmo(player);
+        if (torchAmmo.isEmpty()) {
+            return false;
+        }
+
+        torchAmmo.shrink(1);
+        return true;
+    }
+
+    public boolean shouldMarkTorchShot(ItemStack stack, Player player, float shotPower) {
+        return shotPower > 0.0F && CavenicBowTorchPolicy.shouldMarkShot(getMode(stack), player.isCreative(), hasTorchAmmo(player));
+    }
+
+    public static void markTorchArrow(AbstractArrow arrow) {
+        arrow.addTag(TORCH_ARROW_MARKER);
+    }
+
+    public static boolean isTorchArrow(AbstractArrow arrow) {
+        return arrow.getTags().contains(TORCH_ARROW_MARKER);
+    }
+
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         ItemStack stack = player.getItemInHand(usedHand);
@@ -126,7 +159,12 @@ public final class CavenicBowItem extends BowItem {
 
         List<ItemStack> drawnProjectiles = draw(stack, projectile, livingEntity);
         if (level instanceof ServerLevel serverLevel && !drawnProjectiles.isEmpty()) {
-            ShotContext shotContext = new ShotContext(shotPower);
+            boolean markTorchShot = shouldMarkTorchShot(stack, player, shotPower);
+            if (markTorchShot && !consumeTorchAmmo(player)) {
+                markTorchShot = false;
+            }
+
+            ShotContext shotContext = new ShotContext(shotPower, markTorchShot);
             CURRENT_SHOT_CONTEXT.set(shotContext);
             try {
                 shoot(
@@ -168,6 +206,9 @@ public final class CavenicBowItem extends BowItem {
         AbstractArrow customizedArrow = super.customArrow(arrow, projectileStack, weaponStack);
         ShotContext shotContext = CURRENT_SHOT_CONTEXT.get();
         if (shotContext != null) {
+            if (shotContext.markTorchShot()) {
+                markTorchArrow(customizedArrow);
+            }
             applySnipeBoost(weaponStack, customizedArrow, shotContext.power());
         }
         return customizedArrow;
@@ -193,6 +234,26 @@ public final class CavenicBowItem extends BowItem {
         return Component.translatable(MODE_KEY_PREFIX + mode.serializedId());
     }
 
-    private record ShotContext(float power) {
+    private static ItemStack findTorchAmmo(Player player) {
+        ItemStack offhand = player.getOffhandItem();
+        if (offhand.is(Items.TORCH)) {
+            return offhand;
+        }
+
+        ItemStack mainHand = player.getMainHandItem();
+        if (mainHand.is(Items.TORCH)) {
+            return mainHand;
+        }
+
+        for (ItemStack stack : player.getInventory().items) {
+            if (stack.is(Items.TORCH)) {
+                return stack;
+            }
+        }
+
+        return ItemStack.EMPTY;
+    }
+
+    private record ShotContext(float power, boolean markTorchShot) {
     }
 }

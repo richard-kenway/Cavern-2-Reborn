@@ -1,6 +1,6 @@
 # Runtime Smoke
 
-This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the bounded `Acresia Crop & Food MVP`, the bounded `Cavenic Shroom & Orb MVP`, the bounded Cavenic Melee MVP, the bounded `Cavenic Bow Baseline MVP`, the bounded `Cavenic Bow Mode State & Cycling MVP`, the bounded `Cavenic Bow Snipe Mode MVP`, the bounded `Cavenic Bow Rapid Mode MVP`, the bounded Aquamarine Utility Tools MVP, the bounded Magnite Tool Set MVP, the bounded `Magnite Armor MVP`, the follow-up `hexcite` tool-set MVP, the bounded `Hexcite Armor MVP`, the bounded Mining Assist slice, the first Miner's Orb MVP and the Ore Compass MVP plus tracking UX follow-up.
+This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the bounded `Acresia Crop & Food MVP`, the bounded `Cavenic Shroom & Orb MVP`, the bounded Cavenic Melee MVP, the bounded `Cavenic Bow Baseline MVP`, the bounded `Cavenic Bow Mode State & Cycling MVP`, the bounded `Cavenic Bow Snipe Mode MVP`, the bounded `Cavenic Bow Rapid Mode MVP`, the bounded `Cavenic Bow Torch Mode MVP`, the bounded Aquamarine Utility Tools MVP, the bounded Magnite Tool Set MVP, the bounded `Magnite Armor MVP`, the follow-up `hexcite` tool-set MVP, the bounded `Hexcite Armor MVP`, the bounded Mining Assist slice, the first Miner's Orb MVP and the Ore Compass MVP plus tracking UX follow-up.
 
 It is intentionally a NeoForge GameTest server pass, not a visual client smoke pass.
 
@@ -40,7 +40,12 @@ NeoForge GameTest runtime smoke covers:
 - cavenic bow full-charge SNIPE projectile boost smoke
 - cavenic bow full-charge SNIPE extra-durability smoke
 - cavenic bow full-charge SNIPE still spawning a vanilla arrow entity
-- cavenic bow TORCH mode staying on the vanilla baseline
+- cavenic bow TORCH vanilla-arrow marker smoke
+- cavenic bow TORCH valid block-placement smoke
+- cavenic bow TORCH invalid-target no-placement smoke
+- cavenic bow TORCH torch-consumption smoke
+- cavenic bow TORCH no-custom-entity smoke
+- cavenic bow TORCH not inheriting RAPID or SNIPE behavior
 - cavenic bow enchantment applicability
 - cavenic bow cavenic item tag resolution
 - cavenic bow recipe manager resolution
@@ -99,7 +104,7 @@ NeoForge GameTest runtime smoke covers:
 - actual Cavenic Shroom hazard feel, sparse spread feel and harvest feel
 - actual Cavenic Sword and Cavenic Axe visual/client combat feel
 - actual Cavenic Bow draw, release and visual client feel
-- legacy Cavenic Bow Rapid/Torch custom projectile behavior and client feel beyond the current bounded Snipe and Rapid slices
+- legacy Cavenic Bow Rapid/Torch custom projectile behavior and client feel beyond the current bounded Snipe, Rapid and Torch slices
 - actual underwater aquamarine mining feel
 - actual brittle magnite mining feel
 - particle and sound feel

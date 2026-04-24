@@ -13,6 +13,7 @@ import com.richardkenway.cavernreborn.app.compass.OreCompassStateAccess;
 import com.richardkenway.cavernreborn.app.compass.OreCompassScanner;
 import com.richardkenway.cavernreborn.app.compass.OreCompassTarget;
 import com.richardkenway.cavernreborn.app.compass.StoredOreCompassTarget;
+import com.richardkenway.cavernreborn.app.item.CavenicBowTorchEvents;
 import com.richardkenway.cavernreborn.app.item.CavenicBowItem;
 import com.richardkenway.cavernreborn.app.item.OreCompassItem;
 import com.richardkenway.cavernreborn.app.mining.CavernMiningAssistEvents;
@@ -24,6 +25,7 @@ import com.richardkenway.cavernreborn.app.registry.ModToolTiers;
 import com.richardkenway.cavernreborn.core.combat.CavenicBowMode;
 import com.richardkenway.cavernreborn.core.combat.CavenicBowRapidPolicy;
 import com.richardkenway.cavernreborn.core.combat.CavenicBowSnipePolicy;
+import com.richardkenway.cavernreborn.core.combat.CavenicBowTorchPolicy;
 import com.richardkenway.cavernreborn.core.compass.OreCompassDirection;
 import com.richardkenway.cavernreborn.core.compass.OreCompassScanDecision;
 import com.richardkenway.cavernreborn.core.compass.OreCompassScanPolicy;
@@ -46,6 +48,7 @@ import com.richardkenway.cavernreborn.core.progression.CavernProgressionUpdateRe
 import com.richardkenway.cavernreborn.core.state.CavernDimensions;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
@@ -88,7 +91,9 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -118,6 +123,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_BOW_MODE_ANCHOR = new BlockPos(1216, 96, 0);
     private static final BlockPos CAVENIC_BOW_SNIPE_ANCHOR = new BlockPos(1312, 96, 0);
     private static final BlockPos CAVENIC_BOW_RAPID_ANCHOR = new BlockPos(1408, 96, 0);
+    private static final BlockPos CAVENIC_BOW_TORCH_ANCHOR = new BlockPos(1504, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -605,6 +611,122 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBowTorchModeMarksVanillaArrowsConsumesTorchAndPlacesStandingTorchAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_BOW_TORCH_ANCHOR;
+        BlockPos supportPos = origin.east(4);
+        BlockPos torchPos = supportPos.above();
+
+        resetMiningArea(level, origin, 10.0D);
+        level.setBlock(supportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+
+        Player player = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), origin);
+        player.getInventory().add(new ItemStack(Items.ARROW));
+        player.getInventory().add(new ItemStack(Items.TORCH, 2));
+
+        ItemStack bow = player.getMainHandItem();
+        CavenicBowItem bowItem = (CavenicBowItem) ModRegistries.CAVENIC_BOW.get();
+        CavenicBowTorchEvents torchEvents = new CavenicBowTorchEvents();
+        bowItem.setMode(bow, CavenicBowMode.TORCH);
+
+        int initialTorchCount = countPlayerItem(player, Items.TORCH);
+        float shotPower = bowItem.resolveShotPower(bow, 1.0F);
+        AbstractArrow arrow = createRuntimeArrow(level, player, bow);
+        level.addFreshEntity(arrow);
+
+        helper.assertTrue(shotPower == 1.0F, "TORCH mode must keep raw vanilla shot power");
+        helper.assertTrue(bowItem.shouldMarkTorchShot(bow, player, shotPower), "TORCH mode should mark a shot when survival inventory contains a torch");
+        helper.assertTrue(bowItem.consumeTorchAmmo(player), "TORCH mode should consume one torch for a marked survival shot");
+        CavenicBowItem.markTorchArrow(arrow);
+
+        torchEvents.onProjectileImpact(new ProjectileImpactEvent(arrow, hitResult(supportPos, Direction.UP)));
+
+        helper.assertTrue("minecraft:arrow".equals(entityTypeId(arrow)), "TORCH mode must still use a vanilla arrow entity");
+        helper.assertTrue(bowItem.getMode(bow) == CavenicBowMode.TORCH, "TORCH mode must remain stored on the stack");
+        helper.assertTrue(countPlayerItem(player, Items.TORCH) == initialTorchCount - 1, "Marked TORCH shots must consume exactly one torch in survival");
+        helper.assertTrue(level.getBlockState(torchPos).is(Blocks.TORCH), "TORCH mode should place a standing torch on a valid top-face hit");
+
+        bow.hurtAndBreak(1 + bowItem.resolveAdditionalDurabilityCost(bow, shotPower), player, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
+        helper.assertTrue(bow.getDamageValue() == 1, "TORCH mode must keep the vanilla single durability cost");
+        helper.assertTrue(CavenicBowTorchPolicy.EXTRA_DURABILITY_COST == 0, "TORCH mode must not add extra durability cost");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBowTorchModePlacementRulesStayBoundedAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_BOW_TORCH_ANCHOR.east(32);
+        BlockPos wallSupportPos = origin.east(4);
+        BlockPos wallTorchPos = wallSupportPos.east();
+        BlockPos occupiedSupportPos = origin.east(10);
+        BlockPos occupiedTargetPos = occupiedSupportPos.above();
+        BlockPos wetSupportPos = origin.east(16);
+        BlockPos wetTargetPos = wetSupportPos.above();
+        BlockPos noTorchSupportPos = origin.east(22);
+        BlockPos noTorchTargetPos = noTorchSupportPos.above();
+
+        resetMiningArea(level, origin, 16.0D);
+        level.setBlock(wallSupportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(occupiedSupportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(occupiedTargetPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(wetSupportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(wetTargetPos, Blocks.WATER.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(noTorchSupportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+
+        CavenicBowItem bowItem = (CavenicBowItem) ModRegistries.CAVENIC_BOW.get();
+        CavenicBowTorchEvents torchEvents = new CavenicBowTorchEvents();
+
+        Player creativePlayer = makeMockPlayer(helper, level, GameType.CREATIVE, cavenicBow(), origin);
+        ItemStack creativeBow = creativePlayer.getMainHandItem();
+        bowItem.setMode(creativeBow, CavenicBowMode.TORCH);
+        helper.assertFalse(bowItem.hasTorchAmmo(creativePlayer), "Creative TORCH-mode smoke should not require a torch stack in inventory");
+        helper.assertTrue(bowItem.shouldMarkTorchShot(creativeBow, creativePlayer, 1.0F), "Creative TORCH shots should still be eligible for marking");
+
+        AbstractArrow wallArrow = createRuntimeArrow(level, creativePlayer, creativeBow);
+        level.addFreshEntity(wallArrow);
+        CavenicBowItem.markTorchArrow(wallArrow);
+        torchEvents.onProjectileImpact(new ProjectileImpactEvent(wallArrow, hitResult(wallSupportPos, Direction.EAST)));
+
+        helper.assertTrue("minecraft:arrow".equals(entityTypeId(wallArrow)), "Creative TORCH mode must still use a vanilla arrow entity");
+        helper.assertTrue(level.getBlockState(wallTorchPos).is(Blocks.WALL_TORCH), "TORCH mode should place a wall torch on a valid horizontal-face hit");
+        helper.assertTrue(countPlayerItem(creativePlayer, Items.TORCH) == 0, "Creative TORCH shots must not consume torches");
+
+        AbstractArrow occupiedArrow = createRuntimeArrow(level, creativePlayer, creativeBow);
+        level.addFreshEntity(occupiedArrow);
+        CavenicBowItem.markTorchArrow(occupiedArrow);
+        torchEvents.onProjectileImpact(new ProjectileImpactEvent(occupiedArrow, hitResult(occupiedSupportPos, Direction.UP)));
+        helper.assertTrue(level.getBlockState(occupiedTargetPos).is(Blocks.STONE), "TORCH mode must not replace occupied non-replaceable targets");
+
+        AbstractArrow wetArrow = createRuntimeArrow(level, creativePlayer, creativeBow);
+        level.addFreshEntity(wetArrow);
+        CavenicBowItem.markTorchArrow(wetArrow);
+        torchEvents.onProjectileImpact(new ProjectileImpactEvent(wetArrow, hitResult(wetSupportPos, Direction.UP)));
+        helper.assertTrue(level.getBlockState(wetTargetPos).is(Blocks.WATER), "TORCH mode must not replace liquids");
+
+        AbstractArrow entityHitArrow = createRuntimeArrow(level, creativePlayer, creativeBow);
+        level.addFreshEntity(entityHitArrow);
+        CavenicBowItem.markTorchArrow(entityHitArrow);
+        torchEvents.onProjectileImpact(new ProjectileImpactEvent(entityHitArrow, new EntityHitResult(creativePlayer)));
+        helper.assertTrue(level.getBlockState(origin.above()).isAir(), "Entity hits must not place torches");
+
+        Player survivalPlayer = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), origin.north(6));
+        ItemStack survivalBow = survivalPlayer.getMainHandItem();
+        bowItem.setMode(survivalBow, CavenicBowMode.TORCH);
+        helper.assertFalse(bowItem.shouldMarkTorchShot(survivalBow, survivalPlayer, 1.0F), "Survival TORCH shots without torch ammo must stay unmarked");
+
+        AbstractArrow unmarkedArrow = createRuntimeArrow(level, survivalPlayer, survivalBow);
+        level.addFreshEntity(unmarkedArrow);
+        torchEvents.onProjectileImpact(new ProjectileImpactEvent(unmarkedArrow, hitResult(noTorchSupportPos, Direction.UP)));
+
+        helper.assertFalse(CavenicBowItem.isTorchArrow(unmarkedArrow), "No-torch survival shots must not be Torch-marked");
+        helper.assertFalse(level.getBlockState(noTorchTargetPos).is(Blocks.TORCH), "No-torch survival TORCH shots must not place a torch");
+        helper.assertTrue(bowItem.resolveShotPower(survivalBow, 0.5F) == 0.5F, "TORCH mode must not inherit RAPID shot power behavior");
+        helper.assertTrue(bowItem.resolveProjectileVelocity(survivalBow, 3.0F, 1.0F) == 3.0F, "TORCH mode must not inherit SNIPE velocity behavior");
+        helper.assertTrue(bowItem.resolveAdditionalDurabilityCost(survivalBow, 1.0F) == 0, "TORCH mode must not add extra durability cost");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void cavenicBowOnlyAppliesSnipeBoostForSnipeModeAtRuntime(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos origin = CAVENIC_BOW_SNIPE_ANCHOR.east(64);
@@ -658,8 +780,10 @@ public final class CavernSpecialOreGameTests {
         );
         helper.assertTrue(
             bowItem.resolveProjectileVelocity(torchBow, 3.0F, 1.0F) == 3.0F,
-            "TORCH mode must keep vanilla projectile velocity in this slice"
+            "TORCH mode must keep vanilla projectile velocity outside the Torch-placement slice"
         );
+        helper.assertTrue(bowItem.resolveShotPower(torchBow, 0.5F) == 0.5F, "TORCH mode must keep vanilla shot power outside the Rapid slice");
+        helper.assertTrue(bowItem.resolveAdditionalDurabilityCost(torchBow, 1.0F) == CavenicBowTorchPolicy.EXTRA_DURABILITY_COST, "TORCH mode must not add extra durability cost");
         helper.succeed();
     }
 
@@ -1995,7 +2119,11 @@ public final class CavernSpecialOreGameTests {
     }
 
     private static BlockHitResult hitResult(BlockPos pos) {
-        return new BlockHitResult(Vec3.atCenterOf(pos), net.minecraft.core.Direction.UP, pos, false);
+        return hitResult(pos, Direction.UP);
+    }
+
+    private static BlockHitResult hitResult(BlockPos pos, Direction face) {
+        return new BlockHitResult(Vec3.atCenterOf(pos), face, pos, false);
     }
 
     private static List<ItemStack> dropsForBlock(GameTestHelper helper, Block block, ItemStack tool) {
@@ -2107,6 +2235,22 @@ public final class CavernSpecialOreGameTests {
         player.setItemInHand(InteractionHand.MAIN_HAND, tool);
         player.teleportTo(level, origin.getX() + 0.5D, origin.getY() + 1.0D, origin.getZ() + 0.5D, EnumSet.noneOf(RelativeMovement.class), 0.0F, 0.0F);
         return player;
+    }
+
+    private static int countPlayerItem(Player player, Item item) {
+        int count = 0;
+        for (ItemStack stack : player.getInventory().items) {
+            if (stack.is(item)) {
+                count += stack.getCount();
+            }
+        }
+        if (player.getOffhandItem().is(item)) {
+            count += player.getOffhandItem().getCount();
+        }
+        if (player.getMainHandItem().is(item)) {
+            count += player.getMainHandItem().getCount();
+        }
+        return count;
     }
 
     private static <T extends LivingEntity> T spawnLivingEntity(GameTestHelper helper, EntityType<T> type, BlockPos pos) {
