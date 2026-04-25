@@ -65,6 +65,7 @@ It does not add a new mob. It only makes the already registered `cavernreborn:ca
 ## Still Out Of Scope
 
 - The bounded legacy orb-drop follow-up is documented separately in `docs/cavenic-skeleton-orb-drop-mvp.md`
+- The bounded legacy damage-behavior follow-up is documented separately in `docs/cavenic-skeleton-damage-behavior-mvp.md`
 - custom loot beyond that orb-drop follow-up remains out of scope
 - custom AI remains out of scope
 - custom arrows remain out of scope

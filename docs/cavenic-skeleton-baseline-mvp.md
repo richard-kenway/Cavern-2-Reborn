@@ -64,7 +64,7 @@ The legacy repo contains a direct `EntityCavenicSkeleton`, so this increment kee
 - Legacy `EntityCavenicSkeleton` also included custom melee/ranged AI switching, a dedicated Cavenic bow attack goal and custom `EntityCavenicArrow` handling.
 - Reborn intentionally keeps vanilla skeleton AI and vanilla projectile behavior in this baseline slice.
 - Legacy `EntityCavenicSkeleton` also included the same fall/fire damage behavior later restored for `cavenic_zombie`.
-- That damage behavior is intentionally left for a later skeleton-specific follow-up instead of expanding this baseline slice.
+- That damage-behavior follow-up is now documented separately in `docs/cavenic-skeleton-damage-behavior-mvp.md`.
 - Natural spawning is now documented separately in `docs/cavenic-skeleton-natural-spawn-mvp.md`.
 - The bounded legacy orb-drop follow-up is now documented separately in `docs/cavenic-skeleton-orb-drop-mvp.md`.
 - Custom AI and custom projectile behavior remain out of scope.

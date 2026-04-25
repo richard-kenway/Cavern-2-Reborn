@@ -62,6 +62,7 @@ It does not add a new mob, new AI, new spawn rules or custom projectile behavior
 
 - Custom Cavenic Skeleton AI remains out of scope
 - `EntityCavenicArrow` remains out of scope
+- The separate legacy fall/fire damage follow-up is documented in `docs/cavenic-skeleton-damage-behavior-mvp.md`
 - Fall/fire damage behavior remains out of scope
 - Additional Cavenic mobs remain out of scope
 - Cavenia remains out of scope

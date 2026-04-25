@@ -76,6 +76,9 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("Cavenic Skeleton Legacy Orb Drop MVP"));
         assertTrue(readme.contains("docs/cavenic-skeleton-orb-drop-mvp.md"));
         assertTrue(readme.contains("legacy `1/5` `cavenic_orb` drop"));
+        assertTrue(readme.contains("Cavenic Skeleton Legacy Damage Behavior MVP"));
+        assertTrue(readme.contains("docs/cavenic-skeleton-damage-behavior-mvp.md"));
+        assertTrue(readme.contains("legacy fall-damage reduction and fire-damage immunity"));
     }
 
     @Test
@@ -142,6 +145,9 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("cavenic skeleton vanilla loot-table baseline smoke"));
         assertTrue(doc.contains("cavenic skeleton legacy orb-drop event wiring smoke"));
         assertTrue(doc.contains("cavenic skeleton legacy orb-drop deterministic winning/losing roll smoke"));
+        assertTrue(doc.contains("cavenic skeleton legacy fall-damage reduction smoke"));
+        assertTrue(doc.contains("cavenic skeleton legacy fire-damage immunity smoke"));
+        assertTrue(doc.contains("cavenic skeleton generic-damage baseline smoke"));
         assertTrue(doc.contains("cavenic bow enchantment applicability"));
         assertTrue(doc.contains("cavenic bow cavenic item tag resolution"));
         assertTrue(doc.contains("cavenic bow recipe manager resolution"));
@@ -208,6 +214,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("actual long-run cavenic zombie orb-drop rate balance"));
         assertTrue(doc.contains("actual long-run cavenic skeleton orb-drop rate balance"));
         assertTrue(doc.contains("actual long-running Cavenic Zombie fire/lava gameplay feel"));
+        assertTrue(doc.contains("actual long-running Cavenic Skeleton fire/lava gameplay feel"));
         assertTrue(doc.contains("actual long-run Cavenic Skeleton population balance inside CAVERN"));
         assertTrue(doc.contains("legacy Cavenic Bow Rapid/Torch custom projectile behavior and client feel beyond the current bounded Snipe, Rapid and Torch slices"));
         assertTrue(doc.contains("actual long-run Cavenic Zombie population balance inside CAVERN"));

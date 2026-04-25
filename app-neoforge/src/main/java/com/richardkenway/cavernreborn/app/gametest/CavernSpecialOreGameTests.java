@@ -159,6 +159,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_SKELETON_SPAWN_EGG_ANCHOR = new BlockPos(2272, 96, 0);
     private static final BlockPos CAVENIC_SKELETON_NATURAL_SPAWN_ANCHOR = new BlockPos(2368, 96, 0);
     private static final BlockPos CAVENIC_SKELETON_LOOT_ANCHOR = new BlockPos(2464, 96, 0);
+    private static final BlockPos CAVENIC_SKELETON_DAMAGE_ANCHOR = new BlockPos(2560, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -847,6 +848,113 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             Math.abs(drops.getFirst().getY() - (skeleton.getY() + 0.5D)) < 1.0E-6D,
             "Expected cavenic orb drop Y offset to stay aligned with the legacy 0.5 offset"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicSkeletonLegacyFallAndFireDamageBehaviorAppliesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_SKELETON_DAMAGE_ANCHOR;
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CavenicSkeleton cavenicFallSkeleton = spawnLivingEntity(helper, ModRegistries.CAVENIC_SKELETON.get(), origin);
+        Skeleton vanillaFallSkeleton = spawnLivingEntity(helper, EntityType.SKELETON, origin.east(4));
+        clearEquipment(cavenicFallSkeleton);
+        clearEquipment(vanillaFallSkeleton);
+        float fallDamage = 10.0F;
+        float cavenicFallHealthBefore = cavenicFallSkeleton.getHealth();
+        float vanillaFallHealthBefore = vanillaFallSkeleton.getHealth();
+
+        helper.assertTrue(
+            cavenicFallSkeleton.hurt(level.damageSources().fall(), fallDamage),
+            "Expected cavenic skeleton to still accept fall damage hits through the normal server damage path"
+        );
+        helper.assertTrue(
+            vanillaFallSkeleton.hurt(level.damageSources().fall(), fallDamage),
+            "Expected vanilla skeleton baseline to accept fall damage hits"
+        );
+        helper.assertTrue(
+            Math.abs((cavenicFallHealthBefore - cavenicFallSkeleton.getHealth()) - (fallDamage * CavenicSkeleton.LEGACY_FALL_DAMAGE_MULTIPLIER)) < 1.0E-6F,
+            "Expected cavenic skeleton fall damage to stay pinned to the legacy 0.35 multiplier"
+        );
+        helper.assertTrue(
+            Math.abs((vanillaFallHealthBefore - vanillaFallSkeleton.getHealth()) - fallDamage) < 1.0E-6F,
+            "Expected vanilla skeleton baseline to keep full fall damage"
+        );
+
+        CavenicSkeleton cavenicFireSkeleton = spawnLivingEntity(helper, ModRegistries.CAVENIC_SKELETON.get(), origin.south(8));
+        Skeleton vanillaFireSkeleton = spawnLivingEntity(helper, EntityType.SKELETON, origin.south(8).east(4));
+        clearEquipment(cavenicFireSkeleton);
+        clearEquipment(vanillaFireSkeleton);
+        float fireDamage = 4.0F;
+        float cavenicFireHealthBefore = cavenicFireSkeleton.getHealth();
+        float vanillaFireHealthBefore = vanillaFireSkeleton.getHealth();
+
+        helper.assertFalse(
+            cavenicFireSkeleton.hurt(level.damageSources().lava(), fireDamage),
+            "Expected cavenic skeleton to reject fire-tagged damage sources like lava"
+        );
+        helper.assertTrue(
+            vanillaFireSkeleton.hurt(level.damageSources().lava(), fireDamage),
+            "Expected vanilla skeleton baseline to take lava damage"
+        );
+        helper.assertTrue(
+            Math.abs(cavenicFireHealthBefore - cavenicFireSkeleton.getHealth()) < 1.0E-6F,
+            "Expected cavenic skeleton health to stay unchanged after fire-tagged damage"
+        );
+        helper.assertTrue(
+            vanillaFireSkeleton.getHealth() < vanillaFireHealthBefore,
+            "Expected vanilla skeleton baseline to lose health from lava damage"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicSkeletonLegacyDamageBehaviorKeepsGenericDamageVanillaLikeAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_SKELETON_DAMAGE_ANCHOR.north(12);
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CavenicSkeleton cavenicSkeleton = spawnLivingEntity(helper, ModRegistries.CAVENIC_SKELETON.get(), origin);
+        Skeleton vanillaSkeleton = spawnLivingEntity(helper, EntityType.SKELETON, origin.east(4));
+        clearEquipment(cavenicSkeleton);
+        clearEquipment(vanillaSkeleton);
+        float genericDamage = 6.0F;
+        float cavenicHealthBefore = cavenicSkeleton.getHealth();
+        float vanillaHealthBefore = vanillaSkeleton.getHealth();
+
+        helper.assertTrue(
+            cavenicSkeleton.hurt(level.damageSources().generic(), genericDamage),
+            "Expected cavenic skeleton to remain vulnerable to generic non-fire damage"
+        );
+        helper.assertTrue(
+            vanillaSkeleton.hurt(level.damageSources().generic(), genericDamage),
+            "Expected vanilla skeleton baseline to remain vulnerable to generic non-fire damage"
+        );
+        helper.assertTrue(
+            Math.abs((cavenicHealthBefore - cavenicSkeleton.getHealth()) - genericDamage) < 1.0E-6F,
+            "Expected cavenic skeleton generic damage intake to stay vanilla-like"
+        );
+        helper.assertTrue(
+            Math.abs((vanillaHealthBefore - vanillaSkeleton.getHealth()) - genericDamage) < 1.0E-6F,
+            "Expected vanilla skeleton generic damage intake to stay unchanged"
+        );
+        helper.assertTrue(
+            cavenicSkeleton.getLootTable().equals(EntityType.SKELETON.getDefaultLootTable()),
+            "Expected cavenic skeleton damage follow-up to keep the vanilla skeleton loot-table baseline"
+        );
+        helper.assertTrue(
+            CavenicSkeletonLootPolicy.ORB_DROP_ROLL_BOUND == 5,
+            "Expected cavenic skeleton orb drop roll bound to remain pinned while restoring legacy damage behavior"
+        );
+        helper.assertTrue(
+            CavenicSkeleton.NATURAL_SPAWN_WEIGHT == 20
+                && CavenicSkeleton.NATURAL_SPAWN_MIN_COUNT == 1
+                && CavenicSkeleton.NATURAL_SPAWN_MAX_COUNT == 1,
+            "Expected cavenic skeleton natural spawn constants to stay unchanged while restoring legacy damage behavior"
         );
         helper.succeed();
     }

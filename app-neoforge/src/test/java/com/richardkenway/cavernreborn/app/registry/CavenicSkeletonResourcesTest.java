@@ -67,13 +67,20 @@ class CavenicSkeletonResourcesTest {
         assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_WEIGHT = 20;"));
         assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_MIN_COUNT = 1;"));
         assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_MAX_COUNT = 1;"));
+        assertTrue(entitySource.contains("public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;"));
+        assertTrue(entitySource.contains("public boolean hurt(DamageSource source, float damage)"));
+        assertTrue(entitySource.contains("DamageTypeTags.IS_FALL"));
+        assertTrue(entitySource.contains("DamageTypeTags.IS_FIRE"));
+        assertTrue(entitySource.contains("return super.hurt(source, damage);"));
         assertTrue(entitySource.contains("canNaturallySpawnInDimension"));
         assertTrue(entitySource.contains("checkCavenicSkeletonSpawnRules"));
         assertTrue(entitySource.contains("CavernNeoForgeDimensions.isCavern"));
         assertTrue(entitySource.contains("Monster.checkMonsterSpawnRules"));
         assertTrue(entitySource.contains("return EntityType.SKELETON.getDefaultLootTable();"));
-        assertFalse(entitySource.contains("DamageTypeTags.IS_FALL"));
-        assertFalse(entitySource.contains("DamageTypeTags.IS_FIRE"));
+        assertFalse(entitySource.contains("EntityCavenicArrow"));
+        assertFalse(entitySource.toLowerCase().contains("cavenia"));
+        assertFalse(entitySource.contains("RangedBowAttackGoal"));
+        assertFalse(entitySource.contains("MeleeAttackGoal"));
 
         assertTrue(entityEventSource.contains("event.put(ModRegistries.CAVENIC_SKELETON.get(), CavenicSkeleton.createAttributes().build())"));
         assertTrue(entityEventSource.contains("RegisterSpawnPlacementsEvent"));

@@ -4,7 +4,9 @@ import com.richardkenway.cavernreborn.app.dimension.CavernNeoForgeDimensions;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -19,6 +21,7 @@ public final class CavenicSkeleton extends Skeleton {
     public static final int NATURAL_SPAWN_WEIGHT = 20;
     public static final int NATURAL_SPAWN_MIN_COUNT = 1;
     public static final int NATURAL_SPAWN_MAX_COUNT = 1;
+    public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;
 
     public CavenicSkeleton(EntityType<? extends Skeleton> entityType, Level level) {
         super(entityType, level);
@@ -31,6 +34,19 @@ public final class CavenicSkeleton extends Skeleton {
             .add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)
             .add(Attributes.MOVEMENT_SPEED, 0.2D)
             .add(Attributes.FOLLOW_RANGE, 21.0D);
+    }
+
+    @Override
+    public boolean hurt(DamageSource source, float damage) {
+        if (source.is(DamageTypeTags.IS_FALL)) {
+            damage *= LEGACY_FALL_DAMAGE_MULTIPLIER;
+        }
+
+        if (source.is(DamageTypeTags.IS_FIRE)) {
+            return false;
+        }
+
+        return super.hurt(source, damage);
     }
 
     @Override
