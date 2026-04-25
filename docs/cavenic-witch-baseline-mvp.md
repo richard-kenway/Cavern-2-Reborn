@@ -57,13 +57,14 @@ The legacy repo contains a direct `EntityCavenicWitch`, so this increment stays 
 - The bounded baseline reuses the vanilla witch loot table as its base drop source so the mob has safe hostile drops without widening the Cavenic loot line yet.
 - Legacy `EntityCavenicWitch` also added a `1/5` `cavenic_orb` drop and a fallback random magic-book branch.
 - The bounded legacy loot follow-up is now documented separately in `docs/cavenic-witch-loot-mvp.md`.
+- The bounded legacy damage-behavior follow-up is now documented separately in `docs/cavenic-witch-damage-behavior-mvp.md`.
 - custom loot beyond the restored `1/5` `cavenic_orb` drop remains out of scope for this baseline slice.
 - the legacy magic-book branch remains deferred because Reborn does not yet have a magic-book foundation.
 
 ## Follow-Up Boundaries
 
 - The bounded natural-spawn follow-up is now documented separately in `docs/cavenic-witch-natural-spawn-mvp.md`.
-- legacy fall/fire damage behavior remains out of scope
+- legacy fall/fire damage behavior is now documented separately in `docs/cavenic-witch-damage-behavior-mvp.md`.
 - custom potion logic, friendship targeting and same-type projectile immunity remain out of scope
 - the legacy `getMaxSpawnedInChunk()` Cavenia-specific behavior remains out of scope
 - Cavenia remains out of scope

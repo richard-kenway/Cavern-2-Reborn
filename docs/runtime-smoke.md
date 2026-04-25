@@ -130,6 +130,9 @@ NeoForge GameTest runtime smoke covers:
 - cavenic witch biome tag resolution
 - cavenic witch legacy orb-drop event wiring smoke
 - cavenic witch deterministic winning/losing roll smoke
+- cavenic witch legacy fall-damage reduction smoke
+- cavenic witch legacy fire-damage immunity smoke
+- cavenic witch generic-damage baseline smoke
 - cavenic shroom worldgen configured/placed key resolution
 - aquamarine tool runtime registry ids
 - aquamarine tool repairability with `cavernreborn:aquamarine`
@@ -191,6 +194,7 @@ NeoForge GameTest runtime smoke covers:
 - actual Cavenic Spider renderer/model visual feel
 - actual Cavenic Witch renderer/model visual feel
 - actual long-run cavenic witch orb-drop rate balance
+- actual long-running Cavenic Witch fire/lava gameplay feel
 - actual long-run cavenic spider orb-drop rate balance
 - actual long-running Cavenic Spider fire/lava gameplay feel
 - actual long-running Cavenic Spider combat/pathfinding feel

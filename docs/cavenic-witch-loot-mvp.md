@@ -50,7 +50,7 @@ Legacy `dropLoot(...)` does not use `lootingModifier`, `wasRecentlyHit`, dimensi
 - Player kill is not required for the orb branch.
 - Progression, dimension and economy do not affect the orb branch.
 - Natural spawn values remain unchanged.
-- Fall/fire damage behavior remains unchanged.
+- Fall/fire damage behavior remains unchanged and is now documented separately in `docs/cavenic-witch-damage-behavior-mvp.md`.
 - Custom potion logic, custom ranged attack behavior, friendship targeting and same-type projectile immunity remain out of scope.
 
 ## Testing

@@ -190,6 +190,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_WITCH_SPAWN_EGG_ANCHOR = new BlockPos(3904, 96, 0);
     private static final BlockPos CAVENIC_WITCH_NATURAL_SPAWN_ANCHOR = new BlockPos(4000, 96, 0);
     private static final BlockPos CAVENIC_WITCH_LOOT_ANCHOR = new BlockPos(4096, 96, 0);
+    private static final BlockPos CAVENIC_WITCH_DAMAGE_ANCHOR = new BlockPos(4192, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -1961,6 +1962,113 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             Math.abs(drops.getFirst().getY() - (witch.getY() + 0.5D)) < 1.0E-6D,
             "Expected cavenic orb drop Y offset to stay aligned with the legacy 0.5 offset"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicWitchLegacyFallAndFireDamageBehaviorAppliesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_WITCH_DAMAGE_ANCHOR;
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CavenicWitch cavenicFallWitch = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin);
+        Witch vanillaFallWitch = spawnLivingEntity(helper, EntityType.WITCH, origin.east(4));
+        clearEquipment(cavenicFallWitch);
+        clearEquipment(vanillaFallWitch);
+        float fallDamage = 10.0F;
+        float cavenicFallHealthBefore = cavenicFallWitch.getHealth();
+        float vanillaFallHealthBefore = vanillaFallWitch.getHealth();
+
+        helper.assertTrue(
+            cavenicFallWitch.hurt(level.damageSources().fall(), fallDamage),
+            "Expected cavenic witch to still accept fall damage hits through the normal server damage path"
+        );
+        helper.assertTrue(
+            vanillaFallWitch.hurt(level.damageSources().fall(), fallDamage),
+            "Expected vanilla witch baseline to accept fall damage hits"
+        );
+        helper.assertTrue(
+            Math.abs((cavenicFallHealthBefore - cavenicFallWitch.getHealth()) - (fallDamage * CavenicWitch.LEGACY_FALL_DAMAGE_MULTIPLIER)) < 1.0E-6F,
+            "Expected cavenic witch fall damage to stay pinned to the legacy 0.35 multiplier"
+        );
+        helper.assertTrue(
+            Math.abs((vanillaFallHealthBefore - vanillaFallWitch.getHealth()) - fallDamage) < 1.0E-6F,
+            "Expected vanilla witch baseline to keep full fall damage"
+        );
+
+        CavenicWitch cavenicFireWitch = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin.south(8));
+        Witch vanillaFireWitch = spawnLivingEntity(helper, EntityType.WITCH, origin.south(8).east(4));
+        clearEquipment(cavenicFireWitch);
+        clearEquipment(vanillaFireWitch);
+        float fireDamage = 4.0F;
+        float cavenicFireHealthBefore = cavenicFireWitch.getHealth();
+        float vanillaFireHealthBefore = vanillaFireWitch.getHealth();
+
+        helper.assertFalse(
+            cavenicFireWitch.hurt(level.damageSources().lava(), fireDamage),
+            "Expected cavenic witch to reject fire-tagged damage sources like lava"
+        );
+        helper.assertTrue(
+            vanillaFireWitch.hurt(level.damageSources().lava(), fireDamage),
+            "Expected vanilla witch baseline to take lava damage"
+        );
+        helper.assertTrue(
+            Math.abs(cavenicFireHealthBefore - cavenicFireWitch.getHealth()) < 1.0E-6F,
+            "Expected cavenic witch health to stay unchanged after fire-tagged damage"
+        );
+        helper.assertTrue(
+            vanillaFireWitch.getHealth() < vanillaFireHealthBefore,
+            "Expected vanilla witch baseline to lose health from lava damage"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicWitchLegacyDamageBehaviorKeepsGenericDamageVanillaLikeAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_WITCH_DAMAGE_ANCHOR.north(12);
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CavenicWitch cavenicWitch = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin);
+        Witch vanillaWitch = spawnLivingEntity(helper, EntityType.WITCH, origin.east(4));
+        clearEquipment(cavenicWitch);
+        clearEquipment(vanillaWitch);
+        float genericDamage = 6.0F;
+        float cavenicHealthBefore = cavenicWitch.getHealth();
+        float vanillaHealthBefore = vanillaWitch.getHealth();
+
+        helper.assertTrue(
+            cavenicWitch.hurt(level.damageSources().generic(), genericDamage),
+            "Expected cavenic witch to remain vulnerable to generic non-fire damage"
+        );
+        helper.assertTrue(
+            vanillaWitch.hurt(level.damageSources().generic(), genericDamage),
+            "Expected vanilla witch baseline to remain vulnerable to generic non-fire damage"
+        );
+        helper.assertTrue(
+            Math.abs((cavenicHealthBefore - cavenicWitch.getHealth()) - genericDamage) < 1.0E-6F,
+            "Expected cavenic witch generic damage intake to stay vanilla-like"
+        );
+        helper.assertTrue(
+            Math.abs((vanillaHealthBefore - vanillaWitch.getHealth()) - genericDamage) < 1.0E-6F,
+            "Expected vanilla witch generic damage intake to stay unchanged"
+        );
+        helper.assertTrue(
+            cavenicWitch.getLootTable().equals(EntityType.WITCH.getDefaultLootTable()),
+            "Expected cavenic witch damage follow-up to keep the vanilla witch loot-table baseline"
+        );
+        helper.assertTrue(
+            CavenicWitchLootPolicy.ORB_DROP_ROLL_BOUND == 5,
+            "Expected cavenic witch orb drop roll bound to remain pinned while restoring legacy damage behavior"
+        );
+        helper.assertTrue(
+            CavenicWitch.NATURAL_SPAWN_WEIGHT == 15
+                && CavenicWitch.NATURAL_SPAWN_MIN_COUNT == 1
+                && CavenicWitch.NATURAL_SPAWN_MAX_COUNT == 1,
+            "Expected cavenic witch natural spawn constants to stay unchanged while restoring legacy damage behavior"
         );
         helper.succeed();
     }

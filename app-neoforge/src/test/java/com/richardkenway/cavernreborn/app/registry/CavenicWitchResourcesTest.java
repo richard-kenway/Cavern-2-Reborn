@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CavenicWitchResourcesTest {
     @Test
-    void cavenicWitchRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnLootAndVanillaWitchBaselineBoundaries() throws IOException {
+    void cavenicWitchRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnLootDamageAndVanillaWitchBaselineBoundaries() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -69,9 +69,14 @@ class CavenicWitchResourcesTest {
         assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_WEIGHT = 15;"));
         assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_MIN_COUNT = 1;"));
         assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_MAX_COUNT = 1;"));
+        assertTrue(entitySource.contains("public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;"));
         assertTrue(entitySource.contains(".add(Attributes.MAX_HEALTH, 50.0D)"));
         assertTrue(entitySource.contains(".add(Attributes.FOLLOW_RANGE, 32.0D)"));
         assertTrue(entitySource.contains(".add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)"));
+        assertTrue(entitySource.contains("public boolean hurt(DamageSource source, float damage)"));
+        assertTrue(entitySource.contains("DamageTypeTags.IS_FALL"));
+        assertTrue(entitySource.contains("DamageTypeTags.IS_FIRE"));
+        assertTrue(entitySource.contains("return super.hurt(source, damage);"));
         assertTrue(entitySource.contains("return EntityType.WITCH.getDefaultLootTable();"));
         assertTrue(entitySource.contains("canNaturallySpawnInDimension"));
         assertTrue(entitySource.contains("checkCavenicWitchSpawnRules"));
@@ -80,8 +85,6 @@ class CavenicWitchResourcesTest {
         assertFalse(entitySource.contains("registerGoals("));
         assertFalse(entitySource.contains("performRangedAttack("));
         assertFalse(entitySource.contains("aiStep("));
-        assertFalse(entitySource.contains("DamageTypeTags.IS_FALL"));
-        assertFalse(entitySource.contains("DamageTypeTags.IS_FIRE"));
         assertFalse(entitySource.contains("isEntityInvulnerable("));
         assertFalse(entitySource.contains("setAttackTarget("));
         assertFalse(entitySource.contains("cavenic_orb"));
