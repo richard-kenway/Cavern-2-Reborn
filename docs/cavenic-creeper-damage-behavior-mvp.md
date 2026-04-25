@@ -35,7 +35,7 @@ That means the mob kept taking fall damage, but only at `35%` of the original am
 - Generic non-fire, non-fall damage remains vanilla-like.
 - vanilla creeper AI remains unchanged.
 - attributes, natural spawning and `1/5` orb-drop behavior remain unchanged.
-- `fuseTime = 15` and `explosionRadius = 5` remain out of scope for a separate follow-up, so the current slice keeps the vanilla creeper fuse and explosion values.
+- The separate legacy fuse/explosion follow-up is documented in `docs/cavenic-creeper-fuse-explosion-mvp.md`.
 
 ## Why This Mapping Is Safe
 
@@ -52,11 +52,11 @@ That means the mob kept taking fall damage, but only at `35%` of the original am
   - cavenic creeper legacy fire-damage immunity smoke
   - cavenic creeper generic-damage baseline smoke
   - continued vanilla creeper loot-table baseline, `1/5` orb-drop follow-up and natural-spawn stability
-  - continued vanilla creeper fuse and explosion save values
+  - the separate fuse/explosion follow-up remaining isolated from this damage slice
 
 ## Still Out Of Scope
 
-- `fuseTime = 15` and `explosionRadius = 5` remain out of scope
+- fuse/explosion tuning remains documented in the separate follow-up
 - Custom explosion behavior remains out of scope
 - Custom Cavenic Creeper AI remains out of scope
 - Additional Cavenic mobs remain out of scope

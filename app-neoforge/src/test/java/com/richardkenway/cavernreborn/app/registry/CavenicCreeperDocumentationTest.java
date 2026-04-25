@@ -14,6 +14,7 @@ class CavenicCreeperDocumentationTest {
     private static final Path CAVENIC_CREEPER_NATURAL_SPAWN_MVP = resolveProjectFile("docs", "cavenic-creeper-natural-spawn-mvp.md");
     private static final Path CAVENIC_CREEPER_ORB_DROP_MVP = resolveProjectFile("docs", "cavenic-creeper-orb-drop-mvp.md");
     private static final Path CAVENIC_CREEPER_DAMAGE_BEHAVIOR_MVP = resolveProjectFile("docs", "cavenic-creeper-damage-behavior-mvp.md");
+    private static final Path CAVENIC_CREEPER_FUSE_EXPLOSION_MVP = resolveProjectFile("docs", "cavenic-creeper-fuse-explosion-mvp.md");
     private static final Path RUNTIME_SMOKE = resolveProjectFile("docs", "runtime-smoke.md");
 
     @Test
@@ -28,11 +29,14 @@ class CavenicCreeperDocumentationTest {
         assertTrue(readme.contains("docs/cavenic-creeper-orb-drop-mvp.md"));
         assertTrue(readme.contains("Cavenic Creeper Legacy Damage Behavior MVP"));
         assertTrue(readme.contains("docs/cavenic-creeper-damage-behavior-mvp.md"));
+        assertTrue(readme.contains("Cavenic Creeper Legacy Fuse/Explosion MVP"));
+        assertTrue(readme.contains("docs/cavenic-creeper-fuse-explosion-mvp.md"));
         assertTrue(readme.contains("cavenic_creeper"));
         assertTrue(readme.contains("third direct Cavenic mob foundation"));
         assertTrue(readme.contains("bounded CAVERN-only natural spawning"));
         assertTrue(readme.contains("legacy `1/5` `cavenic_orb` drop"));
         assertTrue(readme.contains("legacy fall-damage reduction and fire-damage immunity"));
+        assertTrue(readme.contains("legacy `Fuse = 15` and `ExplosionRadius = 5`"));
     }
 
     @Test
@@ -58,6 +62,7 @@ class CavenicCreeperDocumentationTest {
         assertTrue(doc.contains("That orb-drop follow-up is now documented separately in `docs/cavenic-creeper-orb-drop-mvp.md`."));
         assertTrue(doc.contains("`fuseTime = 15`"));
         assertTrue(doc.contains("`explosionRadius = 5`"));
+        assertTrue(doc.contains("The bounded legacy fuse/explosion follow-up is now documented separately in `docs/cavenic-creeper-fuse-explosion-mvp.md`."));
         assertTrue(doc.contains("Custom explosion behavior remains out of scope"));
         assertTrue(doc.contains("The bounded natural-spawn follow-up is documented separately in `docs/cavenic-creeper-natural-spawn-mvp.md`"));
         assertTrue(doc.contains("The bounded legacy orb-drop follow-up is now documented separately in `docs/cavenic-creeper-orb-drop-mvp.md`."));
@@ -83,6 +88,7 @@ class CavenicCreeperDocumentationTest {
         assertTrue(doc.contains("The bounded legacy orb-drop follow-up is documented separately in `docs/cavenic-creeper-orb-drop-mvp.md`"));
         assertTrue(doc.contains("custom loot beyond that orb-drop follow-up remains out of scope"));
         assertTrue(doc.contains("The bounded legacy damage-behavior follow-up is documented separately in `docs/cavenic-creeper-damage-behavior-mvp.md`"));
+        assertTrue(doc.contains("The bounded legacy fuse/explosion follow-up is documented separately in `docs/cavenic-creeper-fuse-explosion-mvp.md`"));
         assertTrue(doc.contains("custom explosion behavior remains out of scope"));
     }
 
@@ -103,8 +109,8 @@ class CavenicCreeperDocumentationTest {
         assertTrue(doc.contains("The orb drop does not require a player kill"));
         assertTrue(doc.contains("No progression, dimension or economy hook changes affect the orb drop."));
         assertTrue(doc.contains("The separate legacy fall/fire damage follow-up is documented in `docs/cavenic-creeper-damage-behavior-mvp.md`"));
-        assertTrue(doc.contains("Legacy fuse/explosion tuning remains out of scope"));
-        assertTrue(doc.contains("Natural spawn values remain out of scope"));
+        assertTrue(doc.contains("The separate legacy fuse/explosion follow-up is documented in `docs/cavenic-creeper-fuse-explosion-mvp.md`"));
+        assertTrue(doc.contains("Natural spawn values remain unchanged"));
     }
 
     @Test
@@ -123,12 +129,35 @@ class CavenicCreeperDocumentationTest {
         assertTrue(doc.contains("lava"));
         assertTrue(doc.contains("vanilla creeper AI remains unchanged"));
         assertTrue(doc.contains("attributes, natural spawning and `1/5` orb-drop behavior remain unchanged"));
-        assertTrue(doc.contains("`fuseTime = 15` and `explosionRadius = 5` remain out of scope"));
+        assertTrue(doc.contains("The separate legacy fuse/explosion follow-up is documented in `docs/cavenic-creeper-fuse-explosion-mvp.md`"));
         assertTrue(doc.contains("Custom explosion behavior remains out of scope"));
     }
 
     @Test
-    void runtimeSmokeMentionsCavenicCreeperDamageCoverageAndManualBoundary() throws IOException {
+    void cavenicCreeperFuseExplosionDocStatesLegacyReferencesRuntimeShapeAndBoundaries() throws IOException {
+        String doc = Files.readString(CAVENIC_CREEPER_FUSE_EXPLOSION_MVP);
+
+        assertTrue(doc.contains("`cavern.entity.monster.EntityCavenicCreeper`"));
+        assertTrue(doc.contains("legacy `applyCustomValues()`"));
+        assertTrue(doc.contains("`CaveUtils.setPrivateValue`"));
+        assertTrue(doc.contains("`fuseTime = 15`"));
+        assertTrue(doc.contains("`explosionRadius = 5`"));
+        assertTrue(doc.contains("constructor-time `applyLegacyFuseAndExplosionValues()`"));
+        assertTrue(doc.contains("`CompoundTag`"));
+        assertTrue(doc.contains("`Fuse`"));
+        assertTrue(doc.contains("`ExplosionRadius`"));
+        assertTrue(doc.contains("`addAdditionalSaveData(CompoundTag tag)`"));
+        assertTrue(doc.contains("vanilla creeper AI remains unchanged"));
+        assertTrue(doc.contains("explosion logic remains vanilla except for the fixed fuse/radius values"));
+        assertTrue(doc.contains("natural spawning remains unchanged"));
+        assertTrue(doc.contains("`1/5` orb-drop behavior remains unchanged"));
+        assertTrue(doc.contains("fall/fire damage behavior remains unchanged"));
+        assertTrue(doc.contains("Custom explosion behavior remains out of scope"));
+        assertTrue(doc.contains("charged creeper changes remain out of scope"));
+    }
+
+    @Test
+    void runtimeSmokeMentionsCavenicCreeperFuseExplosionCoverageAndManualBoundary() throws IOException {
         String runtimeSmoke = Files.readString(RUNTIME_SMOKE);
 
         assertTrue(runtimeSmoke.contains("cavenic creeper runtime registry id"));
@@ -146,9 +175,11 @@ class CavenicCreeperDocumentationTest {
         assertTrue(runtimeSmoke.contains("cavenic creeper legacy fall-damage reduction smoke"));
         assertTrue(runtimeSmoke.contains("cavenic creeper legacy fire-damage immunity smoke"));
         assertTrue(runtimeSmoke.contains("cavenic creeper generic-damage baseline smoke"));
+        assertTrue(runtimeSmoke.contains("cavenic creeper legacy fuse-time smoke"));
+        assertTrue(runtimeSmoke.contains("cavenic creeper legacy explosion-radius smoke"));
         assertTrue(runtimeSmoke.contains("actual Cavenic Creeper renderer/model visual feel"));
         assertTrue(runtimeSmoke.contains("actual long-running Cavenic Creeper fire/lava gameplay feel"));
-        assertTrue(runtimeSmoke.contains("actual Cavenic Creeper fuse and explosion feel"));
+        assertTrue(runtimeSmoke.contains("actual Cavenic Creeper fuse timing, explosion feel and block-damage behavior"));
         assertTrue(runtimeSmoke.contains("actual long-run cavenic creeper orb-drop rate balance"));
         assertTrue(runtimeSmoke.contains("actual long-run Cavenic Creeper population balance inside CAVERN"));
     }

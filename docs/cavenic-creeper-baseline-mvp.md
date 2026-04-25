@@ -60,6 +60,7 @@ The legacy repo contains a direct `EntityCavenicCreeper`, so this increment stay
 ## Follow-Up Boundaries
 
 - Legacy `EntityCavenicCreeper` also set `fuseTime = 15` and `explosionRadius = 5`.
+- The bounded legacy fuse/explosion follow-up is now documented separately in `docs/cavenic-creeper-fuse-explosion-mvp.md`.
 - Custom explosion behavior remains out of scope for this baseline slice.
 - Legacy `EntityCavenicCreeper` also included a `1/5` `cavenic_orb` drop and the same fall/fire damage behavior later restored for `cavenic_zombie` and `cavenic_skeleton`.
 - The legacy fall/fire damage behavior remains out of scope in this baseline slice.

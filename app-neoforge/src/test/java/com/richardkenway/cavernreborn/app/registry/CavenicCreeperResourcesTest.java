@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CavenicCreeperResourcesTest {
     @Test
-    void cavenicCreeperRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnLootDamageAndStableCreativePlacement() throws IOException {
+    void cavenicCreeperRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnLootDamageFuseExplosionAndStableCreativePlacement() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -71,9 +71,16 @@ class CavenicCreeperResourcesTest {
         assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_MIN_COUNT = 1;"));
         assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_MAX_COUNT = 1;"));
         assertTrue(entitySource.contains("public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;"));
+        assertTrue(entitySource.contains("public static final short LEGACY_FUSE_TIME = 15;"));
+        assertTrue(entitySource.contains("public static final byte LEGACY_EXPLOSION_RADIUS = 5;"));
         assertTrue(entitySource.contains("public boolean hurt(DamageSource source, float damage)"));
+        assertTrue(entitySource.contains("public void addAdditionalSaveData(CompoundTag tag)"));
         assertTrue(entitySource.contains("DamageTypeTags.IS_FALL"));
         assertTrue(entitySource.contains("DamageTypeTags.IS_FIRE"));
+        assertTrue(entitySource.contains("applyLegacyFuseAndExplosionValues()"));
+        assertTrue(entitySource.contains("tag.putShort(\"Fuse\", LEGACY_FUSE_TIME);"));
+        assertTrue(entitySource.contains("tag.putByte(\"ExplosionRadius\", LEGACY_EXPLOSION_RADIUS);"));
+        assertTrue(entitySource.contains("super.readAdditionalSaveData(legacyFuseAndExplosionData);"));
         assertTrue(entitySource.contains("return super.hurt(source, damage);"));
         assertTrue(entitySource.contains("canNaturallySpawnInDimension"));
         assertTrue(entitySource.contains("checkCavenicCreeperSpawnRules"));
@@ -81,9 +88,9 @@ class CavenicCreeperResourcesTest {
         assertTrue(entitySource.contains("Monster.checkMonsterSpawnRules"));
         assertTrue(entitySource.contains("return EntityType.CREEPER.getDefaultLootTable();"));
         assertFalse(entitySource.contains("registerGoals("));
-        assertFalse(entitySource.contains("fuseTime"));
-        assertFalse(entitySource.contains("explosionRadius"));
         assertFalse(entitySource.contains("explodeCreeper("));
+        assertFalse(entitySource.contains("ExplosionEvent"));
+        assertFalse(entitySource.contains("Level.ExplosionInteraction"));
         assertFalse(entitySource.contains("EntityCavenicArrow"));
         assertFalse(entitySource.toLowerCase().contains("cavenia"));
 

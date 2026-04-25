@@ -170,6 +170,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_CREEPER_NATURAL_SPAWN_ANCHOR = new BlockPos(2848, 96, 0);
     private static final BlockPos CAVENIC_CREEPER_LOOT_ANCHOR = new BlockPos(2944, 96, 0);
     private static final BlockPos CAVENIC_CREEPER_DAMAGE_ANCHOR = new BlockPos(3040, 96, 0);
+    private static final BlockPos CAVENIC_CREEPER_FUSE_ANCHOR = new BlockPos(3136, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -1255,17 +1256,95 @@ public final class CavernSpecialOreGameTests {
                 && CavenicCreeper.NATURAL_SPAWN_MAX_COUNT == 1,
             "Expected cavenic creeper natural spawn constants to stay unchanged while restoring legacy damage behavior"
         );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicCreeperLegacyFuseAndExplosionValuesApplyAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_CREEPER_FUSE_ANCHOR;
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CavenicCreeper cavenicCreeper = spawnLivingEntity(helper, ModRegistries.CAVENIC_CREEPER.get(), origin);
+        Creeper vanillaCreeper = spawnLivingEntity(helper, EntityType.CREEPER, origin.east(4));
 
         CompoundTag cavenicData = cavenicCreeper.saveWithoutId(new CompoundTag());
         CompoundTag vanillaData = vanillaCreeper.saveWithoutId(new CompoundTag());
 
         helper.assertTrue(
-            cavenicData.getShort("Fuse") == vanillaData.getShort("Fuse"),
-            "Expected cavenic creeper damage follow-up to keep the vanilla creeper fuse length"
+            cavenicData.getShort("Fuse") == CavenicCreeper.LEGACY_FUSE_TIME,
+            "Expected cavenic creeper saved Fuse value to stay pinned to the legacy 15-tick fuse"
         );
         helper.assertTrue(
-            cavenicData.getByte("ExplosionRadius") == vanillaData.getByte("ExplosionRadius"),
-            "Expected cavenic creeper damage follow-up to keep the vanilla creeper explosion radius"
+            cavenicData.getByte("ExplosionRadius") == CavenicCreeper.LEGACY_EXPLOSION_RADIUS,
+            "Expected cavenic creeper saved ExplosionRadius value to stay pinned to the legacy radius 5"
+        );
+        helper.assertTrue(
+            vanillaData.getShort("Fuse") != cavenicData.getShort("Fuse"),
+            "Expected vanilla creeper baseline to keep a different fuse length than the legacy cavenic creeper"
+        );
+        helper.assertTrue(
+            vanillaData.getByte("ExplosionRadius") != cavenicData.getByte("ExplosionRadius"),
+            "Expected vanilla creeper baseline to keep a different explosion radius than the legacy cavenic creeper"
+        );
+
+        CavenicCreeper roundTripCreeper = new CavenicCreeper(ModRegistries.CAVENIC_CREEPER.get(), level);
+        roundTripCreeper.load(cavenicData.copy());
+        CompoundTag roundTripData = roundTripCreeper.saveWithoutId(new CompoundTag());
+
+        helper.assertTrue(
+            roundTripData.getShort("Fuse") == CavenicCreeper.LEGACY_FUSE_TIME,
+            "Expected cavenic creeper Fuse to survive a save/load style round trip"
+        );
+        helper.assertTrue(
+            roundTripData.getByte("ExplosionRadius") == CavenicCreeper.LEGACY_EXPLOSION_RADIUS,
+            "Expected cavenic creeper ExplosionRadius to survive a save/load style round trip"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicCreeperLegacyFuseAndExplosionValuesDoNotChangeOtherSlicesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_CREEPER_FUSE_ANCHOR.north(12);
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CavenicCreeper cavenicCreeper = spawnLivingEntity(helper, ModRegistries.CAVENIC_CREEPER.get(), origin);
+        CompoundTag cavenicData = cavenicCreeper.saveWithoutId(new CompoundTag());
+        float healthBeforeFireHit = cavenicCreeper.getHealth();
+
+        helper.assertTrue(
+            cavenicCreeper.getLootTable().equals(EntityType.CREEPER.getDefaultLootTable()),
+            "Expected cavenic creeper fuse/explosion follow-up to keep the vanilla creeper loot-table baseline"
+        );
+        helper.assertTrue(
+            CavenicCreeperLootPolicy.ORB_DROP_ROLL_BOUND == 5,
+            "Expected cavenic creeper orb drop roll bound to remain pinned while restoring legacy fuse and explosion values"
+        );
+        helper.assertTrue(
+            CavenicCreeper.NATURAL_SPAWN_WEIGHT == 30
+                && CavenicCreeper.NATURAL_SPAWN_MIN_COUNT == 1
+                && CavenicCreeper.NATURAL_SPAWN_MAX_COUNT == 1,
+            "Expected cavenic creeper natural spawn constants to stay unchanged while restoring legacy fuse and explosion values"
+        );
+        helper.assertTrue(
+            Math.abs(CavenicCreeper.LEGACY_FALL_DAMAGE_MULTIPLIER - 0.35F) < 1.0E-6F,
+            "Expected cavenic creeper legacy fall-damage multiplier to remain pinned while restoring legacy fuse and explosion values"
+        );
+        helper.assertFalse(
+            cavenicCreeper.hurt(level.damageSources().lava(), 2.0F),
+            "Expected cavenic creeper fuse/explosion follow-up to keep the legacy fire-damage immunity behavior"
+        );
+        helper.assertTrue(
+            Math.abs(healthBeforeFireHit - cavenicCreeper.getHealth()) < 1.0E-6F,
+            "Expected cavenic creeper fuse/explosion follow-up to leave fire-damage immunity unchanged"
+        );
+        helper.assertTrue(
+            cavenicData.getShort("Fuse") == CavenicCreeper.LEGACY_FUSE_TIME
+                && cavenicData.getByte("ExplosionRadius") == CavenicCreeper.LEGACY_EXPLOSION_RADIUS,
+            "Expected cavenic creeper fuse/explosion follow-up to keep the saved legacy values pinned"
         );
         helper.succeed();
     }

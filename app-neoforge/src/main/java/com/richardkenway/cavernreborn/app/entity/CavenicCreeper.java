@@ -3,6 +3,7 @@ package com.richardkenway.cavernreborn.app.entity;
 import com.richardkenway.cavernreborn.app.dimension.CavernNeoForgeDimensions;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
@@ -22,10 +23,13 @@ public final class CavenicCreeper extends Creeper {
     public static final int NATURAL_SPAWN_MIN_COUNT = 1;
     public static final int NATURAL_SPAWN_MAX_COUNT = 1;
     public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;
+    public static final short LEGACY_FUSE_TIME = 15;
+    public static final byte LEGACY_EXPLOSION_RADIUS = 5;
 
     public CavenicCreeper(EntityType<? extends Creeper> entityType, Level level) {
         super(entityType, level);
         this.xpReward = 13;
+        this.applyLegacyFuseAndExplosionValues();
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -38,6 +42,13 @@ public final class CavenicCreeper extends Creeper {
     @Override
     protected ResourceKey<LootTable> getDefaultLootTable() {
         return EntityType.CREEPER.getDefaultLootTable();
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        tag.putShort("Fuse", LEGACY_FUSE_TIME);
+        tag.putByte("ExplosionRadius", LEGACY_EXPLOSION_RADIUS);
     }
 
     @Override
@@ -55,6 +66,13 @@ public final class CavenicCreeper extends Creeper {
 
     public static boolean canNaturallySpawnInDimension(ResourceKey<Level> levelKey) {
         return CavernNeoForgeDimensions.isCavern(levelKey);
+    }
+
+    private void applyLegacyFuseAndExplosionValues() {
+        CompoundTag legacyFuseAndExplosionData = new CompoundTag();
+        legacyFuseAndExplosionData.putShort("Fuse", LEGACY_FUSE_TIME);
+        legacyFuseAndExplosionData.putByte("ExplosionRadius", LEGACY_EXPLOSION_RADIUS);
+        super.readAdditionalSaveData(legacyFuseAndExplosionData);
     }
 
     public static boolean checkCavenicCreeperSpawnRules(
