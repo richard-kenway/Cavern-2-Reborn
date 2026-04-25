@@ -64,7 +64,9 @@ It does not add a new mob. It only makes the already registered `cavernreborn:ca
 
 ## Still Out Of Scope
 
-- custom loot, the legacy `1/5` `cavenic_orb` drop and the magic-book drop branch remain out of scope
+- The bounded legacy loot follow-up is now documented separately in `docs/cavenic-witch-loot-mvp.md`.
+- the restored legacy `1/5` `cavenic_orb` drop remains unchanged
+- the deferred magic-book branch still needs a Reborn magic-book foundation
 - legacy fall/fire damage behavior remains out of scope
 - custom potion logic, custom ranged attack behavior, friendship targeting and same-type projectile immunity remain out of scope
 - the legacy `getMaxSpawnedInChunk()` Cavenia-specific behavior remains out of scope

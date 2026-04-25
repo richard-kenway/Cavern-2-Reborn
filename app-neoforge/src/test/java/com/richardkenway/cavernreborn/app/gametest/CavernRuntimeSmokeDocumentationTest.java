@@ -115,10 +115,13 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/cavenic-witch-baseline-mvp.md"));
         assertTrue(readme.contains("Cavenic Witch Natural Spawn MVP"));
         assertTrue(readme.contains("docs/cavenic-witch-natural-spawn-mvp.md"));
+        assertTrue(readme.contains("Cavenic Witch Legacy Loot MVP"));
+        assertTrue(readme.contains("docs/cavenic-witch-loot-mvp.md"));
         assertTrue(readme.contains("fifth direct Cavenic mob foundation"));
         assertTrue(readme.contains("bounded CAVERN-only natural spawning"));
         assertTrue(readme.contains("vanilla witch loot baseline"));
-        assertTrue(readme.contains("custom potion logic, orb-drop parity, the magic-book drop branch and damage-behavior parity remain intentionally out of scope"));
+        assertTrue(readme.contains("legacy `1/5` `cavenic_orb` drop appended on top of the vanilla witch loot baseline"));
+        assertTrue(readme.contains("the deferred magic-book branch, custom potion logic and damage-behavior parity remain intentionally out of scope"));
     }
 
     @Test
@@ -232,6 +235,9 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("cavenic witch CAVERN-only spawn predicate smoke"));
         assertTrue(doc.contains("cavenic witch biome modifier registry smoke"));
         assertTrue(doc.contains("cavenic witch biome tag resolution"));
+        assertTrue(doc.contains("cavenic witch legacy orb-drop event wiring smoke"));
+        assertTrue(doc.contains("cavenic witch deterministic winning/losing roll smoke"));
+        assertTrue(doc.contains("legacy cavenic witch magic-book branch because Reborn has no magic-book foundation yet"));
         assertTrue(doc.contains("cavenic bow enchantment applicability"));
         assertTrue(doc.contains("cavenic bow cavenic item tag resolution"));
         assertTrue(doc.contains("cavenic bow recipe manager resolution"));
@@ -303,6 +309,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("actual long-running Cavenic Spider combat/pathfinding feel"));
         assertTrue(doc.contains("actual poison/web-based Cavenic Spider gameplay behavior"));
         assertTrue(doc.contains("actual Cavenic Witch combat, potion-throw and pathfinding feel"));
+        assertTrue(doc.contains("actual long-run cavenic witch orb-drop rate balance"));
         assertTrue(doc.contains("actual long-run Cavenic Witch population balance inside CAVERN"));
         assertTrue(doc.contains("actual long-run Cavenic Spider population balance inside CAVERN"));
         assertFalse(doc.contains("Cavenic Spider natural spawning in this baseline slice"));

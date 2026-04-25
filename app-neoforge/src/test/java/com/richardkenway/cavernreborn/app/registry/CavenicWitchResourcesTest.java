@@ -21,15 +21,24 @@ import com.google.gson.JsonParser;
 
 class CavenicWitchResourcesTest {
     @Test
-    void cavenicWitchRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnAndVanillaWitchBaselineBoundaries() throws IOException {
+    void cavenicWitchRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnLootAndVanillaWitchBaselineBoundaries() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
+        );
+        String appSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "CavernReborn.java"
         );
         String entitySource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "CavenicWitch.java"
         );
+        String lootEventSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "CavenicWitchLootEvents.java"
+        );
         String entityEventSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModEntityEvents.java"
+        );
+        String lootPolicySource = readProjectFile(
+            "core", "src", "main", "java", "com", "richardkenway", "cavernreborn", "core", "loot", "CavenicWitchLootPolicy.java"
         );
         String clientSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "client", "CavernClientModEvents.java"
@@ -81,6 +90,24 @@ class CavenicWitchResourcesTest {
         assertFalse(entitySource.contains("EntityRapidArrow"));
         assertFalse(entitySource.contains("EntityTorchArrow"));
         assertFalse(entitySource.contains("EntityCavenicArrow"));
+        assertFalse(entitySource.contains("ItemMagicBook"));
+        assertFalse(entitySource.contains("magic_book"));
+
+        assertTrue(lootPolicySource.contains("public static final int ORB_DROP_ROLL_BOUND = 5;"));
+        assertTrue(lootPolicySource.contains("public static boolean shouldDropOrb(int roll)"));
+        assertFalse(lootPolicySource.contains("MagicBook"));
+
+        assertTrue(lootEventSource.contains("LivingDropsEvent"));
+        assertTrue(lootEventSource.contains("event.getEntity() instanceof CavenicWitch witch"));
+        assertTrue(lootEventSource.contains("CavenicWitchLootPolicy.ORB_DROP_ROLL_BOUND"));
+        assertTrue(lootEventSource.contains("witch.getRandom().nextInt(CavenicWitchLootPolicy.ORB_DROP_ROLL_BOUND)"));
+        assertTrue(lootEventSource.contains("new ItemStack(ModRegistries.CAVENIC_ORB.get())"));
+        assertTrue(lootEventSource.contains("witch.getY() + 0.5D"));
+        assertFalse(lootEventSource.contains("ItemMagicBook"));
+        assertFalse(lootEventSource.contains("magic_book"));
+        assertFalse(lootEventSource.toLowerCase().contains("economy"));
+        assertFalse(lootEventSource.toLowerCase().contains("progression"));
+        assertFalse(lootEventSource.contains("lootingModifier"));
 
         assertTrue(entityEventSource.contains("event.put(ModRegistries.CAVENIC_WITCH.get(), CavenicWitch.createAttributes().build())"));
         assertTrue(entityEventSource.contains("RegisterSpawnPlacementsEvent"));
@@ -88,12 +115,15 @@ class CavenicWitchResourcesTest {
         assertTrue(entityEventSource.contains("CAVENIC_WITCH.get(),\n            SpawnPlacementTypes.ON_GROUND"));
         assertTrue(entityEventSource.contains("Heightmap.Types.MOTION_BLOCKING_NO_LEAVES"));
         assertTrue(entityEventSource.contains("RegisterSpawnPlacementsEvent.Operation.REPLACE"));
+        assertTrue(appSource.contains("NeoForge.EVENT_BUS.register(new CavenicWitchLootEvents());"));
         assertTrue(clientSource.contains("event.registerEntityRenderer(ModRegistries.CAVENIC_WITCH.get(), CavenicWitchRenderer::new);"));
         assertTrue(rendererSource.contains("extends WitchRenderer"));
         assertTrue(rendererSource.contains("getTextureLocation(Witch entity)"));
         assertTrue(rendererSource.contains("textures/entity/cavenic_witch.png"));
 
         assertFalse(registriesSource.contains("cavenic_bear"));
+        assertFalse(registriesSource.contains("magic_book"));
+        assertFalse(registriesSource.contains("ItemMagicBook"));
         assertFalse(registriesSource.toLowerCase().contains("cavenia"));
     }
 
