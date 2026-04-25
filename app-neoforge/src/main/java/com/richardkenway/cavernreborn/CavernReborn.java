@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
 
 import com.richardkenway.cavernreborn.app.gametest.CavernSpecialOreGameTests;
+import com.richardkenway.cavernreborn.app.entity.CavenicCreeperLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CavenicSkeletonLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombieLootEvents;
 import com.richardkenway.cavernreborn.app.item.CavenicBowTorchEvents;
@@ -40,6 +41,7 @@ public final class CavernReborn {
         cavernStateBootstrap = new CavernStateBootstrap();
         NeoForge.EVENT_BUS.register(new CavernPortalFrameActivationEvents());
         NeoForge.EVENT_BUS.register(new CavenicBowTorchEvents());
+        NeoForge.EVENT_BUS.register(new CavenicCreeperLootEvents());
         NeoForge.EVENT_BUS.register(new CavenicSkeletonLootEvents());
         NeoForge.EVENT_BUS.register(new CavenicZombieLootEvents());
         NeoForge.EVENT_BUS.register(new CavernAquamarineToolEvents());

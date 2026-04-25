@@ -1,6 +1,6 @@
 # Runtime Smoke
 
-This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the bounded `Acresia Crop & Food MVP`, the bounded `Cavenic Shroom & Orb MVP`, the bounded Cavenic Melee MVP, the bounded `Cavenic Bow Baseline MVP`, the bounded `Cavenic Bow Mode State & Cycling MVP`, the bounded `Cavenic Bow Snipe Mode MVP`, the bounded `Cavenic Bow Rapid Mode MVP`, the bounded `Cavenic Bow Torch Mode MVP`, the bounded `Cavenic Zombie Baseline MVP`, the bounded `Cavenic Zombie Natural Spawn MVP`, the bounded `Cavenic Zombie Legacy Orb Drop MVP`, the bounded `Cavenic Zombie Legacy Damage Behavior MVP`, the bounded `Cavenic Skeleton Baseline MVP`, the bounded `Cavenic Skeleton Natural Spawn MVP`, the bounded `Cavenic Skeleton Legacy Orb Drop MVP`, the bounded `Cavenic Skeleton Legacy Damage Behavior MVP`, the bounded `Cavenic Creeper Baseline MVP`, the bounded `Cavenic Creeper Natural Spawn MVP`, the bounded Aquamarine Utility Tools MVP, the bounded Magnite Tool Set MVP, the bounded `Magnite Armor MVP`, the follow-up `hexcite` tool-set MVP, the bounded `Hexcite Armor MVP`, the bounded Mining Assist slice, the first Miner's Orb MVP and the Ore Compass MVP plus tracking UX follow-up.
+This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the bounded `Acresia Crop & Food MVP`, the bounded `Cavenic Shroom & Orb MVP`, the bounded Cavenic Melee MVP, the bounded `Cavenic Bow Baseline MVP`, the bounded `Cavenic Bow Mode State & Cycling MVP`, the bounded `Cavenic Bow Snipe Mode MVP`, the bounded `Cavenic Bow Rapid Mode MVP`, the bounded `Cavenic Bow Torch Mode MVP`, the bounded `Cavenic Zombie Baseline MVP`, the bounded `Cavenic Zombie Natural Spawn MVP`, the bounded `Cavenic Zombie Legacy Orb Drop MVP`, the bounded `Cavenic Zombie Legacy Damage Behavior MVP`, the bounded `Cavenic Skeleton Baseline MVP`, the bounded `Cavenic Skeleton Natural Spawn MVP`, the bounded `Cavenic Skeleton Legacy Orb Drop MVP`, the bounded `Cavenic Skeleton Legacy Damage Behavior MVP`, the bounded `Cavenic Creeper Baseline MVP`, the bounded `Cavenic Creeper Natural Spawn MVP`, the bounded `Cavenic Creeper Legacy Orb Drop MVP`, the bounded Aquamarine Utility Tools MVP, the bounded Magnite Tool Set MVP, the bounded `Magnite Armor MVP`, the follow-up `hexcite` tool-set MVP, the bounded `Hexcite Armor MVP`, the bounded Mining Assist slice, the first Miner's Orb MVP and the Ore Compass MVP plus tracking UX follow-up.
 
 It is intentionally a NeoForge GameTest server pass, not a visual client smoke pass.
 
@@ -94,6 +94,8 @@ NeoForge GameTest runtime smoke covers:
 - cavenic creeper CAVERN-only spawn predicate smoke
 - cavenic creeper biome modifier registry smoke
 - cavenic creeper biome tag resolution
+- cavenic creeper legacy orb-drop event wiring smoke
+- cavenic creeper legacy orb-drop deterministic winning/losing roll smoke
 - cavenic shroom worldgen configured/placed key resolution
 - aquamarine tool runtime registry ids
 - aquamarine tool repairability with `cavernreborn:aquamarine`
@@ -152,6 +154,7 @@ NeoForge GameTest runtime smoke covers:
 - actual Cavenic Zombie renderer/model visual feel
 - actual Cavenic Skeleton renderer/model visual feel
 - actual Cavenic Creeper renderer/model visual feel
+- actual long-run cavenic creeper orb-drop rate balance
 - actual long-run cavenic zombie orb-drop rate balance
 - actual long-run cavenic skeleton orb-drop rate balance
 - actual long-running Cavenic Zombie fire/lava gameplay feel

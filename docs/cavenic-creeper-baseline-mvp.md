@@ -53,8 +53,9 @@ The legacy repo contains a direct `EntityCavenicCreeper`, so this increment stay
 
 ## Loot Decision
 
+- Legacy `EntityCavenicCreeper` also added a `1/5` `cavenic_orb` drop.
+- That orb-drop follow-up is now documented separately in `docs/cavenic-creeper-orb-drop-mvp.md`.
 - The bounded baseline reuses the vanilla creeper loot table as its base drop source so the mob has safe hostile drops without widening the Cavenic loot line yet.
-- Legacy custom loot and the legacy `1/5` `cavenic_orb` drop remain out of scope for this baseline slice.
 
 ## Follow-Up Boundaries
 
@@ -64,6 +65,7 @@ The legacy repo contains a direct `EntityCavenicCreeper`, so this increment stay
 - Those loot and damage follow-ups remain intentionally out of scope here.
 - The legacy fall/fire damage behavior remains out of scope in this baseline slice.
 - The bounded natural-spawn follow-up is documented separately in `docs/cavenic-creeper-natural-spawn-mvp.md`.
+- The bounded legacy orb-drop follow-up is now documented separately in `docs/cavenic-creeper-orb-drop-mvp.md`.
 - custom AI remains out of scope.
 - Cavenia remains out of scope.
 

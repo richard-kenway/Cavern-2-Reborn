@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CavenicCreeperResourcesTest {
     @Test
-    void cavenicCreeperRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnAndStableCreativePlacement() throws IOException {
+    void cavenicCreeperRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnLootAndStableCreativePlacement() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -30,6 +30,9 @@ class CavenicCreeperResourcesTest {
         );
         String entityEventSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModEntityEvents.java"
+        );
+        String dropEventSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "CavenicCreeperLootEvents.java"
         );
         String mainEntrypoint = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "CavernReborn.java"
@@ -83,7 +86,15 @@ class CavenicCreeperResourcesTest {
         assertTrue(entityEventSource.contains("CAVENIC_CREEPER.get(),\n            SpawnPlacementTypes.ON_GROUND"));
         assertTrue(entityEventSource.contains("Heightmap.Types.MOTION_BLOCKING_NO_LEAVES"));
         assertTrue(entityEventSource.contains("RegisterSpawnPlacementsEvent.Operation.REPLACE"));
-        assertFalse(mainEntrypoint.contains("CavenicCreeperLootEvents"));
+        assertTrue(mainEntrypoint.contains("NeoForge.EVENT_BUS.register(new CavenicCreeperLootEvents());"));
+        assertTrue(dropEventSource.contains("LivingDropsEvent"));
+        assertTrue(dropEventSource.contains("event.getEntity() instanceof CavenicCreeper creeper"));
+        assertTrue(dropEventSource.contains("CavenicCreeperLootPolicy.ORB_DROP_ROLL_BOUND"));
+        assertTrue(dropEventSource.contains("CavenicCreeperLootPolicy.shouldDropOrb(orbRoll)"));
+        assertTrue(dropEventSource.contains("new ItemStack(ModRegistries.CAVENIC_ORB.get())"));
+        assertTrue(dropEventSource.contains("creeper.getY() + 0.5D"));
+        assertFalse(dropEventSource.toLowerCase().contains("economy"));
+        assertFalse(dropEventSource.toLowerCase().contains("progress"));
         assertTrue(clientSource.contains("event.registerEntityRenderer(ModRegistries.CAVENIC_CREEPER.get(), CavenicCreeperRenderer::new);"));
         assertTrue(rendererSource.contains("extends CreeperRenderer"));
         assertTrue(rendererSource.contains("textures/entity/cavenic_creeper.png"));
