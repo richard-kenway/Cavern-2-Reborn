@@ -60,7 +60,7 @@ It does not add a new mob, natural-spawn changes, damage-behavior changes, explo
 
 ## Still Out Of Scope
 
-- The separate legacy fall/fire damage follow-up remains out of scope
+- The separate legacy fall/fire damage follow-up is documented in `docs/cavenic-creeper-damage-behavior-mvp.md`
 - Legacy fuse/explosion tuning remains out of scope
 - Natural spawn values remain out of scope
 - Custom Cavenic Creeper AI remains out of scope

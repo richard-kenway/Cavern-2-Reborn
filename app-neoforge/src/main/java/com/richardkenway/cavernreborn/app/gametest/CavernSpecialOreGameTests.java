@@ -64,6 +64,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -168,6 +169,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_CREEPER_SPAWN_EGG_ANCHOR = new BlockPos(2752, 96, 0);
     private static final BlockPos CAVENIC_CREEPER_NATURAL_SPAWN_ANCHOR = new BlockPos(2848, 96, 0);
     private static final BlockPos CAVENIC_CREEPER_LOOT_ANCHOR = new BlockPos(2944, 96, 0);
+    private static final BlockPos CAVENIC_CREEPER_DAMAGE_ANCHOR = new BlockPos(3040, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -1145,6 +1147,125 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             Math.abs(drops.getFirst().getY() - (creeper.getY() + 0.5D)) < 1.0E-6D,
             "Expected cavenic orb drop Y offset to stay aligned with the legacy 0.5 offset"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicCreeperLegacyFallAndFireDamageBehaviorAppliesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_CREEPER_DAMAGE_ANCHOR;
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CavenicCreeper cavenicFallCreeper = spawnLivingEntity(helper, ModRegistries.CAVENIC_CREEPER.get(), origin);
+        Creeper vanillaFallCreeper = spawnLivingEntity(helper, EntityType.CREEPER, origin.east(4));
+        clearEquipment(cavenicFallCreeper);
+        clearEquipment(vanillaFallCreeper);
+        float fallDamage = 10.0F;
+        float cavenicFallHealthBefore = cavenicFallCreeper.getHealth();
+        float vanillaFallHealthBefore = vanillaFallCreeper.getHealth();
+
+        helper.assertTrue(
+            cavenicFallCreeper.hurt(level.damageSources().fall(), fallDamage),
+            "Expected cavenic creeper to still accept fall damage hits through the normal server damage path"
+        );
+        helper.assertTrue(
+            vanillaFallCreeper.hurt(level.damageSources().fall(), fallDamage),
+            "Expected vanilla creeper baseline to accept fall damage hits"
+        );
+        helper.assertTrue(
+            Math.abs((cavenicFallHealthBefore - cavenicFallCreeper.getHealth()) - (fallDamage * CavenicCreeper.LEGACY_FALL_DAMAGE_MULTIPLIER)) < 1.0E-6F,
+            "Expected cavenic creeper fall damage to stay pinned to the legacy 0.35 multiplier"
+        );
+        helper.assertTrue(
+            Math.abs((vanillaFallHealthBefore - vanillaFallCreeper.getHealth()) - fallDamage) < 1.0E-6F,
+            "Expected vanilla creeper baseline to keep full fall damage"
+        );
+
+        CavenicCreeper cavenicFireCreeper = spawnLivingEntity(helper, ModRegistries.CAVENIC_CREEPER.get(), origin.south(8));
+        Creeper vanillaFireCreeper = spawnLivingEntity(helper, EntityType.CREEPER, origin.south(8).east(4));
+        clearEquipment(cavenicFireCreeper);
+        clearEquipment(vanillaFireCreeper);
+        float fireDamage = 4.0F;
+        float cavenicFireHealthBefore = cavenicFireCreeper.getHealth();
+        float vanillaFireHealthBefore = vanillaFireCreeper.getHealth();
+
+        helper.assertFalse(
+            cavenicFireCreeper.hurt(level.damageSources().lava(), fireDamage),
+            "Expected cavenic creeper to reject fire-tagged damage sources like lava"
+        );
+        helper.assertTrue(
+            vanillaFireCreeper.hurt(level.damageSources().lava(), fireDamage),
+            "Expected vanilla creeper baseline to take lava damage"
+        );
+        helper.assertTrue(
+            Math.abs(cavenicFireHealthBefore - cavenicFireCreeper.getHealth()) < 1.0E-6F,
+            "Expected cavenic creeper health to stay unchanged after fire-tagged damage"
+        );
+        helper.assertTrue(
+            vanillaFireCreeper.getHealth() < vanillaFireHealthBefore,
+            "Expected vanilla creeper baseline to lose health from lava damage"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicCreeperLegacyDamageBehaviorKeepsGenericDamageVanillaLikeAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_CREEPER_DAMAGE_ANCHOR.north(12);
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CavenicCreeper cavenicCreeper = spawnLivingEntity(helper, ModRegistries.CAVENIC_CREEPER.get(), origin);
+        Creeper vanillaCreeper = spawnLivingEntity(helper, EntityType.CREEPER, origin.east(4));
+        clearEquipment(cavenicCreeper);
+        clearEquipment(vanillaCreeper);
+        float genericDamage = 6.0F;
+        float cavenicHealthBefore = cavenicCreeper.getHealth();
+        float vanillaHealthBefore = vanillaCreeper.getHealth();
+
+        helper.assertTrue(
+            cavenicCreeper.hurt(level.damageSources().generic(), genericDamage),
+            "Expected cavenic creeper to remain vulnerable to generic non-fire damage"
+        );
+        helper.assertTrue(
+            vanillaCreeper.hurt(level.damageSources().generic(), genericDamage),
+            "Expected vanilla creeper baseline to remain vulnerable to generic non-fire damage"
+        );
+        helper.assertTrue(
+            Math.abs((cavenicHealthBefore - cavenicCreeper.getHealth()) - genericDamage) < 1.0E-6F,
+            "Expected cavenic creeper generic damage intake to stay vanilla-like"
+        );
+        helper.assertTrue(
+            Math.abs((vanillaHealthBefore - vanillaCreeper.getHealth()) - genericDamage) < 1.0E-6F,
+            "Expected vanilla creeper generic damage intake to stay unchanged"
+        );
+        helper.assertTrue(
+            cavenicCreeper.getLootTable().equals(EntityType.CREEPER.getDefaultLootTable()),
+            "Expected cavenic creeper damage follow-up to keep the vanilla creeper loot-table baseline"
+        );
+        helper.assertTrue(
+            CavenicCreeperLootPolicy.ORB_DROP_ROLL_BOUND == 5,
+            "Expected cavenic creeper orb drop roll bound to remain pinned while restoring legacy damage behavior"
+        );
+        helper.assertTrue(
+            CavenicCreeper.NATURAL_SPAWN_WEIGHT == 30
+                && CavenicCreeper.NATURAL_SPAWN_MIN_COUNT == 1
+                && CavenicCreeper.NATURAL_SPAWN_MAX_COUNT == 1,
+            "Expected cavenic creeper natural spawn constants to stay unchanged while restoring legacy damage behavior"
+        );
+
+        CompoundTag cavenicData = cavenicCreeper.saveWithoutId(new CompoundTag());
+        CompoundTag vanillaData = vanillaCreeper.saveWithoutId(new CompoundTag());
+
+        helper.assertTrue(
+            cavenicData.getShort("Fuse") == vanillaData.getShort("Fuse"),
+            "Expected cavenic creeper damage follow-up to keep the vanilla creeper fuse length"
+        );
+        helper.assertTrue(
+            cavenicData.getByte("ExplosionRadius") == vanillaData.getByte("ExplosionRadius"),
+            "Expected cavenic creeper damage follow-up to keep the vanilla creeper explosion radius"
         );
         helper.succeed();
     }

@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CavenicCreeperResourcesTest {
     @Test
-    void cavenicCreeperRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnLootAndStableCreativePlacement() throws IOException {
+    void cavenicCreeperRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnLootDamageAndStableCreativePlacement() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -33,6 +33,9 @@ class CavenicCreeperResourcesTest {
         );
         String dropEventSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "CavenicCreeperLootEvents.java"
+        );
+        String lootPolicySource = readProjectFile(
+            "core", "src", "main", "java", "com", "richardkenway", "cavernreborn", "core", "loot", "CavenicCreeperLootPolicy.java"
         );
         String mainEntrypoint = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "CavernReborn.java"
@@ -67,16 +70,20 @@ class CavenicCreeperResourcesTest {
         assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_WEIGHT = 30;"));
         assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_MIN_COUNT = 1;"));
         assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_MAX_COUNT = 1;"));
+        assertTrue(entitySource.contains("public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;"));
+        assertTrue(entitySource.contains("public boolean hurt(DamageSource source, float damage)"));
+        assertTrue(entitySource.contains("DamageTypeTags.IS_FALL"));
+        assertTrue(entitySource.contains("DamageTypeTags.IS_FIRE"));
+        assertTrue(entitySource.contains("return super.hurt(source, damage);"));
         assertTrue(entitySource.contains("canNaturallySpawnInDimension"));
         assertTrue(entitySource.contains("checkCavenicCreeperSpawnRules"));
         assertTrue(entitySource.contains("CavernNeoForgeDimensions.isCavern"));
         assertTrue(entitySource.contains("Monster.checkMonsterSpawnRules"));
         assertTrue(entitySource.contains("return EntityType.CREEPER.getDefaultLootTable();"));
-        assertFalse(entitySource.contains("cavenic_orb"));
+        assertFalse(entitySource.contains("registerGoals("));
         assertFalse(entitySource.contains("fuseTime"));
         assertFalse(entitySource.contains("explosionRadius"));
-        assertFalse(entitySource.contains("DamageTypeTags.IS_FALL"));
-        assertFalse(entitySource.contains("DamageTypeTags.IS_FIRE"));
+        assertFalse(entitySource.contains("explodeCreeper("));
         assertFalse(entitySource.contains("EntityCavenicArrow"));
         assertFalse(entitySource.toLowerCase().contains("cavenia"));
 
@@ -93,6 +100,7 @@ class CavenicCreeperResourcesTest {
         assertTrue(dropEventSource.contains("CavenicCreeperLootPolicy.shouldDropOrb(orbRoll)"));
         assertTrue(dropEventSource.contains("new ItemStack(ModRegistries.CAVENIC_ORB.get())"));
         assertTrue(dropEventSource.contains("creeper.getY() + 0.5D"));
+        assertTrue(lootPolicySource.contains("public static final int ORB_DROP_ROLL_BOUND = 5;"));
         assertFalse(dropEventSource.toLowerCase().contains("economy"));
         assertFalse(dropEventSource.toLowerCase().contains("progress"));
         assertTrue(clientSource.contains("event.registerEntityRenderer(ModRegistries.CAVENIC_CREEPER.get(), CavenicCreeperRenderer::new);"));

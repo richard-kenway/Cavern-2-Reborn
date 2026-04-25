@@ -66,7 +66,7 @@ It does not add a new mob. It only makes the already registered `cavernreborn:ca
 
 - The bounded legacy orb-drop follow-up is documented separately in `docs/cavenic-creeper-orb-drop-mvp.md`
 - custom loot beyond that orb-drop follow-up remains out of scope
-- fall/fire damage behavior remains out of scope
+- The bounded legacy damage-behavior follow-up is documented separately in `docs/cavenic-creeper-damage-behavior-mvp.md`
 - custom explosion behavior remains out of scope
 - custom AI remains out of scope
 - additional Cavenic mobs remain out of scope
