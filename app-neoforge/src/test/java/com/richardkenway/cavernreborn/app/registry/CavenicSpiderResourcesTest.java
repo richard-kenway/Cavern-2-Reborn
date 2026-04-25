@@ -60,6 +60,7 @@ class CavenicSpiderResourcesTest {
             "output.accept(CAVENIC_SKELETON_SPAWN_EGG.get())",
             "output.accept(CAVENIC_CREEPER_SPAWN_EGG.get())",
             "output.accept(CAVENIC_SPIDER_SPAWN_EGG.get())",
+            "output.accept(CAVENIC_WITCH_SPAWN_EGG.get())",
             "output.accept(ORE_COMPASS.get())"
         ));
 
@@ -125,7 +126,6 @@ class CavenicSpiderResourcesTest {
         assertTrue(rendererSource.contains("extends SpiderRenderer<CavenicSpider>"));
         assertTrue(rendererSource.contains("textures/entity/cavenic_spider.png"));
 
-        assertFalse(registriesSource.contains("cavenic_witch"));
         assertFalse(registriesSource.contains("cavenic_bear"));
         assertFalse(registriesSource.toLowerCase().contains("cavenia"));
         assertFalse(registriesSource.contains("EntityRapidArrow"));

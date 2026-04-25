@@ -55,6 +55,10 @@ class CavenicZombieResourcesTest {
             "output.accept(CAVENIC_AXE.get())",
             "output.accept(CAVENIC_BOW.get())",
             "output.accept(CAVENIC_ZOMBIE_SPAWN_EGG.get())",
+            "output.accept(CAVENIC_SKELETON_SPAWN_EGG.get())",
+            "output.accept(CAVENIC_CREEPER_SPAWN_EGG.get())",
+            "output.accept(CAVENIC_SPIDER_SPAWN_EGG.get())",
+            "output.accept(CAVENIC_WITCH_SPAWN_EGG.get())",
             "output.accept(ORE_COMPASS.get())"
         ));
 
@@ -104,7 +108,6 @@ class CavenicZombieResourcesTest {
         assertTrue(rendererSource.contains("extends ZombieRenderer"));
         assertTrue(rendererSource.contains("textures/entity/cavenic_zombie.png"));
 
-        assertFalse(registriesSource.contains("cavenic_witch"));
         assertFalse(registriesSource.contains("cavenic_bear"));
         assertFalse(registriesSource.toLowerCase().contains("cavenia"));
         assertFalse(generatedResourcesContain("cavenic_zombie"));

@@ -5,6 +5,7 @@ import com.richardkenway.cavernreborn.app.compass.OreCompassClientAngleResolver;
 import com.richardkenway.cavernreborn.app.client.renderer.CavenicCreeperRenderer;
 import com.richardkenway.cavernreborn.app.client.renderer.CavenicSkeletonRenderer;
 import com.richardkenway.cavernreborn.app.client.renderer.CavenicSpiderRenderer;
+import com.richardkenway.cavernreborn.app.client.renderer.CavenicWitchRenderer;
 import com.richardkenway.cavernreborn.app.client.renderer.CavenicZombieRenderer;
 import com.richardkenway.cavernreborn.app.dimension.CavernNeoForgeDimensions;
 import com.richardkenway.cavernreborn.app.registry.ModRegistries;
@@ -36,6 +37,7 @@ public final class CavernClientModEvents {
         event.registerEntityRenderer(ModRegistries.CAVENIC_SKELETON.get(), CavenicSkeletonRenderer::new);
         event.registerEntityRenderer(ModRegistries.CAVENIC_CREEPER.get(), CavenicCreeperRenderer::new);
         event.registerEntityRenderer(ModRegistries.CAVENIC_SPIDER.get(), CavenicSpiderRenderer::new);
+        event.registerEntityRenderer(ModRegistries.CAVENIC_WITCH.get(), CavenicWitchRenderer::new);
     }
 
     @SubscribeEvent

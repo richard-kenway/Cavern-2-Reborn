@@ -57,6 +57,8 @@ class CavenicCreeperResourcesTest {
             "output.accept(CAVENIC_ZOMBIE_SPAWN_EGG.get())",
             "output.accept(CAVENIC_SKELETON_SPAWN_EGG.get())",
             "output.accept(CAVENIC_CREEPER_SPAWN_EGG.get())",
+            "output.accept(CAVENIC_SPIDER_SPAWN_EGG.get())",
+            "output.accept(CAVENIC_WITCH_SPAWN_EGG.get())",
             "output.accept(ORE_COMPASS.get())"
         ));
 
@@ -114,7 +116,6 @@ class CavenicCreeperResourcesTest {
         assertTrue(rendererSource.contains("extends CreeperRenderer"));
         assertTrue(rendererSource.contains("textures/entity/cavenic_creeper.png"));
 
-        assertFalse(registriesSource.contains("cavenic_witch"));
         assertFalse(registriesSource.contains("cavenic_bear"));
         assertFalse(registriesSource.toLowerCase().contains("cavenia"));
         assertFalse(registriesSource.contains("EntityRapidArrow"));

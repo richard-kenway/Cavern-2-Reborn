@@ -74,7 +74,6 @@ class CavenicShroomResourcesTest {
         assertTrue(policySource.contains("SHEAR_DROP_ROLL_BOUND = 10"));
         assertTrue(policySource.contains("NORMAL_DROP_ROLL_BOUND = 50"));
 
-        assertFalse(registriesSource.contains("cavenic_witch"));
         assertFalse(registriesSource.contains("cavenic_bear"));
         assertFalse(registriesSource.contains("Cavenia"));
         assertFalse(randomiteLoot.contains("cavernreborn:cavenic_orb"));

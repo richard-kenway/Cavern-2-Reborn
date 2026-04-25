@@ -22,6 +22,7 @@ import com.richardkenway.cavernreborn.app.entity.CavenicSkeleton;
 import com.richardkenway.cavernreborn.app.entity.CavenicSkeletonLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CavenicSpider;
 import com.richardkenway.cavernreborn.app.entity.CavenicSpiderLootEvents;
+import com.richardkenway.cavernreborn.app.entity.CavenicWitch;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombie;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombieLootEvents;
 import com.richardkenway.cavernreborn.app.item.CavenicBowTorchEvents;
@@ -94,6 +95,7 @@ import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.monster.Spider;
+import net.minecraft.world.entity.monster.Witch;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -182,6 +184,8 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_SPIDER_LOOT_ANCHOR = new BlockPos(3520, 96, 0);
     private static final BlockPos CAVENIC_SPIDER_DAMAGE_ANCHOR = new BlockPos(3616, 96, 0);
     private static final BlockPos CAVENIC_SPIDER_BLINDNESS_ANCHOR = new BlockPos(3712, 96, 0);
+    private static final BlockPos CAVENIC_WITCH_ANCHOR = new BlockPos(3808, 96, 0);
+    private static final BlockPos CAVENIC_WITCH_SPAWN_EGG_ANCHOR = new BlockPos(3904, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -1772,6 +1776,72 @@ public final class CavernSpecialOreGameTests {
             cavenicSpider.getLootTable().equals(EntityType.SPIDER.getDefaultLootTable()),
             "Expected cavenic spider blindness-on-hit follow-up to keep the vanilla spider loot-table baseline"
         );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicWitchRegistersAtRuntime(GameTestHelper helper) {
+        helper.assertTrue(ModRegistries.CAVENIC_WITCH.get() != null, "Missing cavenic witch entity type");
+        helper.assertTrue(ModRegistries.CAVENIC_WITCH_SPAWN_EGG.get() != null, "Missing cavenic witch spawn egg");
+
+        assertRegistryId(helper, ModRegistries.CAVENIC_WITCH.get(), "cavernreborn:cavenic_witch");
+        assertRegistryId(helper, ModRegistries.CAVENIC_WITCH_SPAWN_EGG.get(), "cavernreborn:cavenic_witch_spawn_egg");
+
+        ItemStack spawnEgg = cavenicWitchSpawnEgg();
+        helper.assertTrue(!spawnEgg.isEmpty(), "Expected cavenic witch spawn egg to be constructible");
+        helper.assertTrue(spawnEgg.getItem() instanceof SpawnEggItem, "Expected cavenic witch spawn egg runtime item");
+        helper.assertTrue(
+            ((SpawnEggItem) spawnEgg.getItem()).spawnsEntity(spawnEgg, ModRegistries.CAVENIC_WITCH.get()),
+            "Expected cavenic witch spawn egg to resolve the cavenic witch entity type"
+        );
+        helper.assertTrue(
+            ModRegistries.CAVENIC_WITCH.get().getCategory() == MobCategory.MONSTER,
+            "Expected cavenic witch type category to stay MONSTER"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicWitchSpawnsWithExpectedAttributesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_WITCH_ANCHOR;
+
+        resetMiningArea(level, origin, 8.0D);
+        CavenicWitch cavenicWitch = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin);
+        Witch vanillaWitch = spawnLivingEntity(helper, EntityType.WITCH, origin.east(4));
+
+        helper.assertTrue(cavenicWitch instanceof Monster, "Expected cavenic witch to remain a hostile monster");
+        helper.assertTrue(cavenicWitch instanceof Witch, "Expected cavenic witch to keep vanilla witch behavior");
+        helper.assertTrue(cavenicWitch.getType().getCategory() == MobCategory.MONSTER, "Expected cavenic witch type category to stay MONSTER");
+        helper.assertTrue(Math.abs(cavenicWitch.getMaxHealth() - 50.0D) < 1.0E-6D, "Expected cavenic witch max health to map to legacy 50.0");
+        helper.assertTrue(Math.abs(cavenicWitch.getAttributeValue(Attributes.MAX_HEALTH) - 50.0D) < 1.0E-6D, "Expected cavenic witch MAX_HEALTH attribute to be 50.0");
+        helper.assertTrue(Math.abs(cavenicWitch.getAttributeValue(Attributes.FOLLOW_RANGE) - 32.0D) < 1.0E-6D, "Expected cavenic witch follow range to map to legacy 32.0");
+        helper.assertTrue(Math.abs(cavenicWitch.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) - 1.0D) < 1.0E-6D, "Expected cavenic witch knockback resistance to map to legacy 1.0");
+        helper.assertTrue(
+            Math.abs(cavenicWitch.getAttributeValue(Attributes.MOVEMENT_SPEED) - vanillaWitch.getAttributeValue(Attributes.MOVEMENT_SPEED)) < 1.0E-6D,
+            "Expected cavenic witch movement speed to stay on the vanilla witch baseline"
+        );
+        helper.assertTrue(
+            cavenicWitch.getLootTable().equals(EntityType.WITCH.getDefaultLootTable()),
+            "Expected cavenic witch to keep the vanilla witch loot table as its baseline"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicWitchSpawnEggCreatesRuntimeEntity(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos supportPos = CAVENIC_WITCH_SPAWN_EGG_ANCHOR;
+
+        resetMiningArea(level, supportPos, 8.0D);
+        level.setBlock(supportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+
+        ItemStack spawnEgg = cavenicWitchSpawnEgg();
+        Player player = makeMockPlayer(helper, level, GameType.SURVIVAL, spawnEgg.copy(), supportPos.south(2));
+        Entity spawnedEntity = ModRegistries.CAVENIC_WITCH.get().spawn(level, spawnEgg, player, supportPos.above(), MobSpawnType.SPAWN_EGG, true, true);
+
+        helper.assertTrue(spawnedEntity instanceof CavenicWitch, "Expected spawn egg to create a CavenicWitch runtime entity");
+        helper.assertTrue(spawnedEntity != null && spawnedEntity.isAlive(), "Expected spawned cavenic witch to be alive");
         helper.succeed();
     }
 
@@ -3624,6 +3694,10 @@ public final class CavernSpecialOreGameTests {
 
     private static ItemStack cavenicSpiderSpawnEgg() {
         return new ItemStack(ModRegistries.CAVENIC_SPIDER_SPAWN_EGG.get());
+    }
+
+    private static ItemStack cavenicWitchSpawnEgg() {
+        return new ItemStack(ModRegistries.CAVENIC_WITCH_SPAWN_EGG.get());
     }
 
     private static AbstractArrow createRuntimeArrow(ServerLevel level, Player player, ItemStack bow) {
