@@ -114,7 +114,6 @@ class CavenicCreeperResourcesTest {
         assertTrue(rendererSource.contains("extends CreeperRenderer"));
         assertTrue(rendererSource.contains("textures/entity/cavenic_creeper.png"));
 
-        assertFalse(registriesSource.contains("cavenic_spider"));
         assertFalse(registriesSource.contains("cavenic_witch"));
         assertFalse(registriesSource.contains("cavenic_bear"));
         assertFalse(registriesSource.toLowerCase().contains("cavenia"));

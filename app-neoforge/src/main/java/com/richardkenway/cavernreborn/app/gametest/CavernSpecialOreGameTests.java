@@ -20,6 +20,7 @@ import com.richardkenway.cavernreborn.app.entity.CavenicCreeper;
 import com.richardkenway.cavernreborn.app.entity.CavenicCreeperLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CavenicSkeleton;
 import com.richardkenway.cavernreborn.app.entity.CavenicSkeletonLootEvents;
+import com.richardkenway.cavernreborn.app.entity.CavenicSpider;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombie;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombieLootEvents;
 import com.richardkenway.cavernreborn.app.item.CavenicBowTorchEvents;
@@ -89,6 +90,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -171,6 +173,8 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_CREEPER_LOOT_ANCHOR = new BlockPos(2944, 96, 0);
     private static final BlockPos CAVENIC_CREEPER_DAMAGE_ANCHOR = new BlockPos(3040, 96, 0);
     private static final BlockPos CAVENIC_CREEPER_FUSE_ANCHOR = new BlockPos(3136, 96, 0);
+    private static final BlockPos CAVENIC_SPIDER_ANCHOR = new BlockPos(3232, 96, 0);
+    private static final BlockPos CAVENIC_SPIDER_SPAWN_EGG_ANCHOR = new BlockPos(3328, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -1346,6 +1350,76 @@ public final class CavernSpecialOreGameTests {
                 && cavenicData.getByte("ExplosionRadius") == CavenicCreeper.LEGACY_EXPLOSION_RADIUS,
             "Expected cavenic creeper fuse/explosion follow-up to keep the saved legacy values pinned"
         );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicSpiderRegistersAtRuntime(GameTestHelper helper) {
+        helper.assertTrue(ModRegistries.CAVENIC_SPIDER.get() != null, "Missing cavenic spider entity type");
+        helper.assertTrue(ModRegistries.CAVENIC_SPIDER_SPAWN_EGG.get() != null, "Missing cavenic spider spawn egg");
+
+        assertRegistryId(helper, ModRegistries.CAVENIC_SPIDER.get(), "cavernreborn:cavenic_spider");
+        assertRegistryId(helper, ModRegistries.CAVENIC_SPIDER_SPAWN_EGG.get(), "cavernreborn:cavenic_spider_spawn_egg");
+
+        ItemStack spawnEgg = cavenicSpiderSpawnEgg();
+        helper.assertTrue(!spawnEgg.isEmpty(), "Expected cavenic spider spawn egg to be constructible");
+        helper.assertTrue(spawnEgg.getItem() instanceof SpawnEggItem, "Expected cavenic spider spawn egg runtime item");
+        helper.assertTrue(
+            ((SpawnEggItem) spawnEgg.getItem()).spawnsEntity(spawnEgg, ModRegistries.CAVENIC_SPIDER.get()),
+            "Expected cavenic spider spawn egg to resolve the cavenic spider entity type"
+        );
+        helper.assertTrue(
+            ModRegistries.CAVENIC_SPIDER.get().getCategory() == MobCategory.MONSTER,
+            "Expected cavenic spider type category to stay MONSTER"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicSpiderSpawnsWithExpectedAttributesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_SPIDER_ANCHOR;
+
+        resetMiningArea(level, origin, 8.0D);
+        CavenicSpider cavenicSpider = spawnLivingEntity(helper, ModRegistries.CAVENIC_SPIDER.get(), origin);
+        Spider vanillaSpider = spawnLivingEntity(helper, EntityType.SPIDER, origin.east(4));
+
+        helper.assertTrue(cavenicSpider instanceof Monster, "Expected cavenic spider to remain a hostile monster");
+        helper.assertTrue(cavenicSpider instanceof Spider, "Expected cavenic spider to keep vanilla spider behavior");
+        helper.assertTrue(cavenicSpider.getType().getCategory() == MobCategory.MONSTER, "Expected cavenic spider type category to stay MONSTER");
+        helper.assertTrue(Math.abs(cavenicSpider.getMaxHealth() - 20.0D) < 1.0E-6D, "Expected cavenic spider max health to map to legacy 20.0");
+        helper.assertTrue(Math.abs(cavenicSpider.getAttributeValue(Attributes.MAX_HEALTH) - 20.0D) < 1.0E-6D, "Expected cavenic spider MAX_HEALTH attribute to be 20.0");
+        helper.assertTrue(Math.abs(cavenicSpider.getAttributeValue(Attributes.MOVEMENT_SPEED) - 0.6D) < 1.0E-6D, "Expected cavenic spider movement speed to map to legacy 0.6");
+        helper.assertTrue(Math.abs(cavenicSpider.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) - 1.0D) < 1.0E-6D, "Expected cavenic spider knockback resistance to map to legacy 1.0");
+        helper.assertTrue(
+            Math.abs(cavenicSpider.getAttributeValue(Attributes.FOLLOW_RANGE) - vanillaSpider.getAttributeValue(Attributes.FOLLOW_RANGE)) < 1.0E-6D,
+            "Expected cavenic spider follow range to stay on the vanilla spider baseline"
+        );
+        helper.assertTrue(
+            Math.abs(cavenicSpider.getAttributeValue(Attributes.ATTACK_DAMAGE) - vanillaSpider.getAttributeValue(Attributes.ATTACK_DAMAGE)) < 1.0E-6D,
+            "Expected cavenic spider attack damage to stay on the vanilla spider baseline"
+        );
+        helper.assertTrue(
+            cavenicSpider.getLootTable().equals(EntityType.SPIDER.getDefaultLootTable()),
+            "Expected cavenic spider to keep the vanilla spider loot table as its baseline"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicSpiderSpawnEggCreatesRuntimeEntity(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos supportPos = CAVENIC_SPIDER_SPAWN_EGG_ANCHOR;
+
+        resetMiningArea(level, supportPos, 8.0D);
+        level.setBlock(supportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+
+        ItemStack spawnEgg = cavenicSpiderSpawnEgg();
+        Player player = makeMockPlayer(helper, level, GameType.SURVIVAL, spawnEgg.copy(), supportPos.south(2));
+        Entity spawnedEntity = ModRegistries.CAVENIC_SPIDER.get().spawn(level, spawnEgg, player, supportPos.above(), MobSpawnType.SPAWN_EGG, true, true);
+
+        helper.assertTrue(spawnedEntity instanceof CavenicSpider, "Expected spawn egg to create a CavenicSpider runtime entity");
+        helper.assertTrue(spawnedEntity != null && spawnedEntity.isAlive(), "Expected spawned cavenic spider to be alive");
         helper.succeed();
     }
 
@@ -3194,6 +3268,10 @@ public final class CavernSpecialOreGameTests {
 
     private static ItemStack cavenicCreeperSpawnEgg() {
         return new ItemStack(ModRegistries.CAVENIC_CREEPER_SPAWN_EGG.get());
+    }
+
+    private static ItemStack cavenicSpiderSpawnEgg() {
+        return new ItemStack(ModRegistries.CAVENIC_SPIDER_SPAWN_EGG.get());
     }
 
     private static AbstractArrow createRuntimeArrow(ServerLevel level, Player player, ItemStack bow) {

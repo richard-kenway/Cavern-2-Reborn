@@ -6,6 +6,7 @@ import com.richardkenway.cavernreborn.app.block.CavenicShroomBlock;
 import com.richardkenway.cavernreborn.app.block.CavernPortalBlock;
 import com.richardkenway.cavernreborn.app.entity.CavenicCreeper;
 import com.richardkenway.cavernreborn.app.entity.CavenicSkeleton;
+import com.richardkenway.cavernreborn.app.entity.CavenicSpider;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombie;
 import com.richardkenway.cavernreborn.app.block.FissuredStoneBlock;
 import com.richardkenway.cavernreborn.app.item.CavenicAxeItem;
@@ -131,6 +132,15 @@ public final class ModRegistries {
             .clientTrackingRange(8)
             .build(ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "cavenic_creeper").toString())
     );
+    public static final DeferredHolder<EntityType<?>, EntityType<CavenicSpider>> CAVENIC_SPIDER = ENTITY_TYPES.register(
+        "cavenic_spider",
+        () -> EntityType.Builder.of(CavenicSpider::new, MobCategory.MONSTER)
+            .sized(1.4F, 0.9F)
+            .eyeHeight(0.65F)
+            .passengerAttachments(0.765F)
+            .clientTrackingRange(8)
+            .build(ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "cavenic_spider").toString())
+    );
     public static final DeferredItem<Item> MINER_ORB = ITEMS.register("miner_orb", () -> new Item(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<Item> CAVENIC_ORB = ITEMS.register("cavenic_orb", () -> new Item(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<Item> CAVENIC_SWORD = ITEMS.register("cavenic_sword",
@@ -157,6 +167,10 @@ public final class ModRegistries {
     public static final DeferredItem<Item> CAVENIC_CREEPER_SPAWN_EGG = ITEMS.register(
         "cavenic_creeper_spawn_egg",
         () -> new DeferredSpawnEggItem(() -> CAVENIC_CREEPER.get(), 0xAAAAAA, 0x2E8B57, new Item.Properties())
+    );
+    public static final DeferredItem<Item> CAVENIC_SPIDER_SPAWN_EGG = ITEMS.register(
+        "cavenic_spider_spawn_egg",
+        () -> new DeferredSpawnEggItem(() -> CAVENIC_SPIDER.get(), 0xAAAAAA, 0x811F1F, new Item.Properties())
     );
     public static final DeferredItem<Item> ORE_COMPASS = ITEMS.register(
         "ore_compass",
@@ -291,6 +305,7 @@ public final class ModRegistries {
                 output.accept(CAVENIC_ZOMBIE_SPAWN_EGG.get());
                 output.accept(CAVENIC_SKELETON_SPAWN_EGG.get());
                 output.accept(CAVENIC_CREEPER_SPAWN_EGG.get());
+                output.accept(CAVENIC_SPIDER_SPAWN_EGG.get());
                 output.accept(ORE_COMPASS.get());
                 output.accept(HEXCITE_PICKAXE.get());
                 output.accept(HEXCITE_AXE.get());

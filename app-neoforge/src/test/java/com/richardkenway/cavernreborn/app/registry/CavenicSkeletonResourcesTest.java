@@ -103,7 +103,6 @@ class CavenicSkeletonResourcesTest {
         assertTrue(rendererSource.contains("textures/entity/cavenic_skeleton.png"));
         assertTrue(rendererSource.contains("poseStack.scale(1.1F, 1.1F, 1.1F);"));
 
-        assertFalse(registriesSource.contains("cavenic_spider"));
         assertFalse(registriesSource.contains("cavenic_witch"));
         assertFalse(registriesSource.contains("cavenic_bear"));
         assertFalse(registriesSource.toLowerCase().contains("cavenia"));
