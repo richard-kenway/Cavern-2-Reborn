@@ -51,7 +51,8 @@ Legacy `dropLoot(...)` does not use `lootingModifier`, `wasRecentlyHit`, dimensi
 - Progression, dimension and economy do not affect the orb branch.
 - Natural spawn values remain unchanged.
 - Fall/fire damage behavior remains unchanged and is now documented separately in `docs/cavenic-witch-damage-behavior-mvp.md`.
-- Custom potion logic, custom ranged attack behavior, friendship targeting and same-type projectile immunity remain out of scope.
+- Same-type/self source immunity remains unchanged and is now documented separately in `docs/cavenic-witch-projectile-immunity-mvp.md`.
+- Custom potion logic, custom ranged attack behavior and friendship targeting remain out of scope.
 
 ## Testing
 
@@ -72,8 +73,9 @@ Legacy `dropLoot(...)` does not use `lootingModifier`, `wasRecentlyHit`, dimensi
 
 - The deferred legacy magic-book branch
 - Fall/fire damage behavior
+- Same-type/self source immunity
 - Custom potion logic and custom ranged attack behavior
-- Friendship targeting and same-type projectile immunity
+- Friendship targeting
 - Additional Cavenic mobs
 - Cavenia
 - Long-run witch drop-rate balance tuning

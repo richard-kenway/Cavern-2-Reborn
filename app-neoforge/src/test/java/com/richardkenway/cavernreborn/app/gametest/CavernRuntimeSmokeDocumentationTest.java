@@ -119,12 +119,15 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/cavenic-witch-loot-mvp.md"));
         assertTrue(readme.contains("Cavenic Witch Legacy Damage Behavior MVP"));
         assertTrue(readme.contains("docs/cavenic-witch-damage-behavior-mvp.md"));
+        assertTrue(readme.contains("Cavenic Witch Same-Type Projectile Immunity MVP"));
+        assertTrue(readme.contains("docs/cavenic-witch-projectile-immunity-mvp.md"));
         assertTrue(readme.contains("fifth direct Cavenic mob foundation"));
         assertTrue(readme.contains("bounded CAVERN-only natural spawning"));
         assertTrue(readme.contains("vanilla witch loot baseline"));
         assertTrue(readme.contains("legacy `1/5` `cavenic_orb` drop appended on top of the vanilla witch loot baseline"));
         assertTrue(readme.contains("legacy fall-damage reduction and fire-damage immunity behavior"));
-        assertTrue(readme.contains("the deferred magic-book branch and custom potion logic remain intentionally out of scope"));
+        assertTrue(readme.contains("legacy same-type/self source-immunity behavior"));
+        assertTrue(readme.contains("the deferred magic-book branch, custom potion logic and friendship targeting remain intentionally out of scope"));
     }
 
     @Test
@@ -243,6 +246,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("cavenic witch legacy fall-damage reduction smoke"));
         assertTrue(doc.contains("cavenic witch legacy fire-damage immunity smoke"));
         assertTrue(doc.contains("cavenic witch generic-damage baseline smoke"));
+        assertTrue(doc.contains("cavenic witch legacy same-type/self source-immunity smoke"));
+        assertTrue(doc.contains("cavenic witch non-immune source baseline smoke"));
         assertTrue(doc.contains("legacy cavenic witch magic-book branch because Reborn has no magic-book foundation yet"));
         assertTrue(doc.contains("cavenic bow enchantment applicability"));
         assertTrue(doc.contains("cavenic bow cavenic item tag resolution"));
@@ -315,6 +320,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("actual long-running Cavenic Spider combat/pathfinding feel"));
         assertTrue(doc.contains("actual poison/web-based Cavenic Spider gameplay behavior"));
         assertTrue(doc.contains("actual Cavenic Witch combat, potion-throw and pathfinding feel"));
+        assertTrue(doc.contains("custom Cavenic Witch potion/ranged behavior and friendship targeting remain out of scope until dedicated slices"));
         assertTrue(doc.contains("actual long-running Cavenic Witch fire/lava gameplay feel"));
         assertTrue(doc.contains("actual long-run cavenic witch orb-drop rate balance"));
         assertTrue(doc.contains("actual long-run Cavenic Witch population balance inside CAVERN"));

@@ -38,7 +38,8 @@ That means the mob kept taking fall damage, but only at `35%` of the original am
 - vanilla drinking and potion-throw behavior remain unchanged.
 - attributes, natural spawning and `1/5` orb-drop behavior remain unchanged.
 - The deferred magic-book branch remains documented in `docs/cavenic-witch-loot-mvp.md`.
-- Custom potion logic, custom ranged attack behavior, friendship targeting and same-type projectile immunity remain out of scope.
+- The bounded same-type/self source-immunity follow-up is documented separately in `docs/cavenic-witch-projectile-immunity-mvp.md`.
+- Custom potion logic, custom ranged attack behavior and friendship targeting remain out of scope.
 
 ## Why This Mapping Is Safe
 
@@ -61,7 +62,8 @@ That means the mob kept taking fall damage, but only at `35%` of the original am
 
 - The deferred legacy magic-book branch
 - Custom potion logic and custom ranged attack behavior
-- Friendship targeting and same-type projectile immunity
+- Same-type/self source immunity
+- Friendship targeting
 - Additional Cavenic mobs
 - Cavenia
 - Loot chance changes remain out of scope

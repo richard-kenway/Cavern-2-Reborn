@@ -82,6 +82,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Difficulty;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.SpawnPlacementTypes;
@@ -101,6 +102,7 @@ import net.minecraft.world.entity.monster.Witch;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -191,6 +193,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_WITCH_NATURAL_SPAWN_ANCHOR = new BlockPos(4000, 96, 0);
     private static final BlockPos CAVENIC_WITCH_LOOT_ANCHOR = new BlockPos(4096, 96, 0);
     private static final BlockPos CAVENIC_WITCH_DAMAGE_ANCHOR = new BlockPos(4192, 96, 0);
+    private static final BlockPos CAVENIC_WITCH_PROJECTILE_IMMUNITY_ANCHOR = new BlockPos(4288, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -2074,6 +2077,186 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicWitchLegacySameTypeSourceImmunityRejectsConfirmedSourcesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_WITCH_PROJECTILE_IMMUNITY_ANCHOR;
+
+        resetMiningArea(level, origin, 24.0D);
+
+        CavenicWitch cavenicProjectileVictim = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin);
+        CavenicWitch cavenicProjectileOwner = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin.west(4));
+        Witch vanillaProjectileVictim = spawnLivingEntity(helper, EntityType.WITCH, origin.east(4));
+        clearEquipment(cavenicProjectileVictim);
+        clearEquipment(cavenicProjectileOwner);
+        clearEquipment(vanillaProjectileVictim);
+        float projectileDamage = 6.0F;
+        float cavenicProjectileHealthBefore = cavenicProjectileVictim.getHealth();
+        float vanillaProjectileHealthBefore = vanillaProjectileVictim.getHealth();
+
+        helper.assertFalse(
+            cavenicProjectileVictim.hurt(witchOwnedPotionDamageSource(level, cavenicProjectileOwner), projectileDamage),
+            "Expected cavenic witch to reject same-type witch-owned projectile damage through the legacy source-immunity rule"
+        );
+        helper.assertTrue(
+            vanillaProjectileVictim.hurt(witchOwnedPotionDamageSource(level, cavenicProjectileOwner), projectileDamage),
+            "Expected vanilla witch baseline to remain vulnerable to cavenic witch-owned projectile damage"
+        );
+        helper.assertTrue(
+            Math.abs(cavenicProjectileHealthBefore - cavenicProjectileVictim.getHealth()) < 1.0E-6F,
+            "Expected cavenic witch health to stay unchanged after same-type witch-owned projectile damage"
+        );
+        helper.assertTrue(
+            vanillaProjectileVictim.getHealth() < vanillaProjectileHealthBefore,
+            "Expected vanilla witch baseline to lose health from cavenic witch-owned projectile damage"
+        );
+
+        CavenicWitch selfProjectileVictim = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin.south(8));
+        clearEquipment(selfProjectileVictim);
+        float selfProjectileHealthBefore = selfProjectileVictim.getHealth();
+
+        helper.assertFalse(
+            selfProjectileVictim.hurt(witchOwnedPotionDamageSource(level, selfProjectileVictim), projectileDamage),
+            "Expected cavenic witch to reject self-owned projectile damage through the legacy source-immunity rule"
+        );
+        helper.assertTrue(
+            Math.abs(selfProjectileHealthBefore - selfProjectileVictim.getHealth()) < 1.0E-6F,
+            "Expected cavenic witch health to stay unchanged after self-owned projectile damage"
+        );
+
+        CavenicWitch cavenicDirectVictim = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin.north(8));
+        CavenicWitch cavenicDirectAttacker = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin.north(8).west(4));
+        Witch vanillaDirectVictim = spawnLivingEntity(helper, EntityType.WITCH, origin.north(8).east(4));
+        clearEquipment(cavenicDirectVictim);
+        clearEquipment(cavenicDirectAttacker);
+        clearEquipment(vanillaDirectVictim);
+        float directDamage = 4.0F;
+        float cavenicDirectHealthBefore = cavenicDirectVictim.getHealth();
+        float vanillaDirectHealthBefore = vanillaDirectVictim.getHealth();
+
+        helper.assertFalse(
+            cavenicDirectVictim.hurt(level.damageSources().mobAttack(cavenicDirectAttacker), directDamage),
+            "Expected cavenic witch to reject direct same-type witch damage because the legacy invulnerability hook also checked same-type direct sources"
+        );
+        helper.assertTrue(
+            vanillaDirectVictim.hurt(level.damageSources().mobAttack(cavenicDirectAttacker), directDamage),
+            "Expected vanilla witch baseline to remain vulnerable to direct cavenic witch damage"
+        );
+        helper.assertTrue(
+            Math.abs(cavenicDirectHealthBefore - cavenicDirectVictim.getHealth()) < 1.0E-6F,
+            "Expected cavenic witch health to stay unchanged after direct same-type witch damage"
+        );
+        helper.assertTrue(
+            vanillaDirectVictim.getHealth() < vanillaDirectHealthBefore,
+            "Expected vanilla witch baseline to lose health from direct cavenic witch damage"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicWitchLegacySameTypeSourceImmunityKeepsOtherDamageVanillaLikeAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_WITCH_PROJECTILE_IMMUNITY_ANCHOR.south(16);
+
+        resetMiningArea(level, origin, 24.0D);
+
+        CavenicWitch cavenicIndirectVictim = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin);
+        Witch vanillaIndirectVictim = spawnLivingEntity(helper, EntityType.WITCH, origin.east(4));
+        Witch vanillaProjectileOwner = spawnLivingEntity(helper, EntityType.WITCH, origin.west(4));
+        clearEquipment(cavenicIndirectVictim);
+        clearEquipment(vanillaIndirectVictim);
+        clearEquipment(vanillaProjectileOwner);
+        float indirectDamage = 6.0F;
+        float cavenicIndirectHealthBefore = cavenicIndirectVictim.getHealth();
+        float vanillaIndirectHealthBefore = vanillaIndirectVictim.getHealth();
+
+        helper.assertTrue(
+            cavenicIndirectVictim.hurt(witchOwnedPotionDamageSource(level, vanillaProjectileOwner), indirectDamage),
+            "Expected cavenic witch to remain vulnerable to non-cavenic witch-owned projectile damage"
+        );
+        helper.assertTrue(
+            vanillaIndirectVictim.hurt(witchOwnedPotionDamageSource(level, vanillaProjectileOwner), indirectDamage),
+            "Expected vanilla witch baseline to remain vulnerable to vanilla witch-owned projectile damage"
+        );
+        helper.assertTrue(
+            cavenicIndirectVictim.getHealth() < cavenicIndirectHealthBefore,
+            "Expected cavenic witch to lose health from non-cavenic witch-owned projectile damage"
+        );
+        helper.assertTrue(
+            Math.abs((cavenicIndirectHealthBefore - cavenicIndirectVictim.getHealth()) - (vanillaIndirectHealthBefore - vanillaIndirectVictim.getHealth())) < 1.0E-4F,
+            "Expected cavenic witch to take the same non-cavenic witch-owned projectile damage as vanilla witch when the legacy same-type immunity does not apply"
+        );
+
+        CavenicWitch cavenicGenericWitch = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin.south(8));
+        Witch vanillaGenericWitch = spawnLivingEntity(helper, EntityType.WITCH, origin.south(8).east(4));
+        clearEquipment(cavenicGenericWitch);
+        clearEquipment(vanillaGenericWitch);
+        float genericDamage = 6.0F;
+        float cavenicGenericHealthBefore = cavenicGenericWitch.getHealth();
+        float vanillaGenericHealthBefore = vanillaGenericWitch.getHealth();
+
+        helper.assertTrue(
+            cavenicGenericWitch.hurt(level.damageSources().generic(), genericDamage),
+            "Expected cavenic witch generic damage intake to stay enabled after the same-type source-immunity follow-up"
+        );
+        helper.assertTrue(
+            vanillaGenericWitch.hurt(level.damageSources().generic(), genericDamage),
+            "Expected vanilla witch generic damage intake to stay enabled"
+        );
+        helper.assertTrue(
+            Math.abs((cavenicGenericHealthBefore - cavenicGenericWitch.getHealth()) - genericDamage) < 1.0E-6F,
+            "Expected cavenic witch generic damage intake to stay vanilla-like"
+        );
+        helper.assertTrue(
+            Math.abs((vanillaGenericHealthBefore - vanillaGenericWitch.getHealth()) - genericDamage) < 1.0E-6F,
+            "Expected vanilla witch generic damage intake to stay unchanged"
+        );
+
+        CavenicWitch cavenicFallWitch = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin.north(8));
+        clearEquipment(cavenicFallWitch);
+        float fallDamage = 10.0F;
+        float cavenicFallHealthBefore = cavenicFallWitch.getHealth();
+
+        helper.assertTrue(
+            cavenicFallWitch.hurt(level.damageSources().fall(), fallDamage),
+            "Expected same-type source-immunity follow-up to keep the legacy fall-damage path active"
+        );
+        helper.assertTrue(
+            Math.abs((cavenicFallHealthBefore - cavenicFallWitch.getHealth()) - (fallDamage * CavenicWitch.LEGACY_FALL_DAMAGE_MULTIPLIER)) < 1.0E-6F,
+            "Expected cavenic witch fall damage to stay pinned to the legacy 0.35 multiplier"
+        );
+
+        CavenicWitch cavenicFireWitch = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin.north(8).east(4));
+        clearEquipment(cavenicFireWitch);
+        float fireDamage = 4.0F;
+        float cavenicFireHealthBefore = cavenicFireWitch.getHealth();
+
+        helper.assertFalse(
+            cavenicFireWitch.hurt(level.damageSources().lava(), fireDamage),
+            "Expected same-type source-immunity follow-up to keep legacy fire-tagged damage rejection"
+        );
+        helper.assertTrue(
+            Math.abs(cavenicFireHealthBefore - cavenicFireWitch.getHealth()) < 1.0E-6F,
+            "Expected cavenic witch health to stay unchanged after fire-tagged damage"
+        );
+
+        helper.assertTrue(
+            cavenicGenericWitch.getLootTable().equals(EntityType.WITCH.getDefaultLootTable()),
+            "Expected cavenic witch same-type source-immunity follow-up to keep the vanilla witch loot-table baseline"
+        );
+        helper.assertTrue(
+            CavenicWitchLootPolicy.ORB_DROP_ROLL_BOUND == 5,
+            "Expected cavenic witch orb drop roll bound to remain pinned while restoring same-type source immunity"
+        );
+        helper.assertTrue(
+            CavenicWitch.NATURAL_SPAWN_WEIGHT == 15
+                && CavenicWitch.NATURAL_SPAWN_MIN_COUNT == 1
+                && CavenicWitch.NATURAL_SPAWN_MAX_COUNT == 1,
+            "Expected cavenic witch natural spawn constants to stay unchanged while restoring same-type source immunity"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void cavenicMeleeRegistersAtRuntime(GameTestHelper helper) {
         helper.assertTrue(ModRegistries.CAVENIC_SWORD.get() != null, "Missing cavenic sword");
         helper.assertTrue(ModRegistries.CAVENIC_AXE.get() != null, "Missing cavenic axe");
@@ -3926,6 +4109,12 @@ public final class CavernSpecialOreGameTests {
 
     private static ItemStack cavenicWitchSpawnEgg() {
         return new ItemStack(ModRegistries.CAVENIC_WITCH_SPAWN_EGG.get());
+    }
+
+    private static DamageSource witchOwnedPotionDamageSource(ServerLevel level, Witch owner) {
+        ThrownPotion potion = new ThrownPotion(level, owner);
+        potion.setPos(owner.getX(), owner.getEyeY(), owner.getZ());
+        return level.damageSources().indirectMagic(potion, owner);
     }
 
     private static AbstractArrow createRuntimeArrow(ServerLevel level, Player player, ItemStack bow) {

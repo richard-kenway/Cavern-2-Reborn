@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CavenicWitchResourcesTest {
     @Test
-    void cavenicWitchRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnLootDamageAndVanillaWitchBaselineBoundaries() throws IOException {
+    void cavenicWitchRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnLootDamageProjectileImmunityAndVanillaWitchBaselineBoundaries() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -77,6 +77,12 @@ class CavenicWitchResourcesTest {
         assertTrue(entitySource.contains("DamageTypeTags.IS_FALL"));
         assertTrue(entitySource.contains("DamageTypeTags.IS_FIRE"));
         assertTrue(entitySource.contains("return super.hurt(source, damage);"));
+        assertTrue(entitySource.contains("public boolean isInvulnerableTo(DamageSource source)"));
+        assertTrue(entitySource.contains("return super.isInvulnerableTo(source) || isLegacyCavenicWitchSourceImmuneTo(source);"));
+        assertTrue(entitySource.contains("public boolean isLegacyCavenicWitchSourceImmuneTo(DamageSource source)"));
+        assertTrue(entitySource.contains("source.getEntity()"));
+        assertTrue(entitySource.contains("source.getDirectEntity()"));
+        assertTrue(entitySource.contains("entity == this || entity instanceof CavenicWitch"));
         assertTrue(entitySource.contains("return EntityType.WITCH.getDefaultLootTable();"));
         assertTrue(entitySource.contains("canNaturallySpawnInDimension"));
         assertTrue(entitySource.contains("checkCavenicWitchSpawnRules"));
@@ -87,6 +93,7 @@ class CavenicWitchResourcesTest {
         assertFalse(entitySource.contains("aiStep("));
         assertFalse(entitySource.contains("isEntityInvulnerable("));
         assertFalse(entitySource.contains("setAttackTarget("));
+        assertFalse(entitySource.contains("setTarget("));
         assertFalse(entitySource.contains("cavenic_orb"));
         assertFalse(entitySource.contains("ItemMagicBook"));
         assertFalse(entitySource.toLowerCase().contains("cavenia"));

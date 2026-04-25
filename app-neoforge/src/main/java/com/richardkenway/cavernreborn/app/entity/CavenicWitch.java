@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -49,8 +50,17 @@ public final class CavenicWitch extends Witch {
     }
 
     @Override
+    public boolean isInvulnerableTo(DamageSource source) {
+        return super.isInvulnerableTo(source) || isLegacyCavenicWitchSourceImmuneTo(source);
+    }
+
+    @Override
     protected ResourceKey<LootTable> getDefaultLootTable() {
         return EntityType.WITCH.getDefaultLootTable();
+    }
+
+    public boolean isLegacyCavenicWitchSourceImmuneTo(DamageSource source) {
+        return isLegacyCavenicWitchSource(source.getEntity()) || isLegacyCavenicWitchSource(source.getDirectEntity());
     }
 
     public static boolean canNaturallySpawnInDimension(ResourceKey<Level> levelKey) {
@@ -66,5 +76,9 @@ public final class CavenicWitch extends Witch {
     ) {
         return canNaturallySpawnInDimension(level.getLevel().dimension())
             && Monster.checkMonsterSpawnRules(entityType, level, spawnType, pos, random);
+    }
+
+    private boolean isLegacyCavenicWitchSource(Entity entity) {
+        return entity == this || entity instanceof CavenicWitch;
     }
 }
