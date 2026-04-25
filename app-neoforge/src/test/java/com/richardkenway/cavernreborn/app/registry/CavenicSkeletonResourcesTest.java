@@ -31,6 +31,12 @@ class CavenicSkeletonResourcesTest {
         String entityEventSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModEntityEvents.java"
         );
+        String dropEventSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "CavenicSkeletonLootEvents.java"
+        );
+        String mainEntrypoint = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "CavernReborn.java"
+        );
         String clientSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "client", "CavernClientModEvents.java"
         );
@@ -66,7 +72,6 @@ class CavenicSkeletonResourcesTest {
         assertTrue(entitySource.contains("CavernNeoForgeDimensions.isCavern"));
         assertTrue(entitySource.contains("Monster.checkMonsterSpawnRules"));
         assertTrue(entitySource.contains("return EntityType.SKELETON.getDefaultLootTable();"));
-        assertFalse(entitySource.contains("cavenic_orb"));
         assertFalse(entitySource.contains("DamageTypeTags.IS_FALL"));
         assertFalse(entitySource.contains("DamageTypeTags.IS_FIRE"));
 
@@ -76,6 +81,15 @@ class CavenicSkeletonResourcesTest {
         assertTrue(entityEventSource.contains("Heightmap.Types.MOTION_BLOCKING_NO_LEAVES"));
         assertTrue(entityEventSource.contains("CavenicSkeleton::checkCavenicSkeletonSpawnRules"));
         assertTrue(entityEventSource.contains("RegisterSpawnPlacementsEvent.Operation.REPLACE"));
+        assertTrue(mainEntrypoint.contains("NeoForge.EVENT_BUS.register(new CavenicSkeletonLootEvents());"));
+        assertTrue(dropEventSource.contains("LivingDropsEvent"));
+        assertTrue(dropEventSource.contains("event.getEntity() instanceof CavenicSkeleton skeleton"));
+        assertTrue(dropEventSource.contains("CavenicSkeletonLootPolicy.ORB_DROP_ROLL_BOUND"));
+        assertTrue(dropEventSource.contains("CavenicSkeletonLootPolicy.shouldDropOrb(orbRoll)"));
+        assertTrue(dropEventSource.contains("new ItemStack(ModRegistries.CAVENIC_ORB.get())"));
+        assertTrue(dropEventSource.contains("skeleton.getY() + 0.5D"));
+        assertFalse(dropEventSource.toLowerCase().contains("economy"));
+        assertFalse(dropEventSource.toLowerCase().contains("progress"));
 
         assertTrue(clientSource.contains("event.registerEntityRenderer(ModRegistries.CAVENIC_SKELETON.get(), CavenicSkeletonRenderer::new);"));
         assertTrue(rendererSource.contains("extends SkeletonRenderer<CavenicSkeleton>"));

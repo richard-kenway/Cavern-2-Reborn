@@ -12,6 +12,7 @@ class CavenicSkeletonDocumentationTest {
     private static final Path README = resolveProjectFile("README.md");
     private static final Path CAVENIC_SKELETON_BASELINE_MVP = resolveProjectFile("docs", "cavenic-skeleton-baseline-mvp.md");
     private static final Path CAVENIC_SKELETON_NATURAL_SPAWN_MVP = resolveProjectFile("docs", "cavenic-skeleton-natural-spawn-mvp.md");
+    private static final Path CAVENIC_SKELETON_ORB_DROP_MVP = resolveProjectFile("docs", "cavenic-skeleton-orb-drop-mvp.md");
     private static final Path RUNTIME_SMOKE = resolveProjectFile("docs", "runtime-smoke.md");
 
     @Test
@@ -22,9 +23,12 @@ class CavenicSkeletonDocumentationTest {
         assertTrue(readme.contains("docs/cavenic-skeleton-baseline-mvp.md"));
         assertTrue(readme.contains("Cavenic Skeleton Natural Spawn MVP"));
         assertTrue(readme.contains("docs/cavenic-skeleton-natural-spawn-mvp.md"));
+        assertTrue(readme.contains("Cavenic Skeleton Legacy Orb Drop MVP"));
+        assertTrue(readme.contains("docs/cavenic-skeleton-orb-drop-mvp.md"));
         assertTrue(readme.contains("cavenic_skeleton"));
         assertTrue(readme.contains("second direct Cavenic mob foundation"));
         assertTrue(readme.contains("bounded CAVERN-only natural spawning"));
+        assertTrue(readme.contains("legacy `1/5` `cavenic_orb` drop"));
     }
 
     @Test
@@ -48,6 +52,7 @@ class CavenicSkeletonDocumentationTest {
         assertTrue(doc.contains("reuses the vanilla skeleton renderer/model path"));
         assertTrue(doc.contains("reuses the vanilla skeleton loot table as its base drop source"));
         assertTrue(doc.contains("Legacy `EntityCavenicSkeleton` also added a `1/5` `cavenic_orb` drop"));
+        assertTrue(doc.contains("That orb-drop follow-up is now documented separately in `docs/cavenic-skeleton-orb-drop-mvp.md`"));
         assertTrue(doc.contains("Legacy `EntityCavenicSkeleton` also included the same fall/fire damage behavior"));
         assertTrue(doc.contains("Natural spawning is now documented separately in `docs/cavenic-skeleton-natural-spawn-mvp.md`"));
         assertTrue(doc.contains("Custom AI and custom projectile behavior remain out of scope"));
@@ -73,9 +78,31 @@ class CavenicSkeletonDocumentationTest {
         assertTrue(doc.contains("`cavernreborn:dripstone_grotto`"));
         assertTrue(doc.contains("`cavernreborn:highland_hollows`"));
         assertTrue(doc.contains("limited to `CAVERN`"));
-        assertTrue(doc.contains("custom loot remains out of scope"));
+        assertTrue(doc.contains("The bounded legacy orb-drop follow-up is documented separately in `docs/cavenic-skeleton-orb-drop-mvp.md`"));
+        assertTrue(doc.contains("custom loot beyond that orb-drop follow-up remains out of scope"));
         assertTrue(doc.contains("custom AI remains out of scope"));
         assertTrue(doc.contains("custom arrows remain out of scope"));
+    }
+
+    @Test
+    void cavenicSkeletonOrbDropDocStatesLegacyReferencesExactChanceAndBoundaries() throws IOException {
+        String doc = Files.readString(CAVENIC_SKELETON_ORB_DROP_MVP);
+
+        assertTrue(doc.contains("`cavernreborn:cavenic_skeleton`"));
+        assertTrue(doc.contains("`cavern.entity.monster.EntityCavenicSkeleton`"));
+        assertTrue(doc.contains("`cavern.entity.CaveEntityRegistry`"));
+        assertTrue(doc.contains("`cavern.item.ItemCave`"));
+        assertTrue(doc.contains("`super.dropLoot(...)`"));
+        assertTrue(doc.contains("`rand.nextInt(5) == 0`"));
+        assertTrue(doc.contains("chance is `1/5`"));
+        assertTrue(doc.contains("winning roll is `0`"));
+        assertTrue(doc.contains("vanilla skeleton loot table as the base drop source"));
+        assertTrue(doc.contains("Looting does not affect the orb chance"));
+        assertTrue(doc.contains("does not require a player kill"));
+        assertTrue(doc.contains("No progression, dimension or economy hook changes affect the orb drop"));
+        assertTrue(doc.contains("`LivingDropsEvent` listener in `app.entity.CavenicSkeletonLootEvents`"));
+        assertTrue(doc.contains("`core.loot.CavenicSkeletonLootPolicy`"));
+        assertTrue(doc.contains("`EntityCavenicArrow`"));
     }
 
     @Test
@@ -91,7 +118,11 @@ class CavenicSkeletonDocumentationTest {
         assertTrue(runtimeSmoke.contains("cavenic skeleton CAVERN-only spawn predicate smoke"));
         assertTrue(runtimeSmoke.contains("cavenic skeleton biome modifier registry smoke"));
         assertTrue(runtimeSmoke.contains("cavenic skeleton biome tag resolution"));
+        assertTrue(runtimeSmoke.contains("cavenic skeleton vanilla loot-table baseline smoke"));
+        assertTrue(runtimeSmoke.contains("cavenic skeleton legacy orb-drop event wiring smoke"));
+        assertTrue(runtimeSmoke.contains("cavenic skeleton legacy orb-drop deterministic winning/losing roll smoke"));
         assertTrue(runtimeSmoke.contains("actual Cavenic Skeleton renderer/model visual feel"));
+        assertTrue(runtimeSmoke.contains("actual long-run cavenic skeleton orb-drop rate balance"));
         assertTrue(runtimeSmoke.contains("actual long-run Cavenic Skeleton population balance inside CAVERN"));
     }
 

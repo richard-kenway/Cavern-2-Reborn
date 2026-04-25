@@ -56,7 +56,7 @@ The legacy repo contains a direct `EntityCavenicSkeleton`, so this increment kee
 ## Loot Decision
 
 - Legacy `EntityCavenicSkeleton` also added a `1/5` `cavenic_orb` drop.
-- Reborn intentionally does not port that loot behavior in this baseline slice.
+- That orb-drop follow-up is now documented separately in `docs/cavenic-skeleton-orb-drop-mvp.md`.
 - The bounded baseline reuses the vanilla skeleton loot table as its base drop source so the mob has safe hostile drops without widening the Cavenic loot line yet.
 
 ## Follow-Up Boundaries
@@ -66,6 +66,7 @@ The legacy repo contains a direct `EntityCavenicSkeleton`, so this increment kee
 - Legacy `EntityCavenicSkeleton` also included the same fall/fire damage behavior later restored for `cavenic_zombie`.
 - That damage behavior is intentionally left for a later skeleton-specific follow-up instead of expanding this baseline slice.
 - Natural spawning is now documented separately in `docs/cavenic-skeleton-natural-spawn-mvp.md`.
+- The bounded legacy orb-drop follow-up is now documented separately in `docs/cavenic-skeleton-orb-drop-mvp.md`.
 - Custom AI and custom projectile behavior remain out of scope.
 
 ## Testing
@@ -82,8 +83,7 @@ The legacy repo contains a direct `EntityCavenicSkeleton`, so this increment kee
 ## Out Of Scope
 
 - Natural spawning and biome spawn balance
-- Custom Cavenic Skeleton loot
-- `cavenic_orb` skeleton drops
+- Custom Cavenic Skeleton loot beyond the legacy orb-drop follow-up
 - Custom Cavenic Skeleton AI
 - Custom projectile entities or projectile rewrites
 - Special attacks or transformations
