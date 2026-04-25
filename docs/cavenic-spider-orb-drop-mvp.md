@@ -2,7 +2,7 @@
 
 This note documents the bounded loot follow-up for the existing `cavernreborn:cavenic_spider`.
 
-It does not add a new mob, natural-spawn changes, damage-behavior changes, blindness/poison/web behavior or custom AI. It only restores the missing legacy `cavenic_orb` drop.
+It does not add a new mob, natural-spawn changes, damage-behavior changes, the separately documented blindness-on-hit behavior, poison/web behavior or custom AI. It only restores the missing legacy `cavenic_orb` drop.
 
 ## Legacy References Inspected
 
@@ -37,7 +37,7 @@ It does not add a new mob, natural-spawn changes, damage-behavior changes, blind
 - Looting does not affect the orb chance in this MVP.
 - The orb drop does not require a player kill in this MVP.
 - No progression, dimension or economy hook changes affect the orb drop.
-- Natural spawn values, attributes and blindness, poison, web and other special spider behavior do not change in this slice.
+- Natural spawn values, attributes and blindness-on-hit, poison, web and other special spider behavior do not change in this slice.
 
 ## Why Reborn Uses A Drop Event
 
@@ -62,7 +62,7 @@ It does not add a new mob, natural-spawn changes, damage-behavior changes, blind
 
 - Natural spawn values remain unchanged
 - The separate legacy damage-behavior follow-up is now documented separately in `docs/cavenic-spider-damage-behavior-mvp.md`.
-- Blindness-on-hit remains out of scope
+- The separate blindness-on-hit follow-up is now documented separately in `docs/cavenic-spider-blindness-on-hit-mvp.md`.
 - Poison behavior remains out of scope
 - Web and other special spider behavior remain out of scope
 - Custom Cavenic Spider AI remains out of scope

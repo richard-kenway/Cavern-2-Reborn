@@ -15,6 +15,7 @@ class CavenicSpiderDocumentationTest {
     private static final Path CAVENIC_SPIDER_NATURAL_SPAWN_MVP = resolveProjectFile("docs", "cavenic-spider-natural-spawn-mvp.md");
     private static final Path CAVENIC_SPIDER_ORB_DROP_MVP = resolveProjectFile("docs", "cavenic-spider-orb-drop-mvp.md");
     private static final Path CAVENIC_SPIDER_DAMAGE_BEHAVIOR_MVP = resolveProjectFile("docs", "cavenic-spider-damage-behavior-mvp.md");
+    private static final Path CAVENIC_SPIDER_BLINDNESS_ON_HIT_MVP = resolveProjectFile("docs", "cavenic-spider-blindness-on-hit-mvp.md");
     private static final Path RUNTIME_SMOKE = resolveProjectFile("docs", "runtime-smoke.md");
 
     @Test
@@ -29,12 +30,15 @@ class CavenicSpiderDocumentationTest {
         assertTrue(readme.contains("docs/cavenic-spider-orb-drop-mvp.md"));
         assertTrue(readme.contains("Cavenic Spider Legacy Damage Behavior MVP"));
         assertTrue(readme.contains("docs/cavenic-spider-damage-behavior-mvp.md"));
+        assertTrue(readme.contains("Cavenic Spider Blindness-On-Hit MVP"));
+        assertTrue(readme.contains("docs/cavenic-spider-blindness-on-hit-mvp.md"));
         assertTrue(readme.contains("cavenic_spider"));
         assertTrue(readme.contains("fourth direct Cavenic mob foundation"));
         assertTrue(readme.contains("bounded CAVERN-only natural spawning"));
         assertTrue(readme.contains("vanilla spider loot baseline"));
         assertTrue(readme.contains("legacy `1/8` `cavenic_orb` drop"));
         assertTrue(readme.contains("legacy fall-damage reduction and fire-damage immunity"));
+        assertTrue(readme.contains("legacy difficulty-scaled blindness-on-hit behavior"));
     }
 
     @Test
@@ -60,11 +64,13 @@ class CavenicSpiderDocumentationTest {
         assertTrue(doc.contains("The bounded natural-spawn follow-up is now documented separately in `docs/cavenic-spider-natural-spawn-mvp.md`."));
         assertTrue(doc.contains("The bounded orb-drop follow-up is now documented separately in `docs/cavenic-spider-orb-drop-mvp.md`."));
         assertTrue(doc.contains("The bounded damage-behavior follow-up is now documented separately in `docs/cavenic-spider-damage-behavior-mvp.md`."));
+        assertTrue(doc.contains("The bounded blindness-on-hit follow-up is now documented separately in `docs/cavenic-spider-blindness-on-hit-mvp.md`."));
         assertTrue(doc.contains("custom loot beyond the bounded orb-drop follow-up remains out of scope"));
         assertTrue(doc.contains("`1/8` `cavenic_orb` drop"));
-        assertTrue(doc.contains("blindness-on-hit behavior"));
         assertTrue(doc.contains("poison behavior"));
+        assertTrue(doc.contains("web"));
         assertFalse(doc.contains("`1/8` `cavenic_orb` drop parity remains out of scope"));
+        assertFalse(doc.contains("blindness-on-hit behavior remains out of scope"));
         assertTrue(doc.contains("CC-BY-NC 4.0"));
     }
 
@@ -84,8 +90,9 @@ class CavenicSpiderDocumentationTest {
         assertTrue(doc.contains("Natural spawning is deliberately limited to `CAVERN`"));
         assertTrue(doc.contains("The bounded orb-drop follow-up is now documented separately in `docs/cavenic-spider-orb-drop-mvp.md`."));
         assertTrue(doc.contains("The bounded damage-behavior follow-up is now documented separately in `docs/cavenic-spider-damage-behavior-mvp.md`."));
+        assertTrue(doc.contains("The bounded blindness-on-hit follow-up is now documented separately in `docs/cavenic-spider-blindness-on-hit-mvp.md`."));
         assertTrue(doc.contains("custom loot beyond that orb-drop follow-up remains out of scope"));
-        assertTrue(doc.contains("blindness, poison and web-based special spider behavior remain out of scope"));
+        assertTrue(doc.contains("poison and web-based special spider behavior remain out of scope"));
     }
 
     @Test
@@ -105,7 +112,8 @@ class CavenicSpiderDocumentationTest {
         assertTrue(doc.contains("The orb drop does not require a player kill"));
         assertTrue(doc.contains("No progression, dimension or economy hook changes affect the orb drop"));
         assertTrue(doc.contains("The separate legacy damage-behavior follow-up is now documented separately in `docs/cavenic-spider-damage-behavior-mvp.md`."));
-        assertTrue(doc.contains("blindness, poison, web and other special spider behavior do not change"));
+        assertTrue(doc.contains("The separate blindness-on-hit follow-up is now documented separately in `docs/cavenic-spider-blindness-on-hit-mvp.md`."));
+        assertTrue(doc.contains("blindness-on-hit, poison, web and other special spider behavior do not change"));
         assertTrue(doc.contains("Long-run orb-drop rate balance still needs manual gameplay validation"));
     }
 
@@ -123,11 +131,38 @@ class CavenicSpiderDocumentationTest {
         assertTrue(doc.contains("All modern fire-tagged damage sources are ignored."));
         assertTrue(doc.contains("vanilla spider AI remains unchanged."));
         assertTrue(doc.contains("attributes, natural spawning and `1/8` orb-drop behavior remain unchanged."));
-        assertTrue(doc.contains("Blindness-on-hit, poison, web and other special spider behavior remain out of scope"));
+        assertTrue(doc.contains("The separate legacy blindness-on-hit follow-up is now documented separately in `docs/cavenic-spider-blindness-on-hit-mvp.md`."));
+        assertTrue(doc.contains("Poison, web and other special spider behavior remain out of scope"));
     }
 
     @Test
-    void runtimeSmokeMentionsCavenicSpiderNaturalSpawnOrbDropAndDamageCoverageAndManualBoundary() throws IOException {
+    void cavenicSpiderBlindnessOnHitDocStatesLegacyReferencesRuntimeShapeAndBoundaries() throws IOException {
+        String doc = Files.readString(CAVENIC_SPIDER_BLINDNESS_ON_HIT_MVP);
+
+        assertTrue(doc.contains("`cavern.entity.monster.EntityCavenicSpider`"));
+        assertTrue(doc.contains("`attackEntityAsMob(Entity entity)`"));
+        assertTrue(doc.contains("`getBlindnessAttackPower()`"));
+        assertTrue(doc.contains("`getPoisonAttackPower()`"));
+        assertTrue(doc.contains("`doHurtTarget(Entity target)`"));
+        assertTrue(doc.contains("`tryApplyLegacyBlindnessOnHit(LivingEntity target, boolean attackSucceeded)`"));
+        assertTrue(doc.contains("`getLegacyBlindnessDurationTicks(Difficulty difficulty)`"));
+        assertTrue(doc.contains("`MobEffects.BLINDNESS`"));
+        assertTrue(doc.contains("`LEGACY_BLINDNESS_DURATION_DEFAULT_TICKS = 60`"));
+        assertTrue(doc.contains("`LEGACY_BLINDNESS_DURATION_NORMAL_TICKS = 100`"));
+        assertTrue(doc.contains("`LEGACY_BLINDNESS_DURATION_HARD_TICKS = 200`"));
+        assertTrue(doc.contains("`LEGACY_BLINDNESS_AMPLIFIER = 0`"));
+        assertTrue(doc.contains("Blindness is applied only after a successful melee hit."));
+        assertTrue(doc.contains("Only living targets can receive the effect."));
+        assertTrue(doc.contains("Easy and peaceful difficulty fall back to `60` ticks (`3` seconds)."));
+        assertTrue(doc.contains("Normal difficulty uses `100` ticks (`5` seconds)."));
+        assertTrue(doc.contains("Hard difficulty uses `200` ticks (`10` seconds)."));
+        assertTrue(doc.contains("Poison remains out of scope because the legacy `getPoisonAttackPower()` path still returned `0`."));
+        assertTrue(doc.contains("vanilla spider AI remains unchanged."));
+        assertTrue(doc.contains("attributes, natural spawning, `1/8` orb-drop behavior and fall/fire damage behavior remain unchanged."));
+    }
+
+    @Test
+    void runtimeSmokeMentionsCavenicSpiderNaturalSpawnOrbDropDamageAndBlindnessCoverageAndManualBoundary() throws IOException {
         String runtimeSmoke = Files.readString(RUNTIME_SMOKE);
 
         assertTrue(runtimeSmoke.contains("cavenic spider runtime registry id"));
@@ -145,11 +180,14 @@ class CavenicSpiderDocumentationTest {
         assertTrue(runtimeSmoke.contains("cavenic spider legacy fall-damage reduction smoke"));
         assertTrue(runtimeSmoke.contains("cavenic spider legacy fire-damage immunity smoke"));
         assertTrue(runtimeSmoke.contains("cavenic spider generic-damage baseline smoke"));
+        assertTrue(runtimeSmoke.contains("cavenic spider blindness-on-hit runtime smoke"));
+        assertTrue(runtimeSmoke.contains("vanilla spider no-blindness comparison smoke"));
         assertTrue(runtimeSmoke.contains("actual Cavenic Spider renderer/model visual feel"));
         assertTrue(runtimeSmoke.contains("actual long-run Cavenic Spider population balance inside CAVERN"));
         assertTrue(runtimeSmoke.contains("actual long-run cavenic spider orb-drop rate balance"));
         assertTrue(runtimeSmoke.contains("actual long-running Cavenic Spider fire/lava gameplay feel"));
-        assertTrue(runtimeSmoke.contains("actual blindness/poison/web-based Cavenic Spider gameplay behavior"));
+        assertTrue(runtimeSmoke.contains("actual long-running Cavenic Spider combat/pathfinding feel"));
+        assertTrue(runtimeSmoke.contains("actual poison/web-based Cavenic Spider gameplay behavior"));
         assertFalse(runtimeSmoke.contains("Cavenic Spider natural spawning in this baseline slice"));
     }
 

@@ -54,7 +54,7 @@ It does not add a new mob. It only makes the already registered `cavernreborn:ca
   - the `neoforge:add_spawns` biome modifier JSON
   - the `cavernreborn:spawns_cavenic_spider` biome tag
   - legacy weight/group-size pinning
-  - the no-custom-loot / no-orb-drop / no-damage-behavior / no-special-spider-behavior / no-Cavenia boundary
+  - the no-custom-loot / no-poison-web-special-spider-behavior / no-Cavenia boundary
 - NeoForge GameTest runtime smoke covers:
   - registered spawn placement type and heightmap
   - CAVERN-only spawn predicate allow/deny behavior
@@ -66,8 +66,9 @@ It does not add a new mob. It only makes the already registered `cavernreborn:ca
 
 - The bounded orb-drop follow-up is now documented separately in `docs/cavenic-spider-orb-drop-mvp.md`.
 - The bounded damage-behavior follow-up is now documented separately in `docs/cavenic-spider-damage-behavior-mvp.md`.
+- The bounded blindness-on-hit follow-up is now documented separately in `docs/cavenic-spider-blindness-on-hit-mvp.md`.
 - custom loot beyond that orb-drop follow-up remains out of scope
-- blindness, poison and web-based special spider behavior remain out of scope
+- poison and web-based special spider behavior remain out of scope
 - custom AI remains out of scope
 - the legacy `getMaxSpawnedInChunk()` Cavenia-specific behavior remains out of scope
 - additional Cavenic mobs remain out of scope

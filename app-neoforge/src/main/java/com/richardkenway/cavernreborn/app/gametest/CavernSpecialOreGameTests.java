@@ -77,6 +77,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Difficulty;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -180,6 +181,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_SPIDER_NATURAL_SPAWN_ANCHOR = new BlockPos(3424, 96, 0);
     private static final BlockPos CAVENIC_SPIDER_LOOT_ANCHOR = new BlockPos(3520, 96, 0);
     private static final BlockPos CAVENIC_SPIDER_DAMAGE_ANCHOR = new BlockPos(3616, 96, 0);
+    private static final BlockPos CAVENIC_SPIDER_BLINDNESS_ANCHOR = new BlockPos(3712, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -1647,6 +1649,128 @@ public final class CavernSpecialOreGameTests {
                 && CavenicSpider.NATURAL_SPAWN_MIN_COUNT == 1
                 && CavenicSpider.NATURAL_SPAWN_MAX_COUNT == 1,
             "Expected cavenic spider natural spawn constants to stay unchanged while restoring legacy damage behavior"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicSpiderBlindnessOnSuccessfulHitAppliesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_SPIDER_BLINDNESS_ANCHOR;
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CavenicSpider cavenicSpider = spawnLivingEntity(helper, ModRegistries.CAVENIC_SPIDER.get(), origin);
+        Zombie cavenicTarget = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.east(2));
+        clearEquipment(cavenicSpider);
+        clearEquipment(cavenicTarget);
+        float cavenicTargetHealthBefore = cavenicTarget.getHealth();
+
+        helper.assertTrue(
+            cavenicSpider.doHurtTarget(cavenicTarget),
+            "Expected cavenic spider melee attack to succeed before applying the legacy blindness-on-hit effect"
+        );
+        helper.assertTrue(
+            cavenicTarget.getHealth() < cavenicTargetHealthBefore,
+            "Expected successful cavenic spider melee hit to still deal vanilla-like melee damage"
+        );
+        helper.assertTrue(
+            cavenicTarget.hasEffect(MobEffects.BLINDNESS),
+            "Expected successful cavenic spider melee hit to apply blindness"
+        );
+        int expectedBlindnessDuration = CavenicSpider.getLegacyBlindnessDurationTicks(level.getDifficulty());
+        int actualBlindnessDuration = cavenicTarget.getEffect(MobEffects.BLINDNESS).getDuration();
+        helper.assertTrue(
+            actualBlindnessDuration <= expectedBlindnessDuration && actualBlindnessDuration >= expectedBlindnessDuration - 1,
+            "Expected cavenic spider blindness duration to stay pinned to the legacy difficulty-scaled mapping"
+        );
+        helper.assertTrue(
+            cavenicTarget.getEffect(MobEffects.BLINDNESS).getAmplifier() == CavenicSpider.LEGACY_BLINDNESS_AMPLIFIER,
+            "Expected cavenic spider blindness amplifier to stay pinned to the legacy zero-amplifier mapping"
+        );
+        helper.assertFalse(
+            cavenicTarget.hasEffect(MobEffects.POISON),
+            "Expected bounded cavenic spider blindness-on-hit follow-up to leave poison behavior disabled"
+        );
+        helper.assertFalse(
+            hasCobwebInArea(level, origin.east(2), 1),
+            "Expected bounded cavenic spider blindness-on-hit follow-up to avoid any web-placement behavior"
+        );
+
+        Spider vanillaSpider = spawnLivingEntity(helper, EntityType.SPIDER, origin.south(8));
+        Zombie vanillaTarget = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.south(8).east(2));
+        clearEquipment(vanillaSpider);
+        clearEquipment(vanillaTarget);
+
+        helper.assertTrue(
+            vanillaSpider.doHurtTarget(vanillaTarget),
+            "Expected vanilla spider melee baseline to still succeed under the same deterministic runtime setup"
+        );
+        helper.assertFalse(
+            vanillaTarget.hasEffect(MobEffects.BLINDNESS),
+            "Expected vanilla spider melee baseline to keep not applying blindness"
+        );
+        helper.assertFalse(
+            vanillaTarget.hasEffect(MobEffects.POISON),
+            "Expected vanilla spider melee baseline to keep not applying poison here"
+        );
+        helper.assertFalse(
+            hasCobwebInArea(level, origin.south(8).east(2), 1),
+            "Expected vanilla spider baseline to keep not placing cobweb blocks in this deterministic runtime setup"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicSpiderBlindnessFollowUpKeepsExistingSlicesStableAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_SPIDER_BLINDNESS_ANCHOR.north(12);
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CavenicSpider cavenicSpider = spawnLivingEntity(helper, ModRegistries.CAVENIC_SPIDER.get(), origin);
+        Zombie target = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.east(2));
+        clearEquipment(cavenicSpider);
+        clearEquipment(target);
+
+        helper.assertFalse(
+            cavenicSpider.tryApplyLegacyBlindnessOnHit(target, false),
+            "Expected failed cavenic spider attacks to keep not applying blindness"
+        );
+        helper.assertFalse(target.hasEffect(MobEffects.BLINDNESS), "Expected failed cavenic spider attacks to leave blindness absent");
+        helper.assertFalse(target.hasEffect(MobEffects.POISON), "Expected failed cavenic spider attacks to leave poison absent");
+        helper.assertFalse(
+            hasCobwebInArea(level, origin.east(2), 1),
+            "Expected failed cavenic spider attacks to keep not placing cobweb blocks"
+        );
+        helper.assertTrue(
+            CavenicSpider.getLegacyBlindnessDurationTicks(Difficulty.PEACEFUL) == CavenicSpider.LEGACY_BLINDNESS_DURATION_DEFAULT_TICKS
+                && CavenicSpider.getLegacyBlindnessDurationTicks(Difficulty.EASY) == CavenicSpider.LEGACY_BLINDNESS_DURATION_DEFAULT_TICKS
+                && CavenicSpider.getLegacyBlindnessDurationTicks(Difficulty.NORMAL) == CavenicSpider.LEGACY_BLINDNESS_DURATION_NORMAL_TICKS
+                && CavenicSpider.getLegacyBlindnessDurationTicks(Difficulty.HARD) == CavenicSpider.LEGACY_BLINDNESS_DURATION_HARD_TICKS,
+            "Expected cavenic spider blindness durations to stay pinned to the legacy 3s/5s/10s difficulty mapping"
+        );
+        helper.assertTrue(
+            CavenicSpider.LEGACY_BLINDNESS_AMPLIFIER == 0,
+            "Expected cavenic spider blindness amplifier to stay pinned to the legacy zero-amplifier mapping"
+        );
+        helper.assertTrue(
+            CavenicSpider.NATURAL_SPAWN_WEIGHT == 30
+                && CavenicSpider.NATURAL_SPAWN_MIN_COUNT == 1
+                && CavenicSpider.NATURAL_SPAWN_MAX_COUNT == 1,
+            "Expected cavenic spider natural spawn constants to stay unchanged while restoring blindness-on-hit"
+        );
+        helper.assertTrue(
+            CavenicSpiderLootPolicy.ORB_DROP_ROLL_BOUND == 8,
+            "Expected cavenic spider orb drop roll bound to remain pinned while restoring blindness-on-hit"
+        );
+        helper.assertTrue(
+            Math.abs(CavenicSpider.LEGACY_FALL_DAMAGE_MULTIPLIER - 0.35F) < 1.0E-6F,
+            "Expected cavenic spider fall-damage multiplier to remain pinned while restoring blindness-on-hit"
+        );
+        helper.assertTrue(
+            cavenicSpider.getLootTable().equals(EntityType.SPIDER.getDefaultLootTable()),
+            "Expected cavenic spider blindness-on-hit follow-up to keep the vanilla spider loot-table baseline"
         );
         helper.succeed();
     }
@@ -3855,6 +3979,20 @@ public final class CavernSpecialOreGameTests {
 
     private static long countEntities(ServerLevel level, EntityType<?> entityType, BlockPos center, double radius) {
         return level.getEntities((Entity) null, new AABB(center).inflate(radius), entity -> entity.getType() == entityType).size();
+    }
+
+    private static boolean hasCobwebInArea(ServerLevel level, BlockPos center, int radius) {
+        for (int x = center.getX() - radius; x <= center.getX() + radius; x++) {
+            for (int y = center.getY() - radius; y <= center.getY() + radius; y++) {
+                for (int z = center.getZ() - radius; z <= center.getZ() + radius; z++) {
+                    if (level.getBlockState(new BlockPos(x, y, z)).is(Blocks.COBWEB)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     private static void resetMiningArea(ServerLevel level, BlockPos center, double radius) {

@@ -2,7 +2,7 @@
 
 This note documents the bounded damage-behavior follow-up for the existing `cavernreborn:cavenic_spider`.
 
-It does not add a new mob, loot changes, natural-spawn changes, blindness-on-hit behavior, poison behavior, web behavior or custom AI. It only restores the small confirmed legacy fall/fire damage drift from `EntityCavenicSpider`.
+It does not add a new mob, loot changes, natural-spawn changes, poison behavior, web behavior or custom AI. It only restores the small confirmed legacy fall/fire damage drift from `EntityCavenicSpider`.
 
 ## Legacy References Inspected
 
@@ -35,7 +35,8 @@ That means the mob kept taking fall damage, but only at `35%` of the original am
 - Generic non-fire, non-fall damage remains vanilla-like.
 - vanilla spider AI remains unchanged.
 - attributes, natural spawning and `1/8` orb-drop behavior remain unchanged.
-- Blindness-on-hit, poison, web and other special spider behavior remain out of scope for separate follow-ups.
+- The separate legacy blindness-on-hit follow-up is now documented separately in `docs/cavenic-spider-blindness-on-hit-mvp.md`.
+- Poison, web and other special spider behavior remain out of scope for separate follow-ups.
 
 ## Why This Mapping Is Safe
 
@@ -55,7 +56,6 @@ That means the mob kept taking fall damage, but only at `35%` of the original am
 
 ## Still Out Of Scope
 
-- Blindness-on-hit remains out of scope
 - Poison behavior remains out of scope
 - Web and other special spider behavior remain out of scope
 - Custom Cavenic Spider AI remains out of scope

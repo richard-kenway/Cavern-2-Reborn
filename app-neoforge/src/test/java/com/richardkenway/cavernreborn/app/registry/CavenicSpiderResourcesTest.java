@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CavenicSpiderResourcesTest {
     @Test
-    void cavenicSpiderRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnBaselineLootOrbDropAndDamageWiring() throws IOException {
+    void cavenicSpiderRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnBaselineLootOrbDropDamageAndBlindnessWiring() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -74,20 +74,32 @@ class CavenicSpiderResourcesTest {
         assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_MIN_COUNT = 1;"));
         assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_MAX_COUNT = 1;"));
         assertTrue(entitySource.contains("public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_BLINDNESS_DURATION_DEFAULT_TICKS = 60;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_BLINDNESS_DURATION_NORMAL_TICKS = 100;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_BLINDNESS_DURATION_HARD_TICKS = 200;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_BLINDNESS_AMPLIFIER = 0;"));
         assertTrue(entitySource.contains("public boolean hurt(DamageSource source, float damage)"));
         assertTrue(entitySource.contains("DamageTypeTags.IS_FALL"));
         assertTrue(entitySource.contains("DamageTypeTags.IS_FIRE"));
         assertTrue(entitySource.contains("return super.hurt(source, damage);"));
+        assertTrue(entitySource.contains("public boolean doHurtTarget(Entity target)"));
+        assertTrue(entitySource.contains("boolean attackSucceeded = super.doHurtTarget(target);"));
+        assertTrue(entitySource.contains("target instanceof LivingEntity livingTarget"));
+        assertTrue(entitySource.contains("tryApplyLegacyBlindnessOnHit(livingTarget, attackSucceeded)"));
+        assertTrue(entitySource.contains("public boolean tryApplyLegacyBlindnessOnHit(LivingEntity target, boolean attackSucceeded)"));
+        assertTrue(entitySource.contains("if (!attackSucceeded || target.hasEffect(MobEffects.BLINDNESS))"));
+        assertTrue(entitySource.contains("target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, durationTicks, LEGACY_BLINDNESS_AMPLIFIER))"));
+        assertTrue(entitySource.contains("public static int getLegacyBlindnessDurationTicks(Difficulty difficulty)"));
+        assertTrue(entitySource.contains("case NORMAL -> LEGACY_BLINDNESS_DURATION_NORMAL_TICKS;"));
+        assertTrue(entitySource.contains("case HARD -> LEGACY_BLINDNESS_DURATION_HARD_TICKS;"));
+        assertTrue(entitySource.contains("default -> LEGACY_BLINDNESS_DURATION_DEFAULT_TICKS;"));
         assertTrue(entitySource.contains("return EntityType.SPIDER.getDefaultLootTable();"));
         assertTrue(entitySource.contains("canNaturallySpawnInDimension"));
         assertTrue(entitySource.contains("checkCavenicSpiderSpawnRules"));
         assertTrue(entitySource.contains("CavernNeoForgeDimensions.isCavern"));
         assertTrue(entitySource.contains("Monster.checkMonsterSpawnRules"));
         assertFalse(entitySource.contains("cavenic_orb"));
-        assertFalse(entitySource.contains("MobEffects.BLINDNESS"));
         assertFalse(entitySource.contains("MobEffects.POISON"));
-        assertFalse(entitySource.toLowerCase().contains("blindness"));
-        assertFalse(entitySource.toLowerCase().contains("poison"));
         assertFalse(entitySource.toLowerCase().contains("web"));
         assertFalse(entitySource.contains("registerGoals("));
         assertFalse(entitySource.contains("attackEntityAsMob("));

@@ -24,7 +24,7 @@ The legacy repo contains a direct `EntityCavenicSpider`, so this increment stays
 ## Runtime Shape
 
 - `app.entity.CavenicSpider` extends vanilla `Spider`.
-- The mob keeps vanilla spider AI, climbing behavior and vanilla spider combat behavior for this baseline.
+- The mob keeps vanilla spider AI and climbing behavior on the vanilla spider path.
 - The runtime entity id is `cavernreborn:cavenic_spider`.
 - The spawn egg id is `cavernreborn:cavenic_spider_spawn_egg`.
 
@@ -63,8 +63,8 @@ The legacy repo contains a direct `EntityCavenicSpider`, so this increment stays
 - The bounded natural-spawn follow-up is now documented separately in `docs/cavenic-spider-natural-spawn-mvp.md`.
 - The bounded orb-drop follow-up is now documented separately in `docs/cavenic-spider-orb-drop-mvp.md`.
 - The bounded damage-behavior follow-up is now documented separately in `docs/cavenic-spider-damage-behavior-mvp.md`.
+- The bounded blindness-on-hit follow-up is now documented separately in `docs/cavenic-spider-blindness-on-hit-mvp.md`.
 - custom loot beyond the bounded orb-drop follow-up remains out of scope
-- blindness-on-hit behavior remains out of scope
 - poison behavior remains out of scope
 - custom web or special spider attack behavior remains out of scope
 - the legacy `getMaxSpawnedInChunk()` Cavenia-specific behavior remains out of scope
@@ -86,7 +86,7 @@ The legacy repo contains a direct `EntityCavenicSpider`, so this increment stays
 
 - Natural spawning and biome spawn balance
 - Custom Cavenic Spider loot beyond the bounded orb-drop follow-up
-- Blindness, poison, web or other special spider behavior
+- Poison, web or other special spider behavior beyond the bounded blindness-on-hit follow-up
 - Additional Cavenic mobs
 - Cavenia
 - Broad combat rewrites
