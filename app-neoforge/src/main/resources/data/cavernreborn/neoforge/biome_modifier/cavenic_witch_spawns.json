@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "#cavernreborn:spawns_cavenic_witch",
+  "spawners": {
+    "type": "cavernreborn:cavenic_witch",
+    "weight": 15,
+    "minCount": 1,
+    "maxCount": 1
+  }
+}

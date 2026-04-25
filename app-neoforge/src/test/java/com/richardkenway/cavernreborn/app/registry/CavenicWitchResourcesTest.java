@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CavenicWitchResourcesTest {
     @Test
-    void cavenicWitchRegistersWithDedicatedEntitySpawnEggRendererAndVanillaWitchBaselineBoundaries() throws IOException {
+    void cavenicWitchRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnAndVanillaWitchBaselineBoundaries() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -56,10 +57,17 @@ class CavenicWitchResourcesTest {
         assertTrue(entitySource.contains("this.xpReward = 12;"));
         assertTrue(entitySource.contains("public static AttributeSupplier.Builder createAttributes()"));
         assertTrue(entitySource.contains("Witch.createAttributes()"));
+        assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_WEIGHT = 15;"));
+        assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_MIN_COUNT = 1;"));
+        assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_MAX_COUNT = 1;"));
         assertTrue(entitySource.contains(".add(Attributes.MAX_HEALTH, 50.0D)"));
         assertTrue(entitySource.contains(".add(Attributes.FOLLOW_RANGE, 32.0D)"));
         assertTrue(entitySource.contains(".add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)"));
         assertTrue(entitySource.contains("return EntityType.WITCH.getDefaultLootTable();"));
+        assertTrue(entitySource.contains("canNaturallySpawnInDimension"));
+        assertTrue(entitySource.contains("checkCavenicWitchSpawnRules"));
+        assertTrue(entitySource.contains("CavernNeoForgeDimensions.isCavern"));
+        assertTrue(entitySource.contains("Monster.checkMonsterSpawnRules"));
         assertFalse(entitySource.contains("registerGoals("));
         assertFalse(entitySource.contains("performRangedAttack("));
         assertFalse(entitySource.contains("aiStep("));
@@ -68,14 +76,18 @@ class CavenicWitchResourcesTest {
         assertFalse(entitySource.contains("isEntityInvulnerable("));
         assertFalse(entitySource.contains("setAttackTarget("));
         assertFalse(entitySource.contains("cavenic_orb"));
+        assertFalse(entitySource.contains("ItemMagicBook"));
         assertFalse(entitySource.toLowerCase().contains("cavenia"));
         assertFalse(entitySource.contains("EntityRapidArrow"));
         assertFalse(entitySource.contains("EntityTorchArrow"));
         assertFalse(entitySource.contains("EntityCavenicArrow"));
 
         assertTrue(entityEventSource.contains("event.put(ModRegistries.CAVENIC_WITCH.get(), CavenicWitch.createAttributes().build())"));
-        assertFalse(entityEventSource.contains("CavenicWitch::checkCavenicWitchSpawnRules"));
-        assertFalse(entityEventSource.contains("CAVENIC_WITCH.get(),\n            SpawnPlacementTypes.ON_GROUND"));
+        assertTrue(entityEventSource.contains("RegisterSpawnPlacementsEvent"));
+        assertTrue(entityEventSource.contains("CavenicWitch::checkCavenicWitchSpawnRules"));
+        assertTrue(entityEventSource.contains("CAVENIC_WITCH.get(),\n            SpawnPlacementTypes.ON_GROUND"));
+        assertTrue(entityEventSource.contains("Heightmap.Types.MOTION_BLOCKING_NO_LEAVES"));
+        assertTrue(entityEventSource.contains("RegisterSpawnPlacementsEvent.Operation.REPLACE"));
         assertTrue(clientSource.contains("event.registerEntityRenderer(ModRegistries.CAVENIC_WITCH.get(), CavenicWitchRenderer::new);"));
         assertTrue(rendererSource.contains("extends WitchRenderer"));
         assertTrue(rendererSource.contains("getTextureLocation(Witch entity)"));
@@ -86,18 +98,36 @@ class CavenicWitchResourcesTest {
     }
 
     @Test
-    void cavenicWitchResourcesCoverLangSpawnEggModelTextureAndBaselineBoundaryClasspath() throws IOException {
+    void cavenicWitchResourcesCoverLangSpawnEggModelTextureAndNaturalSpawnDataClasspath() throws IOException {
         JsonObject lang = readJsonResource("assets/cavernreborn/lang/en_us.json");
         JsonObject spawnEggModel = readJsonResource("assets/cavernreborn/models/item/cavenic_witch_spawn_egg.json");
+        JsonObject biomeModifier = readJsonResource("data/cavernreborn/neoforge/biome_modifier/cavenic_witch_spawns.json");
+        JsonObject biomeTag = readJsonResource("data/cavernreborn/tags/worldgen/biome/spawns_cavenic_witch.json");
 
         assertEquals("Cavenic Witch", lang.get("entity.cavernreborn.cavenic_witch").getAsString());
         assertEquals("Cavenic Witch Spawn Egg", lang.get("item.cavernreborn.cavenic_witch_spawn_egg").getAsString());
         assertEquals("minecraft:item/template_spawn_egg", spawnEggModel.get("parent").getAsString());
+        assertEquals("neoforge:add_spawns", biomeModifier.get("type").getAsString());
+        assertEquals("#cavernreborn:spawns_cavenic_witch", biomeModifier.get("biomes").getAsString());
+
+        JsonObject spawner = biomeModifier.getAsJsonObject("spawners");
+        assertEquals("cavernreborn:cavenic_witch", spawner.get("type").getAsString());
+        assertEquals(15, spawner.get("weight").getAsInt());
+        assertEquals(1, spawner.get("minCount").getAsInt());
+        assertEquals(1, spawner.get("maxCount").getAsInt());
+
+        assertFalse(biomeTag.get("replace").getAsBoolean());
+        assertEquals(List.of(
+            "cavernreborn:stone_depths",
+            "cavernreborn:lush_grotto",
+            "cavernreborn:dripstone_grotto",
+            "cavernreborn:highland_hollows"
+        ), StreamSupport.stream(biomeTag.getAsJsonArray("values").spliterator(), false).map(element -> element.getAsString()).toList());
 
         assertClassPathOrigin(resourceUrl("assets/cavernreborn/models/item/cavenic_witch_spawn_egg.json"), "assets/cavernreborn/models/item/cavenic_witch_spawn_egg.json");
         assertClassPathOrigin(resourceUrl("assets/cavernreborn/textures/entity/cavenic_witch.png"), "assets/cavernreborn/textures/entity/cavenic_witch.png");
-        assertMissingResource("data/cavernreborn/neoforge/biome_modifier/cavenic_witch_spawns.json");
-        assertMissingResource("data/cavernreborn/tags/worldgen/biome/spawns_cavenic_witch.json");
+        assertClassPathOrigin(resourceUrl("data/cavernreborn/neoforge/biome_modifier/cavenic_witch_spawns.json"), "data/cavernreborn/neoforge/biome_modifier/cavenic_witch_spawns.json");
+        assertClassPathOrigin(resourceUrl("data/cavernreborn/tags/worldgen/biome/spawns_cavenic_witch.json"), "data/cavernreborn/tags/worldgen/biome/spawns_cavenic_witch.json");
         assertMissingResource("data/cavernreborn/loot_table/entities/cavenic_witch.json");
         assertMissingResource("data/cavernreborn/loot_tables/entities/cavenic_witch.json");
     }

@@ -186,6 +186,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_SPIDER_BLINDNESS_ANCHOR = new BlockPos(3712, 96, 0);
     private static final BlockPos CAVENIC_WITCH_ANCHOR = new BlockPos(3808, 96, 0);
     private static final BlockPos CAVENIC_WITCH_SPAWN_EGG_ANCHOR = new BlockPos(3904, 96, 0);
+    private static final BlockPos CAVENIC_WITCH_NATURAL_SPAWN_ANCHOR = new BlockPos(4000, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -1842,6 +1843,77 @@ public final class CavernSpecialOreGameTests {
 
         helper.assertTrue(spawnedEntity instanceof CavenicWitch, "Expected spawn egg to create a CavenicWitch runtime entity");
         helper.assertTrue(spawnedEntity != null && spawnedEntity.isAlive(), "Expected spawned cavenic witch to be alive");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicWitchNaturalSpawnPlacementIsRegisteredAndCavernOnly(GameTestHelper helper) {
+        ServerLevel overworldLevel = helper.getLevel().getServer().getLevel(Level.OVERWORLD);
+        BlockPos spawnPos = CAVENIC_WITCH_NATURAL_SPAWN_ANCHOR;
+        RandomSource random = RandomSource.create(4567L);
+
+        helper.assertTrue(overworldLevel != null, "Expected overworld level to resolve for spawn predicate smoke");
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CAVENIC_WITCH.get()) == SpawnPlacementTypes.ON_GROUND,
+            "Expected cavenic witch spawn placement type to mirror witch ground spawning"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getHeightmapType(ModRegistries.CAVENIC_WITCH.get()) == Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+            "Expected cavenic witch spawn heightmap to mirror witch spawning"
+        );
+        helper.assertTrue(
+            CavenicWitch.canNaturallySpawnInDimension(CavernNeoForgeDimensions.CAVERN_LEVEL_KEY),
+            "Expected cavenic witch natural-spawn helper to allow the configured CAVERN level key"
+        );
+        helper.assertFalse(
+            CavenicWitch.canNaturallySpawnInDimension(Level.OVERWORLD),
+            "Expected cavenic witch natural-spawn helper to reject overworld spawning"
+        );
+        helper.assertTrue(
+            CavenicWitch.NATURAL_SPAWN_WEIGHT == 15
+                && CavenicWitch.NATURAL_SPAWN_MIN_COUNT == 1
+                && CavenicWitch.NATURAL_SPAWN_MAX_COUNT == 1,
+            "Expected cavenic witch natural-spawn constants to stay pinned to legacy 15/1/1 values"
+        );
+
+        prepareNaturalSpawnPlatform(overworldLevel, spawnPos);
+        helper.assertTrue(
+            SpawnPlacements.isSpawnPositionOk(ModRegistries.CAVENIC_WITCH.get(), overworldLevel, spawnPos),
+            "Expected prepared spawn position to satisfy ON_GROUND placement"
+        );
+        helper.assertFalse(
+            SpawnPlacements.checkSpawnRules(ModRegistries.CAVENIC_WITCH.get(), overworldLevel, MobSpawnType.SPAWNER, spawnPos, random),
+            "Expected registered cavenic witch spawn rules to reject overworld spawning"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicWitchNaturalSpawnDataResolvesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_cavenic_witch"));
+
+        assertRegistryKeyPresent(helper, biomeModifiers, NeoForgeRegistries.Keys.BIOME_MODIFIERS, "cavernreborn:cavenic_witch_spawns");
+        helper.assertTrue(biomes.getTag(spawnTag).isPresent(), "Expected cavenic witch spawn biome tag to resolve at runtime");
+
+        Set<String> taggedBiomes = biomes.getTag(spawnTag)
+            .orElseThrow()
+            .stream()
+            .flatMap(holder -> holder.unwrapKey().stream())
+            .map(key -> key.location().toString())
+            .collect(java.util.stream.Collectors.toSet());
+
+        helper.assertTrue(
+            taggedBiomes.equals(Set.of(
+                "cavernreborn:stone_depths",
+                "cavernreborn:lush_grotto",
+                "cavernreborn:dripstone_grotto",
+                "cavernreborn:highland_hollows"
+            )),
+            "Expected cavenic witch natural-spawn tag to stay scoped to the four CAVERN biomes"
+        );
         helper.succeed();
     }
 

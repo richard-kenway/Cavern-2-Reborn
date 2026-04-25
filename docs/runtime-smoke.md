@@ -1,6 +1,6 @@
 # Runtime Smoke
 
-This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the bounded `Acresia Crop & Food MVP`, the bounded `Cavenic Shroom & Orb MVP`, the bounded Cavenic Melee MVP, the bounded `Cavenic Bow Baseline MVP`, the bounded `Cavenic Bow Mode State & Cycling MVP`, the bounded `Cavenic Bow Snipe Mode MVP`, the bounded `Cavenic Bow Rapid Mode MVP`, the bounded `Cavenic Bow Torch Mode MVP`, the bounded `Cavenic Zombie Baseline MVP`, the bounded `Cavenic Zombie Natural Spawn MVP`, the bounded `Cavenic Zombie Legacy Orb Drop MVP`, the bounded `Cavenic Zombie Legacy Damage Behavior MVP`, the bounded `Cavenic Skeleton Baseline MVP`, the bounded `Cavenic Skeleton Natural Spawn MVP`, the bounded `Cavenic Skeleton Legacy Orb Drop MVP`, the bounded `Cavenic Skeleton Legacy Damage Behavior MVP`, the bounded `Cavenic Creeper Baseline MVP`, the bounded `Cavenic Creeper Natural Spawn MVP`, the bounded `Cavenic Creeper Legacy Orb Drop MVP`, the bounded `Cavenic Creeper Legacy Damage Behavior MVP`, the bounded `Cavenic Creeper Legacy Fuse/Explosion MVP`, the bounded `Cavenic Spider Baseline MVP`, the bounded `Cavenic Spider Natural Spawn MVP`, the bounded `Cavenic Spider Legacy Orb Drop MVP`, the bounded `Cavenic Spider Legacy Damage Behavior MVP`, the bounded `Cavenic Spider Blindness-On-Hit MVP`, the bounded `Cavenic Witch Baseline MVP`, the bounded Aquamarine Utility Tools MVP, the bounded Magnite Tool Set MVP, the bounded `Magnite Armor MVP`, the follow-up `hexcite` tool-set MVP, the bounded `Hexcite Armor MVP`, the bounded Mining Assist slice, the first Miner's Orb MVP and the Ore Compass MVP plus tracking UX follow-up.
+This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the bounded `Acresia Crop & Food MVP`, the bounded `Cavenic Shroom & Orb MVP`, the bounded Cavenic Melee MVP, the bounded `Cavenic Bow Baseline MVP`, the bounded `Cavenic Bow Mode State & Cycling MVP`, the bounded `Cavenic Bow Snipe Mode MVP`, the bounded `Cavenic Bow Rapid Mode MVP`, the bounded `Cavenic Bow Torch Mode MVP`, the bounded `Cavenic Zombie Baseline MVP`, the bounded `Cavenic Zombie Natural Spawn MVP`, the bounded `Cavenic Zombie Legacy Orb Drop MVP`, the bounded `Cavenic Zombie Legacy Damage Behavior MVP`, the bounded `Cavenic Skeleton Baseline MVP`, the bounded `Cavenic Skeleton Natural Spawn MVP`, the bounded `Cavenic Skeleton Legacy Orb Drop MVP`, the bounded `Cavenic Skeleton Legacy Damage Behavior MVP`, the bounded `Cavenic Creeper Baseline MVP`, the bounded `Cavenic Creeper Natural Spawn MVP`, the bounded `Cavenic Creeper Legacy Orb Drop MVP`, the bounded `Cavenic Creeper Legacy Damage Behavior MVP`, the bounded `Cavenic Creeper Legacy Fuse/Explosion MVP`, the bounded `Cavenic Spider Baseline MVP`, the bounded `Cavenic Spider Natural Spawn MVP`, the bounded `Cavenic Spider Legacy Orb Drop MVP`, the bounded `Cavenic Spider Legacy Damage Behavior MVP`, the bounded `Cavenic Spider Blindness-On-Hit MVP`, the bounded `Cavenic Witch Baseline MVP`, the bounded `Cavenic Witch Natural Spawn MVP`, the bounded Aquamarine Utility Tools MVP, the bounded Magnite Tool Set MVP, the bounded `Magnite Armor MVP`, the follow-up `hexcite` tool-set MVP, the bounded `Hexcite Armor MVP`, the bounded Mining Assist slice, the first Miner's Orb MVP and the Ore Compass MVP plus tracking UX follow-up.
 
 It is intentionally a NeoForge GameTest server pass, not a visual client smoke pass.
 
@@ -124,6 +124,10 @@ NeoForge GameTest runtime smoke covers:
 - cavenic witch vanilla loot-table baseline smoke
 - cavenic witch spawn egg resolution
 - cavenic witch spawn egg entity-creation smoke
+- cavenic witch natural spawn placement registration
+- cavenic witch CAVERN-only spawn predicate smoke
+- cavenic witch biome modifier registry smoke
+- cavenic witch biome tag resolution
 - cavenic shroom worldgen configured/placed key resolution
 - aquamarine tool runtime registry ids
 - aquamarine tool repairability with `cavernreborn:aquamarine`
@@ -188,8 +192,8 @@ NeoForge GameTest runtime smoke covers:
 - actual long-running Cavenic Spider fire/lava gameplay feel
 - actual long-running Cavenic Spider combat/pathfinding feel
 - actual poison/web-based Cavenic Spider gameplay behavior
-- Cavenic Witch natural spawning, because that bounded follow-up is still out of scope for the current baseline slice
 - actual Cavenic Witch combat, potion-throw and pathfinding feel
+- actual long-run Cavenic Witch population balance inside CAVERN
 - actual long-run cavenic creeper orb-drop rate balance
 - actual long-running Cavenic Creeper fire/lava gameplay feel
 - actual long-run Cavenic Spider population balance inside CAVERN

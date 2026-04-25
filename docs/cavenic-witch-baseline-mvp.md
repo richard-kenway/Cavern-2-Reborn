@@ -60,7 +60,7 @@ The legacy repo contains a direct `EntityCavenicWitch`, so this increment stays 
 
 ## Follow-Up Boundaries
 
-- natural spawning intentionally remains out of scope
+- The bounded natural-spawn follow-up is now documented separately in `docs/cavenic-witch-natural-spawn-mvp.md`.
 - legacy fall/fire damage behavior remains out of scope
 - custom potion logic, friendship targeting and same-type projectile immunity remain out of scope
 - the legacy `getMaxSpawnedInChunk()` Cavenia-specific behavior remains out of scope
@@ -80,11 +80,11 @@ The legacy repo contains a direct `EntityCavenicWitch`, so this increment stays 
 
 ## Out Of Scope
 
-- Natural spawning and biome spawn balance
 - Custom Cavenic Witch loot
 - `cavenic_orb` witch drops and the legacy magic-book branch
 - Fall/fire damage behavior
 - Custom potion logic, target filtering or friendly-fire immunity
+- Long-run natural spawning and biome spawn balance
 - Additional Cavenic mobs
 - Cavenia
 - Broad combat rewrites
