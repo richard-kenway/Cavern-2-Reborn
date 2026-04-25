@@ -65,8 +65,8 @@ It does not add a new mob. It only makes the already registered `cavernreborn:ca
 ## Still Out Of Scope
 
 - The bounded orb-drop follow-up is now documented separately in `docs/cavenic-spider-orb-drop-mvp.md`.
+- The bounded damage-behavior follow-up is now documented separately in `docs/cavenic-spider-damage-behavior-mvp.md`.
 - custom loot beyond that orb-drop follow-up remains out of scope
-- the legacy fall/fire damage-behavior follow-up remains out of scope
 - blindness, poison and web-based special spider behavior remain out of scope
 - custom AI remains out of scope
 - the legacy `getMaxSpawnedInChunk()` Cavenia-specific behavior remains out of scope

@@ -179,6 +179,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_SPIDER_SPAWN_EGG_ANCHOR = new BlockPos(3328, 96, 0);
     private static final BlockPos CAVENIC_SPIDER_NATURAL_SPAWN_ANCHOR = new BlockPos(3424, 96, 0);
     private static final BlockPos CAVENIC_SPIDER_LOOT_ANCHOR = new BlockPos(3520, 96, 0);
+    private static final BlockPos CAVENIC_SPIDER_DAMAGE_ANCHOR = new BlockPos(3616, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -1539,6 +1540,113 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             Math.abs(drops.getFirst().getY() - (spider.getY() + 0.5D)) < 1.0E-6D,
             "Expected cavenic orb drop Y offset to stay aligned with the legacy 0.5 offset"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicSpiderLegacyFallAndFireDamageBehaviorAppliesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_SPIDER_DAMAGE_ANCHOR;
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CavenicSpider cavenicFallSpider = spawnLivingEntity(helper, ModRegistries.CAVENIC_SPIDER.get(), origin);
+        Spider vanillaFallSpider = spawnLivingEntity(helper, EntityType.SPIDER, origin.east(4));
+        clearEquipment(cavenicFallSpider);
+        clearEquipment(vanillaFallSpider);
+        float fallDamage = 10.0F;
+        float cavenicFallHealthBefore = cavenicFallSpider.getHealth();
+        float vanillaFallHealthBefore = vanillaFallSpider.getHealth();
+
+        helper.assertTrue(
+            cavenicFallSpider.hurt(level.damageSources().fall(), fallDamage),
+            "Expected cavenic spider to still accept fall damage hits through the normal server damage path"
+        );
+        helper.assertTrue(
+            vanillaFallSpider.hurt(level.damageSources().fall(), fallDamage),
+            "Expected vanilla spider baseline to accept fall damage hits"
+        );
+        helper.assertTrue(
+            Math.abs((cavenicFallHealthBefore - cavenicFallSpider.getHealth()) - (fallDamage * CavenicSpider.LEGACY_FALL_DAMAGE_MULTIPLIER)) < 1.0E-6F,
+            "Expected cavenic spider fall damage to stay pinned to the legacy 0.35 multiplier"
+        );
+        helper.assertTrue(
+            Math.abs((vanillaFallHealthBefore - vanillaFallSpider.getHealth()) - fallDamage) < 1.0E-6F,
+            "Expected vanilla spider baseline to keep full fall damage"
+        );
+
+        CavenicSpider cavenicFireSpider = spawnLivingEntity(helper, ModRegistries.CAVENIC_SPIDER.get(), origin.south(8));
+        Spider vanillaFireSpider = spawnLivingEntity(helper, EntityType.SPIDER, origin.south(8).east(4));
+        clearEquipment(cavenicFireSpider);
+        clearEquipment(vanillaFireSpider);
+        float fireDamage = 4.0F;
+        float cavenicFireHealthBefore = cavenicFireSpider.getHealth();
+        float vanillaFireHealthBefore = vanillaFireSpider.getHealth();
+
+        helper.assertFalse(
+            cavenicFireSpider.hurt(level.damageSources().lava(), fireDamage),
+            "Expected cavenic spider to reject fire-tagged damage sources like lava"
+        );
+        helper.assertTrue(
+            vanillaFireSpider.hurt(level.damageSources().lava(), fireDamage),
+            "Expected vanilla spider baseline to take lava damage"
+        );
+        helper.assertTrue(
+            Math.abs(cavenicFireHealthBefore - cavenicFireSpider.getHealth()) < 1.0E-6F,
+            "Expected cavenic spider health to stay unchanged after fire-tagged damage"
+        );
+        helper.assertTrue(
+            vanillaFireSpider.getHealth() < vanillaFireHealthBefore,
+            "Expected vanilla spider baseline to lose health from lava damage"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicSpiderLegacyDamageBehaviorKeepsGenericDamageVanillaLikeAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_SPIDER_DAMAGE_ANCHOR.north(12);
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CavenicSpider cavenicSpider = spawnLivingEntity(helper, ModRegistries.CAVENIC_SPIDER.get(), origin);
+        Spider vanillaSpider = spawnLivingEntity(helper, EntityType.SPIDER, origin.east(4));
+        clearEquipment(cavenicSpider);
+        clearEquipment(vanillaSpider);
+        float genericDamage = 6.0F;
+        float cavenicHealthBefore = cavenicSpider.getHealth();
+        float vanillaHealthBefore = vanillaSpider.getHealth();
+
+        helper.assertTrue(
+            cavenicSpider.hurt(level.damageSources().generic(), genericDamage),
+            "Expected cavenic spider to remain vulnerable to generic non-fire damage"
+        );
+        helper.assertTrue(
+            vanillaSpider.hurt(level.damageSources().generic(), genericDamage),
+            "Expected vanilla spider baseline to remain vulnerable to generic non-fire damage"
+        );
+        helper.assertTrue(
+            Math.abs((cavenicHealthBefore - cavenicSpider.getHealth()) - genericDamage) < 1.0E-6F,
+            "Expected cavenic spider generic damage intake to stay vanilla-like"
+        );
+        helper.assertTrue(
+            Math.abs((vanillaHealthBefore - vanillaSpider.getHealth()) - genericDamage) < 1.0E-6F,
+            "Expected vanilla spider generic damage intake to stay unchanged"
+        );
+        helper.assertTrue(
+            cavenicSpider.getLootTable().equals(EntityType.SPIDER.getDefaultLootTable()),
+            "Expected cavenic spider damage follow-up to keep the vanilla spider loot-table baseline"
+        );
+        helper.assertTrue(
+            CavenicSpiderLootPolicy.ORB_DROP_ROLL_BOUND == 8,
+            "Expected cavenic spider orb drop roll bound to remain pinned while restoring legacy damage behavior"
+        );
+        helper.assertTrue(
+            CavenicSpider.NATURAL_SPAWN_WEIGHT == 30
+                && CavenicSpider.NATURAL_SPAWN_MIN_COUNT == 1
+                && CavenicSpider.NATURAL_SPAWN_MAX_COUNT == 1,
+            "Expected cavenic spider natural spawn constants to stay unchanged while restoring legacy damage behavior"
         );
         helper.succeed();
     }

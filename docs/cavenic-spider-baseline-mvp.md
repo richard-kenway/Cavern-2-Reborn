@@ -62,9 +62,8 @@ The legacy repo contains a direct `EntityCavenicSpider`, so this increment stays
 
 - The bounded natural-spawn follow-up is now documented separately in `docs/cavenic-spider-natural-spawn-mvp.md`.
 - The bounded orb-drop follow-up is now documented separately in `docs/cavenic-spider-orb-drop-mvp.md`.
-- custom loot remains out of scope
-- `1/8` `cavenic_orb` drop parity remains out of scope
-- fall/fire damage behavior remains out of scope
+- The bounded damage-behavior follow-up is now documented separately in `docs/cavenic-spider-damage-behavior-mvp.md`.
+- custom loot beyond the bounded orb-drop follow-up remains out of scope
 - blindness-on-hit behavior remains out of scope
 - poison behavior remains out of scope
 - custom web or special spider attack behavior remains out of scope
@@ -73,7 +72,7 @@ The legacy repo contains a direct `EntityCavenicSpider`, so this increment stays
 
 ## Testing
 
-- Resource tests cover registry source, spawn egg placement, renderer registration source, texture/model/lang resources and the explicit no-natural-spawn/no-custom-loot/no-custom-damage boundary.
+- Resource tests cover registry source, spawn egg placement, renderer registration source, texture/model/lang resources and the explicit bounded-follow-up boundaries around natural spawn, loot, damage and special spider behavior.
 - Documentation tests cover the legacy references inspected, the attribute mapping, spawn egg colors, renderer/texture provenance and the explicit special-spider follow-up boundaries.
 - NeoForge GameTest runtime smoke covers:
   - entity registry resolution
@@ -86,9 +85,7 @@ The legacy repo contains a direct `EntityCavenicSpider`, so this increment stays
 ## Out Of Scope
 
 - Natural spawning and biome spawn balance
-- Custom Cavenic Spider loot
-- Legacy `1/8` `cavenic_orb` drop parity
-- Legacy fall/fire damage behavior
+- Custom Cavenic Spider loot beyond the bounded orb-drop follow-up
 - Blindness, poison, web or other special spider behavior
 - Additional Cavenic mobs
 - Cavenia

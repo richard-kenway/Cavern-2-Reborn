@@ -61,7 +61,7 @@ It does not add a new mob, natural-spawn changes, damage-behavior changes, blind
 ## Still Out Of Scope
 
 - Natural spawn values remain unchanged
-- The separate legacy fall/fire damage follow-up remains out of scope
+- The separate legacy damage-behavior follow-up is now documented separately in `docs/cavenic-spider-damage-behavior-mvp.md`.
 - Blindness-on-hit remains out of scope
 - Poison behavior remains out of scope
 - Web and other special spider behavior remain out of scope
