@@ -175,6 +175,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_CREEPER_FUSE_ANCHOR = new BlockPos(3136, 96, 0);
     private static final BlockPos CAVENIC_SPIDER_ANCHOR = new BlockPos(3232, 96, 0);
     private static final BlockPos CAVENIC_SPIDER_SPAWN_EGG_ANCHOR = new BlockPos(3328, 96, 0);
+    private static final BlockPos CAVENIC_SPIDER_NATURAL_SPAWN_ANCHOR = new BlockPos(3424, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -1420,6 +1421,77 @@ public final class CavernSpecialOreGameTests {
 
         helper.assertTrue(spawnedEntity instanceof CavenicSpider, "Expected spawn egg to create a CavenicSpider runtime entity");
         helper.assertTrue(spawnedEntity != null && spawnedEntity.isAlive(), "Expected spawned cavenic spider to be alive");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicSpiderNaturalSpawnPlacementIsRegisteredAndCavernOnly(GameTestHelper helper) {
+        ServerLevel overworldLevel = helper.getLevel().getServer().getLevel(Level.OVERWORLD);
+        BlockPos spawnPos = CAVENIC_SPIDER_NATURAL_SPAWN_ANCHOR;
+        RandomSource random = RandomSource.create(3456L);
+
+        helper.assertTrue(overworldLevel != null, "Expected overworld level to resolve for spawn predicate smoke");
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CAVENIC_SPIDER.get()) == SpawnPlacementTypes.ON_GROUND,
+            "Expected cavenic spider spawn placement type to mirror spider ground spawning"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getHeightmapType(ModRegistries.CAVENIC_SPIDER.get()) == Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+            "Expected cavenic spider spawn heightmap to mirror spider spawning"
+        );
+        helper.assertTrue(
+            CavenicSpider.canNaturallySpawnInDimension(CavernNeoForgeDimensions.CAVERN_LEVEL_KEY),
+            "Expected cavenic spider natural-spawn helper to allow the configured CAVERN level key"
+        );
+        helper.assertFalse(
+            CavenicSpider.canNaturallySpawnInDimension(Level.OVERWORLD),
+            "Expected cavenic spider natural-spawn helper to reject overworld spawning"
+        );
+        helper.assertTrue(
+            CavenicSpider.NATURAL_SPAWN_WEIGHT == 30
+                && CavenicSpider.NATURAL_SPAWN_MIN_COUNT == 1
+                && CavenicSpider.NATURAL_SPAWN_MAX_COUNT == 1,
+            "Expected cavenic spider natural-spawn constants to stay pinned to legacy 30/1/1 values"
+        );
+
+        prepareNaturalSpawnPlatform(overworldLevel, spawnPos);
+        helper.assertTrue(
+            SpawnPlacements.isSpawnPositionOk(ModRegistries.CAVENIC_SPIDER.get(), overworldLevel, spawnPos),
+            "Expected prepared spawn position to satisfy ON_GROUND placement"
+        );
+        helper.assertFalse(
+            SpawnPlacements.checkSpawnRules(ModRegistries.CAVENIC_SPIDER.get(), overworldLevel, MobSpawnType.SPAWNER, spawnPos, random),
+            "Expected registered cavenic spider spawn rules to reject overworld spawning"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicSpiderNaturalSpawnDataResolvesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_cavenic_spider"));
+
+        assertRegistryKeyPresent(helper, biomeModifiers, NeoForgeRegistries.Keys.BIOME_MODIFIERS, "cavernreborn:cavenic_spider_spawns");
+        helper.assertTrue(biomes.getTag(spawnTag).isPresent(), "Expected cavenic spider spawn biome tag to resolve at runtime");
+
+        Set<String> taggedBiomes = biomes.getTag(spawnTag)
+            .orElseThrow()
+            .stream()
+            .flatMap(holder -> holder.unwrapKey().stream())
+            .map(key -> key.location().toString())
+            .collect(java.util.stream.Collectors.toSet());
+
+        helper.assertTrue(
+            taggedBiomes.equals(Set.of(
+                "cavernreborn:stone_depths",
+                "cavernreborn:lush_grotto",
+                "cavernreborn:dripstone_grotto",
+                "cavernreborn:highland_hollows"
+            )),
+            "Expected cavenic spider natural-spawn tag to stay scoped to the four CAVERN biomes"
+        );
         helper.succeed();
     }
 

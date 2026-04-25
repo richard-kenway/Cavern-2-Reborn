@@ -1,14 +1,25 @@
 package com.richardkenway.cavernreborn.app.entity;
 
+import com.richardkenway.cavernreborn.app.dimension.CavernNeoForgeDimensions;
+
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 public final class CavenicSpider extends Spider {
+    public static final int NATURAL_SPAWN_WEIGHT = 30;
+    public static final int NATURAL_SPAWN_MIN_COUNT = 1;
+    public static final int NATURAL_SPAWN_MAX_COUNT = 1;
+
     public CavenicSpider(EntityType<? extends Spider> entityType, Level level) {
         super(entityType, level);
         this.xpReward = 12;
@@ -24,5 +35,20 @@ public final class CavenicSpider extends Spider {
     @Override
     protected ResourceKey<LootTable> getDefaultLootTable() {
         return EntityType.SPIDER.getDefaultLootTable();
+    }
+
+    public static boolean canNaturallySpawnInDimension(ResourceKey<Level> levelKey) {
+        return CavernNeoForgeDimensions.isCavern(levelKey);
+    }
+
+    public static boolean checkCavenicSpiderSpawnRules(
+        EntityType<CavenicSpider> entityType,
+        ServerLevelAccessor level,
+        MobSpawnType spawnType,
+        BlockPos pos,
+        RandomSource random
+    ) {
+        return canNaturallySpawnInDimension(level.getLevel().dimension())
+            && Monster.checkMonsterSpawnRules(entityType, level, spawnType, pos, random);
     }
 }

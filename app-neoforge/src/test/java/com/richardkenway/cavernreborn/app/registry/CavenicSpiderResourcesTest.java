@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CavenicSpiderResourcesTest {
     @Test
-    void cavenicSpiderRegistersWithDedicatedEntitySpawnEggRendererBaselineLootAndStableCreativePlacement() throws IOException {
+    void cavenicSpiderRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnBaselineLootAndStableCreativePlacement() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -63,9 +64,14 @@ class CavenicSpiderResourcesTest {
         assertTrue(entitySource.contains(".add(Attributes.MAX_HEALTH, 20.0D)"));
         assertTrue(entitySource.contains(".add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)"));
         assertTrue(entitySource.contains(".add(Attributes.MOVEMENT_SPEED, 0.6D)"));
+        assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_WEIGHT = 30;"));
+        assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_MIN_COUNT = 1;"));
+        assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_MAX_COUNT = 1;"));
         assertTrue(entitySource.contains("return EntityType.SPIDER.getDefaultLootTable();"));
-        assertFalse(entitySource.contains("canNaturallySpawnInDimension"));
-        assertFalse(entitySource.contains("checkCavenicSpiderSpawnRules"));
+        assertTrue(entitySource.contains("canNaturallySpawnInDimension"));
+        assertTrue(entitySource.contains("checkCavenicSpiderSpawnRules"));
+        assertTrue(entitySource.contains("CavernNeoForgeDimensions.isCavern"));
+        assertTrue(entitySource.contains("Monster.checkMonsterSpawnRules"));
         assertFalse(entitySource.contains("LEGACY_FALL_DAMAGE_MULTIPLIER"));
         assertFalse(entitySource.contains("DamageTypeTags"));
         assertFalse(entitySource.contains("cavenic_orb"));
@@ -76,7 +82,11 @@ class CavenicSpiderResourcesTest {
         assertFalse(entitySource.toLowerCase().contains("cavenia"));
 
         assertTrue(entityEventSource.contains("event.put(ModRegistries.CAVENIC_SPIDER.get(), CavenicSpider.createAttributes().build())"));
-        assertFalse(entityEventSource.contains("CavenicSpider::checkCavenicSpiderSpawnRules"));
+        assertTrue(entityEventSource.contains("RegisterSpawnPlacementsEvent"));
+        assertTrue(entityEventSource.contains("CavenicSpider::checkCavenicSpiderSpawnRules"));
+        assertTrue(entityEventSource.contains("CAVENIC_SPIDER.get(),\n            SpawnPlacementTypes.ON_GROUND"));
+        assertTrue(entityEventSource.contains("Heightmap.Types.MOTION_BLOCKING_NO_LEAVES"));
+        assertTrue(entityEventSource.contains("RegisterSpawnPlacementsEvent.Operation.REPLACE"));
         assertFalse(mainEntrypoint.contains("CavenicSpiderLootEvents"));
         assertTrue(clientSource.contains("event.registerEntityRenderer(ModRegistries.CAVENIC_SPIDER.get(), CavenicSpiderRenderer::new);"));
         assertTrue(rendererSource.contains("extends SpiderRenderer<CavenicSpider>"));
@@ -91,20 +101,38 @@ class CavenicSpiderResourcesTest {
     }
 
     @Test
-    void cavenicSpiderResourcesCoverLangSpawnEggModelTextureAndNoNaturalSpawnOrLootOverride() throws IOException {
+    void cavenicSpiderResourcesCoverLangSpawnEggModelTextureAndNaturalSpawnDataClasspath() throws IOException {
         JsonObject lang = readJsonResource("assets/cavernreborn/lang/en_us.json");
         JsonObject spawnEggModel = readJsonResource("assets/cavernreborn/models/item/cavenic_spider_spawn_egg.json");
+        JsonObject biomeModifier = readJsonResource("data/cavernreborn/neoforge/biome_modifier/cavenic_spider_spawns.json");
+        JsonObject biomeTag = readJsonResource("data/cavernreborn/tags/worldgen/biome/spawns_cavenic_spider.json");
 
         assertEquals("Cavenic Spider", lang.get("entity.cavernreborn.cavenic_spider").getAsString());
         assertEquals("Cavenic Spider Spawn Egg", lang.get("item.cavernreborn.cavenic_spider_spawn_egg").getAsString());
         assertEquals("minecraft:item/template_spawn_egg", spawnEggModel.get("parent").getAsString());
+        assertEquals("neoforge:add_spawns", biomeModifier.get("type").getAsString());
+        assertEquals("#cavernreborn:spawns_cavenic_spider", biomeModifier.get("biomes").getAsString());
+
+        JsonObject spawner = biomeModifier.getAsJsonObject("spawners");
+        assertEquals("cavernreborn:cavenic_spider", spawner.get("type").getAsString());
+        assertEquals(30, spawner.get("weight").getAsInt());
+        assertEquals(1, spawner.get("minCount").getAsInt());
+        assertEquals(1, spawner.get("maxCount").getAsInt());
+
+        assertFalse(biomeTag.get("replace").getAsBoolean());
+        assertEquals(List.of(
+            "cavernreborn:stone_depths",
+            "cavernreborn:lush_grotto",
+            "cavernreborn:dripstone_grotto",
+            "cavernreborn:highland_hollows"
+        ), StreamSupport.stream(biomeTag.getAsJsonArray("values").spliterator(), false).map(element -> element.getAsString()).toList());
 
         assertClassPathOrigin(resourceUrl("assets/cavernreborn/models/item/cavenic_spider_spawn_egg.json"), "assets/cavernreborn/models/item/cavenic_spider_spawn_egg.json");
         assertClassPathOrigin(resourceUrl("assets/cavernreborn/textures/entity/cavenic_spider.png"), "assets/cavernreborn/textures/entity/cavenic_spider.png");
+        assertClassPathOrigin(resourceUrl("data/cavernreborn/neoforge/biome_modifier/cavenic_spider_spawns.json"), "data/cavernreborn/neoforge/biome_modifier/cavenic_spider_spawns.json");
+        assertClassPathOrigin(resourceUrl("data/cavernreborn/tags/worldgen/biome/spawns_cavenic_spider.json"), "data/cavernreborn/tags/worldgen/biome/spawns_cavenic_spider.json");
         assertMissingResource("data/cavernreborn/loot_table/entities/cavenic_spider.json");
         assertMissingResource("data/cavernreborn/loot_tables/entities/cavenic_spider.json");
-        assertMissingResource("data/cavernreborn/neoforge/biome_modifier/cavenic_spider_spawns.json");
-        assertMissingResource("data/cavernreborn/tags/worldgen/biome/spawns_cavenic_spider.json");
     }
 
     private static JsonObject readJsonResource(String path) throws IOException {

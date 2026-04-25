@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "cavernreborn:stone_depths",
+    "cavernreborn:lush_grotto",
+    "cavernreborn:dripstone_grotto",
+    "cavernreborn:highland_hollows"
+  ]
+}

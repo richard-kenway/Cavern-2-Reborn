@@ -60,7 +60,7 @@ The legacy repo contains a direct `EntityCavenicSpider`, so this increment stays
 
 ## Follow-Up Boundaries
 
-- natural spawning intentionally stays out of scope for this baseline slice
+- The bounded natural-spawn follow-up is now documented separately in `docs/cavenic-spider-natural-spawn-mvp.md`.
 - custom loot remains out of scope
 - `1/8` `cavenic_orb` drop parity remains out of scope
 - fall/fire damage behavior remains out of scope

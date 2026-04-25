@@ -1,5 +1,6 @@
 package com.richardkenway.cavernreborn.app.gametest;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -96,7 +97,10 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("legacy `Fuse = 15` and `ExplosionRadius = 5`"));
         assertTrue(readme.contains("Cavenic Spider Baseline MVP"));
         assertTrue(readme.contains("docs/cavenic-spider-baseline-mvp.md"));
+        assertTrue(readme.contains("Cavenic Spider Natural Spawn MVP"));
+        assertTrue(readme.contains("docs/cavenic-spider-natural-spawn-mvp.md"));
         assertTrue(readme.contains("fourth direct Cavenic mob foundation"));
+        assertTrue(readme.contains("bounded CAVERN-only natural spawning"));
         assertTrue(readme.contains("vanilla spider loot baseline"));
     }
 
@@ -190,6 +194,10 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("cavenic spider vanilla loot-table baseline smoke"));
         assertTrue(doc.contains("cavenic spider spawn egg resolution"));
         assertTrue(doc.contains("cavenic spider spawn egg entity-creation smoke"));
+        assertTrue(doc.contains("cavenic spider natural spawn placement registration"));
+        assertTrue(doc.contains("cavenic spider CAVERN-only spawn predicate smoke"));
+        assertTrue(doc.contains("cavenic spider biome modifier registry smoke"));
+        assertTrue(doc.contains("cavenic spider biome tag resolution"));
         assertTrue(doc.contains("cavenic bow enchantment applicability"));
         assertTrue(doc.contains("cavenic bow cavenic item tag resolution"));
         assertTrue(doc.contains("cavenic bow recipe manager resolution"));
@@ -255,7 +263,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("actual Cavenic Skeleton renderer/model visual feel"));
         assertTrue(doc.contains("actual Cavenic Creeper renderer/model visual feel"));
         assertTrue(doc.contains("actual Cavenic Spider renderer/model visual feel"));
-        assertTrue(doc.contains("Cavenic Spider natural spawning in this baseline slice"));
+        assertTrue(doc.contains("actual long-run Cavenic Spider population balance inside CAVERN"));
+        assertFalse(doc.contains("Cavenic Spider natural spawning in this baseline slice"));
         assertTrue(doc.contains("actual long-run cavenic creeper orb-drop rate balance"));
         assertTrue(doc.contains("actual long-running Cavenic Creeper fire/lava gameplay feel"));
         assertTrue(doc.contains("actual long-run Cavenic Creeper population balance inside CAVERN"));

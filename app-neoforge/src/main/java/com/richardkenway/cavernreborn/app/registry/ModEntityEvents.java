@@ -49,5 +49,12 @@ public final class ModEntityEvents {
             CavenicCreeper::checkCavenicCreeperSpawnRules,
             RegisterSpawnPlacementsEvent.Operation.REPLACE
         );
+        event.register(
+            ModRegistries.CAVENIC_SPIDER.get(),
+            SpawnPlacementTypes.ON_GROUND,
+            Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+            CavenicSpider::checkCavenicSpiderSpawnRules,
+            RegisterSpawnPlacementsEvent.Operation.REPLACE
+        );
     }
 }
