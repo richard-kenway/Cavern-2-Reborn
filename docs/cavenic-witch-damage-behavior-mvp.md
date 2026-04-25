@@ -39,7 +39,8 @@ That means the mob kept taking fall damage, but only at `35%` of the original am
 - attributes, natural spawning and `1/5` orb-drop behavior remain unchanged.
 - The deferred magic-book branch remains documented in `docs/cavenic-witch-loot-mvp.md`.
 - The bounded same-type/self source-immunity follow-up is documented separately in `docs/cavenic-witch-projectile-immunity-mvp.md`.
-- Custom potion logic, custom ranged attack behavior and friendship targeting remain out of scope.
+- The bounded friendship-targeting follow-up is documented separately in `docs/cavenic-witch-friendship-targeting-mvp.md`.
+- Custom potion logic and custom ranged attack behavior remain out of scope.
 
 ## Why This Mapping Is Safe
 
@@ -51,7 +52,7 @@ That means the mob kept taking fall damage, but only at `35%` of the original am
 ## Testing
 
 - Resource tests pin the entity-local damage hook, the exact fall/fire tag usage and the unchanged orb-drop/spawn constants while still asserting that no magic-book foundation or witch-specific AI/targeting work was added here.
-- Documentation tests pin the legacy source references, the `0.35F` fall multiplier, the unchanged vanilla witch behavior and the deferred magic-book/projectile-immunity follow-up boundaries.
+- Documentation tests pin the legacy source references, the `0.35F` fall multiplier, the unchanged vanilla witch behavior and the deferred magic-book/projectile-immunity/friendship-targeting follow-up boundaries.
 - NeoForge GameTest runtime smoke covers:
   - cavenic witch legacy fall-damage reduction smoke
   - cavenic witch legacy fire-damage immunity smoke
@@ -63,7 +64,7 @@ That means the mob kept taking fall damage, but only at `35%` of the original am
 - The deferred legacy magic-book branch
 - Custom potion logic and custom ranged attack behavior
 - Same-type/self source immunity
-- Friendship targeting
+- Same-type friendship targeting
 - Additional Cavenic mobs
 - Cavenia
 - Loot chance changes remain out of scope

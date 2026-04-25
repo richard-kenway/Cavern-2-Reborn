@@ -15,6 +15,7 @@ class CavenicWitchDocumentationTest {
     private static final Path CAVENIC_WITCH_LOOT_MVP = resolveProjectFile("docs", "cavenic-witch-loot-mvp.md");
     private static final Path CAVENIC_WITCH_DAMAGE_BEHAVIOR_MVP = resolveProjectFile("docs", "cavenic-witch-damage-behavior-mvp.md");
     private static final Path CAVENIC_WITCH_PROJECTILE_IMMUNITY_MVP = resolveProjectFile("docs", "cavenic-witch-projectile-immunity-mvp.md");
+    private static final Path CAVENIC_WITCH_FRIENDSHIP_TARGETING_MVP = resolveProjectFile("docs", "cavenic-witch-friendship-targeting-mvp.md");
     private static final Path RUNTIME_SMOKE = resolveProjectFile("docs", "runtime-smoke.md");
 
     @Test
@@ -31,13 +32,16 @@ class CavenicWitchDocumentationTest {
         assertTrue(readme.contains("docs/cavenic-witch-damage-behavior-mvp.md"));
         assertTrue(readme.contains("Cavenic Witch Same-Type Projectile Immunity MVP"));
         assertTrue(readme.contains("docs/cavenic-witch-projectile-immunity-mvp.md"));
+        assertTrue(readme.contains("Cavenic Witch Friendship Targeting MVP"));
+        assertTrue(readme.contains("docs/cavenic-witch-friendship-targeting-mvp.md"));
         assertTrue(readme.contains("cavenic_witch"));
         assertTrue(readme.contains("fifth direct Cavenic mob foundation"));
         assertTrue(readme.contains("bounded CAVERN-only natural spawning"));
         assertTrue(readme.contains("vanilla witch loot baseline"));
         assertTrue(readme.contains("legacy `1/5` `cavenic_orb` drop appended on top of the vanilla witch loot baseline"));
         assertTrue(readme.contains("legacy same-type/self source-immunity behavior"));
-        assertTrue(readme.contains("the deferred magic-book branch, custom potion logic and friendship targeting remain intentionally out of scope"));
+        assertTrue(readme.contains("legacy same-type friendship-target rejection behavior"));
+        assertTrue(readme.contains("the deferred magic-book branch and custom potion logic remain intentionally out of scope"));
     }
 
     @Test
@@ -64,10 +68,12 @@ class CavenicWitchDocumentationTest {
         assertTrue(doc.contains("The bounded legacy loot follow-up is now documented separately in `docs/cavenic-witch-loot-mvp.md`."));
         assertTrue(doc.contains("The bounded legacy damage-behavior follow-up is now documented separately in `docs/cavenic-witch-damage-behavior-mvp.md`."));
         assertTrue(doc.contains("The bounded legacy same-type/self source-immunity follow-up is now documented separately in `docs/cavenic-witch-projectile-immunity-mvp.md`."));
+        assertTrue(doc.contains("The bounded friendship-targeting follow-up is now documented separately in `docs/cavenic-witch-friendship-targeting-mvp.md`."));
         assertTrue(doc.contains("custom loot beyond the restored `1/5` `cavenic_orb` drop remains out of scope"));
         assertTrue(doc.contains("the legacy magic-book branch remains deferred because Reborn does not yet have a magic-book foundation"));
         assertTrue(doc.contains("legacy fall/fire damage behavior is now documented separately in `docs/cavenic-witch-damage-behavior-mvp.md`."));
-        assertTrue(doc.contains("custom potion logic and friendship targeting remain out of scope"));
+        assertTrue(doc.contains("legacy same-type friendship targeting is now documented separately in `docs/cavenic-witch-friendship-targeting-mvp.md`."));
+        assertTrue(doc.contains("custom potion logic remains out of scope"));
         assertTrue(doc.contains("the legacy `getMaxSpawnedInChunk()` Cavenia-specific behavior remains out of scope"));
         assertTrue(doc.contains("CC-BY-NC 4.0"));
     }
@@ -89,11 +95,13 @@ class CavenicWitchDocumentationTest {
         assertTrue(doc.contains("The bounded legacy loot follow-up is now documented separately in `docs/cavenic-witch-loot-mvp.md`."));
         assertTrue(doc.contains("The bounded legacy damage-behavior follow-up is now documented separately in `docs/cavenic-witch-damage-behavior-mvp.md`."));
         assertTrue(doc.contains("The bounded legacy same-type/self source-immunity follow-up is now documented separately in `docs/cavenic-witch-projectile-immunity-mvp.md`."));
+        assertTrue(doc.contains("The bounded friendship-targeting follow-up is now documented separately in `docs/cavenic-witch-friendship-targeting-mvp.md`."));
         assertTrue(doc.contains("the restored legacy `1/5` `cavenic_orb` drop remains unchanged"));
         assertTrue(doc.contains("the deferred magic-book branch still needs a Reborn magic-book foundation"));
         assertTrue(doc.contains("the restored legacy fall-damage reduction and fire-damage immunity behavior remain unchanged"));
         assertTrue(doc.contains("the restored legacy same-type/self source-immunity behavior remains unchanged"));
-        assertTrue(doc.contains("custom potion logic, custom ranged attack behavior and friendship targeting remain out of scope"));
+        assertTrue(doc.contains("the restored same-type friendship-target rejection behavior is now documented separately in `docs/cavenic-witch-friendship-targeting-mvp.md`."));
+        assertTrue(doc.contains("custom potion logic and custom ranged attack behavior remain out of scope"));
         assertTrue(doc.contains("the legacy `getMaxSpawnedInChunk()` Cavenia-specific behavior remains out of scope"));
     }
 
@@ -120,7 +128,8 @@ class CavenicWitchDocumentationTest {
         assertTrue(doc.contains("Progression, dimension and economy do not affect the orb branch"));
         assertTrue(doc.contains("Fall/fire damage behavior remains unchanged and is now documented separately in `docs/cavenic-witch-damage-behavior-mvp.md`."));
         assertTrue(doc.contains("Same-type/self source immunity remains unchanged and is now documented separately in `docs/cavenic-witch-projectile-immunity-mvp.md`."));
-        assertTrue(doc.contains("Custom potion logic, custom ranged attack behavior and friendship targeting remain out of scope."));
+        assertTrue(doc.contains("Friendship targeting remains unchanged and is now documented separately in `docs/cavenic-witch-friendship-targeting-mvp.md`."));
+        assertTrue(doc.contains("Custom potion logic and custom ranged attack behavior remain out of scope."));
     }
 
     @Test
@@ -144,7 +153,8 @@ class CavenicWitchDocumentationTest {
         assertTrue(doc.contains("attributes, natural spawning and `1/5` orb-drop behavior remain unchanged."));
         assertTrue(doc.contains("The deferred magic-book branch remains documented in `docs/cavenic-witch-loot-mvp.md`."));
         assertTrue(doc.contains("The bounded same-type/self source-immunity follow-up is documented separately in `docs/cavenic-witch-projectile-immunity-mvp.md`."));
-        assertTrue(doc.contains("Custom potion logic, custom ranged attack behavior and friendship targeting remain out of scope."));
+        assertTrue(doc.contains("The bounded friendship-targeting follow-up is documented separately in `docs/cavenic-witch-friendship-targeting-mvp.md`."));
+        assertTrue(doc.contains("Custom potion logic and custom ranged attack behavior remain out of scope."));
     }
 
     @Test
@@ -163,13 +173,33 @@ class CavenicWitchDocumentationTest {
         assertTrue(doc.contains("Vanilla `Witch` sources are not included."));
         assertTrue(doc.contains("fall/fire damage behavior remains unchanged"));
         assertTrue(doc.contains("vanilla drinking and potion-throw behavior remain unchanged"));
-        assertTrue(doc.contains("friendship targeting remains out of scope"));
+        assertTrue(doc.contains("friendship targeting remains a separate bounded follow-up"));
         assertTrue(doc.contains("The deferred magic-book branch remains documented in `docs/cavenic-witch-loot-mvp.md`."));
         assertTrue(doc.contains("custom potion/ranged behavior, Cavenia and additional mobs remain out of scope"));
     }
 
     @Test
-    void runtimeSmokeMentionsCavenicWitchBaselineNaturalSpawnLootDamageProjectileImmunityCoverageAndManualBoundary() throws IOException {
+    void cavenicWitchFriendshipTargetingDocStatesLegacyBehaviorAndBoundedFollowUps() throws IOException {
+        String doc = Files.readString(CAVENIC_WITCH_FRIENDSHIP_TARGETING_MVP);
+
+        assertTrue(doc.contains("`cavern.entity.monster.EntityCavenicWitch`"));
+        assertTrue(doc.contains("legacy `setAttackTarget(EntityLivingBase entity)` override"));
+        assertTrue(doc.contains("legacy `isFriends(@Nullable Entity entity)` helper"));
+        assertTrue(doc.contains("`isFriends(...)` returned `true` only for `EntityCavenicWitch`"));
+        assertTrue(doc.contains("The modern hook is the entity-local `setTarget(@Nullable LivingEntity target)` override."));
+        assertTrue(doc.contains("`isLegacyFriendTarget(@Nullable LivingEntity target)`"));
+        assertTrue(doc.contains("Rejected same-type targets do not clear an existing non-friend target"));
+        assertTrue(doc.contains("Vanilla `Witch` targets remain allowed."));
+        assertTrue(doc.contains("Non-witch hostile targets such as `Zombie` remain allowed."));
+        assertTrue(doc.contains("Explicit `null` target clearing remains vanilla-like."));
+        assertTrue(doc.contains("Same-type/self source immunity remains unchanged and is still documented in `docs/cavenic-witch-projectile-immunity-mvp.md`."));
+        assertTrue(doc.contains("Fall/fire damage behavior remains unchanged and is still documented in `docs/cavenic-witch-damage-behavior-mvp.md`."));
+        assertTrue(doc.contains("The deferred magic-book branch remains documented in `docs/cavenic-witch-loot-mvp.md`."));
+        assertTrue(doc.contains("Custom potion logic, custom ranged attack behavior, Cavenia and additional mobs remain out of scope."));
+    }
+
+    @Test
+    void runtimeSmokeMentionsCavenicWitchBaselineNaturalSpawnLootDamageProjectileImmunityFriendshipTargetingCoverageAndManualBoundary() throws IOException {
         String runtimeSmoke = Files.readString(RUNTIME_SMOKE);
 
         assertTrue(runtimeSmoke.contains("cavenic witch runtime registry id"));
@@ -189,10 +219,12 @@ class CavenicWitchDocumentationTest {
         assertTrue(runtimeSmoke.contains("cavenic witch generic-damage baseline smoke"));
         assertTrue(runtimeSmoke.contains("cavenic witch legacy same-type/self source-immunity smoke"));
         assertTrue(runtimeSmoke.contains("cavenic witch non-immune source baseline smoke"));
+        assertTrue(runtimeSmoke.contains("cavenic witch same-type friendship target rejection smoke"));
+        assertTrue(runtimeSmoke.contains("cavenic witch non-friend target baseline smoke"));
         assertTrue(runtimeSmoke.contains("legacy cavenic witch magic-book branch because Reborn has no magic-book foundation yet"));
         assertTrue(runtimeSmoke.contains("actual Cavenic Witch renderer/model visual feel"));
         assertTrue(runtimeSmoke.contains("actual Cavenic Witch combat, potion-throw and pathfinding feel"));
-        assertTrue(runtimeSmoke.contains("custom Cavenic Witch potion/ranged behavior and friendship targeting remain out of scope until dedicated slices"));
+        assertTrue(runtimeSmoke.contains("custom Cavenic Witch potion/ranged behavior remains out of scope until a dedicated slice"));
         assertTrue(runtimeSmoke.contains("actual long-running Cavenic Witch fire/lava gameplay feel"));
         assertTrue(runtimeSmoke.contains("actual long-run cavenic witch orb-drop rate balance"));
         assertTrue(runtimeSmoke.contains("actual long-run Cavenic Witch population balance inside CAVERN"));

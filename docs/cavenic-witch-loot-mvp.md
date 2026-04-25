@@ -52,7 +52,8 @@ Legacy `dropLoot(...)` does not use `lootingModifier`, `wasRecentlyHit`, dimensi
 - Natural spawn values remain unchanged.
 - Fall/fire damage behavior remains unchanged and is now documented separately in `docs/cavenic-witch-damage-behavior-mvp.md`.
 - Same-type/self source immunity remains unchanged and is now documented separately in `docs/cavenic-witch-projectile-immunity-mvp.md`.
-- Custom potion logic, custom ranged attack behavior and friendship targeting remain out of scope.
+- Friendship targeting remains unchanged and is now documented separately in `docs/cavenic-witch-friendship-targeting-mvp.md`.
+- Custom potion logic and custom ranged attack behavior remain out of scope.
 
 ## Testing
 
@@ -75,7 +76,7 @@ Legacy `dropLoot(...)` does not use `lootingModifier`, `wasRecentlyHit`, dimensi
 - Fall/fire damage behavior
 - Same-type/self source immunity
 - Custom potion logic and custom ranged attack behavior
-- Friendship targeting
+- Same-type friendship targeting
 - Additional Cavenic mobs
 - Cavenia
 - Long-run witch drop-rate balance tuning

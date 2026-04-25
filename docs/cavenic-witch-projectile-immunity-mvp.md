@@ -51,7 +51,7 @@ Vanilla `Witch` sources are not included.
 - fall/fire damage behavior remains unchanged and still uses the existing `hurt(DamageSource source, float damage)` mapping.
 - vanilla witch AI remains unchanged.
 - vanilla drinking and potion-throw behavior remain unchanged.
-- friendship targeting remains out of scope because the separate legacy `setAttackTarget(...)` rewrite is not required for this bounded immunity slice.
+- friendship targeting remains a separate bounded follow-up because the legacy `setAttackTarget(...)` rewrite is not required for this bounded immunity slice.
 - attributes, natural spawning and `1/5` orb-drop behavior remain unchanged.
 - The deferred magic-book branch remains documented in `docs/cavenic-witch-loot-mvp.md`.
 - custom potion/ranged behavior, Cavenia and additional mobs remain out of scope.
@@ -62,7 +62,7 @@ Vanilla `Witch` sources are not included.
 - Reborn keeps the implementation entity-local instead of adding a global damage event or a broad Cavenic immunity framework.
 - `isInvulnerableTo(...)` is the narrowest modern hook for the old `isEntityInvulnerable(...)` behavior.
 - Checking `source.getEntity()` and `source.getDirectEntity()` is the clean modern equivalent to the old `getTrueSource()` / `getImmediateSource()` pair.
-- The separate legacy friendship-targeting rewrite stays out of scope.
+- The separate legacy friendship-targeting rewrite is documented separately in `docs/cavenic-witch-friendship-targeting-mvp.md`.
 
 ## Testing
 
@@ -71,7 +71,7 @@ Vanilla `Witch` sources are not included.
   - the `isLegacyCavenicWitchSourceImmuneTo(DamageSource source)` helper
   - the `source.getEntity()` / `source.getDirectEntity()` checks
   - the unchanged fall/fire logic, orb-drop policy and natural-spawn constants
-  - the absence of magic-book, custom potion/ranged, friendship-targeting and Cavenia work
+  - the absence of magic-book, custom potion/ranged and Cavenia work in this slice
 - Documentation tests pin the legacy `isEntityInvulnerable(...)` behavior, the broader same-type/self source scope and the continued out-of-scope boundaries.
 - NeoForge GameTest runtime smoke covers:
   - cavenic witch legacy same-type/self source-immunity smoke
@@ -84,7 +84,7 @@ Vanilla `Witch` sources are not included.
 
 - The deferred legacy magic-book branch
 - Custom potion logic and custom ranged attack behavior
-- Friendship targeting
+- Same-type friendship targeting
 - Cavenia
 - Additional Cavenic mobs
 - Broad combat rewrites

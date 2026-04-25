@@ -194,6 +194,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_WITCH_LOOT_ANCHOR = new BlockPos(4096, 96, 0);
     private static final BlockPos CAVENIC_WITCH_DAMAGE_ANCHOR = new BlockPos(4192, 96, 0);
     private static final BlockPos CAVENIC_WITCH_PROJECTILE_IMMUNITY_ANCHOR = new BlockPos(4288, 96, 0);
+    private static final BlockPos CAVENIC_WITCH_FRIENDSHIP_TARGETING_ANCHOR = new BlockPos(4384, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -2252,6 +2253,120 @@ public final class CavernSpecialOreGameTests {
                 && CavenicWitch.NATURAL_SPAWN_MIN_COUNT == 1
                 && CavenicWitch.NATURAL_SPAWN_MAX_COUNT == 1,
             "Expected cavenic witch natural spawn constants to stay unchanged while restoring same-type source immunity"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicWitchFriendshipTargetingRejectsSameTypeTargetsAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_WITCH_FRIENDSHIP_TARGETING_ANCHOR;
+
+        resetMiningArea(level, origin, 24.0D);
+
+        CavenicWitch actor = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin);
+        CavenicWitch friendTarget = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin.east(4));
+        Zombie zombieTarget = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.west(4));
+
+        helper.assertTrue(actor.getTarget() == null, "Expected fresh cavenic witch actor to start without an attack target");
+        helper.assertTrue(actor.isLegacyFriendTarget(friendTarget), "Expected cavenic witch friend helper to treat same-type cavenic witch targets as friends");
+        helper.assertFalse(actor.isLegacyFriendTarget(zombieTarget), "Expected cavenic witch friend helper to keep non-witch hostile targets out of the friend set");
+
+        actor.setTarget(friendTarget);
+        helper.assertTrue(
+            actor.getTarget() == null,
+            "Expected cavenic witch friendship targeting to reject same-type targets when no previous target is present"
+        );
+
+        actor.setTarget(zombieTarget);
+        helper.assertTrue(
+            actor.getTarget() == zombieTarget,
+            "Expected cavenic witch friendship targeting to keep non-friend living targets"
+        );
+
+        actor.setTarget(friendTarget);
+        helper.assertTrue(
+            actor.getTarget() == zombieTarget,
+            "Expected cavenic witch friendship targeting to reject same-type targets without clearing the existing non-friend target"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicWitchFriendshipTargetingKeepsOtherTargetsAndSlicesStableAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_WITCH_FRIENDSHIP_TARGETING_ANCHOR.south(16);
+
+        resetMiningArea(level, origin, 24.0D);
+
+        CavenicWitch actor = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin);
+        Witch vanillaWitchTarget = spawnLivingEntity(helper, EntityType.WITCH, origin.east(4));
+        Zombie zombieTarget = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.west(4));
+        CavenicWitch cavenicProjectileOwner = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin.north(8));
+        Witch vanillaProjectileOwner = spawnLivingEntity(helper, EntityType.WITCH, origin.north(8).east(4));
+
+        actor.setTarget(vanillaWitchTarget);
+        helper.assertTrue(
+            actor.getTarget() == vanillaWitchTarget,
+            "Expected vanilla witch targets to remain allowed because legacy isFriends only matched EntityCavenicWitch"
+        );
+
+        actor.setTarget(zombieTarget);
+        helper.assertTrue(actor.getTarget() == zombieTarget, "Expected non-friend zombie targets to remain allowed");
+
+        actor.setTarget(null);
+        helper.assertTrue(actor.getTarget() == null, "Expected explicit null target clearing to keep working normally");
+
+        helper.assertTrue(
+            actor.isLegacyCavenicWitchSourceImmuneTo(witchOwnedPotionDamageSource(level, cavenicProjectileOwner)),
+            "Expected same-type/self source-immunity helper to remain true for cavenic witch-owned projectile sources"
+        );
+        helper.assertFalse(
+            actor.isLegacyCavenicWitchSourceImmuneTo(witchOwnedPotionDamageSource(level, vanillaProjectileOwner)),
+            "Expected same-type/self source-immunity helper to remain false for vanilla witch-owned projectile sources"
+        );
+
+        CavenicWitch cavenicFallWitch = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin.south(8));
+        clearEquipment(cavenicFallWitch);
+        float fallDamage = 10.0F;
+        float cavenicFallHealthBefore = cavenicFallWitch.getHealth();
+
+        helper.assertTrue(
+            cavenicFallWitch.hurt(level.damageSources().fall(), fallDamage),
+            "Expected friendship-targeting follow-up to keep the legacy fall-damage path active"
+        );
+        helper.assertTrue(
+            Math.abs((cavenicFallHealthBefore - cavenicFallWitch.getHealth()) - (fallDamage * CavenicWitch.LEGACY_FALL_DAMAGE_MULTIPLIER)) < 1.0E-6F,
+            "Expected cavenic witch friendship-targeting follow-up to keep the legacy 0.35 fall-damage multiplier"
+        );
+
+        CavenicWitch cavenicFireWitch = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin.south(8).east(4));
+        clearEquipment(cavenicFireWitch);
+        float fireDamage = 4.0F;
+        float cavenicFireHealthBefore = cavenicFireWitch.getHealth();
+
+        helper.assertFalse(
+            cavenicFireWitch.hurt(level.damageSources().lava(), fireDamage),
+            "Expected friendship-targeting follow-up to keep fire-tagged damage rejection"
+        );
+        helper.assertTrue(
+            Math.abs(cavenicFireHealthBefore - cavenicFireWitch.getHealth()) < 1.0E-6F,
+            "Expected cavenic witch health to stay unchanged after fire-tagged damage"
+        );
+
+        helper.assertTrue(
+            actor.getLootTable().equals(EntityType.WITCH.getDefaultLootTable()),
+            "Expected cavenic witch friendship-targeting follow-up to keep the vanilla witch loot-table baseline"
+        );
+        helper.assertTrue(
+            CavenicWitchLootPolicy.ORB_DROP_ROLL_BOUND == 5,
+            "Expected cavenic witch orb drop roll bound to remain pinned while restoring friendship targeting"
+        );
+        helper.assertTrue(
+            CavenicWitch.NATURAL_SPAWN_WEIGHT == 15
+                && CavenicWitch.NATURAL_SPAWN_MIN_COUNT == 1
+                && CavenicWitch.NATURAL_SPAWN_MAX_COUNT == 1,
+            "Expected cavenic witch natural spawn constants to stay unchanged while restoring friendship targeting"
         );
         helper.succeed();
     }

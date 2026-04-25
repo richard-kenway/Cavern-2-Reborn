@@ -1,5 +1,7 @@
 package com.richardkenway.cavernreborn.app.entity;
 
+import javax.annotation.Nullable;
+
 import com.richardkenway.cavernreborn.app.dimension.CavernNeoForgeDimensions;
 
 import net.minecraft.core.BlockPos;
@@ -9,6 +11,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -55,8 +58,21 @@ public final class CavenicWitch extends Witch {
     }
 
     @Override
+    public void setTarget(@Nullable LivingEntity target) {
+        if (isLegacyFriendTarget(target)) {
+            return;
+        }
+
+        super.setTarget(target);
+    }
+
+    @Override
     protected ResourceKey<LootTable> getDefaultLootTable() {
         return EntityType.WITCH.getDefaultLootTable();
+    }
+
+    public boolean isLegacyFriendTarget(@Nullable LivingEntity target) {
+        return target instanceof CavenicWitch;
     }
 
     public boolean isLegacyCavenicWitchSourceImmuneTo(DamageSource source) {

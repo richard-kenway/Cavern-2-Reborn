@@ -59,6 +59,7 @@ The legacy repo contains a direct `EntityCavenicWitch`, so this increment stays 
 - The bounded legacy loot follow-up is now documented separately in `docs/cavenic-witch-loot-mvp.md`.
 - The bounded legacy damage-behavior follow-up is now documented separately in `docs/cavenic-witch-damage-behavior-mvp.md`.
 - The bounded legacy same-type/self source-immunity follow-up is now documented separately in `docs/cavenic-witch-projectile-immunity-mvp.md`.
+- The bounded friendship-targeting follow-up is now documented separately in `docs/cavenic-witch-friendship-targeting-mvp.md`.
 - custom loot beyond the restored `1/5` `cavenic_orb` drop remains out of scope for this baseline slice.
 - the legacy magic-book branch remains deferred because Reborn does not yet have a magic-book foundation.
 
@@ -67,7 +68,8 @@ The legacy repo contains a direct `EntityCavenicWitch`, so this increment stays 
 - The bounded natural-spawn follow-up is now documented separately in `docs/cavenic-witch-natural-spawn-mvp.md`.
 - legacy fall/fire damage behavior is now documented separately in `docs/cavenic-witch-damage-behavior-mvp.md`.
 - legacy same-type/self source immunity is now documented separately in `docs/cavenic-witch-projectile-immunity-mvp.md`.
-- custom potion logic and friendship targeting remain out of scope
+- legacy same-type friendship targeting is now documented separately in `docs/cavenic-witch-friendship-targeting-mvp.md`.
+- custom potion logic remains out of scope
 - the legacy `getMaxSpawnedInChunk()` Cavenia-specific behavior remains out of scope
 - Cavenia remains out of scope
 
@@ -89,7 +91,8 @@ The legacy repo contains a direct `EntityCavenicWitch`, so this increment stays 
 - The deferred legacy magic-book branch
 - Fall/fire damage behavior
 - Same-type/self source immunity
-- Custom potion logic or target filtering
+- Same-type friendship targeting
+- Custom potion logic
 - Long-run natural spawning and biome spawn balance
 - Additional Cavenic mobs
 - Cavenia
