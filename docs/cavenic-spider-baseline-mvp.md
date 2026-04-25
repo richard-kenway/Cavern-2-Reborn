@@ -56,11 +56,12 @@ The legacy repo contains a direct `EntityCavenicSpider`, so this increment stays
 
 - The bounded baseline reuses the vanilla spider loot table as its base drop source so the mob has safe hostile drops without widening the Cavenic loot line yet.
 - Legacy `EntityCavenicSpider` also added a `1/8` `cavenic_orb` drop.
-- That drop remains out of scope for this baseline slice and is left for a later bounded follow-up.
+- The bounded orb-drop follow-up is now documented separately in `docs/cavenic-spider-orb-drop-mvp.md`.
 
 ## Follow-Up Boundaries
 
 - The bounded natural-spawn follow-up is now documented separately in `docs/cavenic-spider-natural-spawn-mvp.md`.
+- The bounded orb-drop follow-up is now documented separately in `docs/cavenic-spider-orb-drop-mvp.md`.
 - custom loot remains out of scope
 - `1/8` `cavenic_orb` drop parity remains out of scope
 - fall/fire damage behavior remains out of scope

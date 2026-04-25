@@ -21,6 +21,7 @@ import com.richardkenway.cavernreborn.app.entity.CavenicCreeperLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CavenicSkeleton;
 import com.richardkenway.cavernreborn.app.entity.CavenicSkeletonLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CavenicSpider;
+import com.richardkenway.cavernreborn.app.entity.CavenicSpiderLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombie;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombieLootEvents;
 import com.richardkenway.cavernreborn.app.item.CavenicBowTorchEvents;
@@ -47,6 +48,7 @@ import com.richardkenway.cavernreborn.core.flora.CavenicOrbDropPolicy;
 import com.richardkenway.cavernreborn.core.loot.CavenicCreeperLootPolicy;
 import com.richardkenway.cavernreborn.core.farming.AcresiaHarvestPolicy;
 import com.richardkenway.cavernreborn.core.loot.CavenicSkeletonLootPolicy;
+import com.richardkenway.cavernreborn.core.loot.CavenicSpiderLootPolicy;
 import com.richardkenway.cavernreborn.core.loot.CavenicZombieLootPolicy;
 import com.richardkenway.cavernreborn.core.mining.AquamarineAquaToolDecision;
 import com.richardkenway.cavernreborn.core.mining.AquamarineAquaToolPolicy;
@@ -176,6 +178,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_SPIDER_ANCHOR = new BlockPos(3232, 96, 0);
     private static final BlockPos CAVENIC_SPIDER_SPAWN_EGG_ANCHOR = new BlockPos(3328, 96, 0);
     private static final BlockPos CAVENIC_SPIDER_NATURAL_SPAWN_ANCHOR = new BlockPos(3424, 96, 0);
+    private static final BlockPos CAVENIC_SPIDER_LOOT_ANCHOR = new BlockPos(3520, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -1491,6 +1494,51 @@ public final class CavernSpecialOreGameTests {
                 "cavernreborn:highland_hollows"
             )),
             "Expected cavenic spider natural-spawn tag to stay scoped to the four CAVERN biomes"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicSpiderLegacyOrbDropWiresAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_SPIDER_LOOT_ANCHOR;
+        CavenicSpiderLootEvents lootEvents = new CavenicSpiderLootEvents();
+        List<ItemEntity> drops = new ArrayList<>();
+
+        resetMiningArea(level, origin, 8.0D);
+        CavenicSpider spider = spawnLivingEntity(helper, ModRegistries.CAVENIC_SPIDER.get(), origin);
+
+        helper.assertTrue(
+            spider.getLootTable().equals(EntityType.SPIDER.getDefaultLootTable()),
+            "Expected cavenic spider to keep the vanilla spider loot table as its baseline"
+        );
+        helper.assertTrue(
+            CavenicSpiderLootPolicy.ORB_DROP_ROLL_BOUND == 8,
+            "Expected cavenic spider orb drop roll bound to stay pinned to the legacy 1/8 chance"
+        );
+        helper.assertTrue(
+            CavenicSpider.NATURAL_SPAWN_WEIGHT == 30
+                && CavenicSpider.NATURAL_SPAWN_MIN_COUNT == 1
+                && CavenicSpider.NATURAL_SPAWN_MAX_COUNT == 1,
+            "Expected cavenic spider natural spawn constants to stay pinned while wiring the orb drop follow-up"
+        );
+        helper.assertFalse(
+            lootEvents.tryAppendLegacyOrbDrop(spider, drops, 1),
+            "Non-winning orb roll must not append a cavenic orb drop"
+        );
+        helper.assertTrue(drops.isEmpty(), "Non-winning orb roll must leave the drop list unchanged");
+        helper.assertTrue(
+            lootEvents.tryAppendLegacyOrbDrop(spider, drops, 0),
+            "Winning orb roll must append a cavenic orb drop"
+        );
+        helper.assertTrue(drops.size() == 1, "Winning orb roll must append exactly one cavenic orb drop");
+        helper.assertTrue(
+            drops.getFirst().getItem().is(ModRegistries.CAVENIC_ORB.get()),
+            "Winning orb roll must append cavernreborn:cavenic_orb"
+        );
+        helper.assertTrue(
+            Math.abs(drops.getFirst().getY() - (spider.getY() + 0.5D)) < 1.0E-6D,
+            "Expected cavenic orb drop Y offset to stay aligned with the legacy 0.5 offset"
         );
         helper.succeed();
     }

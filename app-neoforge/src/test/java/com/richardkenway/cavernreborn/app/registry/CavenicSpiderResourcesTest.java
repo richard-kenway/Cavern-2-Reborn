@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CavenicSpiderResourcesTest {
     @Test
-    void cavenicSpiderRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnBaselineLootAndStableCreativePlacement() throws IOException {
+    void cavenicSpiderRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnBaselineLootAndOrbDropWiring() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -30,6 +30,12 @@ class CavenicSpiderResourcesTest {
         );
         String entityEventSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModEntityEvents.java"
+        );
+        String dropEventSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "CavenicSpiderLootEvents.java"
+        );
+        String lootPolicySource = readProjectFile(
+            "core", "src", "main", "java", "com", "richardkenway", "cavernreborn", "core", "loot", "CavenicSpiderLootPolicy.java"
         );
         String clientSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "client", "CavernClientModEvents.java"
@@ -87,7 +93,16 @@ class CavenicSpiderResourcesTest {
         assertTrue(entityEventSource.contains("CAVENIC_SPIDER.get(),\n            SpawnPlacementTypes.ON_GROUND"));
         assertTrue(entityEventSource.contains("Heightmap.Types.MOTION_BLOCKING_NO_LEAVES"));
         assertTrue(entityEventSource.contains("RegisterSpawnPlacementsEvent.Operation.REPLACE"));
-        assertFalse(mainEntrypoint.contains("CavenicSpiderLootEvents"));
+        assertTrue(mainEntrypoint.contains("NeoForge.EVENT_BUS.register(new CavenicSpiderLootEvents());"));
+        assertTrue(dropEventSource.contains("LivingDropsEvent"));
+        assertTrue(dropEventSource.contains("event.getEntity() instanceof CavenicSpider spider"));
+        assertTrue(dropEventSource.contains("CavenicSpiderLootPolicy.ORB_DROP_ROLL_BOUND"));
+        assertTrue(dropEventSource.contains("CavenicSpiderLootPolicy.shouldDropOrb(orbRoll)"));
+        assertTrue(dropEventSource.contains("new ItemStack(ModRegistries.CAVENIC_ORB.get())"));
+        assertTrue(dropEventSource.contains("spider.getY() + 0.5D"));
+        assertTrue(lootPolicySource.contains("public static final int ORB_DROP_ROLL_BOUND = 8;"));
+        assertFalse(dropEventSource.toLowerCase().contains("economy"));
+        assertFalse(dropEventSource.toLowerCase().contains("progress"));
         assertTrue(clientSource.contains("event.registerEntityRenderer(ModRegistries.CAVENIC_SPIDER.get(), CavenicSpiderRenderer::new);"));
         assertTrue(rendererSource.contains("extends SpiderRenderer<CavenicSpider>"));
         assertTrue(rendererSource.contains("textures/entity/cavenic_spider.png"));
