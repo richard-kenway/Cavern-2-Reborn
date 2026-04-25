@@ -74,7 +74,6 @@ class CavenicShroomResourcesTest {
         assertTrue(policySource.contains("SHEAR_DROP_ROLL_BOUND = 10"));
         assertTrue(policySource.contains("NORMAL_DROP_ROLL_BOUND = 50"));
 
-        assertFalse(registriesSource.contains("cavenic_creeper"));
         assertFalse(registriesSource.contains("cavenic_spider"));
         assertFalse(registriesSource.contains("cavenic_witch"));
         assertFalse(registriesSource.contains("cavenic_bear"));

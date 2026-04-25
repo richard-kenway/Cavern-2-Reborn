@@ -16,6 +16,7 @@ import com.richardkenway.cavernreborn.app.compass.OreCompassScanner;
 import com.richardkenway.cavernreborn.app.compass.OreCompassTarget;
 import com.richardkenway.cavernreborn.app.compass.StoredOreCompassTarget;
 import com.richardkenway.cavernreborn.app.dimension.CavernNeoForgeDimensions;
+import com.richardkenway.cavernreborn.app.entity.CavenicCreeper;
 import com.richardkenway.cavernreborn.app.entity.CavenicSkeleton;
 import com.richardkenway.cavernreborn.app.entity.CavenicSkeletonLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombie;
@@ -82,6 +83,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.monster.Zombie;
@@ -160,6 +162,8 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_SKELETON_NATURAL_SPAWN_ANCHOR = new BlockPos(2368, 96, 0);
     private static final BlockPos CAVENIC_SKELETON_LOOT_ANCHOR = new BlockPos(2464, 96, 0);
     private static final BlockPos CAVENIC_SKELETON_DAMAGE_ANCHOR = new BlockPos(2560, 96, 0);
+    private static final BlockPos CAVENIC_CREEPER_ANCHOR = new BlockPos(2656, 96, 0);
+    private static final BlockPos CAVENIC_CREEPER_SPAWN_EGG_ANCHOR = new BlockPos(2752, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -956,6 +960,72 @@ public final class CavernSpecialOreGameTests {
                 && CavenicSkeleton.NATURAL_SPAWN_MAX_COUNT == 1,
             "Expected cavenic skeleton natural spawn constants to stay unchanged while restoring legacy damage behavior"
         );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicCreeperRegistersAtRuntime(GameTestHelper helper) {
+        helper.assertTrue(ModRegistries.CAVENIC_CREEPER.get() != null, "Missing cavenic creeper entity type");
+        helper.assertTrue(ModRegistries.CAVENIC_CREEPER_SPAWN_EGG.get() != null, "Missing cavenic creeper spawn egg");
+
+        assertRegistryId(helper, ModRegistries.CAVENIC_CREEPER.get(), "cavernreborn:cavenic_creeper");
+        assertRegistryId(helper, ModRegistries.CAVENIC_CREEPER_SPAWN_EGG.get(), "cavernreborn:cavenic_creeper_spawn_egg");
+
+        ItemStack spawnEgg = cavenicCreeperSpawnEgg();
+        helper.assertTrue(!spawnEgg.isEmpty(), "Expected cavenic creeper spawn egg to be constructible");
+        helper.assertTrue(spawnEgg.getItem() instanceof SpawnEggItem, "Expected cavenic creeper spawn egg runtime item");
+        helper.assertTrue(
+            ((SpawnEggItem) spawnEgg.getItem()).spawnsEntity(spawnEgg, ModRegistries.CAVENIC_CREEPER.get()),
+            "Expected cavenic creeper spawn egg to resolve the cavenic creeper entity type"
+        );
+        helper.assertTrue(
+            ModRegistries.CAVENIC_CREEPER.get().getCategory() == MobCategory.MONSTER,
+            "Expected cavenic creeper type category to stay MONSTER"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicCreeperSpawnsWithExpectedAttributesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_CREEPER_ANCHOR;
+
+        resetMiningArea(level, origin, 8.0D);
+        CavenicCreeper cavenicCreeper = spawnLivingEntity(helper, ModRegistries.CAVENIC_CREEPER.get(), origin);
+        Creeper vanillaCreeper = spawnLivingEntity(helper, EntityType.CREEPER, origin.east(4));
+
+        helper.assertTrue(cavenicCreeper instanceof Monster, "Expected cavenic creeper to remain a hostile monster");
+        helper.assertTrue(cavenicCreeper instanceof Creeper, "Expected cavenic creeper to keep vanilla creeper behavior");
+        helper.assertTrue(cavenicCreeper.getType().getCategory() == MobCategory.MONSTER, "Expected cavenic creeper type category to stay MONSTER");
+        helper.assertTrue(Math.abs(cavenicCreeper.getMaxHealth() - 30.0D) < 1.0E-6D, "Expected cavenic creeper max health to map to legacy 30.0");
+        helper.assertTrue(Math.abs(cavenicCreeper.getAttributeValue(Attributes.MAX_HEALTH) - 30.0D) < 1.0E-6D, "Expected cavenic creeper MAX_HEALTH attribute to be 30.0");
+        helper.assertTrue(Math.abs(cavenicCreeper.getAttributeValue(Attributes.MOVEMENT_SPEED) - 0.2D) < 1.0E-6D, "Expected cavenic creeper movement speed to map to legacy 0.2");
+        helper.assertTrue(Math.abs(cavenicCreeper.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) - 0.85D) < 1.0E-6D, "Expected cavenic creeper knockback resistance to map to legacy 0.85");
+        helper.assertTrue(
+            Math.abs(cavenicCreeper.getAttributeValue(Attributes.FOLLOW_RANGE) - vanillaCreeper.getAttributeValue(Attributes.FOLLOW_RANGE)) < 1.0E-6D,
+            "Expected cavenic creeper follow range to stay on the vanilla creeper baseline"
+        );
+        helper.assertTrue(
+            cavenicCreeper.getLootTable().equals(EntityType.CREEPER.getDefaultLootTable()),
+            "Expected cavenic creeper to keep the vanilla creeper loot table as its baseline"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicCreeperSpawnEggCreatesRuntimeEntity(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos supportPos = CAVENIC_CREEPER_SPAWN_EGG_ANCHOR;
+
+        resetMiningArea(level, supportPos, 8.0D);
+        level.setBlock(supportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+
+        ItemStack spawnEgg = cavenicCreeperSpawnEgg();
+        Player player = makeMockPlayer(helper, level, GameType.SURVIVAL, spawnEgg.copy(), supportPos.south(2));
+        Entity spawnedEntity = ModRegistries.CAVENIC_CREEPER.get().spawn(level, spawnEgg, player, supportPos.above(), MobSpawnType.SPAWN_EGG, true, true);
+
+        helper.assertTrue(spawnedEntity instanceof CavenicCreeper, "Expected spawn egg to create a CavenicCreeper runtime entity");
+        helper.assertTrue(spawnedEntity != null && spawnedEntity.isAlive(), "Expected spawned cavenic creeper to be alive");
         helper.succeed();
     }
 
@@ -2800,6 +2870,10 @@ public final class CavernSpecialOreGameTests {
 
     private static ItemStack cavenicSkeletonSpawnEgg() {
         return new ItemStack(ModRegistries.CAVENIC_SKELETON_SPAWN_EGG.get());
+    }
+
+    private static ItemStack cavenicCreeperSpawnEgg() {
+        return new ItemStack(ModRegistries.CAVENIC_CREEPER_SPAWN_EGG.get());
     }
 
     private static AbstractArrow createRuntimeArrow(ServerLevel level, Player player, ItemStack bow) {

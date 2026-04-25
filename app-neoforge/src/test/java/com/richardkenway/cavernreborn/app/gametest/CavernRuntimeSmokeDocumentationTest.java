@@ -79,6 +79,10 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("Cavenic Skeleton Legacy Damage Behavior MVP"));
         assertTrue(readme.contains("docs/cavenic-skeleton-damage-behavior-mvp.md"));
         assertTrue(readme.contains("legacy fall-damage reduction and fire-damage immunity"));
+        assertTrue(readme.contains("Cavenic Creeper Baseline MVP"));
+        assertTrue(readme.contains("docs/cavenic-creeper-baseline-mvp.md"));
+        assertTrue(readme.contains("third direct Cavenic mob foundation"));
+        assertTrue(readme.contains("custom explosion behavior"));
     }
 
     @Test
@@ -148,6 +152,12 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("cavenic skeleton legacy fall-damage reduction smoke"));
         assertTrue(doc.contains("cavenic skeleton legacy fire-damage immunity smoke"));
         assertTrue(doc.contains("cavenic skeleton generic-damage baseline smoke"));
+        assertTrue(doc.contains("cavenic creeper runtime registry id"));
+        assertTrue(doc.contains("cavenic creeper attribute registration smoke"));
+        assertTrue(doc.contains("cavenic creeper hostile runtime spawn smoke"));
+        assertTrue(doc.contains("cavenic creeper vanilla loot-table baseline smoke"));
+        assertTrue(doc.contains("cavenic creeper spawn egg resolution"));
+        assertTrue(doc.contains("cavenic creeper spawn egg entity-creation smoke"));
         assertTrue(doc.contains("cavenic bow enchantment applicability"));
         assertTrue(doc.contains("cavenic bow cavenic item tag resolution"));
         assertTrue(doc.contains("cavenic bow recipe manager resolution"));
@@ -211,10 +221,13 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("actual Cavenic Bow draw, release and visual client feel"));
         assertTrue(doc.contains("actual Cavenic Zombie renderer/model visual feel"));
         assertTrue(doc.contains("actual Cavenic Skeleton renderer/model visual feel"));
+        assertTrue(doc.contains("actual Cavenic Creeper renderer/model visual feel"));
+        assertTrue(doc.contains("natural spawning for Cavenic Creeper in this baseline slice"));
         assertTrue(doc.contains("actual long-run cavenic zombie orb-drop rate balance"));
         assertTrue(doc.contains("actual long-run cavenic skeleton orb-drop rate balance"));
         assertTrue(doc.contains("actual long-running Cavenic Zombie fire/lava gameplay feel"));
         assertTrue(doc.contains("actual long-running Cavenic Skeleton fire/lava gameplay feel"));
+        assertTrue(doc.contains("actual Cavenic Creeper fuse and explosion feel"));
         assertTrue(doc.contains("actual long-run Cavenic Skeleton population balance inside CAVERN"));
         assertTrue(doc.contains("legacy Cavenic Bow Rapid/Torch custom projectile behavior and client feel beyond the current bounded Snipe, Rapid and Torch slices"));
         assertTrue(doc.contains("actual long-run Cavenic Zombie population balance inside CAVERN"));

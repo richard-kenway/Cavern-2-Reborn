@@ -1,6 +1,7 @@
 package com.richardkenway.cavernreborn.app.registry;
 
 import com.richardkenway.cavernreborn.CavernReborn;
+import com.richardkenway.cavernreborn.app.entity.CavenicCreeper;
 import com.richardkenway.cavernreborn.app.entity.CavenicSkeleton;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombie;
 
@@ -20,6 +21,7 @@ public final class ModEntityEvents {
     public static void registerEntityAttributes(EntityAttributeCreationEvent event) {
         event.put(ModRegistries.CAVENIC_ZOMBIE.get(), CavenicZombie.createAttributes().build());
         event.put(ModRegistries.CAVENIC_SKELETON.get(), CavenicSkeleton.createAttributes().build());
+        event.put(ModRegistries.CAVENIC_CREEPER.get(), CavenicCreeper.createAttributes().build());
     }
 
     @SubscribeEvent
