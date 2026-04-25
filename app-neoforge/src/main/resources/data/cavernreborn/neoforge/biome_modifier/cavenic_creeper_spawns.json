@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "#cavernreborn:spawns_cavenic_creeper",
+  "spawners": {
+    "type": "cavernreborn:cavenic_creeper",
+    "weight": 30,
+    "minCount": 1,
+    "maxCount": 1
+  }
+}

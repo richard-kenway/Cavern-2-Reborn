@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 class CavenicCreeperDocumentationTest {
     private static final Path README = resolveProjectFile("README.md");
     private static final Path CAVENIC_CREEPER_BASELINE_MVP = resolveProjectFile("docs", "cavenic-creeper-baseline-mvp.md");
+    private static final Path CAVENIC_CREEPER_NATURAL_SPAWN_MVP = resolveProjectFile("docs", "cavenic-creeper-natural-spawn-mvp.md");
     private static final Path RUNTIME_SMOKE = resolveProjectFile("docs", "runtime-smoke.md");
 
     @Test
@@ -19,9 +20,11 @@ class CavenicCreeperDocumentationTest {
 
         assertTrue(readme.contains("Cavenic Creeper Baseline MVP"));
         assertTrue(readme.contains("docs/cavenic-creeper-baseline-mvp.md"));
+        assertTrue(readme.contains("Cavenic Creeper Natural Spawn MVP"));
+        assertTrue(readme.contains("docs/cavenic-creeper-natural-spawn-mvp.md"));
         assertTrue(readme.contains("cavenic_creeper"));
         assertTrue(readme.contains("third direct Cavenic mob foundation"));
-        assertTrue(readme.contains("custom explosion behavior"));
+        assertTrue(readme.contains("bounded CAVERN-only natural spawning"));
     }
 
     @Test
@@ -46,7 +49,7 @@ class CavenicCreeperDocumentationTest {
         assertTrue(doc.contains("`fuseTime = 15`"));
         assertTrue(doc.contains("`explosionRadius = 5`"));
         assertTrue(doc.contains("Custom explosion behavior remains out of scope"));
-        assertTrue(doc.contains("natural spawning intentionally remains out of scope"));
+        assertTrue(doc.contains("The bounded natural-spawn follow-up is documented separately in `docs/cavenic-creeper-natural-spawn-mvp.md`"));
         assertTrue(doc.contains("custom loot and the legacy `1/5` `cavenic_orb` drop remain out of scope"));
         assertTrue(doc.contains("fall/fire damage behavior remains out of scope"));
         assertTrue(doc.contains("custom AI remains out of scope"));
@@ -54,7 +57,27 @@ class CavenicCreeperDocumentationTest {
     }
 
     @Test
-    void runtimeSmokeMentionsCavenicCreeperCoverageAndManualBoundary() throws IOException {
+    void cavenicCreeperNaturalSpawnDocStatesLegacyReferencesRuntimeShapeAndBoundaries() throws IOException {
+        String doc = Files.readString(CAVENIC_CREEPER_NATURAL_SPAWN_MVP);
+
+        assertTrue(doc.contains("`cavern.entity.monster.EntityCavenicCreeper`"));
+        assertTrue(doc.contains("`cavern.entity.CaveEntityRegistry`"));
+        assertTrue(doc.contains("SpawnPlacementTypes.ON_GROUND"));
+        assertTrue(doc.contains("Heightmap.Types.MOTION_BLOCKING_NO_LEAVES"));
+        assertTrue(doc.contains("Monster.checkMonsterSpawnRules"));
+        assertTrue(doc.contains("data/cavernreborn/neoforge/biome_modifier/cavenic_creeper_spawns.json"));
+        assertTrue(doc.contains("data/cavernreborn/tags/worldgen/biome/spawns_cavenic_creeper.json"));
+        assertTrue(doc.contains("weight: `30`"));
+        assertTrue(doc.contains("group size: `1..1`"));
+        assertTrue(doc.contains("Natural spawning is deliberately limited to `CAVERN`"));
+        assertTrue(doc.contains("custom loot remains out of scope"));
+        assertTrue(doc.contains("legacy `1/5` `cavenic_orb` drop remains out of scope"));
+        assertTrue(doc.contains("fall/fire damage behavior remains out of scope"));
+        assertTrue(doc.contains("custom explosion behavior remains out of scope"));
+    }
+
+    @Test
+    void runtimeSmokeMentionsCavenicCreeperNaturalSpawnCoverageAndManualBoundary() throws IOException {
         String runtimeSmoke = Files.readString(RUNTIME_SMOKE);
 
         assertTrue(runtimeSmoke.contains("cavenic creeper runtime registry id"));
@@ -63,9 +86,13 @@ class CavenicCreeperDocumentationTest {
         assertTrue(runtimeSmoke.contains("cavenic creeper vanilla loot-table baseline smoke"));
         assertTrue(runtimeSmoke.contains("cavenic creeper spawn egg resolution"));
         assertTrue(runtimeSmoke.contains("cavenic creeper spawn egg entity-creation smoke"));
+        assertTrue(runtimeSmoke.contains("cavenic creeper natural spawn placement registration"));
+        assertTrue(runtimeSmoke.contains("cavenic creeper CAVERN-only spawn predicate smoke"));
+        assertTrue(runtimeSmoke.contains("cavenic creeper biome modifier registry smoke"));
+        assertTrue(runtimeSmoke.contains("cavenic creeper biome tag resolution"));
         assertTrue(runtimeSmoke.contains("actual Cavenic Creeper renderer/model visual feel"));
         assertTrue(runtimeSmoke.contains("actual Cavenic Creeper fuse and explosion feel"));
-        assertTrue(runtimeSmoke.contains("natural spawning for Cavenic Creeper in this baseline slice"));
+        assertTrue(runtimeSmoke.contains("actual long-run Cavenic Creeper population balance inside CAVERN"));
     }
 
     private static Path resolveProjectFile(String first, String... more) {

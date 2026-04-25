@@ -164,6 +164,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_SKELETON_DAMAGE_ANCHOR = new BlockPos(2560, 96, 0);
     private static final BlockPos CAVENIC_CREEPER_ANCHOR = new BlockPos(2656, 96, 0);
     private static final BlockPos CAVENIC_CREEPER_SPAWN_EGG_ANCHOR = new BlockPos(2752, 96, 0);
+    private static final BlockPos CAVENIC_CREEPER_NATURAL_SPAWN_ANCHOR = new BlockPos(2848, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -1026,6 +1027,77 @@ public final class CavernSpecialOreGameTests {
 
         helper.assertTrue(spawnedEntity instanceof CavenicCreeper, "Expected spawn egg to create a CavenicCreeper runtime entity");
         helper.assertTrue(spawnedEntity != null && spawnedEntity.isAlive(), "Expected spawned cavenic creeper to be alive");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicCreeperNaturalSpawnPlacementIsRegisteredAndCavernOnly(GameTestHelper helper) {
+        ServerLevel overworldLevel = helper.getLevel().getServer().getLevel(Level.OVERWORLD);
+        BlockPos spawnPos = CAVENIC_CREEPER_NATURAL_SPAWN_ANCHOR;
+        RandomSource random = RandomSource.create(9012L);
+
+        helper.assertTrue(overworldLevel != null, "Expected overworld level to resolve for spawn predicate smoke");
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CAVENIC_CREEPER.get()) == SpawnPlacementTypes.ON_GROUND,
+            "Expected cavenic creeper spawn placement type to mirror creeper ground spawning"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getHeightmapType(ModRegistries.CAVENIC_CREEPER.get()) == Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+            "Expected cavenic creeper spawn heightmap to mirror creeper spawning"
+        );
+        helper.assertTrue(
+            CavenicCreeper.canNaturallySpawnInDimension(CavernNeoForgeDimensions.CAVERN_LEVEL_KEY),
+            "Expected cavenic creeper natural-spawn helper to allow the configured CAVERN level key"
+        );
+        helper.assertFalse(
+            CavenicCreeper.canNaturallySpawnInDimension(Level.OVERWORLD),
+            "Expected cavenic creeper natural-spawn helper to reject overworld spawning"
+        );
+
+        prepareNaturalSpawnPlatform(overworldLevel, spawnPos);
+        helper.assertTrue(
+            SpawnPlacements.isSpawnPositionOk(ModRegistries.CAVENIC_CREEPER.get(), overworldLevel, spawnPos),
+            "Expected prepared spawn position to satisfy ON_GROUND placement"
+        );
+        helper.assertFalse(
+            SpawnPlacements.checkSpawnRules(ModRegistries.CAVENIC_CREEPER.get(), overworldLevel, MobSpawnType.SPAWNER, spawnPos, random),
+            "Expected registered cavenic creeper spawn rules to reject overworld spawning"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicCreeperNaturalSpawnDataResolvesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_cavenic_creeper"));
+
+        assertRegistryKeyPresent(helper, biomeModifiers, NeoForgeRegistries.Keys.BIOME_MODIFIERS, "cavernreborn:cavenic_creeper_spawns");
+        helper.assertTrue(biomes.getTag(spawnTag).isPresent(), "Expected cavenic creeper spawn biome tag to resolve at runtime");
+
+        Set<String> taggedBiomes = biomes.getTag(spawnTag)
+            .orElseThrow()
+            .stream()
+            .flatMap(holder -> holder.unwrapKey().stream())
+            .map(key -> key.location().toString())
+            .collect(java.util.stream.Collectors.toSet());
+
+        helper.assertTrue(
+            taggedBiomes.equals(Set.of(
+                "cavernreborn:stone_depths",
+                "cavernreborn:lush_grotto",
+                "cavernreborn:dripstone_grotto",
+                "cavernreborn:highland_hollows"
+            )),
+            "Expected cavenic creeper natural-spawn tag to stay scoped to the four CAVERN biomes"
+        );
+        helper.assertTrue(
+            CavenicCreeper.NATURAL_SPAWN_WEIGHT == 30
+                && CavenicCreeper.NATURAL_SPAWN_MIN_COUNT == 1
+                && CavenicCreeper.NATURAL_SPAWN_MAX_COUNT == 1,
+            "Expected cavenic creeper natural spawn constants to stay pinned to the legacy spawn entry"
+        );
         helper.succeed();
     }
 

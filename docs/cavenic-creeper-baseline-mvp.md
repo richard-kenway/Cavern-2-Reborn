@@ -63,7 +63,7 @@ The legacy repo contains a direct `EntityCavenicCreeper`, so this increment stay
 - Legacy `EntityCavenicCreeper` also included a `1/5` `cavenic_orb` drop and the same fall/fire damage behavior later restored for `cavenic_zombie` and `cavenic_skeleton`.
 - Those loot and damage follow-ups remain intentionally out of scope here.
 - The legacy fall/fire damage behavior remains out of scope in this baseline slice.
-- Legacy natural spawning also existed through `CaveEntityRegistry`, but natural spawning intentionally remains out of scope for this baseline MVP.
+- The bounded natural-spawn follow-up is documented separately in `docs/cavenic-creeper-natural-spawn-mvp.md`.
 - custom AI remains out of scope.
 - Cavenia remains out of scope.
 

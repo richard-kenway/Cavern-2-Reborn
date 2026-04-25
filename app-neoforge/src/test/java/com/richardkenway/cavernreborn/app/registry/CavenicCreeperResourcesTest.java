@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CavenicCreeperResourcesTest {
     @Test
-    void cavenicCreeperRegistersWithDedicatedEntitySpawnEggRendererAndStableCreativePlacement() throws IOException {
+    void cavenicCreeperRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnAndStableCreativePlacement() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -60,6 +61,13 @@ class CavenicCreeperResourcesTest {
         assertTrue(entitySource.contains(".add(Attributes.MAX_HEALTH, 30.0D)"));
         assertTrue(entitySource.contains(".add(Attributes.KNOCKBACK_RESISTANCE, 0.85D)"));
         assertTrue(entitySource.contains(".add(Attributes.MOVEMENT_SPEED, 0.2D)"));
+        assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_WEIGHT = 30;"));
+        assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_MIN_COUNT = 1;"));
+        assertTrue(entitySource.contains("public static final int NATURAL_SPAWN_MAX_COUNT = 1;"));
+        assertTrue(entitySource.contains("canNaturallySpawnInDimension"));
+        assertTrue(entitySource.contains("checkCavenicCreeperSpawnRules"));
+        assertTrue(entitySource.contains("CavernNeoForgeDimensions.isCavern"));
+        assertTrue(entitySource.contains("Monster.checkMonsterSpawnRules"));
         assertTrue(entitySource.contains("return EntityType.CREEPER.getDefaultLootTable();"));
         assertFalse(entitySource.contains("cavenic_orb"));
         assertFalse(entitySource.contains("fuseTime"));
@@ -70,8 +78,11 @@ class CavenicCreeperResourcesTest {
         assertFalse(entitySource.toLowerCase().contains("cavenia"));
 
         assertTrue(entityEventSource.contains("event.put(ModRegistries.CAVENIC_CREEPER.get(), CavenicCreeper.createAttributes().build())"));
-        assertFalse(entityEventSource.contains("CavenicCreeper::checkCavenicCreeperSpawnRules"));
-        assertFalse(entityEventSource.contains("CAVENIC_CREEPER.get(),\n            SpawnPlacementTypes.ON_GROUND"));
+        assertTrue(entityEventSource.contains("RegisterSpawnPlacementsEvent"));
+        assertTrue(entityEventSource.contains("CavenicCreeper::checkCavenicCreeperSpawnRules"));
+        assertTrue(entityEventSource.contains("CAVENIC_CREEPER.get(),\n            SpawnPlacementTypes.ON_GROUND"));
+        assertTrue(entityEventSource.contains("Heightmap.Types.MOTION_BLOCKING_NO_LEAVES"));
+        assertTrue(entityEventSource.contains("RegisterSpawnPlacementsEvent.Operation.REPLACE"));
         assertFalse(mainEntrypoint.contains("CavenicCreeperLootEvents"));
         assertTrue(clientSource.contains("event.registerEntityRenderer(ModRegistries.CAVENIC_CREEPER.get(), CavenicCreeperRenderer::new);"));
         assertTrue(rendererSource.contains("extends CreeperRenderer"));
@@ -87,18 +98,36 @@ class CavenicCreeperResourcesTest {
     }
 
     @Test
-    void cavenicCreeperResourcesCoverLangSpawnEggModelTextureAndNoFollowUpResourcesOnClasspath() throws IOException {
+    void cavenicCreeperResourcesCoverLangSpawnEggModelTextureAndNaturalSpawnDataClasspath() throws IOException {
         JsonObject lang = readJsonResource("assets/cavernreborn/lang/en_us.json");
         JsonObject spawnEggModel = readJsonResource("assets/cavernreborn/models/item/cavenic_creeper_spawn_egg.json");
+        JsonObject biomeModifier = readJsonResource("data/cavernreborn/neoforge/biome_modifier/cavenic_creeper_spawns.json");
+        JsonObject biomeTag = readJsonResource("data/cavernreborn/tags/worldgen/biome/spawns_cavenic_creeper.json");
 
         assertEquals("Cavenic Creeper", lang.get("entity.cavernreborn.cavenic_creeper").getAsString());
         assertEquals("Cavenic Creeper Spawn Egg", lang.get("item.cavernreborn.cavenic_creeper_spawn_egg").getAsString());
         assertEquals("minecraft:item/template_spawn_egg", spawnEggModel.get("parent").getAsString());
+        assertEquals("neoforge:add_spawns", biomeModifier.get("type").getAsString());
+        assertEquals("#cavernreborn:spawns_cavenic_creeper", biomeModifier.get("biomes").getAsString());
+
+        JsonObject spawner = biomeModifier.getAsJsonObject("spawners");
+        assertEquals("cavernreborn:cavenic_creeper", spawner.get("type").getAsString());
+        assertEquals(30, spawner.get("weight").getAsInt());
+        assertEquals(1, spawner.get("minCount").getAsInt());
+        assertEquals(1, spawner.get("maxCount").getAsInt());
+
+        assertFalse(biomeTag.get("replace").getAsBoolean());
+        assertEquals(List.of(
+            "cavernreborn:stone_depths",
+            "cavernreborn:lush_grotto",
+            "cavernreborn:dripstone_grotto",
+            "cavernreborn:highland_hollows"
+        ), StreamSupport.stream(biomeTag.getAsJsonArray("values").spliterator(), false).map(element -> element.getAsString()).toList());
 
         assertClassPathOrigin(resourceUrl("assets/cavernreborn/models/item/cavenic_creeper_spawn_egg.json"), "assets/cavernreborn/models/item/cavenic_creeper_spawn_egg.json");
         assertClassPathOrigin(resourceUrl("assets/cavernreborn/textures/entity/cavenic_creeper.png"), "assets/cavernreborn/textures/entity/cavenic_creeper.png");
-        assertMissingResource("data/cavernreborn/neoforge/biome_modifier/cavenic_creeper_spawns.json");
-        assertMissingResource("data/cavernreborn/tags/worldgen/biome/spawns_cavenic_creeper.json");
+        assertClassPathOrigin(resourceUrl("data/cavernreborn/neoforge/biome_modifier/cavenic_creeper_spawns.json"), "data/cavernreborn/neoforge/biome_modifier/cavenic_creeper_spawns.json");
+        assertClassPathOrigin(resourceUrl("data/cavernreborn/tags/worldgen/biome/spawns_cavenic_creeper.json"), "data/cavernreborn/tags/worldgen/biome/spawns_cavenic_creeper.json");
         assertMissingResource("data/cavernreborn/loot_table/entities/cavenic_creeper.json");
         assertMissingResource("data/cavernreborn/loot_tables/entities/cavenic_creeper.json");
     }

@@ -81,8 +81,10 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("legacy fall-damage reduction and fire-damage immunity"));
         assertTrue(readme.contains("Cavenic Creeper Baseline MVP"));
         assertTrue(readme.contains("docs/cavenic-creeper-baseline-mvp.md"));
+        assertTrue(readme.contains("Cavenic Creeper Natural Spawn MVP"));
+        assertTrue(readme.contains("docs/cavenic-creeper-natural-spawn-mvp.md"));
         assertTrue(readme.contains("third direct Cavenic mob foundation"));
-        assertTrue(readme.contains("custom explosion behavior"));
+        assertTrue(readme.contains("bounded CAVERN-only natural spawning"));
     }
 
     @Test
@@ -158,6 +160,10 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("cavenic creeper vanilla loot-table baseline smoke"));
         assertTrue(doc.contains("cavenic creeper spawn egg resolution"));
         assertTrue(doc.contains("cavenic creeper spawn egg entity-creation smoke"));
+        assertTrue(doc.contains("cavenic creeper natural spawn placement registration"));
+        assertTrue(doc.contains("cavenic creeper CAVERN-only spawn predicate smoke"));
+        assertTrue(doc.contains("cavenic creeper biome modifier registry smoke"));
+        assertTrue(doc.contains("cavenic creeper biome tag resolution"));
         assertTrue(doc.contains("cavenic bow enchantment applicability"));
         assertTrue(doc.contains("cavenic bow cavenic item tag resolution"));
         assertTrue(doc.contains("cavenic bow recipe manager resolution"));
@@ -222,7 +228,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("actual Cavenic Zombie renderer/model visual feel"));
         assertTrue(doc.contains("actual Cavenic Skeleton renderer/model visual feel"));
         assertTrue(doc.contains("actual Cavenic Creeper renderer/model visual feel"));
-        assertTrue(doc.contains("natural spawning for Cavenic Creeper in this baseline slice"));
+        assertTrue(doc.contains("actual long-run Cavenic Creeper population balance inside CAVERN"));
         assertTrue(doc.contains("actual long-run cavenic zombie orb-drop rate balance"));
         assertTrue(doc.contains("actual long-run cavenic skeleton orb-drop rate balance"));
         assertTrue(doc.contains("actual long-running Cavenic Zombie fire/lava gameplay feel"));

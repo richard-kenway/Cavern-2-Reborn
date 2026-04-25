@@ -40,5 +40,12 @@ public final class ModEntityEvents {
             CavenicSkeleton::checkCavenicSkeletonSpawnRules,
             RegisterSpawnPlacementsEvent.Operation.REPLACE
         );
+        event.register(
+            ModRegistries.CAVENIC_CREEPER.get(),
+            SpawnPlacementTypes.ON_GROUND,
+            Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+            CavenicCreeper::checkCavenicCreeperSpawnRules,
+            RegisterSpawnPlacementsEvent.Operation.REPLACE
+        );
     }
 }
