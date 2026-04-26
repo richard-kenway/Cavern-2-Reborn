@@ -126,7 +126,6 @@ class CavenicSpiderResourcesTest {
         assertTrue(rendererSource.contains("extends SpiderRenderer<CavenicSpider>"));
         assertTrue(rendererSource.contains("textures/entity/cavenic_spider.png"));
 
-        assertFalse(registriesSource.contains("cavenic_bear"));
         assertFalse(registriesSource.toLowerCase().contains("cavenia"));
         assertFalse(registriesSource.contains("EntityRapidArrow"));
         assertFalse(registriesSource.contains("EntityTorchArrow"));

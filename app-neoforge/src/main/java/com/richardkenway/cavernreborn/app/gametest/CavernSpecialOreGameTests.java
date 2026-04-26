@@ -16,6 +16,7 @@ import com.richardkenway.cavernreborn.app.compass.OreCompassScanner;
 import com.richardkenway.cavernreborn.app.compass.OreCompassTarget;
 import com.richardkenway.cavernreborn.app.compass.StoredOreCompassTarget;
 import com.richardkenway.cavernreborn.app.dimension.CavernNeoForgeDimensions;
+import com.richardkenway.cavernreborn.app.entity.CavenicBear;
 import com.richardkenway.cavernreborn.app.entity.CavenicCreeper;
 import com.richardkenway.cavernreborn.app.entity.CavenicCreeperLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CavenicSkeleton;
@@ -94,6 +95,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Cow;
+import net.minecraft.world.entity.animal.PolarBear;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
@@ -201,6 +203,8 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_WITCH_FRIENDSHIP_TARGETING_ANCHOR = new BlockPos(4384, 96, 0);
     private static final BlockPos CAVENIC_WITCH_RANGED_POTION_ANCHOR = new BlockPos(4480, 96, 0);
     private static final BlockPos CAVENIC_WITCH_RANGED_POTION_SELECTION_ANCHOR = new BlockPos(4576, 96, 0);
+    private static final BlockPos CAVENIC_BEAR_ANCHOR = new BlockPos(4672, 96, 0);
+    private static final BlockPos CAVENIC_BEAR_SPAWN_EGG_ANCHOR = new BlockPos(4768, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -2611,6 +2615,72 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBearRegistersAtRuntime(GameTestHelper helper) {
+        helper.assertTrue(ModRegistries.CAVENIC_BEAR.get() != null, "Missing cavenic bear entity type");
+        helper.assertTrue(ModRegistries.CAVENIC_BEAR_SPAWN_EGG.get() != null, "Missing cavenic bear spawn egg");
+
+        assertRegistryId(helper, ModRegistries.CAVENIC_BEAR.get(), "cavernreborn:cavenic_bear");
+        assertRegistryId(helper, ModRegistries.CAVENIC_BEAR_SPAWN_EGG.get(), "cavernreborn:cavenic_bear_spawn_egg");
+
+        ItemStack spawnEgg = cavenicBearSpawnEgg();
+        helper.assertTrue(!spawnEgg.isEmpty(), "Expected cavenic bear spawn egg to be constructible");
+        helper.assertTrue(spawnEgg.getItem() instanceof SpawnEggItem, "Expected cavenic bear spawn egg runtime item");
+        helper.assertTrue(
+            ((SpawnEggItem) spawnEgg.getItem()).spawnsEntity(spawnEgg, ModRegistries.CAVENIC_BEAR.get()),
+            "Expected cavenic bear spawn egg to resolve the cavenic bear entity type"
+        );
+        helper.assertTrue(
+            ModRegistries.CAVENIC_BEAR.get().getCategory() == MobCategory.MONSTER,
+            "Expected cavenic bear type category to stay MONSTER"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBearSpawnsWithExpectedAttributesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_BEAR_ANCHOR;
+
+        resetMiningArea(level, origin, 8.0D);
+        CavenicBear cavenicBear = spawnLivingEntity(helper, ModRegistries.CAVENIC_BEAR.get(), origin);
+        PolarBear vanillaPolarBear = spawnLivingEntity(helper, EntityType.POLAR_BEAR, origin.east(4));
+
+        helper.assertTrue(cavenicBear instanceof PolarBear, "Expected cavenic bear to keep vanilla polar bear behavior");
+        helper.assertTrue(cavenicBear.getType().getCategory() == MobCategory.MONSTER, "Expected cavenic bear type category to stay MONSTER");
+        helper.assertTrue(cavenicBear.isAlive(), "Expected spawned cavenic bear to be alive");
+        helper.assertTrue(Math.abs(cavenicBear.getMaxHealth() - 60.0D) < 1.0E-6D, "Expected cavenic bear max health to map to legacy 60.0");
+        helper.assertTrue(Math.abs(cavenicBear.getAttributeValue(Attributes.MAX_HEALTH) - 60.0D) < 1.0E-6D, "Expected cavenic bear MAX_HEALTH attribute to be 60.0");
+        helper.assertTrue(Math.abs(cavenicBear.getAttributeValue(Attributes.MOVEMENT_SPEED) - 0.3D) < 1.0E-6D, "Expected cavenic bear movement speed to map to legacy 0.3");
+        helper.assertTrue(Math.abs(cavenicBear.getAttributeValue(Attributes.ATTACK_DAMAGE) - 7.0D) < 1.0E-6D, "Expected cavenic bear attack damage to map to legacy 7.0");
+        helper.assertTrue(
+            Math.abs(cavenicBear.getAttributeValue(Attributes.FOLLOW_RANGE) - vanillaPolarBear.getAttributeValue(Attributes.FOLLOW_RANGE)) < 1.0E-6D,
+            "Expected cavenic bear follow range to stay on the vanilla polar bear baseline"
+        );
+        helper.assertTrue(
+            cavenicBear.getLootTable().equals(EntityType.POLAR_BEAR.getDefaultLootTable()),
+            "Expected cavenic bear to keep the vanilla polar bear loot table as its baseline"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBearSpawnEggCreatesRuntimeEntity(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos supportPos = CAVENIC_BEAR_SPAWN_EGG_ANCHOR;
+
+        resetMiningArea(level, supportPos, 8.0D);
+        level.setBlock(supportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+
+        ItemStack spawnEgg = cavenicBearSpawnEgg();
+        Player player = makeMockPlayer(helper, level, GameType.SURVIVAL, spawnEgg.copy(), supportPos.south(2));
+        Entity spawnedEntity = ModRegistries.CAVENIC_BEAR.get().spawn(level, spawnEgg, player, supportPos.above(), MobSpawnType.SPAWN_EGG, true, true);
+
+        helper.assertTrue(spawnedEntity instanceof CavenicBear, "Expected spawn egg to create a CavenicBear runtime entity");
+        helper.assertTrue(spawnedEntity != null && spawnedEntity.isAlive(), "Expected spawned cavenic bear to be alive");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void cavenicMeleeRegistersAtRuntime(GameTestHelper helper) {
         helper.assertTrue(ModRegistries.CAVENIC_SWORD.get() != null, "Missing cavenic sword");
         helper.assertTrue(ModRegistries.CAVENIC_AXE.get() != null, "Missing cavenic axe");
@@ -4463,6 +4533,10 @@ public final class CavernSpecialOreGameTests {
 
     private static ItemStack cavenicWitchSpawnEgg() {
         return new ItemStack(ModRegistries.CAVENIC_WITCH_SPAWN_EGG.get());
+    }
+
+    private static ItemStack cavenicBearSpawnEgg() {
+        return new ItemStack(ModRegistries.CAVENIC_BEAR_SPAWN_EGG.get());
     }
 
     private static DamageSource witchOwnedPotionDamageSource(ServerLevel level, Witch owner) {

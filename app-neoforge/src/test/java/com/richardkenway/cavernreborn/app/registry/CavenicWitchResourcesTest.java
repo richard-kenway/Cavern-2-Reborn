@@ -165,7 +165,6 @@ class CavenicWitchResourcesTest {
         assertTrue(rendererSource.contains("getTextureLocation(Witch entity)"));
         assertTrue(rendererSource.contains("textures/entity/cavenic_witch.png"));
 
-        assertFalse(registriesSource.contains("cavenic_bear"));
         assertFalse(registriesSource.contains("magic_book"));
         assertFalse(registriesSource.contains("ItemMagicBook"));
         assertFalse(registriesSource.toLowerCase().contains("cavenia"));

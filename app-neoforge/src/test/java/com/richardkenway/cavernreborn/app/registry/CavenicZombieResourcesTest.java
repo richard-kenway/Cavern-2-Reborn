@@ -108,7 +108,6 @@ class CavenicZombieResourcesTest {
         assertTrue(rendererSource.contains("extends ZombieRenderer"));
         assertTrue(rendererSource.contains("textures/entity/cavenic_zombie.png"));
 
-        assertFalse(registriesSource.contains("cavenic_bear"));
         assertFalse(registriesSource.toLowerCase().contains("cavenia"));
         assertFalse(generatedResourcesContain("cavenic_zombie"));
         assertFalse(registriesSource.contains("EntityRapidArrow"));
