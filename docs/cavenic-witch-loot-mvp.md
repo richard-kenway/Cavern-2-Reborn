@@ -53,7 +53,7 @@ Legacy `dropLoot(...)` does not use `lootingModifier`, `wasRecentlyHit`, dimensi
 - Fall/fire damage behavior remains unchanged and is now documented separately in `docs/cavenic-witch-damage-behavior-mvp.md`.
 - Same-type/self source immunity remains unchanged and is now documented separately in `docs/cavenic-witch-projectile-immunity-mvp.md`.
 - Friendship targeting remains unchanged and is now documented separately in `docs/cavenic-witch-friendship-targeting-mvp.md`.
-- Custom potion logic and custom ranged attack behavior remain out of scope.
+- The bounded custom ranged-potion follow-up is now documented separately in `docs/cavenic-witch-ranged-potion-mvp.md`.
 
 ## Testing
 
@@ -75,7 +75,7 @@ Legacy `dropLoot(...)` does not use `lootingModifier`, `wasRecentlyHit`, dimensi
 - The deferred legacy magic-book branch
 - Fall/fire damage behavior
 - Same-type/self source immunity
-- Custom potion logic and custom ranged attack behavior
+- Any broader potion/raid behavior beyond the restored ranged-potion follow-up
 - Same-type friendship targeting
 - Additional Cavenic mobs
 - Cavenia

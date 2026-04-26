@@ -54,7 +54,8 @@ Vanilla `Witch` sources are not included.
 - friendship targeting remains a separate bounded follow-up because the legacy `setAttackTarget(...)` rewrite is not required for this bounded immunity slice.
 - attributes, natural spawning and `1/5` orb-drop behavior remain unchanged.
 - The deferred magic-book branch remains documented in `docs/cavenic-witch-loot-mvp.md`.
-- custom potion/ranged behavior, Cavenia and additional mobs remain out of scope.
+- The bounded custom ranged-potion follow-up is documented separately in `docs/cavenic-witch-ranged-potion-mvp.md`.
+- Cavenia and additional mobs remain out of scope.
 
 ## Why This Mapping Is Safe
 
@@ -83,7 +84,7 @@ Vanilla `Witch` sources are not included.
 ## Still Out Of Scope
 
 - The deferred legacy magic-book branch
-- Custom potion logic and custom ranged attack behavior
+- Any broader potion/raid behavior beyond the restored ranged-potion follow-up
 - Same-type friendship targeting
 - Cavenia
 - Additional Cavenic mobs

@@ -2,7 +2,7 @@
 
 This note documents the bounded friendship-targeting follow-up for the existing `cavernreborn:cavenic_witch`.
 
-It does not add a new mob, loot changes, natural-spawn changes, custom potion logic, custom ranged attack behavior, AI-goal rewrites or magic-book support. It only restores the small confirmed legacy same-type target rejection from `EntityCavenicWitch`.
+It does not add a new mob, loot changes, natural-spawn changes, AI-goal rewrites or magic-book support. It only restores the small confirmed legacy same-type target rejection from `EntityCavenicWitch`.
 
 ## Legacy References Inspected
 
@@ -50,7 +50,8 @@ That means the legacy targeting rule was narrow:
 - Fall/fire damage behavior remains unchanged and is still documented in `docs/cavenic-witch-damage-behavior-mvp.md`.
 - Attributes, natural spawning and `1/5` orb-drop behavior remain unchanged.
 - The deferred magic-book branch remains documented in `docs/cavenic-witch-loot-mvp.md`.
-- Custom potion logic, custom ranged attack behavior, Cavenia and additional mobs remain out of scope.
+- The bounded custom ranged-potion follow-up is documented separately in `docs/cavenic-witch-ranged-potion-mvp.md`.
+- Cavenia and additional mobs remain out of scope.
 
 ## Why This Mapping Is Safe
 
@@ -58,7 +59,7 @@ That means the legacy targeting rule was narrow:
 - Reborn keeps the implementation entity-local instead of adding a global targeting event or a broad friendship framework.
 - `setTarget(@Nullable LivingEntity target)` is the narrowest modern hook for the old `setAttackTarget(...)` behavior.
 - The separate legacy same-type/self source-immunity rule remains unchanged and does not need to be widened to restore targeting parity.
-- No AI goals, target selectors or potion logic are rewritten here.
+- No AI goals or target selectors are rewritten here.
 
 ## Testing
 
@@ -78,7 +79,7 @@ That means the legacy targeting rule was narrow:
 ## Still Out Of Scope
 
 - The deferred legacy magic-book branch
-- Custom potion logic and custom ranged attack behavior
+- Any broader potion/raid behavior beyond the restored ranged-potion follow-up
 - AI-goal or target-selector rewrites
 - Cavenia
 - Additional Cavenic mobs

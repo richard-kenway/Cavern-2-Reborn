@@ -123,6 +123,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/cavenic-witch-projectile-immunity-mvp.md"));
         assertTrue(readme.contains("Cavenic Witch Friendship Targeting MVP"));
         assertTrue(readme.contains("docs/cavenic-witch-friendship-targeting-mvp.md"));
+        assertTrue(readme.contains("Cavenic Witch Custom Ranged Potion MVP"));
+        assertTrue(readme.contains("docs/cavenic-witch-ranged-potion-mvp.md"));
         assertTrue(readme.contains("fifth direct Cavenic mob foundation"));
         assertTrue(readme.contains("bounded CAVERN-only natural spawning"));
         assertTrue(readme.contains("vanilla witch loot baseline"));
@@ -130,7 +132,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("legacy fall-damage reduction and fire-damage immunity behavior"));
         assertTrue(readme.contains("legacy same-type/self source-immunity behavior"));
         assertTrue(readme.contains("legacy same-type friendship-target rejection behavior"));
-        assertTrue(readme.contains("the deferred magic-book branch and custom potion logic remain intentionally out of scope"));
+        assertTrue(readme.contains("restored legacy ranged-potion behavior for normal combat targets"));
+        assertTrue(readme.contains("the modern non-witch Raider-heal branch and the deferred magic-book branch remain intentional bounded bridges"));
     }
 
     @Test
@@ -325,7 +328,12 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("actual long-running Cavenic Spider combat/pathfinding feel"));
         assertTrue(doc.contains("actual poison/web-based Cavenic Spider gameplay behavior"));
         assertTrue(doc.contains("actual Cavenic Witch combat, potion-throw and pathfinding feel"));
-        assertTrue(doc.contains("custom Cavenic Witch potion/ranged behavior remains out of scope until a dedicated slice"));
+        assertTrue(doc.contains("cavenic witch legacy ranged-potion runtime smoke"));
+        assertTrue(doc.contains("cavenic witch deterministic legacy potion-selection smoke"));
+        assertTrue(doc.contains("cavenic witch deterministic legacy thrown-potion construction smoke"));
+        assertTrue(doc.contains("cavenic witch direct non-friend ranged-attack branch smoke"));
+        assertTrue(doc.contains("cavenic witch preserved non-witch Raider bridge smoke"));
+        assertTrue(doc.contains("any broader Cavenic Witch AI-goal or target-selector rewrite beyond the restored ranged-potion slice"));
         assertTrue(doc.contains("actual long-running Cavenic Witch fire/lava gameplay feel"));
         assertTrue(doc.contains("actual long-run cavenic witch orb-drop rate balance"));
         assertTrue(doc.contains("actual long-run Cavenic Witch population balance inside CAVERN"));

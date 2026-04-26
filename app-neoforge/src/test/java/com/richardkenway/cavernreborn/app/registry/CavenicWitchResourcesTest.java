@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CavenicWitchResourcesTest {
     @Test
-    void cavenicWitchRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnLootDamageProjectileImmunityFriendshipTargetingAndVanillaWitchBaselineBoundaries() throws IOException {
+    void cavenicWitchRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnLootDamageProjectileImmunityFriendshipTargetingRangedPotionAndVanillaWitchBaselineBoundaries() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -88,13 +88,36 @@ class CavenicWitchResourcesTest {
         assertTrue(entitySource.contains("super.setTarget(target);"));
         assertTrue(entitySource.contains("public boolean isLegacyFriendTarget(@Nullable LivingEntity target)"));
         assertTrue(entitySource.contains("return target instanceof CavenicWitch;"));
+        assertTrue(entitySource.contains("public static final float LEGACY_RANGED_POISON_OR_HEAL_HIGH_HEALTH_CHANCE = 0.5F;"));
+        assertTrue(entitySource.contains("public static final float LEGACY_RANGED_POISON_OR_HEAL_LOW_HEALTH_CHANCE = 0.3F;"));
+        assertTrue(entitySource.contains("public static final float LEGACY_RANGED_WEAKNESS_CHANCE = 0.25F;"));
+        assertTrue(entitySource.contains("public static final float LEGACY_RANGED_SLOWNESS_CHANCE = 0.2F;"));
+        assertTrue(entitySource.contains("public static final float LEGACY_RANGED_POTION_SPEED = 0.75F;"));
+        assertTrue(entitySource.contains("public static final float LEGACY_RANGED_POTION_INACCURACY = 8.0F;"));
+        assertTrue(entitySource.contains("public static final float LEGACY_RANGED_POTION_PITCH_OFFSET = 20.0F;"));
+        assertTrue(entitySource.contains("public void performRangedAttack(LivingEntity target, float distanceFactor)"));
+        assertTrue(entitySource.contains("if (target instanceof Raider && !(target instanceof Witch))"));
+        assertTrue(entitySource.contains("super.performRangedAttack(target, distanceFactor);"));
+        assertTrue(entitySource.contains("public List<ThrownPotion> createLegacyThrownPotionsFor(LivingEntity target)"));
+        assertTrue(entitySource.contains("getLegacyAttackPotionCount(this.level().getDifficulty())"));
+        assertTrue(entitySource.contains("public static int getLegacyAttackPotionCount(Difficulty difficulty)"));
+        assertTrue(entitySource.contains("return difficulty.getId();"));
+        assertTrue(entitySource.contains("public static Holder<Potion> selectLegacyRangedPotionFor(LivingEntity target, RandomSource random)"));
+        assertTrue(entitySource.contains("Potions.HARMING"));
+        assertTrue(entitySource.contains("Potions.HEALING"));
+        assertTrue(entitySource.contains("Potions.POISON"));
+        assertTrue(entitySource.contains("Potions.WEAKNESS"));
+        assertTrue(entitySource.contains("Potions.SLOWNESS"));
+        assertTrue(entitySource.contains("target.isInvertedHealAndHarm() ? Potions.HEALING : Potions.POISON"));
+        assertTrue(entitySource.contains("new ThrownPotion(this.level(), this)"));
+        assertTrue(entitySource.contains("PotionContents.createItemStack(Items.SPLASH_POTION, potion)"));
+        assertTrue(entitySource.contains("SoundEvents.WITCH_THROW"));
         assertTrue(entitySource.contains("return EntityType.WITCH.getDefaultLootTable();"));
         assertTrue(entitySource.contains("canNaturallySpawnInDimension"));
         assertTrue(entitySource.contains("checkCavenicWitchSpawnRules"));
         assertTrue(entitySource.contains("CavernNeoForgeDimensions.isCavern"));
         assertTrue(entitySource.contains("Monster.checkMonsterSpawnRules"));
         assertFalse(entitySource.contains("registerGoals("));
-        assertFalse(entitySource.contains("performRangedAttack("));
         assertFalse(entitySource.contains("aiStep("));
         assertFalse(entitySource.contains("isEntityInvulnerable("));
         assertFalse(entitySource.contains("setAttackTarget("));

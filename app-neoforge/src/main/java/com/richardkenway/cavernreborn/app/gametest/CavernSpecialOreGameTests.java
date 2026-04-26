@@ -114,6 +114,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -195,6 +198,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_WITCH_DAMAGE_ANCHOR = new BlockPos(4192, 96, 0);
     private static final BlockPos CAVENIC_WITCH_PROJECTILE_IMMUNITY_ANCHOR = new BlockPos(4288, 96, 0);
     private static final BlockPos CAVENIC_WITCH_FRIENDSHIP_TARGETING_ANCHOR = new BlockPos(4384, 96, 0);
+    private static final BlockPos CAVENIC_WITCH_RANGED_POTION_ANCHOR = new BlockPos(4480, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -2372,6 +2376,188 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicWitchLegacyRangedPotionBehaviorAppliesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_WITCH_RANGED_POTION_ANCHOR;
+        CavenicWitch cavenicWitch;
+        Zombie cavenicTarget;
+        List<ThrownPotion> legacyPotions;
+        int expectedPotionCount;
+        long seed = 12345L;
+        RandomSource expectedRandom = RandomSource.create(seed);
+        List<Holder<Potion>> expectedPotions = new ArrayList<>();
+
+        resetMiningArea(level, origin, 24.0D);
+
+        cavenicWitch = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin);
+        cavenicTarget = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.east(16));
+        expectedPotionCount = CavenicWitch.getLegacyAttackPotionCount(level.getDifficulty());
+
+        helper.assertTrue(expectedPotionCount > 0, "Expected GameTest difficulty to allow at least one legacy cavenic witch ranged-potion throw");
+
+        for (int i = 0; i < expectedPotionCount; i++) {
+            expectedPotions.add(CavenicWitch.selectLegacyRangedPotionFor(cavenicTarget, expectedRandom));
+        }
+
+        cavenicWitch.setSilent(true);
+        cavenicWitch.setUsingItem(false);
+
+        cavenicWitch.getRandom().setSeed(seed);
+        legacyPotions = cavenicWitch.createLegacyThrownPotionsFor(cavenicTarget);
+
+        helper.assertTrue(
+            legacyPotions.size() == expectedPotionCount,
+            "Expected cavenic witch helper construction to preserve the legacy difficulty-scaled potion count"
+        );
+
+        for (int i = 0; i < legacyPotions.size(); i++) {
+            ThrownPotion potion = legacyPotions.get(i);
+            Holder<Potion> expectedPotion = expectedPotions.get(i);
+
+            helper.assertTrue(potion.getOwner() == cavenicWitch, "Expected cavenic witch ranged potions to preserve the owner/source");
+            helper.assertTrue(potion.getItem().is(Items.SPLASH_POTION), "Expected cavenic witch ranged attack to throw splash-potion projectiles");
+            helper.assertTrue(
+                potionContents(potion).is(expectedPotion),
+                "Expected cavenic witch ranged attack to use the legacy seeded potion-selection result for each throw"
+            );
+            helper.assertTrue(
+                potion.getDeltaMovement().length() > 0.0D,
+                "Expected constructed legacy ranged potions to keep a non-zero throw trajectory"
+            );
+        }
+
+        cavenicWitch.setTarget(cavenicTarget);
+        cavenicWitch.getRandom().setSeed(seed);
+        cavenicWitch.performRangedAttack(cavenicTarget, 1.0F);
+        helper.assertTrue(
+            cavenicWitch.getTarget() == cavenicTarget,
+            "Expected direct legacy ranged-attack calls to keep the current non-friend combat target"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicWitchLegacyRangedPotionKeepsExistingSlicesStableAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_WITCH_RANGED_POTION_ANCHOR.south(16);
+        CavenicWitch actor;
+        CavenicWitch friendTarget;
+        Zombie zombieTarget;
+        Witch vanillaWitchTarget;
+        LivingEntity pillagerTarget;
+        CavenicWitch cavenicProjectileOwner;
+        Witch vanillaProjectileOwner;
+        List<ThrownPotion> combatPotions;
+
+        resetMiningArea(level, origin, 32.0D);
+
+        actor = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin);
+        friendTarget = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin.east(4));
+        zombieTarget = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.west(4));
+        vanillaWitchTarget = spawnLivingEntity(helper, EntityType.WITCH, origin.west(8));
+        pillagerTarget = spawnLivingEntity(helper, EntityType.PILLAGER, origin.east(16));
+        cavenicProjectileOwner = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin.north(8));
+        vanillaProjectileOwner = spawnLivingEntity(helper, EntityType.WITCH, origin.north(8).east(4));
+        actor.setSilent(true);
+        actor.setUsingItem(false);
+
+        helper.assertTrue(
+            CavenicWitch.getLegacyAttackPotionCount(Difficulty.PEACEFUL) == 0
+                && CavenicWitch.getLegacyAttackPotionCount(Difficulty.EASY) == 1
+                && CavenicWitch.getLegacyAttackPotionCount(Difficulty.NORMAL) == 2
+                && CavenicWitch.getLegacyAttackPotionCount(Difficulty.HARD) == 3,
+            "Expected cavenic witch legacy ranged-potion count to stay pinned to the old difficulty-id mapping"
+        );
+
+        actor.setTarget(pillagerTarget);
+        actor.performRangedAttack(pillagerTarget, 1.0F);
+        helper.assertTrue(
+            actor.getTarget() == null,
+            "Expected non-witch Raider targets to keep the vanilla ranged-attack bridge that clears the active target"
+        );
+
+        actor.setTarget(zombieTarget);
+        combatPotions = actor.createLegacyThrownPotionsFor(zombieTarget);
+        helper.assertTrue(
+            combatPotions.size() == CavenicWitch.getLegacyAttackPotionCount(level.getDifficulty()),
+            "Expected normal combat targets to keep the legacy difficulty-scaled ranged-potion count"
+        );
+        helper.assertTrue(
+            combatPotions.stream().allMatch(potion -> potion.getOwner() == actor),
+            "Expected helper-constructed legacy ranged potions to keep the cavenic witch owner/source"
+        );
+        actor.performRangedAttack(zombieTarget, 1.0F);
+        helper.assertTrue(
+            actor.getTarget() == zombieTarget,
+            "Expected direct legacy ranged-attack calls against non-friend combat targets to keep the current target"
+        );
+
+        actor.setTarget(friendTarget);
+        helper.assertTrue(
+            actor.getTarget() == zombieTarget,
+            "Expected same-type friendship-target rejection to remain unchanged after the ranged-potion follow-up"
+        );
+        actor.setTarget(vanillaWitchTarget);
+        helper.assertTrue(
+            actor.getTarget() == vanillaWitchTarget,
+            "Expected vanilla witch targets to remain allowed because friendship targeting still only rejects CavenicWitch"
+        );
+        actor.setTarget(null);
+        helper.assertTrue(actor.getTarget() == null, "Expected explicit null target clearing to remain vanilla-like");
+
+        helper.assertTrue(
+            actor.isLegacyCavenicWitchSourceImmuneTo(witchOwnedPotionDamageSource(level, cavenicProjectileOwner)),
+            "Expected same-type/self source immunity to remain unchanged after restoring legacy ranged-potion behavior"
+        );
+        helper.assertFalse(
+            actor.isLegacyCavenicWitchSourceImmuneTo(witchOwnedPotionDamageSource(level, vanillaProjectileOwner)),
+            "Expected non-cavenic witch-owned projectile sources to remain non-immune"
+        );
+
+        CavenicWitch cavenicFallWitch = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin.south(8));
+        float fallDamage = 10.0F;
+        float cavenicFallHealthBefore = cavenicFallWitch.getHealth();
+
+        helper.assertTrue(
+            cavenicFallWitch.hurt(level.damageSources().fall(), fallDamage),
+            "Expected ranged-potion follow-up to keep the legacy fall-damage path active"
+        );
+        helper.assertTrue(
+            Math.abs((cavenicFallHealthBefore - cavenicFallWitch.getHealth()) - (fallDamage * CavenicWitch.LEGACY_FALL_DAMAGE_MULTIPLIER)) < 1.0E-6F,
+            "Expected cavenic witch fall damage to stay pinned to the legacy 0.35 multiplier"
+        );
+
+        CavenicWitch cavenicFireWitch = spawnLivingEntity(helper, ModRegistries.CAVENIC_WITCH.get(), origin.south(8).east(4));
+        float fireDamage = 4.0F;
+        float cavenicFireHealthBefore = cavenicFireWitch.getHealth();
+
+        helper.assertFalse(
+            cavenicFireWitch.hurt(level.damageSources().lava(), fireDamage),
+            "Expected ranged-potion follow-up to keep legacy fire-tagged damage rejection"
+        );
+        helper.assertTrue(
+            Math.abs(cavenicFireHealthBefore - cavenicFireWitch.getHealth()) < 1.0E-6F,
+            "Expected cavenic witch health to stay unchanged after fire-tagged damage"
+        );
+
+        helper.assertTrue(
+            actor.getLootTable().equals(EntityType.WITCH.getDefaultLootTable()),
+            "Expected cavenic witch ranged-potion follow-up to keep the vanilla witch loot-table baseline"
+        );
+        helper.assertTrue(
+            CavenicWitchLootPolicy.ORB_DROP_ROLL_BOUND == 5,
+            "Expected cavenic witch orb drop roll bound to remain pinned while restoring legacy ranged-potion behavior"
+        );
+        helper.assertTrue(
+            CavenicWitch.NATURAL_SPAWN_WEIGHT == 15
+                && CavenicWitch.NATURAL_SPAWN_MIN_COUNT == 1
+                && CavenicWitch.NATURAL_SPAWN_MAX_COUNT == 1,
+            "Expected cavenic witch natural spawn constants to stay unchanged while restoring legacy ranged-potion behavior"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void cavenicMeleeRegistersAtRuntime(GameTestHelper helper) {
         helper.assertTrue(ModRegistries.CAVENIC_SWORD.get() != null, "Missing cavenic sword");
         helper.assertTrue(ModRegistries.CAVENIC_AXE.get() != null, "Missing cavenic axe");
@@ -4232,6 +4418,10 @@ public final class CavernSpecialOreGameTests {
         return level.damageSources().indirectMagic(potion, owner);
     }
 
+    private static PotionContents potionContents(ThrownPotion potion) {
+        return potion.getItem().getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
+    }
+
     private static AbstractArrow createRuntimeArrow(ServerLevel level, Player player, ItemStack bow) {
         return ((ArrowItem) Items.ARROW).createArrow(level, new ItemStack(Items.ARROW), player, bow);
     }
@@ -4316,6 +4506,10 @@ public final class CavernSpecialOreGameTests {
 
     private static List<AbstractArrow> arrowsAround(ServerLevel level, BlockPos center, double radius) {
         return level.getEntitiesOfClass(AbstractArrow.class, new AABB(center).inflate(radius));
+    }
+
+    private static List<ThrownPotion> thrownPotionsAround(ServerLevel level, BlockPos center, double radius) {
+        return level.getEntitiesOfClass(ThrownPotion.class, new AABB(center).inflate(radius));
     }
 
     private static ItemStack aquamarineAxe() {

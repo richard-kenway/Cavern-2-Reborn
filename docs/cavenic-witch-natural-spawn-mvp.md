@@ -68,12 +68,13 @@ It does not add a new mob. It only makes the already registered `cavernreborn:ca
 - The bounded legacy damage-behavior follow-up is now documented separately in `docs/cavenic-witch-damage-behavior-mvp.md`.
 - The bounded legacy same-type/self source-immunity follow-up is now documented separately in `docs/cavenic-witch-projectile-immunity-mvp.md`.
 - The bounded friendship-targeting follow-up is now documented separately in `docs/cavenic-witch-friendship-targeting-mvp.md`.
+- The bounded custom ranged-potion follow-up is now documented separately in `docs/cavenic-witch-ranged-potion-mvp.md`.
 - the restored legacy `1/5` `cavenic_orb` drop remains unchanged
 - the deferred magic-book branch still needs a Reborn magic-book foundation
 - the restored legacy fall-damage reduction and fire-damage immunity behavior remain unchanged
 - the restored legacy same-type/self source-immunity behavior remains unchanged
 - the restored same-type friendship-target rejection behavior is now documented separately in `docs/cavenic-witch-friendship-targeting-mvp.md`.
-- custom potion logic and custom ranged attack behavior remain out of scope
+- the restored legacy ranged-potion behavior is now documented separately in `docs/cavenic-witch-ranged-potion-mvp.md`.
 - the legacy `getMaxSpawnedInChunk()` Cavenia-specific behavior remains out of scope
 - additional Cavenic mobs remain out of scope
 - Cavenia remains out of scope

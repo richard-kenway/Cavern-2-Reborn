@@ -60,6 +60,7 @@ The legacy repo contains a direct `EntityCavenicWitch`, so this increment stays 
 - The bounded legacy damage-behavior follow-up is now documented separately in `docs/cavenic-witch-damage-behavior-mvp.md`.
 - The bounded legacy same-type/self source-immunity follow-up is now documented separately in `docs/cavenic-witch-projectile-immunity-mvp.md`.
 - The bounded friendship-targeting follow-up is now documented separately in `docs/cavenic-witch-friendship-targeting-mvp.md`.
+- The bounded custom ranged-potion follow-up is now documented separately in `docs/cavenic-witch-ranged-potion-mvp.md`.
 - custom loot beyond the restored `1/5` `cavenic_orb` drop remains out of scope for this baseline slice.
 - the legacy magic-book branch remains deferred because Reborn does not yet have a magic-book foundation.
 
@@ -69,14 +70,14 @@ The legacy repo contains a direct `EntityCavenicWitch`, so this increment stays 
 - legacy fall/fire damage behavior is now documented separately in `docs/cavenic-witch-damage-behavior-mvp.md`.
 - legacy same-type/self source immunity is now documented separately in `docs/cavenic-witch-projectile-immunity-mvp.md`.
 - legacy same-type friendship targeting is now documented separately in `docs/cavenic-witch-friendship-targeting-mvp.md`.
-- custom potion logic remains out of scope
+- legacy custom ranged-potion behavior is now documented separately in `docs/cavenic-witch-ranged-potion-mvp.md`.
 - the legacy `getMaxSpawnedInChunk()` Cavenia-specific behavior remains out of scope
 - Cavenia remains out of scope
 
 ## Testing
 
 - Resource tests cover registry source, spawn egg placement, renderer registration source, texture/model/lang resources and the explicit bounded-follow-up boundaries around natural spawn, loot, damage and witch-specific behavior.
-- Documentation tests cover the legacy references inspected, the attribute mapping, spawn egg colors, renderer/texture provenance and the explicit potion/damage follow-up boundaries.
+- Documentation tests cover the legacy references inspected, the attribute mapping, spawn egg colors, renderer/texture provenance and the explicit loot/damage/potion follow-up boundaries.
 - NeoForge GameTest runtime smoke covers:
   - entity registry resolution
   - attribute registration
@@ -92,7 +93,7 @@ The legacy repo contains a direct `EntityCavenicWitch`, so this increment stays 
 - Fall/fire damage behavior
 - Same-type/self source immunity
 - Same-type friendship targeting
-- Custom potion logic
+- Any broader Cavenic Witch potion/raid behavior beyond the restored ranged-potion follow-up
 - Long-run natural spawning and biome spawn balance
 - Additional Cavenic mobs
 - Cavenia
