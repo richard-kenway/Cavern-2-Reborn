@@ -3153,6 +3153,56 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBowTorchModeMarkedVanillaArrowSemanticsStayBoundedAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_BOW_TORCH_ANCHOR.north(32);
+        BlockPos supportPos = origin.east(4);
+        BlockPos torchPos = supportPos.above();
+
+        resetMiningArea(level, origin, 10.0D);
+        level.setBlock(supportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+
+        Player player = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), origin);
+        player.getInventory().add(new ItemStack(Items.ARROW));
+        player.getInventory().add(new ItemStack(Items.TORCH, 2));
+
+        ItemStack bow = player.getMainHandItem();
+        CavenicBowItem bowItem = (CavenicBowItem) ModRegistries.CAVENIC_BOW.get();
+        CavenicBowTorchEvents torchEvents = new CavenicBowTorchEvents();
+        bowItem.setMode(bow, CavenicBowMode.TORCH);
+
+        AbstractArrow arrow = createRuntimeArrow(level, player, bow);
+        double defaultArrowDamage = arrow.getBaseDamage();
+        float velocity = bowItem.resolveProjectileVelocity(bow, 3.0F, 1.0F);
+
+        helper.assertTrue("minecraft:arrow".equals(entityTypeId(arrow)), "TORCH mode must still use a vanilla arrow entity");
+        helper.assertFalse(
+            bowItem.applySnipeBoost(bow, arrow, 1.0F),
+            "TORCH mode must not apply a SNIPE-style damage boost to the arrow"
+        );
+        helper.assertTrue(
+            Math.abs(arrow.getBaseDamage() - defaultArrowDamage) < 1.0E-6D,
+            "TORCH mode must keep vanilla arrow base damage"
+        );
+        helper.assertTrue(
+            Math.abs(velocity - 3.0F) < 1.0E-6F,
+            "TORCH mode must keep the vanilla full-charge projectile velocity"
+        );
+
+        arrow.setDeltaMovement(velocity, 0.0D, 0.0D);
+        CavenicBowItem.markTorchArrow(arrow);
+
+        helper.assertTrue(CavenicBowItem.isTorchArrow(arrow), "TORCH mode must mark the arrow as a Torch arrow");
+        helper.assertTrue(arrow.getDeltaMovement().length() > 2.5D, "TORCH mode must keep a normal full-charge vanilla-arrow speed band");
+        helper.assertTrue(arrow.getDeltaMovement().length() < 3.2D, "TORCH mode must not add RAPID or SNIPE projectile speed");
+
+        torchEvents.onProjectileImpact(new ProjectileImpactEvent(arrow, hitResult(supportPos, Direction.UP)));
+
+        helper.assertTrue(level.getBlockState(torchPos).is(Blocks.TORCH), "TORCH mode should place a standing torch on a valid top-face hit");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void cavenicBowTorchModePlacementRulesStayBoundedAtRuntime(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos origin = CAVENIC_BOW_TORCH_ANCHOR.east(32);
