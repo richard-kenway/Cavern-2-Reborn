@@ -34,8 +34,9 @@ That means the mob kept taking fall damage, but only at `35%` of the original am
 - That bounded modern mapping includes lava because lava uses a fire-tagged damage source in current 1.21.1 damage-type data.
 - Burning and other fire-tagged hurt paths are also covered by the same modern tag check.
 - Generic non-fire, non-fall damage remains vanilla-like.
-- vanilla polar bear AI remains unchanged.
-- anger behavior remains unchanged.
+- the broader vanilla polar bear movement and melee base remain unchanged in this slice.
+- the bounded hostile-targeting follow-up is documented separately in `docs/cavenic-bear-hostile-targeting-mvp.md`.
+- anger behavior remains otherwise unchanged.
 - attributes remain unchanged.
 - natural spawning remains unchanged.
 - max spawn cluster size remains unchanged.
@@ -47,7 +48,7 @@ That means the mob kept taking fall damage, but only at `35%` of the original am
 - The legacy behavior lived directly on `EntityCavenicBear` rather than in a broad shared system.
 - Reborn keeps the implementation entity-specific instead of using a global damage event.
 - The `DamageTypeTags.IS_FIRE` mapping is the closest current equivalent to the old `source.isFireDamage()` check.
-- The legacy class also had custom bear AI, but this slice deliberately does not port that separate behavior.
+- The legacy class also had custom bear AI, and the bounded hostile-targeting follow-up is now documented separately in `docs/cavenic-bear-hostile-targeting-mvp.md`.
 
 ## Testing
 

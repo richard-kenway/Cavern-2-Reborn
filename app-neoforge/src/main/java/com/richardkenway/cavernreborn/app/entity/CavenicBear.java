@@ -8,14 +8,22 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
 import net.minecraft.world.entity.animal.PolarBear;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.phys.AABB;
 
 public final class CavenicBear extends PolarBear {
     public static final int NATURAL_SPAWN_WEIGHT = 30;
@@ -33,6 +41,20 @@ public final class CavenicBear extends PolarBear {
             .add(Attributes.MAX_HEALTH, 60.0D)
             .add(Attributes.MOVEMENT_SPEED, 0.3D)
             .add(Attributes.ATTACK_DAMAGE, 7.0D);
+    }
+
+    @Override
+    protected void registerGoals() {
+        super.registerGoals();
+        this.targetSelector.removeAllGoals(
+            goal -> goal instanceof HurtByTargetGoal || goal instanceof NearestAttackableTargetGoal || goal instanceof ResetUniversalAngerTargetGoal
+        );
+        this.targetSelector.addGoal(1, new LegacyCavenicBearHurtByTargetGoal());
+        this.targetSelector.addGoal(2, new LegacyNearestAttackablePlayerTargetGoal());
+    }
+
+    public boolean isLegacyHostileTarget(LivingEntity target) {
+        return target instanceof Player;
     }
 
     @Override
@@ -76,5 +98,47 @@ public final class CavenicBear extends PolarBear {
     @SuppressWarnings("unchecked")
     private static EntityType<? extends Monster> asMonsterSpawnType(EntityType<CavenicBear> entityType) {
         return (EntityType<? extends Monster>)(EntityType<?>)entityType;
+    }
+
+    private final class LegacyCavenicBearHurtByTargetGoal extends HurtByTargetGoal {
+        private LegacyCavenicBearHurtByTargetGoal() {
+            super(CavenicBear.this);
+        }
+
+        @Override
+        public void start() {
+            super.start();
+            this.alertOthers();
+        }
+
+        @Override
+        protected void alertOthers() {
+            LivingEntity attacker = CavenicBear.this.getLastHurtByMob();
+            if (attacker == null) {
+                return;
+            }
+
+            double followDistance = this.getFollowDistance();
+            AABB alertBox = AABB.unitCubeFromLowerCorner(CavenicBear.this.position()).inflate(followDistance, 10.0D, followDistance);
+
+            for (CavenicBear nearbyBear : CavenicBear.this.level().getEntitiesOfClass(CavenicBear.class, alertBox, EntitySelector.NO_SPECTATORS)) {
+                if (nearbyBear != CavenicBear.this && nearbyBear.getTarget() == null && !nearbyBear.isAlliedTo(attacker)) {
+                    this.alertOther(nearbyBear, attacker);
+                }
+            }
+        }
+
+        @Override
+        protected void alertOther(Mob mob, LivingEntity attacker) {
+            if (mob instanceof PolarBear polarBear && !polarBear.isBaby()) {
+                super.alertOther(mob, attacker);
+            }
+        }
+    }
+
+    private final class LegacyNearestAttackablePlayerTargetGoal extends NearestAttackableTargetGoal<Player> {
+        private LegacyNearestAttackablePlayerTargetGoal() {
+            super(CavenicBear.this, Player.class, 20, true, true, CavenicBear.this::isLegacyHostileTarget);
+        }
     }
 }

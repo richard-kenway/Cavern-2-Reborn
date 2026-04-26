@@ -58,6 +58,7 @@ The legacy repo contains a direct `EntityCavenicBear`, so this increment stays n
 - The bounded baseline reuses the vanilla polar bear loot table as its base drop source so the mob has a safe baseline without widening the Cavenic bear loot line yet.
 - Custom loot remains out of scope.
 - The legacy bear also has natural spawning, fall/fire damage behavior and custom AI/hostile behavior that were follow-up work beyond the baseline slice.
+- The bounded hostile-targeting follow-up is now documented separately in `docs/cavenic-bear-hostile-targeting-mvp.md`.
 - The inspected legacy bear loot line is now documented separately in `docs/cavenic-bear-loot-absent-or-deferred.md`.
 - That follow-up found no direct legacy `dropLoot(...)` override and no `cavenic_orb` bear branch to port.
 
@@ -65,15 +66,16 @@ The legacy repo contains a direct `EntityCavenicBear`, so this increment stays n
 
 - Natural spawning was intentionally out of scope for the baseline slice and is now covered separately in `docs/cavenic-bear-natural-spawn-mvp.md`.
 - fall/fire damage behavior was intentionally out of scope for the baseline slice and is now covered separately in `docs/cavenic-bear-damage-behavior-mvp.md`.
+- bounded hostile-targeting follow-up is now documented separately in `docs/cavenic-bear-hostile-targeting-mvp.md`.
 - The inspected bear loot line is now covered separately in `docs/cavenic-bear-loot-absent-or-deferred.md`.
-- custom bear AI, anger behavior, taming, riding and mount behavior remain out of scope.
+- broader custom bear AI, anger behavior, taming, riding and mount behavior remain out of scope.
 - custom loot remains out of scope, and the current source inspection found no direct legacy `cavenic_orb` bear branch to restore.
 - Cavenia remains out of scope.
 - The magic-book system remains intentionally untouched.
 
 ## Testing
 
-- Resource tests cover registry source, spawn egg placement, attribute registration source, renderer registration source, texture/model/lang resources and the explicit out-of-scope boundaries around natural spawn, custom loot, damage behavior, custom AI and magic-book systems.
+- Resource tests cover registry source, spawn egg placement, attribute registration source, renderer registration source, texture/model/lang resources and the explicit out-of-scope boundaries around natural spawn, custom loot, damage behavior, hostile targeting, broader custom AI and magic-book systems.
 - Documentation tests cover the legacy references inspected, the base-class mapping, the legacy attribute mapping, spawn egg colors, renderer/texture provenance and the explicit baseline-only boundaries.
 - NeoForge GameTest runtime smoke covers:
   - entity registry resolution

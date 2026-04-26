@@ -143,12 +143,15 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/cavenic-bear-loot-absent-or-deferred.md"));
         assertTrue(readme.contains("Cavenic Bear Legacy Damage Behavior MVP"));
         assertTrue(readme.contains("docs/cavenic-bear-damage-behavior-mvp.md"));
+        assertTrue(readme.contains("Cavenic Bear Legacy Hostile Targeting MVP"));
+        assertTrue(readme.contains("docs/cavenic-bear-hostile-targeting-mvp.md"));
         assertTrue(readme.contains("sixth direct Cavenic mob foundation"));
         assertTrue(readme.contains("legacy texture on the vanilla polar bear renderer path"));
         assertTrue(readme.contains("vanilla polar bear loot baseline"));
         assertTrue(readme.contains("bounded CAVERN-only natural spawning"));
         assertTrue(readme.contains("the inspected legacy bear loot line remains explicitly absent because `EntityCavenicBear` never overrides `dropLoot(...)`"));
         assertTrue(readme.contains("legacy fall-damage reduction and fire-damage immunity behavior"));
+        assertTrue(readme.contains("bounded legacy player-target / hurt-by-target hostility slice"));
     }
 
     @Test
@@ -364,6 +367,9 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("cavenic bear legacy fall-damage reduction smoke"));
         assertTrue(doc.contains("cavenic bear legacy fire-damage immunity smoke"));
         assertTrue(doc.contains("cavenic bear generic-damage baseline smoke"));
+        assertTrue(doc.contains("cavenic bear legacy hostile player-target goal smoke"));
+        assertTrue(doc.contains("cavenic bear legacy hurt-by-target retaliation smoke"));
+        assertTrue(doc.contains("cavenic bear non-player target baseline smoke"));
         assertTrue(doc.contains("any broader Cavenic Witch AI-goal or target-selector rewrite beyond the restored ranged-potion slice"));
         assertTrue(doc.contains("actual long-running Cavenic Witch fire/lava gameplay feel"));
         assertTrue(doc.contains("actual long-run cavenic witch orb-drop rate balance"));
@@ -383,7 +389,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("actual Cavenic Bear renderer/model visual feel"));
         assertTrue(doc.contains("actual long-run Cavenic Bear drop-rate balance, although the current source inspection found no direct custom bear loot branch beyond the vanilla polar bear baseline"));
         assertTrue(doc.contains("actual long-running Cavenic Bear fire/lava gameplay feel"));
-        assertTrue(doc.contains("actual Cavenic Bear anger/AI gameplay feel"));
+        assertTrue(doc.contains("actual Cavenic Bear anger/pathfinding feel"));
         assertTrue(doc.contains("actual long-run Cavenic Bear population balance inside CAVERN"));
         assertTrue(doc.contains("legacy Cavenic Bow Rapid/Torch custom projectile behavior and client feel beyond the current bounded Snipe, Rapid and Torch slices"));
         assertTrue(doc.contains("actual long-run Cavenic Zombie population balance inside CAVERN"));

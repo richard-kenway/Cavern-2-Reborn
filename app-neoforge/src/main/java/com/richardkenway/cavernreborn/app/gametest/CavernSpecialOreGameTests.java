@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.lang.reflect.Method;
 
 import com.richardkenway.cavernreborn.CavernReborn;
 import com.richardkenway.cavernreborn.app.block.AcresiaCropBlock;
@@ -91,11 +92,18 @@ import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
 import net.minecraft.world.entity.animal.Cow;
+import net.minecraft.world.entity.animal.Fox;
 import net.minecraft.world.entity.animal.PolarBear;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Creeper;
@@ -212,6 +220,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_BEAR_SPAWN_EGG_ANCHOR = new BlockPos(4768, 96, 0);
     private static final BlockPos CAVENIC_BEAR_NATURAL_SPAWN_ANCHOR = new BlockPos(4864, 96, 0);
     private static final BlockPos CAVENIC_BEAR_DAMAGE_ANCHOR = new BlockPos(4960, 96, 0);
+    private static final BlockPos CAVENIC_BEAR_HOSTILE_TARGETING_ANCHOR = new BlockPos(5056, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -2765,6 +2774,172 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBearLegacyHostileTargetingAppliesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_BEAR_HOSTILE_TARGETING_ANCHOR;
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CavenicBear cavenicBear = spawnLivingEntity(helper, ModRegistries.CAVENIC_BEAR.get(), origin);
+        PolarBear vanillaBear = spawnLivingEntity(helper, EntityType.POLAR_BEAR, origin.east(8));
+        Player playerTarget = makeMockPlayer(helper, level, GameType.SURVIVAL, ItemStack.EMPTY, origin.south(4));
+        Cow cowTarget = spawnLivingEntity(helper, EntityType.COW, origin.west(4));
+        Fox foxTarget = spawnLivingEntity(helper, EntityType.FOX, origin.west(8));
+
+        helper.assertTrue(cavenicBear.isLegacyHostileTarget(playerTarget), "Expected legacy hostile-target helper to accept players");
+        helper.assertFalse(cavenicBear.isLegacyHostileTarget(cowTarget), "Expected legacy hostile-target helper to reject passive non-player targets");
+        helper.assertFalse(cavenicBear.isLegacyHostileTarget(foxTarget), "Expected legacy hostile-target helper to reject fox targets");
+
+        helper.assertTrue(
+            countGoals(cavenicBear, HurtByTargetGoal.class) == 1L,
+            "Expected cavenic bear to keep exactly one hurt-by-target goal in the bounded hostile-targeting slice"
+        );
+        helper.assertTrue(
+            countGoals(cavenicBear, NearestAttackableTargetGoal.class) == 1L,
+            "Expected cavenic bear to keep exactly one nearest-attackable target goal after removing the vanilla fox and anger branches"
+        );
+        helper.assertTrue(
+            countGoals(cavenicBear, ResetUniversalAngerTargetGoal.class) == 0L,
+            "Expected cavenic bear to remove the vanilla reset-universal-anger target goal in the legacy hostile-targeting slice"
+        );
+        helper.assertTrue(
+            findGoalBySimpleName(cavenicBear, "LegacyCavenicBearHurtByTargetGoal").isPresent(),
+            "Expected cavenic bear target selector to register the legacy hurt-by-target goal"
+        );
+        helper.assertTrue(
+            findGoalBySimpleName(cavenicBear, "LegacyNearestAttackablePlayerTargetGoal").isPresent(),
+            "Expected cavenic bear target selector to register the legacy nearest-player target goal"
+        );
+        helper.assertTrue(
+            findGoalBySimpleName(vanillaBear, "PolarBearAttackPlayersGoal").isPresent(),
+            "Expected vanilla polar bear to keep its vanilla baby-protection player target goal"
+        );
+        helper.assertTrue(
+            countGoals(vanillaBear, ResetUniversalAngerTargetGoal.class) == 1L,
+            "Expected vanilla polar bear to keep its reset-universal-anger target goal"
+        );
+        helper.assertTrue(
+            countGoals(vanillaBear, NearestAttackableTargetGoal.class) > 1L,
+            "Expected vanilla polar bear to keep more than one nearest-attackable target goal"
+        );
+
+        WrappedGoal playerGoal = findGoalBySimpleName(cavenicBear, "LegacyNearestAttackablePlayerTargetGoal")
+            .orElseThrow(() -> new IllegalStateException("Missing legacy player target goal"));
+        NearestAttackableTargetGoal<?> nearestPlayerTargetGoal = (NearestAttackableTargetGoal<?>)playerGoal.getGoal();
+        nearestPlayerTargetGoal.setTarget(playerTarget);
+        playerGoal.start();
+
+        helper.assertTrue(
+            cavenicBear.getTarget() == playerTarget,
+            "Expected the legacy nearest-player target goal to keep an accepted player target when started directly"
+        );
+        helper.assertTrue(
+            cavenicBear.getLootTable().equals(EntityType.POLAR_BEAR.getDefaultLootTable()),
+            "Expected cavenic bear hostile-targeting follow-up to keep the vanilla polar bear loot-table baseline"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBearLegacyHostileTargetingKeepsExistingSlicesStableAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_BEAR_HOSTILE_TARGETING_ANCHOR.north(24);
+
+        resetMiningArea(level, origin, 48.0D);
+
+        CavenicBear adultCavenicBear = spawnLivingEntity(helper, ModRegistries.CAVENIC_BEAR.get(), origin);
+        CavenicBear adultCavenicAlly = spawnLivingEntity(helper, ModRegistries.CAVENIC_BEAR.get(), origin.east(4));
+        Zombie adultAttacker = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.south(4));
+        WrappedGoal adultCavenicHurtGoal = findGoalBySimpleName(adultCavenicBear, "LegacyCavenicBearHurtByTargetGoal")
+            .orElseThrow(() -> new IllegalStateException("Missing legacy cavenic bear hurt goal"));
+        PolarBear adultVanillaBear = spawnLivingEntity(helper, EntityType.POLAR_BEAR, origin.west(28));
+        PolarBear adultVanillaAlly = spawnLivingEntity(helper, EntityType.POLAR_BEAR, origin.west(24));
+        Zombie adultVanillaAttacker = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.west(28).south(4));
+        WrappedGoal adultVanillaHurtGoal = findGoalBySimpleName(adultVanillaBear, "PolarBearHurtByTargetGoal")
+            .orElseThrow(() -> new IllegalStateException("Missing vanilla polar bear hurt goal"));
+        CavenicBear babyCavenicBear = spawnLivingEntity(helper, ModRegistries.CAVENIC_BEAR.get(), origin.north(24));
+        babyCavenicBear.setBaby(true);
+        CavenicBear babyCavenicEscort = spawnLivingEntity(helper, ModRegistries.CAVENIC_BEAR.get(), origin.north(24).east(4));
+        Zombie babyAttacker = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.north(24).south(4));
+        WrappedGoal babyCavenicHurtGoal = findGoalBySimpleName(babyCavenicBear, "LegacyCavenicBearHurtByTargetGoal")
+            .orElseThrow(() -> new IllegalStateException("Missing legacy cavenic bear hurt goal"));
+        PolarBear babyVanillaBear = spawnLivingEntity(helper, EntityType.POLAR_BEAR, origin.north(24).west(28));
+        babyVanillaBear.setBaby(true);
+        PolarBear babyVanillaEscort = spawnLivingEntity(helper, EntityType.POLAR_BEAR, origin.north(24).west(24));
+        Zombie babyVanillaAttacker = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.north(24).west(28).south(4));
+        WrappedGoal babyVanillaHurtGoal = findGoalBySimpleName(babyVanillaBear, "PolarBearHurtByTargetGoal")
+            .orElseThrow(() -> new IllegalStateException("Missing vanilla polar bear hurt goal"));
+
+        adultCavenicBear.setLastHurtByMob(adultAttacker);
+        adultCavenicHurtGoal.start();
+
+        helper.assertTrue(adultCavenicBear.getTarget() == adultAttacker, "Expected adult cavenic bear to retaliate against its attacker");
+        invokeGoalMethod(adultCavenicHurtGoal.getGoal(), "alertOther", adultCavenicAlly, adultAttacker);
+        helper.assertTrue(adultCavenicAlly.getTarget() == adultAttacker, "Expected adult cavenic allies to inherit the hurt-by-target attacker");
+
+        adultVanillaBear.setLastHurtByMob(adultVanillaAttacker);
+        adultVanillaHurtGoal.start();
+
+        helper.assertTrue(adultVanillaBear.getTarget() == adultVanillaAttacker, "Expected vanilla adult polar bear to retaliate against its attacker");
+        helper.assertTrue(adultVanillaAlly.getTarget() == null, "Expected vanilla adult polar bear allies to stay idle without the legacy shared-retaliation change");
+
+        babyCavenicBear.setLastHurtByMob(babyAttacker);
+        babyCavenicHurtGoal.start();
+
+        helper.assertTrue(
+            babyCavenicBear.getTarget() == babyAttacker,
+            "Expected baby cavenic bear to keep retaliating after alerting adults, matching the legacy hurt-by-target behavior"
+        );
+        invokeGoalMethod(babyCavenicHurtGoal.getGoal(), "alertOther", babyCavenicEscort, babyAttacker);
+        helper.assertTrue(
+            babyCavenicEscort.getTarget() == babyAttacker,
+            "Expected nearby adult cavenic bears to inherit a baby cavenic bear hurt target"
+        );
+
+        babyVanillaBear.setLastHurtByMob(babyVanillaAttacker);
+        babyVanillaHurtGoal.start();
+
+        helper.assertTrue(
+            babyVanillaBear.getTarget() == null,
+            "Expected vanilla baby polar bear hurt behavior to stop after alerting adults instead of keeping its own target"
+        );
+        invokeGoalMethod(babyVanillaHurtGoal.getGoal(), "alertOther", babyVanillaEscort, babyVanillaAttacker);
+        helper.assertTrue(
+            babyVanillaEscort.getTarget() == babyVanillaAttacker,
+            "Expected vanilla baby polar bear hurt behavior to alert nearby adults"
+        );
+
+        float cavenicFireHealthBefore = adultCavenicBear.getHealth();
+        helper.assertFalse(
+            adultCavenicBear.hurt(level.damageSources().lava(), 4.0F),
+            "Expected hostile-targeting follow-up to keep legacy fire-tagged damage rejection"
+        );
+        helper.assertTrue(
+            Math.abs(cavenicFireHealthBefore - adultCavenicBear.getHealth()) < 1.0E-6F,
+            "Expected hostile-targeting follow-up to keep cavenic bear health unchanged after lava damage"
+        );
+        helper.assertTrue(
+            CavenicBear.LEGACY_FALL_DAMAGE_MULTIPLIER == 0.35F,
+            "Expected hostile-targeting follow-up to keep the legacy 0.35 fall-damage multiplier"
+        );
+        helper.assertTrue(
+            CavenicBear.NATURAL_SPAWN_WEIGHT == 30
+                && CavenicBear.NATURAL_SPAWN_MIN_COUNT == 1
+                && CavenicBear.NATURAL_SPAWN_MAX_COUNT == 1,
+            "Expected hostile-targeting follow-up to keep the legacy 30/1/1 natural-spawn constants"
+        );
+        helper.assertTrue(
+            adultCavenicBear.getMaxSpawnClusterSize() == 1,
+            "Expected hostile-targeting follow-up to keep the legacy max spawn cluster size of 1"
+        );
+        helper.assertTrue(
+            adultCavenicBear.getLootTable().equals(EntityType.POLAR_BEAR.getDefaultLootTable()),
+            "Expected hostile-targeting follow-up to keep the vanilla polar bear loot-table baseline"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void cavenicBearLegacyFallAndFireDamageBehaviorAppliesAtRuntime(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos origin = CAVENIC_BEAR_DAMAGE_ANCHOR;
@@ -5096,6 +5271,24 @@ public final class CavernSpecialOreGameTests {
         T entity = helper.spawn(type, pos);
         helper.assertTrue(entity.isAlive(), "Expected spawned entity to be alive: " + BuiltInRegistries.ENTITY_TYPE.getKey(type));
         return entity;
+    }
+
+    private static long countGoals(Mob mob, Class<? extends Goal> goalClass) {
+        return mob.targetSelector.getAvailableGoals().stream().map(WrappedGoal::getGoal).filter(goalClass::isInstance).count();
+    }
+
+    private static Optional<WrappedGoal> findGoalBySimpleName(Mob mob, String goalSimpleName) {
+        return mob.targetSelector.getAvailableGoals().stream().filter(goal -> goal.getGoal().getClass().getSimpleName().equals(goalSimpleName)).findFirst();
+    }
+
+    private static void invokeGoalMethod(Goal goal, String methodName, Mob targetMob, LivingEntity attacker) {
+        try {
+            Method method = goal.getClass().getDeclaredMethod(methodName, Mob.class, LivingEntity.class);
+            method.setAccessible(true);
+            method.invoke(goal, targetMob, attacker);
+        } catch (ReflectiveOperationException exception) {
+            throw new IllegalStateException("Failed to invoke goal method " + methodName + " on " + goal.getClass().getName(), exception);
+        }
     }
 
     private static RandomSource queuedFloatRandomSource(float... values) {

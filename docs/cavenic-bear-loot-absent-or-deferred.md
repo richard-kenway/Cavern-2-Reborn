@@ -49,6 +49,7 @@ The source-confirmed result is simple: the legacy bear had no direct custom bear
 - The inspected legacy bear class does not define a custom bear drop path tied to difficulty, dimension, progression, economy or Cavenia.
 - Natural spawning remains documented separately in `docs/cavenic-bear-natural-spawn-mvp.md`.
 - The restored damage behavior is documented separately in `docs/cavenic-bear-damage-behavior-mvp.md`.
+- The bounded hostile-targeting follow-up is documented separately in `docs/cavenic-bear-hostile-targeting-mvp.md`.
 
 ## Why This Slice Does Not Add New Loot Code
 
