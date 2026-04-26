@@ -70,7 +70,7 @@ That preserves modern vanilla `1.21.1` raid-heal behavior for non-witch raider a
 - Same-type/self source immunity remains unchanged and is still documented in `docs/cavenic-witch-projectile-immunity-mvp.md`.
 - Fall/fire damage behavior remains unchanged and is still documented in `docs/cavenic-witch-damage-behavior-mvp.md`.
 - Attributes, natural spawning and `1/5` orb-drop behavior remain unchanged.
-- The deferred magic-book branch remains documented in `docs/cavenic-witch-loot-mvp.md`.
+- The deferred legacy magic-book branch remains documented in `docs/cavenic-witch-magic-book-deferred.md`.
 
 ## Why This Mapping Is Safe
 

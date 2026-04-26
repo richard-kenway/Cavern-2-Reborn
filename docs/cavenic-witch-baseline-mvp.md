@@ -62,7 +62,7 @@ The legacy repo contains a direct `EntityCavenicWitch`, so this increment stays 
 - The bounded friendship-targeting follow-up is now documented separately in `docs/cavenic-witch-friendship-targeting-mvp.md`.
 - The bounded custom ranged-potion follow-up is now documented separately in `docs/cavenic-witch-ranged-potion-mvp.md`.
 - custom loot beyond the restored `1/5` `cavenic_orb` drop remains out of scope for this baseline slice.
-- the legacy magic-book branch remains deferred because Reborn does not yet have a magic-book foundation.
+- the deferred legacy magic-book branch is now documented separately in `docs/cavenic-witch-magic-book-deferred.md`.
 
 ## Follow-Up Boundaries
 

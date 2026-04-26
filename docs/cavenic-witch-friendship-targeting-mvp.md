@@ -49,7 +49,7 @@ That means the legacy targeting rule was narrow:
 - Same-type/self source immunity remains unchanged and is still documented in `docs/cavenic-witch-projectile-immunity-mvp.md`.
 - Fall/fire damage behavior remains unchanged and is still documented in `docs/cavenic-witch-damage-behavior-mvp.md`.
 - Attributes, natural spawning and `1/5` orb-drop behavior remain unchanged.
-- The deferred magic-book branch remains documented in `docs/cavenic-witch-loot-mvp.md`.
+- The deferred legacy magic-book branch remains documented in `docs/cavenic-witch-magic-book-deferred.md`.
 - The bounded custom ranged-potion follow-up is documented separately in `docs/cavenic-witch-ranged-potion-mvp.md`.
 - Cavenia and additional mobs remain out of scope.
 

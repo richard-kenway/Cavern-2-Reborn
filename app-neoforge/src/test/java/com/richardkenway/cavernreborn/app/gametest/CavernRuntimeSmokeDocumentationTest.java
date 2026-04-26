@@ -125,6 +125,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/cavenic-witch-friendship-targeting-mvp.md"));
         assertTrue(readme.contains("Cavenic Witch Custom Ranged Potion MVP"));
         assertTrue(readme.contains("docs/cavenic-witch-ranged-potion-mvp.md"));
+        assertTrue(readme.contains("docs/cavenic-witch-magic-book-deferred.md"));
         assertTrue(readme.contains("fifth direct Cavenic mob foundation"));
         assertTrue(readme.contains("bounded CAVERN-only natural spawning"));
         assertTrue(readme.contains("vanilla witch loot baseline"));
@@ -133,7 +134,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("legacy same-type/self source-immunity behavior"));
         assertTrue(readme.contains("legacy same-type friendship-target rejection behavior"));
         assertTrue(readme.contains("restored legacy ranged-potion behavior for normal combat targets"));
-        assertTrue(readme.contains("the modern non-witch Raider-heal branch and the deferred magic-book branch remain intentional bounded bridges"));
+        assertTrue(readme.contains("the modern non-witch Raider-heal branch remains an intentional bounded bridge"));
+        assertTrue(readme.contains("the inspected legacy magic-book branch remains explicitly deferred because `ItemMagicBook` is still a broader subtype/NBT/capability spellbook system"));
     }
 
     @Test
@@ -256,7 +258,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("cavenic witch non-immune source baseline smoke"));
         assertTrue(doc.contains("cavenic witch same-type friendship target rejection smoke"));
         assertTrue(doc.contains("cavenic witch non-friend target baseline smoke"));
-        assertTrue(doc.contains("legacy cavenic witch magic-book branch because Reborn has no magic-book foundation yet"));
+        assertTrue(doc.contains("legacy cavenic witch magic-book branch because the inspected legacy `ItemMagicBook` depends on subtype, NBT, capability and spellbook systems that Reborn does not yet implement honestly"));
         assertTrue(doc.contains("cavenic bow enchantment applicability"));
         assertTrue(doc.contains("cavenic bow cavenic item tag resolution"));
         assertTrue(doc.contains("cavenic bow recipe manager resolution"));

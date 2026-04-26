@@ -40,8 +40,10 @@ Legacy `dropLoot(...)` does not use `lootingModifier`, `wasRecentlyHit`, dimensi
 ## Magic-Book Branch
 
 - The magic-book branch is deferred.
-- Reborn does not currently contain a `magic_book`, `MagicBook` or `ItemMagicBook` foundation.
-- `ModRegistries` does not expose a safe item mapping for that legacy branch.
+- The detailed deferred analysis is now documented separately in `docs/cavenic-witch-magic-book-deferred.md`.
+- Legacy `ItemMagicBook.getRandomBook()` is not a plain loot-token factory. It chooses one of `12` subtype spellbooks, writes random `Mana` NBT to the returned stack and depends on broader magic-book runtime state.
+- The legacy `magic_book` item is tied into subtype models/lang keys, cooldown/use NBT, player and item capabilities, storage-book inventory wiring, magic-class dispatch and advancement coverage.
+- Reborn still does not expose an honest `magic_book`, `MagicBook` or `ItemMagicBook` foundation for that broader system.
 - This increment does not invent a placeholder item, a fake spell system or a broad magic-book registry just to satisfy that legacy fallback path.
 
 ## Drop Boundaries

@@ -211,7 +211,7 @@ NeoForge GameTest runtime smoke covers:
 - actual long-running Cavenic Spider combat/pathfinding feel
 - actual poison/web-based Cavenic Spider gameplay behavior
 - actual Cavenic Witch combat, potion-throw and pathfinding feel
-- legacy cavenic witch magic-book branch because Reborn has no magic-book foundation yet
+- legacy cavenic witch magic-book branch because the inspected legacy `ItemMagicBook` depends on subtype, NBT, capability and spellbook systems that Reborn does not yet implement honestly
 - any broader Cavenic Witch AI-goal or target-selector rewrite beyond the restored ranged-potion slice
 - actual long-run Cavenic Witch population balance inside CAVERN
 - actual long-run cavenic creeper orb-drop rate balance

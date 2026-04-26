@@ -37,7 +37,7 @@ That means the mob kept taking fall damage, but only at `35%` of the original am
 - vanilla witch AI remains unchanged.
 - vanilla drinking and potion-throw behavior remain unchanged.
 - attributes, natural spawning and `1/5` orb-drop behavior remain unchanged.
-- The deferred magic-book branch remains documented in `docs/cavenic-witch-loot-mvp.md`.
+- The deferred legacy magic-book branch remains documented in `docs/cavenic-witch-magic-book-deferred.md`.
 - The bounded same-type/self source-immunity follow-up is documented separately in `docs/cavenic-witch-projectile-immunity-mvp.md`.
 - The bounded friendship-targeting follow-up is documented separately in `docs/cavenic-witch-friendship-targeting-mvp.md`.
 - The bounded custom ranged-potion follow-up is documented separately in `docs/cavenic-witch-ranged-potion-mvp.md`.
@@ -51,7 +51,7 @@ That means the mob kept taking fall damage, but only at `35%` of the original am
 
 ## Testing
 
-- Resource tests pin the entity-local damage hook, the exact fall/fire tag usage and the unchanged orb-drop/spawn constants while still asserting that no magic-book foundation or witch-specific AI/targeting work was added here.
+- Resource tests pin the entity-local damage hook, the exact fall/fire tag usage and the unchanged orb-drop/spawn constants while still asserting that no fake magic-book item or witch-specific AI/targeting work was added here.
 - Documentation tests pin the legacy source references, the `0.35F` fall multiplier, the unchanged vanilla witch behavior and the deferred magic-book/projectile-immunity/friendship-targeting/ranged-potion follow-up boundaries.
 - NeoForge GameTest runtime smoke covers:
   - cavenic witch legacy fall-damage reduction smoke

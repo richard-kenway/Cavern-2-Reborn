@@ -70,7 +70,7 @@ It does not add a new mob. It only makes the already registered `cavernreborn:ca
 - The bounded friendship-targeting follow-up is now documented separately in `docs/cavenic-witch-friendship-targeting-mvp.md`.
 - The bounded custom ranged-potion follow-up is now documented separately in `docs/cavenic-witch-ranged-potion-mvp.md`.
 - the restored legacy `1/5` `cavenic_orb` drop remains unchanged
-- the deferred magic-book branch still needs a Reborn magic-book foundation
+- the deferred legacy magic-book branch is now documented separately in `docs/cavenic-witch-magic-book-deferred.md`.
 - the restored legacy fall-damage reduction and fire-damage immunity behavior remain unchanged
 - the restored legacy same-type/self source-immunity behavior remains unchanged
 - the restored same-type friendship-target rejection behavior is now documented separately in `docs/cavenic-witch-friendship-targeting-mvp.md`.

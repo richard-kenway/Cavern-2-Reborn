@@ -134,6 +134,8 @@ class CavenicWitchResourcesTest {
 
         assertTrue(lootPolicySource.contains("public static final int ORB_DROP_ROLL_BOUND = 5;"));
         assertTrue(lootPolicySource.contains("public static boolean shouldDropOrb(int roll)"));
+        assertFalse(lootPolicySource.contains("MAGIC_BOOK_DROP_ROLL_BOUND"));
+        assertFalse(lootPolicySource.contains("selectLegacyDropBranch"));
         assertFalse(lootPolicySource.contains("MagicBook"));
 
         assertTrue(lootEventSource.contains("LivingDropsEvent"));
@@ -142,6 +144,9 @@ class CavenicWitchResourcesTest {
         assertTrue(lootEventSource.contains("witch.getRandom().nextInt(CavenicWitchLootPolicy.ORB_DROP_ROLL_BOUND)"));
         assertTrue(lootEventSource.contains("new ItemStack(ModRegistries.CAVENIC_ORB.get())"));
         assertTrue(lootEventSource.contains("witch.getY() + 0.5D"));
+        assertFalse(lootEventSource.contains("0.25D"));
+        assertFalse(lootEventSource.contains("MAGIC_BOOK"));
+        assertFalse(lootEventSource.contains("getRandomBook"));
         assertFalse(lootEventSource.contains("ItemMagicBook"));
         assertFalse(lootEventSource.contains("magic_book"));
         assertFalse(lootEventSource.toLowerCase().contains("economy"));
@@ -175,6 +180,7 @@ class CavenicWitchResourcesTest {
 
         assertEquals("Cavenic Witch", lang.get("entity.cavernreborn.cavenic_witch").getAsString());
         assertEquals("Cavenic Witch Spawn Egg", lang.get("item.cavernreborn.cavenic_witch_spawn_egg").getAsString());
+        assertFalse(lang.has("item.cavernreborn.magic_book"));
         assertEquals("minecraft:item/template_spawn_egg", spawnEggModel.get("parent").getAsString());
         assertEquals("neoforge:add_spawns", biomeModifier.get("type").getAsString());
         assertEquals("#cavernreborn:spawns_cavenic_witch", biomeModifier.get("biomes").getAsString());
@@ -197,6 +203,8 @@ class CavenicWitchResourcesTest {
         assertClassPathOrigin(resourceUrl("assets/cavernreborn/textures/entity/cavenic_witch.png"), "assets/cavernreborn/textures/entity/cavenic_witch.png");
         assertClassPathOrigin(resourceUrl("data/cavernreborn/neoforge/biome_modifier/cavenic_witch_spawns.json"), "data/cavernreborn/neoforge/biome_modifier/cavenic_witch_spawns.json");
         assertClassPathOrigin(resourceUrl("data/cavernreborn/tags/worldgen/biome/spawns_cavenic_witch.json"), "data/cavernreborn/tags/worldgen/biome/spawns_cavenic_witch.json");
+        assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "item", "MagicBookItem.java");
+        assertMissingResource("assets/cavernreborn/models/item/magic_book.json");
         assertMissingResource("data/cavernreborn/loot_table/entities/cavenic_witch.json");
         assertMissingResource("data/cavernreborn/loot_tables/entities/cavenic_witch.json");
     }
@@ -221,6 +229,18 @@ class CavenicWitchResourcesTest {
 
     private static void assertMissingResource(String path) {
         assertTrue(CavenicWitchResourcesTest.class.getClassLoader().getResource(path) == null, "Did not expect resource: " + path);
+    }
+
+    private static void assertMissingProjectFile(String first, String... more) {
+        Path current = Path.of("").toAbsolutePath();
+
+        for (int i = 0; i < 5 && current != null; i++) {
+            Path candidate = current.resolve(Path.of(first, more));
+            if (Files.exists(candidate)) {
+                throw new IllegalStateException("Did not expect project file: " + candidate);
+            }
+            current = current.getParent();
+        }
     }
 
     private static void assertClassPathOrigin(URL url, String expectedPathSuffix) {
