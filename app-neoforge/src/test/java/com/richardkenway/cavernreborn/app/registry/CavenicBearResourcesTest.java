@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CavenicBearResourcesTest {
     @Test
-    void cavenicBearRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnAndBoundedBehavior() throws IOException {
+    void cavenicBearRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnDamageAndBoundedBehavior() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -68,6 +68,11 @@ class CavenicBearResourcesTest {
         assertTrue(entitySource.contains(".add(Attributes.MOVEMENT_SPEED, 0.3D)"));
         assertTrue(entitySource.contains(".add(Attributes.ATTACK_DAMAGE, 7.0D)"));
         assertTrue(entitySource.contains("return EntityType.POLAR_BEAR.getDefaultLootTable();"));
+        assertTrue(entitySource.contains("public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;"));
+        assertTrue(entitySource.contains("public boolean hurt(DamageSource source, float damage)"));
+        assertTrue(entitySource.contains("source.is(DamageTypeTags.IS_FALL)"));
+        assertTrue(entitySource.contains("source.is(DamageTypeTags.IS_FIRE)"));
+        assertTrue(entitySource.contains("return super.hurt(source, damage);"));
         assertTrue(entitySource.contains("public int getMaxSpawnClusterSize()"));
         assertTrue(entitySource.contains("return NATURAL_SPAWN_MAX_COUNT;"));
         assertTrue(entitySource.contains("canNaturallySpawnInDimension"));
@@ -75,7 +80,6 @@ class CavenicBearResourcesTest {
         assertTrue(entitySource.contains("CavernNeoForgeDimensions.isCavern"));
         assertTrue(entitySource.contains("Monster.checkMonsterSpawnRules"));
         assertTrue(entitySource.contains("asMonsterSpawnType"));
-        assertFalse(entitySource.contains("hurt(DamageSource"));
         assertFalse(entitySource.contains("registerGoals("));
         assertFalse(entitySource.contains("setTarget("));
         assertFalse(entitySource.toLowerCase().contains("anger"));

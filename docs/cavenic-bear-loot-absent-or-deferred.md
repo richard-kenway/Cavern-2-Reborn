@@ -48,6 +48,7 @@ The source-confirmed result is simple: the legacy bear had no direct custom bear
 - The inspected legacy bear class does not define a custom bear drop path gated on player kill.
 - The inspected legacy bear class does not define a custom bear drop path tied to difficulty, dimension, progression, economy or Cavenia.
 - Natural spawning remains documented separately in `docs/cavenic-bear-natural-spawn-mvp.md`.
+- The restored damage behavior is documented separately in `docs/cavenic-bear-damage-behavior-mvp.md`.
 
 ## Why This Slice Does Not Add New Loot Code
 
@@ -68,7 +69,7 @@ The source-confirmed result is simple: the legacy bear had no direct custom bear
 
 - custom bear loot, because no direct legacy branch was found
 - any invented `cavenic_orb` bear drop
-- fall/fire damage behavior
+- fall/fire damage behavior beyond the dedicated damage slice
 - custom bear AI and anger rewrites
 - taming, riding and mount behavior
 - Cavenia-specific behavior

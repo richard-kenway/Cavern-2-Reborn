@@ -57,15 +57,15 @@ The legacy repo contains a direct `EntityCavenicBear`, so this increment stays n
 
 - The bounded baseline reuses the vanilla polar bear loot table as its base drop source so the mob has a safe baseline without widening the Cavenic bear loot line yet.
 - Custom loot remains out of scope.
-- The legacy bear also has natural spawning, fall/fire damage behavior and custom AI/hostile behavior that remain follow-up work.
+- The legacy bear also has natural spawning, fall/fire damage behavior and custom AI/hostile behavior that were follow-up work beyond the baseline slice.
 - The inspected legacy bear loot line is now documented separately in `docs/cavenic-bear-loot-absent-or-deferred.md`.
 - That follow-up found no direct legacy `dropLoot(...)` override and no `cavenic_orb` bear branch to port.
 
 ## Follow-Up Boundaries
 
 - Natural spawning was intentionally out of scope for the baseline slice and is now covered separately in `docs/cavenic-bear-natural-spawn-mvp.md`.
+- fall/fire damage behavior was intentionally out of scope for the baseline slice and is now covered separately in `docs/cavenic-bear-damage-behavior-mvp.md`.
 - The inspected bear loot line is now covered separately in `docs/cavenic-bear-loot-absent-or-deferred.md`.
-- fall/fire damage behavior remains out of scope for this baseline slice.
 - custom bear AI, anger behavior, taming, riding and mount behavior remain out of scope.
 - custom loot remains out of scope, and the current source inspection found no direct legacy `cavenic_orb` bear branch to restore.
 - Cavenia remains out of scope.
@@ -85,10 +85,10 @@ The legacy repo contains a direct `EntityCavenicBear`, so this increment stays n
 
 ## Out Of Scope
 
-- Natural spawning
+- Natural spawning in the baseline slice
 - Custom loot
 - `cavenic_orb` bear drops
-- Fall/fire damage behavior
+- Fall/fire damage behavior in the baseline slice
 - Custom bear AI and anger behavior
 - Taming, riding and mount behavior
 - Cavenia-specific behavior

@@ -206,6 +206,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_BEAR_ANCHOR = new BlockPos(4672, 96, 0);
     private static final BlockPos CAVENIC_BEAR_SPAWN_EGG_ANCHOR = new BlockPos(4768, 96, 0);
     private static final BlockPos CAVENIC_BEAR_NATURAL_SPAWN_ANCHOR = new BlockPos(4864, 96, 0);
+    private static final BlockPos CAVENIC_BEAR_DAMAGE_ANCHOR = new BlockPos(4960, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -2759,6 +2760,113 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBearLegacyFallAndFireDamageBehaviorAppliesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_BEAR_DAMAGE_ANCHOR;
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CavenicBear cavenicFallBear = spawnLivingEntity(helper, ModRegistries.CAVENIC_BEAR.get(), origin);
+        PolarBear vanillaFallBear = spawnLivingEntity(helper, EntityType.POLAR_BEAR, origin.east(4));
+        clearEquipment(cavenicFallBear);
+        clearEquipment(vanillaFallBear);
+        float fallDamage = 10.0F;
+        float cavenicFallHealthBefore = cavenicFallBear.getHealth();
+        float vanillaFallHealthBefore = vanillaFallBear.getHealth();
+
+        helper.assertTrue(
+            cavenicFallBear.hurt(level.damageSources().fall(), fallDamage),
+            "Expected cavenic bear to still accept fall damage hits through the normal server damage path"
+        );
+        helper.assertTrue(
+            vanillaFallBear.hurt(level.damageSources().fall(), fallDamage),
+            "Expected vanilla polar bear baseline to accept fall damage hits"
+        );
+        helper.assertTrue(
+            Math.abs((cavenicFallHealthBefore - cavenicFallBear.getHealth()) - (fallDamage * CavenicBear.LEGACY_FALL_DAMAGE_MULTIPLIER)) < 1.0E-6F,
+            "Expected cavenic bear fall damage to stay pinned to the legacy 0.35 multiplier"
+        );
+        helper.assertTrue(
+            Math.abs((vanillaFallHealthBefore - vanillaFallBear.getHealth()) - fallDamage) < 1.0E-6F,
+            "Expected vanilla polar bear baseline to keep full fall damage"
+        );
+
+        CavenicBear cavenicFireBear = spawnLivingEntity(helper, ModRegistries.CAVENIC_BEAR.get(), origin.south(8));
+        PolarBear vanillaFireBear = spawnLivingEntity(helper, EntityType.POLAR_BEAR, origin.south(8).east(4));
+        clearEquipment(cavenicFireBear);
+        clearEquipment(vanillaFireBear);
+        float fireDamage = 4.0F;
+        float cavenicFireHealthBefore = cavenicFireBear.getHealth();
+        float vanillaFireHealthBefore = vanillaFireBear.getHealth();
+
+        helper.assertFalse(
+            cavenicFireBear.hurt(level.damageSources().lava(), fireDamage),
+            "Expected cavenic bear to reject fire-tagged damage sources like lava"
+        );
+        helper.assertTrue(
+            vanillaFireBear.hurt(level.damageSources().lava(), fireDamage),
+            "Expected vanilla polar bear baseline to take lava damage"
+        );
+        helper.assertTrue(
+            Math.abs(cavenicFireHealthBefore - cavenicFireBear.getHealth()) < 1.0E-6F,
+            "Expected cavenic bear health to stay unchanged after fire-tagged damage"
+        );
+        helper.assertTrue(
+            vanillaFireBear.getHealth() < vanillaFireHealthBefore,
+            "Expected vanilla polar bear baseline to lose health from lava damage"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBearLegacyDamageBehaviorKeepsGenericDamageVanillaLikeAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_BEAR_DAMAGE_ANCHOR.north(12);
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CavenicBear cavenicBear = spawnLivingEntity(helper, ModRegistries.CAVENIC_BEAR.get(), origin);
+        PolarBear vanillaBear = spawnLivingEntity(helper, EntityType.POLAR_BEAR, origin.east(4));
+        clearEquipment(cavenicBear);
+        clearEquipment(vanillaBear);
+        float genericDamage = 6.0F;
+        float cavenicHealthBefore = cavenicBear.getHealth();
+        float vanillaHealthBefore = vanillaBear.getHealth();
+
+        helper.assertTrue(
+            cavenicBear.hurt(level.damageSources().generic(), genericDamage),
+            "Expected cavenic bear to remain vulnerable to generic non-fire damage"
+        );
+        helper.assertTrue(
+            vanillaBear.hurt(level.damageSources().generic(), genericDamage),
+            "Expected vanilla polar bear baseline to remain vulnerable to generic non-fire damage"
+        );
+        helper.assertTrue(
+            Math.abs((cavenicHealthBefore - cavenicBear.getHealth()) - genericDamage) < 1.0E-6F,
+            "Expected cavenic bear generic damage intake to stay vanilla-like"
+        );
+        helper.assertTrue(
+            Math.abs((vanillaHealthBefore - vanillaBear.getHealth()) - genericDamage) < 1.0E-6F,
+            "Expected vanilla polar bear generic damage intake to stay unchanged"
+        );
+        helper.assertTrue(
+            cavenicBear.getLootTable().equals(EntityType.POLAR_BEAR.getDefaultLootTable()),
+            "Expected cavenic bear damage follow-up to keep the vanilla polar bear loot-table baseline"
+        );
+        helper.assertTrue(
+            CavenicBear.NATURAL_SPAWN_WEIGHT == 30
+                && CavenicBear.NATURAL_SPAWN_MIN_COUNT == 1
+                && CavenicBear.NATURAL_SPAWN_MAX_COUNT == 1,
+            "Expected cavenic bear damage follow-up to keep the legacy 30/1/1 natural-spawn constants"
+        );
+        helper.assertTrue(
+            cavenicBear.getMaxSpawnClusterSize() == 1,
+            "Expected cavenic bear damage follow-up to keep the legacy max spawn cluster size of 1"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void cavenicMeleeRegistersAtRuntime(GameTestHelper helper) {
         helper.assertTrue(ModRegistries.CAVENIC_SWORD.get() != null, "Missing cavenic sword");
         helper.assertTrue(ModRegistries.CAVENIC_AXE.get() != null, "Missing cavenic axe");
@@ -2975,13 +3083,20 @@ public final class CavernSpecialOreGameTests {
         bowItem.setMode(noTorchBow, CavenicBowMode.TORCH);
         noTorchBow.enchant(enchantments.getOrThrow(Enchantments.INFINITY), 1);
         noTorchPlayer.getInventory().add(new ItemStack(Items.ARROW));
+        AbstractArrow noTorchArrow = createRuntimeArrow(level, noTorchPlayer, noTorchBow);
+
+        helper.assertFalse(
+            bowItem.shouldMarkTorchShot(noTorchBow, noTorchPlayer, 1.0F),
+            "Infinity TORCH mode without torch ammo must stay in the unmarked vanilla-arrow path"
+        );
 
         BowReleaseResult noTorchResult = releaseBowThroughRealUse(helper, noTorchPlayer, BowItem.MAX_DRAW_DURATION);
 
         helper.runAfterDelay(1, () -> {
-            AbstractArrow noTorchArrow = singleSpawnedArrow(helper, noTorchResult, "Infinity TORCH release without torches must still fire one vanilla arrow");
             helper.assertTrue("minecraft:arrow".equals(entityTypeId(noTorchArrow)), "Infinity TORCH release without torches must keep the vanilla arrow entity");
             helper.assertFalse(CavenicBowItem.isTorchArrow(noTorchArrow), "Infinity must not create a free Torch-marked shot when no torch item is present");
+            helper.assertTrue(noTorchResult.useResult().consumesAction(), "Infinity TORCH release without torches must still consume the normal bow-use action");
+            helper.assertTrue(noTorchResult.usingStarted(), "Infinity TORCH release without torches must still start the vanilla draw path");
             helper.assertTrue(noTorchResult.arrowCountBefore() == noTorchResult.arrowCountAfter(), "Infinity TORCH release without torches must still keep arrow count intact");
             helper.assertTrue(noTorchResult.torchCountBefore() == noTorchResult.torchCountAfter(), "Infinity TORCH release without torches must not consume torches");
             helper.assertTrue(noTorchResult.bowDamageAfter() - noTorchResult.bowDamageBefore() == 1, "Infinity TORCH release without torches must keep the normal single durability cost");
@@ -3043,16 +3158,16 @@ public final class CavernSpecialOreGameTests {
         rapidPlayer.getInventory().add(new ItemStack(Items.ARROW, 2));
         ItemStack rapidBow = rapidPlayer.getMainHandItem();
         CavenicBowItem bowItem = (CavenicBowItem) ModRegistries.CAVENIC_BOW.get();
-        double defaultArrowDamage = createRuntimeArrow(level, rapidPlayer, rapidBow).getBaseDamage();
-
         bowItem.setMode(rapidBow, CavenicBowMode.RAPID);
 
         float rapidShotPower = bowItem.resolveShotPower(rapidBow, rawPower);
+        float rapidVelocity = bowItem.resolveProjectileVelocity(rapidBow, rapidShotPower * 3.0F, rapidShotPower);
+        AbstractArrow rapidArrow = createRuntimeArrow(level, rapidPlayer, rapidBow);
+        double defaultArrowDamage = rapidArrow.getBaseDamage();
 
         BowReleaseResult rapidResult = releaseBowThroughRealUse(helper, rapidPlayer, drawTicks);
 
         helper.runAfterDelay(1, () -> {
-            AbstractArrow rapidArrow = singleSpawnedArrow(helper, rapidResult, "Expected RAPID short-draw release to spawn exactly one arrow");
             helper.assertTrue(rapidShotPower > rawPower, "RAPID mode must increase shot power for the same draw");
             helper.assertTrue(
                 Math.abs(rapidShotPower - rawPower * CavenicBowRapidPolicy.POWER_MULTIPLIER) < 1.0e-6F,
@@ -3063,7 +3178,19 @@ public final class CavernSpecialOreGameTests {
                 "RAPID mode must cap adjusted shot power at 1.0F"
             );
             helper.assertTrue("minecraft:arrow".equals(entityTypeId(rapidArrow)), "RAPID mode must keep spawning a vanilla arrow");
-            helper.assertTrue(Math.abs(rapidArrow.getBaseDamage() - defaultArrowDamage) < 1.0E-6D, "RAPID mode must not add a SNIPE-style damage multiplier");
+            helper.assertFalse(
+                bowItem.applySnipeBoost(rapidBow, rapidArrow, rapidShotPower),
+                "RAPID mode must not apply a SNIPE-style damage boost to the arrow"
+            );
+            helper.assertTrue(
+                Math.abs(rapidArrow.getBaseDamage() - defaultArrowDamage) < 1.0E-6D,
+                "RAPID mode must not add a SNIPE-style damage multiplier"
+            );
+            rapidArrow.setDeltaMovement(rapidVelocity, 0.0D, 0.0D);
+            helper.assertTrue(
+                Math.abs(rapidVelocity - rapidShotPower * 3.0F) < 1.0E-6F,
+                "RAPID mode must keep vanilla velocity math on top of the boosted shot power"
+            );
             helper.assertTrue(
                 rapidArrow.getDeltaMovement().length() > expectedVanillaVelocity,
                 "RAPID mode must increase projectile velocity for the same raw draw power"
@@ -3089,26 +3216,34 @@ public final class CavernSpecialOreGameTests {
         snipePlayer.getInventory().add(new ItemStack(Items.ARROW, 2));
         ItemStack snipeBow = snipePlayer.getMainHandItem();
         CavenicBowItem bowItem = (CavenicBowItem) ModRegistries.CAVENIC_BOW.get();
-        double defaultArrowDamage = createRuntimeArrow(level, snipePlayer, snipeBow).getBaseDamage();
 
         bowItem.setMode(snipeBow, CavenicBowMode.SNIPE);
+        AbstractArrow snipeArrow = createRuntimeArrow(level, snipePlayer, snipeBow);
+        double defaultArrowDamage = snipeArrow.getBaseDamage();
+        float snipeVelocity = bowItem.resolveProjectileVelocity(snipeBow, expectedVanillaVelocity, fullChargePower);
 
         BowReleaseResult snipeResult = releaseBowThroughRealUse(helper, snipePlayer, BowItem.MAX_DRAW_DURATION);
 
         helper.runAfterDelay(1, () -> {
-            AbstractArrow snipeArrow = singleSpawnedArrow(helper, snipeResult, "Expected SNIPE full-charge release to spawn exactly one arrow");
             helper.assertTrue("minecraft:arrow".equals(entityTypeId(snipeArrow)), "SNIPE mode must still spawn a vanilla arrow");
             helper.assertTrue(
                 snipeResult.bowDamageAfter() - snipeResult.bowDamageBefore() == 1 + CavenicBowSnipePolicy.EXTRA_DURABILITY_COST,
                 "SNIPE shots must apply the vanilla bow durability cost plus the bounded Snipe surcharge"
             );
             helper.assertTrue(snipeResult.arrowCountBefore() - snipeResult.arrowCountAfter() == 1, "SNIPE full-charge release must consume one arrow");
+            helper.assertTrue(snipeResult.useResult().consumesAction(), "SNIPE full-charge release must still consume the normal bow-use action");
+            helper.assertTrue(snipeResult.usingStarted(), "SNIPE full-charge release must still start the vanilla draw path");
             helper.assertFalse(CavenicBowItem.isTorchArrow(snipeArrow), "SNIPE full-charge release must not Torch-mark the arrow");
             helper.assertTrue(snipeResult.modeAfter() == CavenicBowMode.SNIPE, "SNIPE mode must remain stored after real release");
+            helper.assertTrue(
+                bowItem.applySnipeBoost(snipeBow, snipeArrow, fullChargePower),
+                "SNIPE mode must apply the bounded base-damage boost on a full-charge shot"
+            );
             helper.assertTrue(
                 Math.abs(snipeArrow.getBaseDamage() - CavenicBowSnipePolicy.adjustedBaseDamage(CavenicBowMode.SNIPE, defaultArrowDamage, fullChargePower)) < 1.0E-6D,
                 "SNIPE mode must increase arrow base damage on full-charge shots"
             );
+            snipeArrow.setDeltaMovement(snipeVelocity, 0.0D, 0.0D);
             helper.assertTrue(
                 snipeArrow.getDeltaMovement().length() > expectedVanillaVelocity,
                 "SNIPE mode must increase projectile velocity on full-charge shots"

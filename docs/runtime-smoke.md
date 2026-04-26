@@ -155,6 +155,9 @@ NeoForge GameTest runtime smoke covers:
 - cavenic bear CAVERN-only spawn predicate smoke
 - cavenic bear biome modifier registry smoke
 - cavenic bear biome tag resolution
+- cavenic bear legacy fall-damage reduction smoke
+- cavenic bear legacy fire-damage immunity smoke
+- cavenic bear generic-damage baseline smoke
 - cavenic shroom worldgen configured/placed key resolution
 - aquamarine tool runtime registry ids
 - aquamarine tool repairability with `cavernreborn:aquamarine`
@@ -217,6 +220,8 @@ NeoForge GameTest runtime smoke covers:
 - actual Cavenic Witch renderer/model visual feel
 - actual Cavenic Bear renderer/model visual feel
 - actual long-run Cavenic Bear drop-rate balance, although the current source inspection found no direct custom bear loot branch beyond the vanilla polar bear baseline
+- actual long-running Cavenic Bear fire/lava gameplay feel
+- actual Cavenic Bear anger/AI gameplay feel
 - actual long-run cavenic witch orb-drop rate balance
 - actual long-running Cavenic Witch fire/lava gameplay feel
 - actual long-run cavenic spider orb-drop rate balance
