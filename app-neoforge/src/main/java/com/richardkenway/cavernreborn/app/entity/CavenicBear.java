@@ -14,6 +14,8 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
@@ -46,11 +48,17 @@ public final class CavenicBear extends PolarBear {
     @Override
     protected void registerGoals() {
         super.registerGoals();
+        this.goalSelector.removeAllGoals(this::isVanillaPolarBearMeleeGoal);
+        this.goalSelector.addGoal(1, new LegacyCavenicBearMeleeAttackGoal());
         this.targetSelector.removeAllGoals(
             goal -> goal instanceof HurtByTargetGoal || goal instanceof NearestAttackableTargetGoal || goal instanceof ResetUniversalAngerTargetGoal
         );
         this.targetSelector.addGoal(1, new LegacyCavenicBearHurtByTargetGoal());
         this.targetSelector.addGoal(2, new LegacyNearestAttackablePlayerTargetGoal());
+    }
+
+    private boolean isVanillaPolarBearMeleeGoal(Goal goal) {
+        return goal instanceof MeleeAttackGoal && goal.getClass().getSimpleName().equals("PolarBearMeleeAttackGoal");
     }
 
     public boolean isLegacyHostileTarget(LivingEntity target) {
@@ -139,6 +147,51 @@ public final class CavenicBear extends PolarBear {
     private final class LegacyNearestAttackablePlayerTargetGoal extends NearestAttackableTargetGoal<Player> {
         private LegacyNearestAttackablePlayerTargetGoal() {
             super(CavenicBear.this, Player.class, 20, true, true, CavenicBear.this::isLegacyHostileTarget);
+        }
+    }
+
+    private final class LegacyCavenicBearMeleeAttackGoal extends MeleeAttackGoal {
+        private LegacyCavenicBearMeleeAttackGoal() {
+            super(CavenicBear.this, 1.25D, true);
+        }
+
+        @Override
+        protected void checkAndPerformAttack(LivingEntity target) {
+            double distance = this.mob.distanceToSqr(target);
+            double reachSq = this.getLegacyAttackReachSqr(target);
+
+            if (this.canPerformLegacyAttack(target, distance, reachSq)) {
+                this.resetAttackCooldown();
+                this.mob.doHurtTarget(target);
+                CavenicBear.this.setStanding(false);
+            } else if (distance <= reachSq * 2.0D) {
+                if (this.isTimeToAttack()) {
+                    CavenicBear.this.setStanding(false);
+                    this.resetAttackCooldown();
+                }
+
+                if (this.getTicksUntilNextAttack() <= 10) {
+                    CavenicBear.this.setStanding(true);
+                    CavenicBear.this.playWarningSound();
+                }
+            } else {
+                this.resetAttackCooldown();
+                CavenicBear.this.setStanding(false);
+            }
+        }
+
+        @Override
+        public void stop() {
+            CavenicBear.this.setStanding(false);
+            super.stop();
+        }
+
+        private boolean canPerformLegacyAttack(LivingEntity target, double distance, double reachSq) {
+            return this.isTimeToAttack() && distance <= reachSq && this.mob.getSensing().hasLineOfSight(target);
+        }
+
+        private double getLegacyAttackReachSqr(LivingEntity target) {
+            return 4.0D + target.getBbWidth();
         }
     }
 }

@@ -15,10 +15,11 @@ class CavenicBearDocumentationTest {
     private static final Path CAVENIC_BEAR_LOOT_ABSENT_OR_DEFERRED = resolveProjectFile("docs", "cavenic-bear-loot-absent-or-deferred.md");
     private static final Path CAVENIC_BEAR_DAMAGE_BEHAVIOR_MVP = resolveProjectFile("docs", "cavenic-bear-damage-behavior-mvp.md");
     private static final Path CAVENIC_BEAR_HOSTILE_TARGETING_MVP = resolveProjectFile("docs", "cavenic-bear-hostile-targeting-mvp.md");
+    private static final Path CAVENIC_BEAR_MELEE_ATTACK_MVP = resolveProjectFile("docs", "cavenic-bear-melee-attack-mvp.md");
     private static final Path RUNTIME_SMOKE = resolveProjectFile("docs", "runtime-smoke.md");
 
     @Test
-    void readmeMentionsCavenicBearBaselineNaturalSpawnDamageHostileTargetingAndDocPaths() throws IOException {
+    void readmeMentionsCavenicBearBaselineNaturalSpawnDamageHostileTargetingMeleeAndDocPaths() throws IOException {
         String readme = Files.readString(README);
 
         assertTrue(readme.contains("Cavenic Bear Baseline MVP"));
@@ -31,6 +32,8 @@ class CavenicBearDocumentationTest {
         assertTrue(readme.contains("docs/cavenic-bear-damage-behavior-mvp.md"));
         assertTrue(readme.contains("Cavenic Bear Legacy Hostile Targeting MVP"));
         assertTrue(readme.contains("docs/cavenic-bear-hostile-targeting-mvp.md"));
+        assertTrue(readme.contains("Cavenic Bear Legacy Melee Attack MVP"));
+        assertTrue(readme.contains("docs/cavenic-bear-melee-attack-mvp.md"));
         assertTrue(readme.contains("cavenic_bear"));
         assertTrue(readme.contains("sixth direct Cavenic mob foundation"));
         assertTrue(readme.contains("legacy texture on the vanilla polar bear renderer path"));
@@ -39,6 +42,7 @@ class CavenicBearDocumentationTest {
         assertTrue(readme.contains("the inspected legacy bear loot line remains explicitly absent because `EntityCavenicBear` never overrides `dropLoot(...)`"));
         assertTrue(readme.contains("legacy fall-damage reduction and fire-damage immunity behavior"));
         assertTrue(readme.contains("bounded legacy hostile-targeting behavior"));
+        assertTrue(readme.contains("bounded legacy melee-attack behavior"));
     }
 
     @Test
@@ -64,12 +68,14 @@ class CavenicBearDocumentationTest {
         assertTrue(doc.contains("`docs/cavenic-bear-natural-spawn-mvp.md`"));
         assertTrue(doc.contains("`docs/cavenic-bear-damage-behavior-mvp.md`"));
         assertTrue(doc.contains("`docs/cavenic-bear-hostile-targeting-mvp.md`"));
+        assertTrue(doc.contains("`docs/cavenic-bear-melee-attack-mvp.md`"));
         assertTrue(doc.contains("`docs/cavenic-bear-loot-absent-or-deferred.md`"));
         assertTrue(doc.contains("Custom loot remains out of scope"));
         assertTrue(doc.contains("no direct legacy `dropLoot(...)` override"));
         assertTrue(doc.contains("no `cavenic_orb` bear branch to port"));
         assertTrue(doc.contains("fall/fire damage behavior was intentionally out of scope for the baseline slice and is now covered separately"));
         assertTrue(doc.contains("bounded hostile-targeting follow-up is now documented separately"));
+        assertTrue(doc.contains("bounded melee-attack follow-up is now documented separately"));
         assertTrue(doc.contains("broader custom bear AI, anger behavior, taming, riding and mount behavior remain out of scope"));
         assertTrue(doc.contains("Cavenia remains out of scope"));
         assertTrue(doc.contains("The magic-book system remains intentionally untouched."));
@@ -97,10 +103,12 @@ class CavenicBearDocumentationTest {
         assertTrue(doc.contains("Natural spawning is deliberately limited to `CAVERN`."));
         assertTrue(doc.contains("`docs/cavenic-bear-damage-behavior-mvp.md`"));
         assertTrue(doc.contains("`docs/cavenic-bear-hostile-targeting-mvp.md`"));
+        assertTrue(doc.contains("`docs/cavenic-bear-melee-attack-mvp.md`"));
         assertTrue(doc.contains("`docs/cavenic-bear-loot-absent-or-deferred.md`"));
         assertTrue(doc.contains("no direct legacy `cavenic_orb` bear drop was found"));
         assertTrue(doc.contains("the bounded damage follow-up is documented separately"));
         assertTrue(doc.contains("the bounded hostile-targeting follow-up is documented separately"));
+        assertTrue(doc.contains("the bounded melee-attack follow-up is documented separately"));
         assertTrue(doc.contains("custom loot, orb drop, broader custom bear AI, anger behavior, taming, riding and mount behavior remain out of scope"));
         assertTrue(doc.contains("Cavenia remains out of scope"));
         assertTrue(doc.contains("The magic-book system remains intentionally untouched."));
@@ -126,6 +134,7 @@ class CavenicBearDocumentationTest {
         assertTrue(doc.contains("does not define a custom bear drop path tied to difficulty, dimension, progression, economy or Cavenia"));
         assertTrue(doc.contains("The restored damage behavior is documented separately"));
         assertTrue(doc.contains("The bounded hostile-targeting follow-up is documented separately"));
+        assertTrue(doc.contains("The bounded melee-attack follow-up is documented separately"));
         assertTrue(doc.contains("No legacy `cavenic_orb` bear branch was found."));
     }
 
@@ -143,8 +152,9 @@ class CavenicBearDocumentationTest {
         assertTrue(doc.contains("`DamageTypeTags.IS_FIRE`"));
         assertTrue(doc.contains("`LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F`"));
         assertTrue(doc.contains("lava because lava uses a fire-tagged damage source"));
-        assertTrue(doc.contains("broader vanilla polar bear movement and melee base remain unchanged in this slice"));
+        assertTrue(doc.contains("broader vanilla polar bear movement base remains unchanged in this slice"));
         assertTrue(doc.contains("`docs/cavenic-bear-hostile-targeting-mvp.md`"));
+        assertTrue(doc.contains("`docs/cavenic-bear-melee-attack-mvp.md`"));
         assertTrue(doc.contains("anger behavior remains otherwise unchanged"));
         assertTrue(doc.contains("natural spawning remains unchanged"));
         assertTrue(doc.contains("max spawn cluster size remains unchanged"));
@@ -175,7 +185,8 @@ class CavenicBearDocumentationTest {
         assertTrue(doc.contains("accepted as nearest hostile targets"));
         assertTrue(doc.contains("Fox targets are not restored"));
         assertTrue(doc.contains("baby cavenic bears keep retaliating after alerting nearby adults"));
-        assertTrue(doc.contains("vanilla polar bear movement, melee, panic, follow-parent, wandering and look goals remain unchanged"));
+        assertTrue(doc.contains("vanilla polar bear movement, panic, follow-parent, wandering and look goals remain unchanged"));
+        assertTrue(doc.contains("bounded melee-attack follow-up is documented separately"));
         assertTrue(doc.contains("anger behavior remains otherwise unchanged"));
         assertTrue(doc.contains("vanilla polar bear loot baseline remains unchanged"));
         assertTrue(doc.contains("source-confirmed bear custom loot/orb-drop absence remains unchanged"));
@@ -184,7 +195,38 @@ class CavenicBearDocumentationTest {
     }
 
     @Test
-    void runtimeSmokeDocMentionsCavenicBearCoverageLootBoundaryDamageAndTargetingSmoke() throws IOException {
+    void cavenicBearMeleeAttackDocStatesLegacyReferencesMappingAndBoundaries() throws IOException {
+        String doc = Files.readString(CAVENIC_BEAR_MELEE_ATTACK_MVP);
+
+        assertTrue(doc.contains("`cavern.entity.monster.EntityCavenicBear`"));
+        assertTrue(doc.contains("legacy inner `AIMeleeAttack`"));
+        assertTrue(doc.contains("extends `EntityAIAttackMelee`"));
+        assertTrue(doc.contains("`super(EntityCavenicBear.this, 1.25D, true)`"));
+        assertTrue(doc.contains("`checkAndPerformAttack(...)`"));
+        assertTrue(doc.contains("`getAttackReachSqr(...)`"));
+        assertTrue(doc.contains("`return 4.0F + attackTarget.width`"));
+        assertTrue(doc.contains("`setStanding(true)`"));
+        assertTrue(doc.contains("`playWarningSound()`"));
+        assertTrue(doc.contains("modern vanilla `PolarBearMeleeAttackGoal`"));
+        assertTrue(doc.contains("`distance <= reachSq * 2.0D`"));
+        assertTrue(doc.contains("`LegacyCavenicBearMeleeAttackGoal extends MeleeAttackGoal`"));
+        assertTrue(doc.contains("`goalSelector`"));
+        assertTrue(doc.contains("`PolarBearMeleeAttackGoal`"));
+        assertTrue(doc.contains("`1.25D`"));
+        assertTrue(doc.contains("standing/warning behavior"));
+        assertTrue(doc.contains("attack reach"));
+        assertTrue(doc.contains("Hostile targeting remains unchanged."));
+        assertTrue(doc.contains("Anger behavior remains unchanged."));
+        assertTrue(doc.contains("Natural spawning remains unchanged."));
+        assertTrue(doc.contains("Max spawn cluster size remains unchanged."));
+        assertTrue(doc.contains("Vanilla polar bear loot baseline remains unchanged."));
+        assertTrue(doc.contains("Source-confirmed bear custom loot/orb-drop absence remains unchanged."));
+        assertTrue(doc.contains("Fall/fire damage behavior remains unchanged."));
+        assertTrue(doc.contains("actual long-running pathfinding/anger feel remains manual"));
+    }
+
+    @Test
+    void runtimeSmokeDocMentionsCavenicBearCoverageLootBoundaryDamageTargetingAndMeleeSmoke() throws IOException {
         String doc = Files.readString(RUNTIME_SMOKE);
 
         assertTrue(doc.contains("cavenic bear runtime registry id"));
@@ -204,9 +246,13 @@ class CavenicBearDocumentationTest {
         assertTrue(doc.contains("cavenic bear legacy hostile player-target goal smoke"));
         assertTrue(doc.contains("cavenic bear legacy hurt-by-target retaliation smoke"));
         assertTrue(doc.contains("cavenic bear non-player target baseline smoke"));
+        assertTrue(doc.contains("cavenic bear legacy melee-goal registration smoke"));
+        assertTrue(doc.contains("cavenic bear legacy melee reach smoke"));
+        assertTrue(doc.contains("cavenic bear legacy standing-warning threshold smoke"));
         assertTrue(doc.contains("actual Cavenic Bear renderer/model visual feel"));
         assertTrue(doc.contains("actual long-run Cavenic Bear drop-rate balance, although the current source inspection found no direct custom bear loot branch beyond the vanilla polar bear baseline"));
         assertTrue(doc.contains("actual long-running Cavenic Bear fire/lava gameplay feel"));
+        assertTrue(doc.contains("actual long-running Cavenic Bear melee/pathfinding feel"));
         assertTrue(doc.contains("actual Cavenic Bear anger/pathfinding feel"));
         assertTrue(doc.contains("actual long-run Cavenic Bear population balance inside CAVERN"));
     }

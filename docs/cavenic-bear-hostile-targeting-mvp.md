@@ -47,7 +47,7 @@ The legacy class does not use the newer vanilla `Fox` target branch or a univers
 
 - Reborn keeps `CavenicBear` on the vanilla `PolarBear` base class.
 - Reborn now overrides `registerGoals()`.
-- The implementation calls `super.registerGoals()` first so the vanilla movement/melee/look stack stays intact.
+- The implementation calls `super.registerGoals()` first so the vanilla movement/panic/follow-parent/wander/look stack stays intact before the bounded follow-up swaps the target-selector slice.
 - Reborn then removes only the vanilla target-selector goals:
   - `HurtByTargetGoal`
   - `NearestAttackableTargetGoal`
@@ -66,7 +66,8 @@ The legacy class does not use the newer vanilla `Fox` target branch or a univers
 - Baby cavenic bears keep their own retaliation target after alerting nearby adult cavenic bears.
 - This slice does not add a custom `setTarget(...)` rejection hook, so previous-target clear/preserve semantics are unchanged outside the restored goal behavior itself.
 - The change is limited to target-selector behavior.
-- vanilla polar bear movement, melee, panic, follow-parent, wandering and look goals remain unchanged.
+- vanilla polar bear movement, panic, follow-parent, wandering and look goals remain unchanged.
+- the bounded melee-attack follow-up is documented separately in `docs/cavenic-bear-melee-attack-mvp.md`.
 - anger behavior remains otherwise unchanged
 - attributes remain unchanged
 - natural spawning remains unchanged

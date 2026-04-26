@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import com.richardkenway.cavernreborn.CavernReborn;
@@ -98,6 +99,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -221,6 +223,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_BEAR_NATURAL_SPAWN_ANCHOR = new BlockPos(4864, 96, 0);
     private static final BlockPos CAVENIC_BEAR_DAMAGE_ANCHOR = new BlockPos(4960, 96, 0);
     private static final BlockPos CAVENIC_BEAR_HOSTILE_TARGETING_ANCHOR = new BlockPos(5056, 96, 0);
+    private static final BlockPos CAVENIC_BEAR_MELEE_ATTACK_ANCHOR = new BlockPos(5152, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -3047,6 +3050,145 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBearLegacyMeleeAttackBehaviorAppliesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_BEAR_MELEE_ATTACK_ANCHOR;
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CavenicBear cavenicBear = spawnLivingEntity(helper, ModRegistries.CAVENIC_BEAR.get(), origin);
+        PolarBear vanillaBear = spawnLivingEntity(helper, EntityType.POLAR_BEAR, origin.east(8));
+        Player cavenicTarget = makeMockPlayer(helper, level, GameType.SURVIVAL, ItemStack.EMPTY, origin.south(4));
+        Player vanillaTarget = makeMockPlayer(helper, level, GameType.SURVIVAL, ItemStack.EMPTY, origin.east(8).south(4));
+
+        positionTargetAroundMob(cavenicTarget, cavenicBear, 2.0D);
+        positionTargetAroundMob(vanillaTarget, vanillaBear, 2.0D);
+
+        WrappedGoal cavenicMeleeGoal = findGoalBySimpleName(cavenicBear.goalSelector.getAvailableGoals(), "LegacyCavenicBearMeleeAttackGoal")
+            .orElseThrow(() -> new IllegalStateException("Missing legacy cavenic bear melee goal"));
+        WrappedGoal vanillaMeleeGoal = findGoalBySimpleName(vanillaBear.goalSelector.getAvailableGoals(), "PolarBearMeleeAttackGoal")
+            .orElseThrow(() -> new IllegalStateException("Missing vanilla polar bear melee goal"));
+
+        helper.assertTrue(
+            countGoals(cavenicBear.goalSelector.getAvailableGoals(), MeleeAttackGoal.class) == 1L,
+            "Expected cavenic bear to keep exactly one melee attack goal in the bounded melee slice"
+        );
+        helper.assertTrue(
+            findGoalBySimpleName(cavenicBear.goalSelector.getAvailableGoals(), "PolarBearMeleeAttackGoal").isEmpty(),
+            "Expected cavenic bear to remove the vanilla polar bear melee goal"
+        );
+        helper.assertTrue(
+            findGoalBySimpleName(cavenicBear.goalSelector.getAvailableGoals(), "LegacyCavenicBearMeleeAttackGoal").isPresent(),
+            "Expected cavenic bear to register the legacy melee goal"
+        );
+        helper.assertTrue(
+            findGoalBySimpleName(vanillaBear.goalSelector.getAvailableGoals(), "PolarBearMeleeAttackGoal").isPresent(),
+            "Expected vanilla polar bear to keep its vanilla melee goal"
+        );
+
+        cavenicBear.setTarget(cavenicTarget);
+        vanillaBear.setTarget(vanillaTarget);
+
+        float cavenicTargetHealthBefore = cavenicTarget.getHealth();
+        float vanillaTargetHealthBefore = vanillaTarget.getHealth();
+
+        invokeMeleeAttackCheck(cavenicMeleeGoal.getGoal(), cavenicTarget);
+        invokeMeleeAttackCheck(vanillaMeleeGoal.getGoal(), vanillaTarget);
+
+        helper.assertTrue(
+            cavenicTarget.getHealth() < cavenicTargetHealthBefore,
+            "Expected legacy cavenic bear melee reach to hit a player target at two blocks"
+        );
+        helper.assertTrue(
+            Math.abs(vanillaTarget.getHealth() - vanillaTargetHealthBefore) < 1.0E-6F,
+            "Expected vanilla polar bear melee reach baseline not to hit a player target at the same two-block spacing"
+        );
+        helper.assertFalse(cavenicBear.isStanding(), "Expected successful legacy melee hits to clear the standing pose");
+        helper.assertFalse(vanillaBear.isStanding(), "Expected unchanged vanilla polar bear melee baseline to stay non-standing after the out-of-range check");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBearLegacyMeleeAttackKeepsExistingSlicesStableAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_BEAR_MELEE_ATTACK_ANCHOR.north(20);
+
+        resetMiningArea(level, origin, 24.0D);
+
+        CavenicBear cavenicBear = spawnLivingEntity(helper, ModRegistries.CAVENIC_BEAR.get(), origin);
+        PolarBear vanillaBear = spawnLivingEntity(helper, EntityType.POLAR_BEAR, origin.east(8));
+        Player cavenicTarget = makeMockPlayer(helper, level, GameType.SURVIVAL, ItemStack.EMPTY, origin.south(4));
+        Player vanillaTarget = makeMockPlayer(helper, level, GameType.SURVIVAL, ItemStack.EMPTY, origin.east(8).south(4));
+        Cow passiveTarget = spawnLivingEntity(helper, EntityType.COW, origin.west(4));
+        Zombie attacker = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.south(8));
+
+        positionTargetAroundMob(cavenicTarget, cavenicBear, 3.1D);
+        positionTargetAroundMob(vanillaTarget, vanillaBear, 3.1D);
+
+        WrappedGoal cavenicMeleeGoal = findGoalBySimpleName(cavenicBear.goalSelector.getAvailableGoals(), "LegacyCavenicBearMeleeAttackGoal")
+            .orElseThrow(() -> new IllegalStateException("Missing legacy cavenic bear melee goal"));
+        WrappedGoal vanillaMeleeGoal = findGoalBySimpleName(vanillaBear.goalSelector.getAvailableGoals(), "PolarBearMeleeAttackGoal")
+            .orElseThrow(() -> new IllegalStateException("Missing vanilla polar bear melee goal"));
+        WrappedGoal cavenicHurtGoal = findGoalBySimpleName(cavenicBear.targetSelector.getAvailableGoals(), "LegacyCavenicBearHurtByTargetGoal")
+            .orElseThrow(() -> new IllegalStateException("Missing legacy cavenic bear hurt goal"));
+
+        helper.assertTrue(cavenicBear.isLegacyHostileTarget(cavenicTarget), "Expected melee follow-up to keep players as legacy hostile targets");
+        helper.assertFalse(cavenicBear.isLegacyHostileTarget(passiveTarget), "Expected melee follow-up to keep passive non-player targets outside the legacy hostile-target helper");
+
+        cavenicBear.setLastHurtByMob(attacker);
+        cavenicHurtGoal.start();
+        helper.assertTrue(cavenicBear.getTarget() == attacker, "Expected melee follow-up to keep legacy hurt-by-target retaliation");
+
+        cavenicBear.setTarget(cavenicTarget);
+        vanillaBear.setTarget(vanillaTarget);
+        cavenicBear.setStanding(false);
+        vanillaBear.setStanding(false);
+        setGoalField(cavenicMeleeGoal.getGoal(), "ticksUntilNextAttack", 10);
+        setGoalField(vanillaMeleeGoal.getGoal(), "ticksUntilNextAttack", 10);
+
+        invokeMeleeAttackCheck(cavenicMeleeGoal.getGoal(), cavenicTarget);
+        invokeMeleeAttackCheck(vanillaMeleeGoal.getGoal(), vanillaTarget);
+
+        helper.assertFalse(
+            cavenicBear.isStanding(),
+            "Expected legacy cavenic bear warning posture to stop before the broader vanilla three-point-one-block player spacing"
+        );
+        helper.assertTrue(
+            vanillaBear.isStanding(),
+            "Expected vanilla polar bear warning posture baseline to stay broader than the restored legacy cavenic bear melee threshold"
+        );
+
+        float fireHealthBefore = cavenicBear.getHealth();
+        helper.assertFalse(
+            cavenicBear.hurt(level.damageSources().lava(), 4.0F),
+            "Expected melee follow-up to keep legacy fire-tagged damage rejection"
+        );
+        helper.assertTrue(
+            Math.abs(fireHealthBefore - cavenicBear.getHealth()) < 1.0E-6F,
+            "Expected melee follow-up to keep cavenic bear health unchanged after lava damage"
+        );
+        helper.assertTrue(
+            CavenicBear.LEGACY_FALL_DAMAGE_MULTIPLIER == 0.35F,
+            "Expected melee follow-up to keep the legacy 0.35 fall-damage multiplier"
+        );
+        helper.assertTrue(
+            CavenicBear.NATURAL_SPAWN_WEIGHT == 30
+                && CavenicBear.NATURAL_SPAWN_MIN_COUNT == 1
+                && CavenicBear.NATURAL_SPAWN_MAX_COUNT == 1,
+            "Expected melee follow-up to keep the legacy 30/1/1 natural-spawn constants"
+        );
+        helper.assertTrue(
+            cavenicBear.getMaxSpawnClusterSize() == 1,
+            "Expected melee follow-up to keep the legacy max spawn cluster size of 1"
+        );
+        helper.assertTrue(
+            cavenicBear.getLootTable().equals(EntityType.POLAR_BEAR.getDefaultLootTable()),
+            "Expected melee follow-up to keep the vanilla polar bear loot-table baseline"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void cavenicMeleeRegistersAtRuntime(GameTestHelper helper) {
         helper.assertTrue(ModRegistries.CAVENIC_SWORD.get() != null, "Missing cavenic sword");
         helper.assertTrue(ModRegistries.CAVENIC_AXE.get() != null, "Missing cavenic axe");
@@ -4972,6 +5114,10 @@ public final class CavernSpecialOreGameTests {
         return new ItemStack(ModRegistries.CAVENIC_BEAR_SPAWN_EGG.get());
     }
 
+    private static void positionTargetAroundMob(LivingEntity target, Mob mob, double xOffset) {
+        target.teleportTo((ServerLevel)mob.level(), mob.getX() + xOffset, mob.getY(), mob.getZ(), EnumSet.noneOf(RelativeMovement.class), 0.0F, 0.0F);
+    }
+
     private static DamageSource witchOwnedPotionDamageSource(ServerLevel level, Witch owner) {
         ThrownPotion potion = new ThrownPotion(level, owner);
         potion.setPos(owner.getX(), owner.getEyeY(), owner.getZ());
@@ -5274,21 +5420,79 @@ public final class CavernSpecialOreGameTests {
     }
 
     private static long countGoals(Mob mob, Class<? extends Goal> goalClass) {
-        return mob.targetSelector.getAvailableGoals().stream().map(WrappedGoal::getGoal).filter(goalClass::isInstance).count();
+        return countGoals(mob.targetSelector.getAvailableGoals(), goalClass);
     }
 
     private static Optional<WrappedGoal> findGoalBySimpleName(Mob mob, String goalSimpleName) {
-        return mob.targetSelector.getAvailableGoals().stream().filter(goal -> goal.getGoal().getClass().getSimpleName().equals(goalSimpleName)).findFirst();
+        return findGoalBySimpleName(mob.targetSelector.getAvailableGoals(), goalSimpleName);
+    }
+
+    private static long countGoals(Iterable<WrappedGoal> goals, Class<? extends Goal> goalClass) {
+        return java.util.stream.StreamSupport.stream(goals.spliterator(), false).map(WrappedGoal::getGoal).filter(goalClass::isInstance).count();
+    }
+
+    private static Optional<WrappedGoal> findGoalBySimpleName(Iterable<WrappedGoal> goals, String goalSimpleName) {
+        return java.util.stream.StreamSupport.stream(goals.spliterator(), false)
+            .filter(goal -> goal.getGoal().getClass().getSimpleName().equals(goalSimpleName))
+            .findFirst();
     }
 
     private static void invokeGoalMethod(Goal goal, String methodName, Mob targetMob, LivingEntity attacker) {
         try {
-            Method method = goal.getClass().getDeclaredMethod(methodName, Mob.class, LivingEntity.class);
+            Method method = findDeclaredMethod(goal.getClass(), methodName, Mob.class, LivingEntity.class);
             method.setAccessible(true);
             method.invoke(goal, targetMob, attacker);
         } catch (ReflectiveOperationException exception) {
             throw new IllegalStateException("Failed to invoke goal method " + methodName + " on " + goal.getClass().getName(), exception);
         }
+    }
+
+    private static void invokeMeleeAttackCheck(Goal goal, LivingEntity target) {
+        try {
+            Method method = findDeclaredMethod(goal.getClass(), "checkAndPerformAttack", LivingEntity.class);
+            method.setAccessible(true);
+            method.invoke(goal, target);
+        } catch (ReflectiveOperationException exception) {
+            throw new IllegalStateException("Failed to invoke melee attack check on " + goal.getClass().getName(), exception);
+        }
+    }
+
+    private static void setGoalField(Goal goal, String fieldName, int value) {
+        try {
+            Field field = findDeclaredField(goal.getClass(), fieldName);
+            field.setAccessible(true);
+            field.setInt(goal, value);
+        } catch (ReflectiveOperationException exception) {
+            throw new IllegalStateException("Failed to set field " + fieldName + " on " + goal.getClass().getName(), exception);
+        }
+    }
+
+    private static Method findDeclaredMethod(Class<?> type, String methodName, Class<?>... parameterTypes) throws NoSuchMethodException {
+        Class<?> current = type;
+
+        while (current != null) {
+            try {
+                return current.getDeclaredMethod(methodName, parameterTypes);
+            } catch (NoSuchMethodException exception) {
+                current = current.getSuperclass();
+            }
+        }
+
+        throw new NoSuchMethodException(methodName);
+    }
+
+    private static Field findDeclaredField(Class<?> type, String fieldName) throws NoSuchFieldException {
+        Class<?> current = type;
+
+        while (current != null) {
+            try {
+                return current.getDeclaredField(fieldName);
+            } catch (NoSuchFieldException exception) {
+                current = current.getSuperclass();
+            }
+        }
+
+        throw new NoSuchFieldException(fieldName);
     }
 
     private static RandomSource queuedFloatRandomSource(float... values) {
