@@ -2,6 +2,7 @@ package com.richardkenway.cavernreborn.app.gametest;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -138,7 +139,10 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.world.BiomeModifier;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
@@ -147,6 +151,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 @GameTestHolder(CavernReborn.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class CavernSpecialOreGameTests {
+    private static final ReleasedArrowRecorder RELEASED_ARROW_RECORDER = registerReleasedArrowRecorder();
     private static final String TEMPLATE_NAMESPACE = "minecraft";
     private static final String EMPTY_TEMPLATE = "empty";
     private static final int DEFAULT_TIMEOUT_TICKS = 100;
@@ -3031,12 +3036,16 @@ public final class CavernSpecialOreGameTests {
 
         helper.assertTrue(creativeResult.useResult().consumesAction(), "Creative NORMAL use without arrows must still start the vanilla draw path");
         helper.assertTrue(creativeResult.usingStarted(), "Creative NORMAL use without arrows must start using");
-        helper.assertTrue(newArrowCount(creativeResult) == 0, "Creative NORMAL release without arrows must still spawn no projectile in this version");
-        helper.assertTrue(creativeResult.arrowCountBefore() == creativeResult.arrowCountAfter(), "Creative NORMAL release without arrows must not change arrow inventory");
-        helper.assertTrue(creativeResult.bowDamageBefore() == creativeResult.bowDamageAfter(), "Creative NORMAL release without arrows must not damage the bow");
-        helper.assertTrue(creativeResult.torchCountBefore() == creativeResult.torchCountAfter(), "Creative NORMAL release without arrows must not consume torches");
-        helper.assertTrue(creativeResult.modeAfter() == CavenicBowMode.NORMAL, "Creative NORMAL release without arrows must keep NORMAL mode stored");
-        helper.succeed();
+        helper.runAfterDelay(1, () -> {
+            AbstractArrow creativeArrow = singleSpawnedArrow(helper, creativeResult, "Creative NORMAL release without arrows must still fire exactly one vanilla arrow");
+            helper.assertTrue("minecraft:arrow".equals(entityTypeId(creativeArrow)), "Creative NORMAL release without arrows must keep the vanilla arrow path");
+            helper.assertFalse(CavenicBowItem.isTorchArrow(creativeArrow), "Creative NORMAL release without arrows must not Torch-mark the projectile");
+            helper.assertTrue(creativeResult.arrowCountBefore() == creativeResult.arrowCountAfter(), "Creative NORMAL release without arrows must not change arrow inventory");
+            helper.assertTrue(creativeResult.bowDamageBefore() == creativeResult.bowDamageAfter(), "Creative NORMAL release without arrows must not damage the bow");
+            helper.assertTrue(creativeResult.torchCountBefore() == creativeResult.torchCountAfter(), "Creative NORMAL release without arrows must not consume torches");
+            helper.assertTrue(creativeResult.modeAfter() == CavenicBowMode.NORMAL, "Creative NORMAL release without arrows must keep NORMAL mode stored");
+            helper.succeed();
+        });
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
@@ -3083,7 +3092,6 @@ public final class CavernSpecialOreGameTests {
         bowItem.setMode(noTorchBow, CavenicBowMode.TORCH);
         noTorchBow.enchant(enchantments.getOrThrow(Enchantments.INFINITY), 1);
         noTorchPlayer.getInventory().add(new ItemStack(Items.ARROW));
-        AbstractArrow noTorchArrow = createRuntimeArrow(level, noTorchPlayer, noTorchBow);
 
         helper.assertFalse(
             bowItem.shouldMarkTorchShot(noTorchBow, noTorchPlayer, 1.0F),
@@ -3093,6 +3101,7 @@ public final class CavernSpecialOreGameTests {
         BowReleaseResult noTorchResult = releaseBowThroughRealUse(helper, noTorchPlayer, BowItem.MAX_DRAW_DURATION);
 
         helper.runAfterDelay(1, () -> {
+            AbstractArrow noTorchArrow = singleSpawnedArrow(helper, noTorchResult, "Infinity TORCH release without torches must still fire one vanilla arrow");
             helper.assertTrue("minecraft:arrow".equals(entityTypeId(noTorchArrow)), "Infinity TORCH release without torches must keep the vanilla arrow entity");
             helper.assertFalse(CavenicBowItem.isTorchArrow(noTorchArrow), "Infinity must not create a free Torch-marked shot when no torch item is present");
             helper.assertTrue(noTorchResult.useResult().consumesAction(), "Infinity TORCH release without torches must still consume the normal bow-use action");
@@ -3161,13 +3170,12 @@ public final class CavernSpecialOreGameTests {
         bowItem.setMode(rapidBow, CavenicBowMode.RAPID);
 
         float rapidShotPower = bowItem.resolveShotPower(rapidBow, rawPower);
-        float rapidVelocity = bowItem.resolveProjectileVelocity(rapidBow, rapidShotPower * 3.0F, rapidShotPower);
-        AbstractArrow rapidArrow = createRuntimeArrow(level, rapidPlayer, rapidBow);
-        double defaultArrowDamage = rapidArrow.getBaseDamage();
+        double defaultArrowDamage = createRuntimeArrow(level, rapidPlayer, rapidBow).getBaseDamage();
 
         BowReleaseResult rapidResult = releaseBowThroughRealUse(helper, rapidPlayer, drawTicks);
 
         helper.runAfterDelay(1, () -> {
+            AbstractArrow rapidArrow = singleSpawnedArrow(helper, rapidResult, "Expected RAPID release to spawn exactly one vanilla arrow");
             helper.assertTrue(rapidShotPower > rawPower, "RAPID mode must increase shot power for the same draw");
             helper.assertTrue(
                 Math.abs(rapidShotPower - rawPower * CavenicBowRapidPolicy.POWER_MULTIPLIER) < 1.0e-6F,
@@ -3186,9 +3194,8 @@ public final class CavernSpecialOreGameTests {
                 Math.abs(rapidArrow.getBaseDamage() - defaultArrowDamage) < 1.0E-6D,
                 "RAPID mode must not add a SNIPE-style damage multiplier"
             );
-            rapidArrow.setDeltaMovement(rapidVelocity, 0.0D, 0.0D);
             helper.assertTrue(
-                Math.abs(rapidVelocity - rapidShotPower * 3.0F) < 1.0E-6F,
+                Math.abs(bowItem.resolveProjectileVelocity(rapidBow, rapidShotPower * 3.0F, rapidShotPower) - rapidShotPower * 3.0F) < 1.0E-6F,
                 "RAPID mode must keep vanilla velocity math on top of the boosted shot power"
             );
             helper.assertTrue(
@@ -3218,13 +3225,12 @@ public final class CavernSpecialOreGameTests {
         CavenicBowItem bowItem = (CavenicBowItem) ModRegistries.CAVENIC_BOW.get();
 
         bowItem.setMode(snipeBow, CavenicBowMode.SNIPE);
-        AbstractArrow snipeArrow = createRuntimeArrow(level, snipePlayer, snipeBow);
-        double defaultArrowDamage = snipeArrow.getBaseDamage();
-        float snipeVelocity = bowItem.resolveProjectileVelocity(snipeBow, expectedVanillaVelocity, fullChargePower);
+        double defaultArrowDamage = createRuntimeArrow(level, snipePlayer, snipeBow).getBaseDamage();
 
         BowReleaseResult snipeResult = releaseBowThroughRealUse(helper, snipePlayer, BowItem.MAX_DRAW_DURATION);
 
         helper.runAfterDelay(1, () -> {
+            AbstractArrow snipeArrow = singleSpawnedArrow(helper, snipeResult, "Expected SNIPE full-charge release to spawn exactly one arrow");
             helper.assertTrue("minecraft:arrow".equals(entityTypeId(snipeArrow)), "SNIPE mode must still spawn a vanilla arrow");
             helper.assertTrue(
                 snipeResult.bowDamageAfter() - snipeResult.bowDamageBefore() == 1 + CavenicBowSnipePolicy.EXTRA_DURABILITY_COST,
@@ -3236,14 +3242,9 @@ public final class CavernSpecialOreGameTests {
             helper.assertFalse(CavenicBowItem.isTorchArrow(snipeArrow), "SNIPE full-charge release must not Torch-mark the arrow");
             helper.assertTrue(snipeResult.modeAfter() == CavenicBowMode.SNIPE, "SNIPE mode must remain stored after real release");
             helper.assertTrue(
-                bowItem.applySnipeBoost(snipeBow, snipeArrow, fullChargePower),
-                "SNIPE mode must apply the bounded base-damage boost on a full-charge shot"
-            );
-            helper.assertTrue(
                 Math.abs(snipeArrow.getBaseDamage() - CavenicBowSnipePolicy.adjustedBaseDamage(CavenicBowMode.SNIPE, defaultArrowDamage, fullChargePower)) < 1.0E-6D,
                 "SNIPE mode must increase arrow base damage on full-charge shots"
             );
-            snipeArrow.setDeltaMovement(snipeVelocity, 0.0D, 0.0D);
             helper.assertTrue(
                 snipeArrow.getDeltaMovement().length() > expectedVanillaVelocity,
                 "SNIPE mode must increase projectile velocity on full-charge shots"
@@ -4810,6 +4811,12 @@ public final class CavernSpecialOreGameTests {
         return ((ArrowItem) Items.ARROW).createArrow(level, new ItemStack(Items.ARROW), player, bow);
     }
 
+    private static ReleasedArrowRecorder registerReleasedArrowRecorder() {
+        ReleasedArrowRecorder recorder = new ReleasedArrowRecorder();
+        NeoForge.EVENT_BUS.register(recorder);
+        return recorder;
+    }
+
     private static BowReleaseResult releaseBowThroughRealUse(GameTestHelper helper, Player player, int chargeTicks) {
         ServerLevel level = helper.getLevel();
         ItemStack bow = player.getMainHandItem();
@@ -4818,6 +4825,7 @@ public final class CavernSpecialOreGameTests {
         Set<UUID> beforeArrowIds = arrowsAround(level, origin, 16.0D).stream()
             .map(Entity::getUUID)
             .collect(java.util.stream.Collectors.toSet());
+        RELEASED_ARROW_RECORDER.clearShooter(player.getId());
         int arrowCountBefore = countPlayerItem(player, Items.ARROW);
         int torchCountBefore = countPlayerItem(player, Items.TORCH);
         int bowDamageBefore = bow.getDamageValue();
@@ -4833,6 +4841,7 @@ public final class CavernSpecialOreGameTests {
         return new BowReleaseResult(
             level,
             origin,
+            player.getId(),
             player.getUUID(),
             beforeArrowIds,
             useResult.getResult(),
@@ -4882,9 +4891,9 @@ public final class CavernSpecialOreGameTests {
     }
 
     private static List<AbstractArrow> newArrows(BowReleaseResult result) {
-        return arrowsAround(result.level(), result.origin(), 32.0D).stream()
-            .filter(arrow -> arrow.getOwner() != null && arrow.getOwner().getUUID().equals(result.shooterId()))
-            .filter(arrow -> !result.beforeArrowIds().contains(arrow.getUUID()))
+        return RELEASED_ARROW_RECORDER.arrowsFor(result.shooterEntityId()).stream()
+            .filter(AbstractArrow::isAlive)
+            .filter(arrow -> arrow.level() == result.level())
             .toList();
     }
 
@@ -5201,6 +5210,7 @@ public final class CavernSpecialOreGameTests {
     private record BowReleaseResult(
         ServerLevel level,
         BlockPos origin,
+        int shooterEntityId,
         UUID shooterId,
         Set<UUID> beforeArrowIds,
         InteractionResult useResult,
@@ -5213,6 +5223,29 @@ public final class CavernSpecialOreGameTests {
         int bowDamageAfter,
         CavenicBowMode modeAfter
     ) {
+    }
+
+    private static final class ReleasedArrowRecorder {
+        private final Map<Integer, List<AbstractArrow>> arrowsByShooter = new HashMap<>();
+
+        private synchronized void clearShooter(int shooterEntityId) {
+            arrowsByShooter.remove(shooterEntityId);
+        }
+
+        private synchronized List<AbstractArrow> arrowsFor(int shooterEntityId) {
+            return List.copyOf(arrowsByShooter.getOrDefault(shooterEntityId, List.of()));
+        }
+
+        @SubscribeEvent
+        public synchronized void onEntityJoinLevel(EntityJoinLevelEvent event) {
+            if (event.getLevel().isClientSide()) {
+                return;
+            }
+            if (!(event.getEntity() instanceof AbstractArrow arrow) || !(arrow.getOwner() instanceof Player owner)) {
+                return;
+            }
+            arrowsByShooter.computeIfAbsent(owner.getId(), ignored -> new ArrayList<>()).add(arrow);
+        }
     }
 
     private static final class QueuedFloatRandomSource implements RandomSource {
