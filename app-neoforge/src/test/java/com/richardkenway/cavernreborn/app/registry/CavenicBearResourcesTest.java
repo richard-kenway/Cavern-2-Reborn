@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CavenicBearResourcesTest {
     @Test
-    void cavenicBearRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnDamageHostileTargetingMeleeAndBoundedPanicBehavior() throws IOException {
+    void cavenicBearRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnDamageHostileTargetingMeleePanicAndPassiveAiBoundary() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -121,10 +121,15 @@ class CavenicBearResourcesTest {
         assertTrue(entitySource.contains("CavernNeoForgeDimensions.isCavern"));
         assertTrue(entitySource.contains("Monster.checkMonsterSpawnRules"));
         assertTrue(entitySource.contains("asMonsterSpawnType"));
+        assertFalse(entitySource.contains("FloatGoal"));
         assertFalse(entitySource.contains("FollowParentGoal"));
         assertFalse(entitySource.contains("RandomStrollGoal"));
         assertFalse(entitySource.contains("LookAtPlayerGoal"));
         assertFalse(entitySource.contains("RandomLookAroundGoal"));
+        assertFalse(entitySource.contains("LegacyCavenicBearFollow"));
+        assertFalse(entitySource.contains("LegacyCavenicBearWander"));
+        assertFalse(entitySource.contains("LegacyCavenicBearWatch"));
+        assertFalse(entitySource.contains("LegacyCavenicBearLook"));
         assertFalse(entitySource.contains("Fox.class"));
         assertFalse(entitySource.contains("setTarget("));
         assertFalse(entitySource.toLowerCase().contains("tame"));

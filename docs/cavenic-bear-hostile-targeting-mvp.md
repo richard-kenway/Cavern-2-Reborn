@@ -67,7 +67,7 @@ The legacy class does not use the newer vanilla `Fox` target branch or a univers
 - This slice does not add a custom `setTarget(...)` rejection hook, so previous-target clear/preserve semantics are unchanged outside the restored goal behavior itself.
 - The change is limited to target-selector behavior.
 - the hostile-targeting slice itself left the vanilla panic goal in place, and the later bounded panic follow-up is now documented separately in `docs/cavenic-bear-panic-behavior-mvp.md`.
-- vanilla polar bear movement, follow-parent, wandering and look goals remain unchanged.
+- vanilla polar bear movement, follow-parent, wandering and look goals remain unchanged, and the remaining passive/movement AI boundary is now documented separately in `docs/cavenic-bear-passive-ai-equivalent-or-deferred.md`.
 - the bounded melee-attack follow-up is documented separately in `docs/cavenic-bear-melee-attack-mvp.md`.
 - anger behavior remains otherwise unchanged
 - attributes remain unchanged

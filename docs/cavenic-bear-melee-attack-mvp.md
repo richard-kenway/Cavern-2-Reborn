@@ -67,6 +67,7 @@ That means current vanilla `PolarBear` warns at a wider distance and uses a diff
 - Attack cooldown stays on the modern `MeleeAttackGoal` timing path, which still maps to the legacy `20`-tick cadence for this bounded slice.
 - Hostile targeting remains unchanged.
 - Panic behavior is now documented separately in `docs/cavenic-bear-panic-behavior-mvp.md`.
+- The remaining passive/movement AI boundary is now documented separately in `docs/cavenic-bear-passive-ai-equivalent-or-deferred.md`.
 - Anger behavior remains unchanged.
 - Attributes remain unchanged.
 - Natural spawning remains unchanged.
@@ -79,7 +80,8 @@ That means current vanilla `PolarBear` warns at a wider distance and uses a diff
 
 - The inspected legacy drift is in the melee goal, not in a broad combat system.
 - Reborn therefore replaces only the conflicting vanilla melee goal instead of rewriting the whole polar-bear AI stack.
-- Follow-parent, wandering, watch/look and broader anger/pathfinding feel remain separate follow-up work.
+- The remaining passive/movement AI boundary is documented separately in `docs/cavenic-bear-passive-ai-equivalent-or-deferred.md`.
+- Broader anger/pathfinding feel remains separate follow-up work.
 
 ## Testing
 
@@ -94,7 +96,6 @@ That means current vanilla `PolarBear` warns at a wider distance and uses a diff
 
 ## Still Out Of Scope
 
-- follow-parent, wander, watch and look goal parity
 - broader anger rewrites
 - taming, riding and mount behavior
 - Cavenia-specific behavior

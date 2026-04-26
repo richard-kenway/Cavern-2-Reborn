@@ -38,6 +38,7 @@ That means the mob kept taking fall damage, but only at `35%` of the original am
 - the bounded hostile-targeting follow-up is documented separately in `docs/cavenic-bear-hostile-targeting-mvp.md`.
 - the bounded melee-attack follow-up is documented separately in `docs/cavenic-bear-melee-attack-mvp.md`.
 - the bounded panic-behavior follow-up is documented separately in `docs/cavenic-bear-panic-behavior-mvp.md`.
+- the remaining passive/movement AI boundary is documented separately in `docs/cavenic-bear-passive-ai-equivalent-or-deferred.md`.
 - anger behavior remains otherwise unchanged.
 - attributes remain unchanged.
 - natural spawning remains unchanged.
@@ -51,6 +52,7 @@ That means the mob kept taking fall damage, but only at `35%` of the original am
 - Reborn keeps the implementation entity-specific instead of using a global damage event.
 - The `DamageTypeTags.IS_FIRE` mapping is the closest current equivalent to the old `source.isFireDamage()` check.
 - The legacy class also had custom bear AI, the bounded hostile-targeting follow-up is now documented separately in `docs/cavenic-bear-hostile-targeting-mvp.md`, and the bounded melee-attack follow-up is now documented separately in `docs/cavenic-bear-melee-attack-mvp.md`.
+- The remaining passive/movement AI boundary is documented separately in `docs/cavenic-bear-passive-ai-equivalent-or-deferred.md`.
 
 ## Testing
 

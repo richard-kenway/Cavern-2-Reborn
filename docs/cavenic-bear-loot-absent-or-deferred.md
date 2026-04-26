@@ -52,6 +52,7 @@ The source-confirmed result is simple: the legacy bear had no direct custom bear
 - The bounded hostile-targeting follow-up is documented separately in `docs/cavenic-bear-hostile-targeting-mvp.md`.
 - The bounded melee-attack follow-up is documented separately in `docs/cavenic-bear-melee-attack-mvp.md`.
 - The bounded panic-behavior follow-up is documented separately in `docs/cavenic-bear-panic-behavior-mvp.md`.
+- The remaining passive/movement AI boundary is documented separately in `docs/cavenic-bear-passive-ai-equivalent-or-deferred.md`.
 
 ## Why This Slice Does Not Add New Loot Code
 
