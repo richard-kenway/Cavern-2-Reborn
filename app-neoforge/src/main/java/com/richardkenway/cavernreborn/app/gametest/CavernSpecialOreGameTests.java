@@ -93,6 +93,7 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
@@ -199,6 +200,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_WITCH_PROJECTILE_IMMUNITY_ANCHOR = new BlockPos(4288, 96, 0);
     private static final BlockPos CAVENIC_WITCH_FRIENDSHIP_TARGETING_ANCHOR = new BlockPos(4384, 96, 0);
     private static final BlockPos CAVENIC_WITCH_RANGED_POTION_ANCHOR = new BlockPos(4480, 96, 0);
+    private static final BlockPos CAVENIC_WITCH_RANGED_POTION_SELECTION_ANCHOR = new BlockPos(4576, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -2437,6 +2439,57 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicWitchLegacyRangedPotionSelectionThresholdsResolveAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_WITCH_RANGED_POTION_SELECTION_ANCHOR;
+        Cow highHealthNonUndeadTarget;
+        Cow lowHealthNonUndeadTarget;
+        Zombie undeadTarget;
+
+        resetMiningArea(level, origin, 16.0D);
+
+        highHealthNonUndeadTarget = spawnLivingEntity(helper, EntityType.COW, origin.east(4));
+        lowHealthNonUndeadTarget = spawnLivingEntity(helper, EntityType.COW, origin.east(8));
+        undeadTarget = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.west(4));
+        highHealthNonUndeadTarget.setHealth(8.0F);
+        lowHealthNonUndeadTarget.setHealth(7.0F);
+
+        helper.assertTrue(
+            CavenicWitch.selectLegacyRangedPotionFor(highHealthNonUndeadTarget, queuedFloatRandomSource(0.49F)).is(Potions.POISON),
+            "Expected high-health non-undead targets to use the legacy 0.5 first-branch threshold"
+        );
+        helper.assertTrue(
+            CavenicWitch.selectLegacyRangedPotionFor(highHealthNonUndeadTarget, queuedFloatRandomSource(0.5F, 0.9F, 0.9F)).is(Potions.HARMING),
+            "Expected the legacy 0.5 first-branch threshold to reject equal-boundary rolls for high-health targets"
+        );
+        helper.assertTrue(
+            CavenicWitch.selectLegacyRangedPotionFor(lowHealthNonUndeadTarget, queuedFloatRandomSource(0.29F)).is(Potions.POISON),
+            "Expected low-health non-undead targets to use the legacy 0.3 first-branch threshold"
+        );
+        helper.assertTrue(
+            CavenicWitch.selectLegacyRangedPotionFor(lowHealthNonUndeadTarget, queuedFloatRandomSource(0.3F, 0.9F, 0.9F)).is(Potions.HARMING),
+            "Expected the legacy 0.3 first-branch threshold to reject equal-boundary rolls for low-health targets"
+        );
+        helper.assertTrue(
+            CavenicWitch.selectLegacyRangedPotionFor(undeadTarget, queuedFloatRandomSource(0.49F)).is(Potions.HEALING),
+            "Expected winning first-branch rolls to map undead targets to HEALING"
+        );
+        helper.assertTrue(
+            CavenicWitch.selectLegacyRangedPotionFor(highHealthNonUndeadTarget, queuedFloatRandomSource(0.9F, 0.24F)).is(Potions.WEAKNESS),
+            "Expected first-branch failure plus weakness-roll success to map to WEAKNESS"
+        );
+        helper.assertTrue(
+            CavenicWitch.selectLegacyRangedPotionFor(highHealthNonUndeadTarget, queuedFloatRandomSource(0.9F, 0.25F, 0.19F)).is(Potions.SLOWNESS),
+            "Expected first-branch and weakness failure plus slowness-roll success to map to SLOWNESS"
+        );
+        helper.assertTrue(
+            CavenicWitch.selectLegacyRangedPotionFor(highHealthNonUndeadTarget, queuedFloatRandomSource(0.9F, 0.9F, 0.9F)).is(Potions.HARMING),
+            "Expected all failed branch rolls to leave the default HARMING potion selected"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void cavenicWitchLegacyRangedPotionKeepsExistingSlicesStableAtRuntime(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos origin = CAVENIC_WITCH_RANGED_POTION_ANCHOR.south(16);
@@ -4508,10 +4561,6 @@ public final class CavernSpecialOreGameTests {
         return level.getEntitiesOfClass(AbstractArrow.class, new AABB(center).inflate(radius));
     }
 
-    private static List<ThrownPotion> thrownPotionsAround(ServerLevel level, BlockPos center, double radius) {
-        return level.getEntitiesOfClass(ThrownPotion.class, new AABB(center).inflate(radius));
-    }
-
     private static ItemStack aquamarineAxe() {
         return new ItemStack(ModRegistries.AQUAMARINE_AXE.get());
     }
@@ -4709,6 +4758,10 @@ public final class CavernSpecialOreGameTests {
         return entity;
     }
 
+    private static RandomSource queuedFloatRandomSource(float... values) {
+        return new QueuedFloatRandomSource(values);
+    }
+
     private static void clearEquipment(LivingEntity entity) {
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             entity.setItemSlot(slot, ItemStack.EMPTY);
@@ -4829,5 +4882,69 @@ public final class CavernSpecialOreGameTests {
         int bowDamageAfter,
         CavenicBowMode modeAfter
     ) {
+    }
+
+    private static final class QueuedFloatRandomSource implements RandomSource {
+        private final float[] values;
+        private final RandomSource delegate = RandomSource.create(0L);
+        private int index;
+
+        private QueuedFloatRandomSource(float... values) {
+            this.values = values.clone();
+        }
+
+        @Override
+        public RandomSource fork() {
+            return delegate.fork();
+        }
+
+        @Override
+        public net.minecraft.world.level.levelgen.PositionalRandomFactory forkPositional() {
+            return delegate.forkPositional();
+        }
+
+        @Override
+        public void setSeed(long seed) {
+            delegate.setSeed(seed);
+        }
+
+        @Override
+        public int nextInt() {
+            return delegate.nextInt();
+        }
+
+        @Override
+        public int nextInt(int bound) {
+            return delegate.nextInt(bound);
+        }
+
+        @Override
+        public long nextLong() {
+            return delegate.nextLong();
+        }
+
+        @Override
+        public boolean nextBoolean() {
+            return delegate.nextBoolean();
+        }
+
+        @Override
+        public float nextFloat() {
+            if (index >= values.length) {
+                throw new IllegalStateException("QueuedFloatRandomSource ran out of configured float values");
+            }
+
+            return values[index++];
+        }
+
+        @Override
+        public double nextDouble() {
+            return delegate.nextDouble();
+        }
+
+        @Override
+        public double nextGaussian() {
+            return delegate.nextGaussian();
+        }
     }
 }

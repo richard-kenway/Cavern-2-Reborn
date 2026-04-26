@@ -330,6 +330,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("actual Cavenic Witch combat, potion-throw and pathfinding feel"));
         assertTrue(doc.contains("cavenic witch legacy ranged-potion runtime smoke"));
         assertTrue(doc.contains("cavenic witch deterministic legacy potion-selection smoke"));
+        assertTrue(doc.contains("cavenic witch explicit high-health and low-health potion-threshold smoke"));
+        assertTrue(doc.contains("cavenic witch explicit weakness/slowness/harming fallback smoke"));
         assertTrue(doc.contains("cavenic witch deterministic legacy thrown-potion construction smoke"));
         assertTrue(doc.contains("cavenic witch direct non-friend ranged-attack branch smoke"));
         assertTrue(doc.contains("cavenic witch preserved non-witch Raider bridge smoke"));

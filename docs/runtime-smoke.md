@@ -139,6 +139,8 @@ NeoForge GameTest runtime smoke covers:
 - cavenic witch non-friend target baseline smoke
 - cavenic witch legacy ranged-potion runtime smoke
 - cavenic witch deterministic legacy potion-selection smoke
+- cavenic witch explicit high-health and low-health potion-threshold smoke
+- cavenic witch explicit weakness/slowness/harming fallback smoke
 - cavenic witch deterministic legacy thrown-potion construction smoke
 - cavenic witch direct non-friend ranged-attack branch smoke
 - cavenic witch preserved non-witch Raider bridge smoke

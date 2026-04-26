@@ -39,6 +39,7 @@ Legacy `attackEntityWithRangedAttack(...)` did not contain a separate raider-hea
 - Reborn uses `createLegacyThrownPotionsFor(LivingEntity target)` to keep the deterministic legacy throw-count and projectile-construction path testable without widening this slice into a broader projectile framework.
 - Reborn uses `getLegacyAttackPotionCount(Difficulty difficulty)` to pin the old `0 / 1 / 2 / 3` difficulty mapping.
 - Reborn uses `selectLegacyRangedPotionFor(LivingEntity target, RandomSource random)` to keep the old harming/healing-or-poison/weakness/slowness selection order and probabilities.
+- Runtime tests also pin the high-health `0.5F` threshold, the low-health `0.3F` threshold, and the explicit weakness/slowness/harming fallback cases directly.
 - Reborn uses `ThrownPotion` plus `PotionContents.createItemStack(Items.SPLASH_POTION, potion)` as the modern equivalent of the old splash-potion construction.
 - Reborn keeps the legacy throw profile:
   - pitch offset: `20.0F`
@@ -94,6 +95,8 @@ That preserves modern vanilla `1.21.1` raid-heal behavior for non-witch raider a
 - NeoForge GameTest runtime smoke covers:
   - cavenic witch legacy ranged-potion runtime smoke
   - seeded legacy potion-selection smoke against a real `Zombie` target
+  - explicit high-health and low-health potion-threshold smoke
+  - explicit weakness/slowness/harming fallback smoke
   - deterministic legacy thrown-potion construction smoke against real runtime entities
   - direct non-friend `performRangedAttack(...)` branch smoke
   - preserved non-witch `Raider` bridge smoke

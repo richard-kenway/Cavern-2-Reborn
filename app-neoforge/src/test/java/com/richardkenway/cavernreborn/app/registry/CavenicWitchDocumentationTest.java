@@ -225,6 +225,9 @@ class CavenicWitchDocumentationTest {
         assertTrue(doc.contains("`selectLegacyRangedPotionFor(LivingEntity target, RandomSource random)`"));
         assertTrue(doc.contains("when the target is a non-witch `Raider`, `CavenicWitch` delegates to `super.performRangedAttack(...)`"));
         assertTrue(doc.contains("Vanilla `Witch` targets are not included in that bridge"));
+        assertTrue(doc.contains("high-health `0.5F` threshold"));
+        assertTrue(doc.contains("low-health `0.3F` threshold"));
+        assertTrue(doc.contains("explicit weakness/slowness/harming fallback cases"));
         assertTrue(doc.contains("Same-type/self source immunity remains unchanged and is still documented in `docs/cavenic-witch-projectile-immunity-mvp.md`."));
         assertTrue(doc.contains("Friendship targeting remains unchanged and is still documented in `docs/cavenic-witch-friendship-targeting-mvp.md`."));
         assertTrue(doc.contains("Fall/fire damage behavior remains unchanged and is still documented in `docs/cavenic-witch-damage-behavior-mvp.md`."));
@@ -256,6 +259,8 @@ class CavenicWitchDocumentationTest {
         assertTrue(runtimeSmoke.contains("cavenic witch non-friend target baseline smoke"));
         assertTrue(runtimeSmoke.contains("cavenic witch legacy ranged-potion runtime smoke"));
         assertTrue(runtimeSmoke.contains("cavenic witch deterministic legacy potion-selection smoke"));
+        assertTrue(runtimeSmoke.contains("cavenic witch explicit high-health and low-health potion-threshold smoke"));
+        assertTrue(runtimeSmoke.contains("cavenic witch explicit weakness/slowness/harming fallback smoke"));
         assertTrue(runtimeSmoke.contains("cavenic witch deterministic legacy thrown-potion construction smoke"));
         assertTrue(runtimeSmoke.contains("cavenic witch direct non-friend ranged-attack branch smoke"));
         assertTrue(runtimeSmoke.contains("cavenic witch preserved non-witch Raider bridge smoke"));

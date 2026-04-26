@@ -98,6 +98,8 @@ class CavenicWitchResourcesTest {
         assertTrue(entitySource.contains("public void performRangedAttack(LivingEntity target, float distanceFactor)"));
         assertTrue(entitySource.contains("if (target instanceof Raider && !(target instanceof Witch))"));
         assertTrue(entitySource.contains("super.performRangedAttack(target, distanceFactor);"));
+        assertTrue(entitySource.contains("for (ThrownPotion thrownPotion : createLegacyThrownPotionsFor(target))"));
+        assertTrue(entitySource.contains("this.level().addFreshEntity(thrownPotion);"));
         assertTrue(entitySource.contains("public List<ThrownPotion> createLegacyThrownPotionsFor(LivingEntity target)"));
         assertTrue(entitySource.contains("getLegacyAttackPotionCount(this.level().getDifficulty())"));
         assertTrue(entitySource.contains("public static int getLegacyAttackPotionCount(Difficulty difficulty)"));
