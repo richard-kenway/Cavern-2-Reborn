@@ -60,6 +60,7 @@ The legacy repo contains a direct `EntityCavenicBear`, so this increment stays n
 - The legacy bear also has natural spawning, fall/fire damage behavior and custom AI/hostile behavior that were follow-up work beyond the baseline slice.
 - The bounded hostile-targeting follow-up is now documented separately in `docs/cavenic-bear-hostile-targeting-mvp.md`.
 - The bounded melee-attack follow-up is now documented separately in `docs/cavenic-bear-melee-attack-mvp.md`.
+- The bounded panic-behavior follow-up is now documented separately in `docs/cavenic-bear-panic-behavior-mvp.md`.
 - The inspected legacy bear loot line is now documented separately in `docs/cavenic-bear-loot-absent-or-deferred.md`.
 - That follow-up found no direct legacy `dropLoot(...)` override and no `cavenic_orb` bear branch to port.
 
@@ -69,6 +70,7 @@ The legacy repo contains a direct `EntityCavenicBear`, so this increment stays n
 - fall/fire damage behavior was intentionally out of scope for the baseline slice and is now covered separately in `docs/cavenic-bear-damage-behavior-mvp.md`.
 - bounded hostile-targeting follow-up is now documented separately in `docs/cavenic-bear-hostile-targeting-mvp.md`.
 - bounded melee-attack follow-up is now documented separately in `docs/cavenic-bear-melee-attack-mvp.md`.
+- bounded panic-behavior follow-up is now documented separately in `docs/cavenic-bear-panic-behavior-mvp.md`.
 - The inspected bear loot line is now covered separately in `docs/cavenic-bear-loot-absent-or-deferred.md`.
 - broader custom bear AI, anger behavior, taming, riding and mount behavior remain out of scope.
 - custom loot remains out of scope, and the current source inspection found no direct legacy `cavenic_orb` bear branch to restore.
@@ -77,7 +79,7 @@ The legacy repo contains a direct `EntityCavenicBear`, so this increment stays n
 
 ## Testing
 
-- Resource tests cover registry source, spawn egg placement, attribute registration source, renderer registration source, texture/model/lang resources and the explicit out-of-scope boundaries around natural spawn, custom loot, damage behavior, hostile targeting, melee behavior, broader custom AI and magic-book systems.
+- Resource tests cover registry source, spawn egg placement, attribute registration source, renderer registration source, texture/model/lang resources and the explicit out-of-scope boundaries around natural spawn, custom loot, damage behavior, hostile targeting, melee behavior, panic behavior, broader custom AI and magic-book systems.
 - Documentation tests cover the legacy references inspected, the base-class mapping, the legacy attribute mapping, spawn egg colors, renderer/texture provenance and the explicit baseline-only boundaries.
 - NeoForge GameTest runtime smoke covers:
   - entity registry resolution

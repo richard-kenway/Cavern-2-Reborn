@@ -16,6 +16,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.PanicGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
@@ -49,7 +50,9 @@ public final class CavenicBear extends PolarBear {
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.removeAllGoals(this::isVanillaPolarBearMeleeGoal);
+        this.goalSelector.removeAllGoals(this::isVanillaPolarBearPanicGoal);
         this.goalSelector.addGoal(1, new LegacyCavenicBearMeleeAttackGoal());
+        this.goalSelector.addGoal(1, new LegacyCavenicBearPanicGoal());
         this.targetSelector.removeAllGoals(
             goal -> goal instanceof HurtByTargetGoal || goal instanceof NearestAttackableTargetGoal || goal instanceof ResetUniversalAngerTargetGoal
         );
@@ -59,6 +62,10 @@ public final class CavenicBear extends PolarBear {
 
     private boolean isVanillaPolarBearMeleeGoal(Goal goal) {
         return goal instanceof MeleeAttackGoal && goal.getClass().getSimpleName().equals("PolarBearMeleeAttackGoal");
+    }
+
+    private boolean isVanillaPolarBearPanicGoal(Goal goal) {
+        return goal instanceof PanicGoal && goal.getClass().equals(PanicGoal.class);
     }
 
     public boolean isLegacyHostileTarget(LivingEntity target) {
@@ -192,6 +199,17 @@ public final class CavenicBear extends PolarBear {
 
         private double getLegacyAttackReachSqr(LivingEntity target) {
             return 4.0D + target.getBbWidth();
+        }
+    }
+
+    private final class LegacyCavenicBearPanicGoal extends PanicGoal {
+        private LegacyCavenicBearPanicGoal() {
+            super(CavenicBear.this, 2.0D);
+        }
+
+        @Override
+        protected boolean shouldPanic() {
+            return CavenicBear.this.isOnFire();
         }
     }
 }

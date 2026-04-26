@@ -100,6 +100,7 @@ import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.PanicGoal;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -224,6 +225,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_BEAR_DAMAGE_ANCHOR = new BlockPos(4960, 96, 0);
     private static final BlockPos CAVENIC_BEAR_HOSTILE_TARGETING_ANCHOR = new BlockPos(5056, 96, 0);
     private static final BlockPos CAVENIC_BEAR_MELEE_ATTACK_ANCHOR = new BlockPos(5152, 96, 0);
+    private static final BlockPos CAVENIC_BEAR_PANIC_ANCHOR = new BlockPos(5248, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -3189,6 +3191,160 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBearLegacyPanicBehaviorAppliesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_BEAR_PANIC_ANCHOR;
+
+        resetMiningArea(level, origin, 24.0D);
+
+        CavenicBear cavenicBurningBear = spawnLivingEntity(helper, ModRegistries.CAVENIC_BEAR.get(), origin);
+        PolarBear vanillaBurningBear = spawnLivingEntity(helper, EntityType.POLAR_BEAR, origin.east(8));
+        cavenicBurningBear.moveTo(origin.getX() + 0.5D, origin.getY() + 1.0D, origin.getZ() + 0.5D, 0.0F, 0.0F);
+        vanillaBurningBear.moveTo(origin.east(8).getX() + 0.5D, origin.east(8).getY() + 1.0D, origin.east(8).getZ() + 0.5D, 0.0F, 0.0F);
+        level.setBlockAndUpdate(origin.south(2).above(), Blocks.WATER.defaultBlockState());
+        level.setBlockAndUpdate(origin.east(8).south(2).above(), Blocks.WATER.defaultBlockState());
+
+        WrappedGoal cavenicPanicGoal = findGoalBySimpleName(cavenicBurningBear.goalSelector.getAvailableGoals(), "LegacyCavenicBearPanicGoal")
+            .orElseThrow(() -> new IllegalStateException("Missing legacy cavenic bear panic goal"));
+        WrappedGoal vanillaPanicGoal = findGoalBySimpleName(vanillaBurningBear.goalSelector.getAvailableGoals(), "PanicGoal")
+            .orElseThrow(() -> new IllegalStateException("Missing vanilla panic goal"));
+
+        helper.assertTrue(
+            countGoals(cavenicBurningBear.goalSelector.getAvailableGoals(), PanicGoal.class) == 1L,
+            "Expected cavenic bear to keep exactly one panic goal in the bounded panic slice"
+        );
+        helper.assertTrue(
+            findGoalBySimpleName(cavenicBurningBear.goalSelector.getAvailableGoals(), "PanicGoal").isEmpty(),
+            "Expected cavenic bear to remove the vanilla adult polar bear panic goal"
+        );
+        helper.assertTrue(
+            findGoalBySimpleName(cavenicBurningBear.goalSelector.getAvailableGoals(), "LegacyCavenicBearPanicGoal").isPresent(),
+            "Expected cavenic bear to register the legacy burning-only panic goal"
+        );
+
+        cavenicBurningBear.igniteForSeconds(5.0F);
+        vanillaBurningBear.igniteForSeconds(5.0F);
+
+        helper.assertTrue(invokePanicShouldPanic(cavenicPanicGoal.getGoal()), "Expected legacy cavenic bear panic to trigger while burning");
+        helper.assertFalse(
+            invokePanicShouldPanic(vanillaPanicGoal.getGoal()),
+            "Expected vanilla adult polar bear panic not to trigger from burning alone without an environmental panic damage source"
+        );
+        helper.assertTrue(
+            invokeGoalCanUse(cavenicPanicGoal.getGoal()),
+            "Expected legacy cavenic bear panic canUse to succeed while burning with nearby water"
+        );
+        helper.assertFalse(
+            invokeGoalCanUse(vanillaPanicGoal.getGoal()),
+            "Expected vanilla adult polar bear panic canUse to stay inactive without a tagged environmental panic source"
+        );
+
+        CavenicBear cavenicFrozenBear = spawnLivingEntity(helper, ModRegistries.CAVENIC_BEAR.get(), origin.north(12));
+        PolarBear vanillaFrozenBear = spawnLivingEntity(helper, EntityType.POLAR_BEAR, origin.east(8).north(12));
+        WrappedGoal cavenicFrozenPanicGoal = findGoalBySimpleName(cavenicFrozenBear.goalSelector.getAvailableGoals(), "LegacyCavenicBearPanicGoal")
+            .orElseThrow(() -> new IllegalStateException("Missing legacy cavenic bear panic goal"));
+        WrappedGoal vanillaFrozenPanicGoal = findGoalBySimpleName(vanillaFrozenBear.goalSelector.getAvailableGoals(), "PanicGoal")
+            .orElseThrow(() -> new IllegalStateException("Missing vanilla panic goal"));
+
+        cavenicFrozenBear.handleDamageEvent(level.damageSources().freeze());
+        vanillaFrozenBear.handleDamageEvent(level.damageSources().freeze());
+
+        helper.assertFalse(
+            invokePanicShouldPanic(cavenicFrozenPanicGoal.getGoal()),
+            "Expected legacy cavenic bear panic to ignore non-burning freeze panic causes"
+        );
+        helper.assertTrue(
+            invokePanicShouldPanic(vanillaFrozenPanicGoal.getGoal()),
+            "Expected vanilla adult polar bear panic to treat freeze as an environmental panic cause"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBearLegacyPanicKeepsExistingSlicesStableAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_BEAR_PANIC_ANCHOR.north(24);
+
+        resetMiningArea(level, origin, 24.0D);
+
+        CavenicBear cavenicBear = spawnLivingEntity(helper, ModRegistries.CAVENIC_BEAR.get(), origin);
+        Player playerTarget = makeMockPlayer(helper, level, GameType.SURVIVAL, ItemStack.EMPTY, origin.south(4));
+        Cow passiveTarget = spawnLivingEntity(helper, EntityType.COW, origin.west(4));
+        Zombie attacker = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.south(8));
+
+        WrappedGoal panicGoal = findGoalBySimpleName(cavenicBear.goalSelector.getAvailableGoals(), "LegacyCavenicBearPanicGoal")
+            .orElseThrow(() -> new IllegalStateException("Missing legacy cavenic bear panic goal"));
+        WrappedGoal meleeGoal = findGoalBySimpleName(cavenicBear.goalSelector.getAvailableGoals(), "LegacyCavenicBearMeleeAttackGoal")
+            .orElseThrow(() -> new IllegalStateException("Missing legacy cavenic bear melee goal"));
+        WrappedGoal hurtGoal = findGoalBySimpleName(cavenicBear.targetSelector.getAvailableGoals(), "LegacyCavenicBearHurtByTargetGoal")
+            .orElseThrow(() -> new IllegalStateException("Missing legacy cavenic bear hurt-by-target goal"));
+
+        helper.assertTrue(cavenicBear.isLegacyHostileTarget(playerTarget), "Expected panic follow-up to keep players as legacy hostile targets");
+        helper.assertFalse(cavenicBear.isLegacyHostileTarget(passiveTarget), "Expected panic follow-up to keep passive non-player targets outside the legacy hostile-target helper");
+        helper.assertTrue(
+            countGoals(cavenicBear.goalSelector.getAvailableGoals(), MeleeAttackGoal.class) == 1L,
+            "Expected panic follow-up to keep exactly one cavenic bear melee goal"
+        );
+        helper.assertTrue(
+            countGoals(cavenicBear.goalSelector.getAvailableGoals(), PanicGoal.class) == 1L,
+            "Expected panic follow-up to keep exactly one cavenic bear panic goal"
+        );
+        helper.assertTrue(
+            findGoalBySimpleName(cavenicBear.goalSelector.getAvailableGoals(), "PolarBearMeleeAttackGoal").isEmpty(),
+            "Expected panic follow-up to keep the vanilla polar bear melee goal removed"
+        );
+        helper.assertTrue(
+            findGoalBySimpleName(cavenicBear.goalSelector.getAvailableGoals(), "PanicGoal").isEmpty(),
+            "Expected panic follow-up to keep the vanilla panic goal removed"
+        );
+        helper.assertTrue(
+            findGoalBySimpleName(cavenicBear.goalSelector.getAvailableGoals(), "LegacyCavenicBearMeleeAttackGoal").isPresent(),
+            "Expected panic follow-up to keep the legacy melee goal registered"
+        );
+        helper.assertTrue(
+            findGoalBySimpleName(cavenicBear.goalSelector.getAvailableGoals(), "LegacyCavenicBearPanicGoal").isPresent(),
+            "Expected panic follow-up to keep the legacy panic goal registered"
+        );
+
+        cavenicBear.setLastHurtByMob(attacker);
+        hurtGoal.start();
+        helper.assertTrue(cavenicBear.getTarget() == attacker, "Expected panic follow-up to keep legacy hurt-by-target retaliation");
+        helper.assertFalse(
+            invokePanicShouldPanic(panicGoal.getGoal()),
+            "Expected legacy panic helper to stay inactive before the cavenic bear is burning"
+        );
+
+        float fireHealthBefore = cavenicBear.getHealth();
+        helper.assertFalse(
+            cavenicBear.hurt(level.damageSources().lava(), 4.0F),
+            "Expected panic follow-up to keep legacy fire-tagged damage rejection"
+        );
+        helper.assertTrue(
+            Math.abs(fireHealthBefore - cavenicBear.getHealth()) < 1.0E-6F,
+            "Expected panic follow-up to keep cavenic bear health unchanged after lava damage"
+        );
+        helper.assertTrue(
+            CavenicBear.LEGACY_FALL_DAMAGE_MULTIPLIER == 0.35F,
+            "Expected panic follow-up to keep the legacy 0.35 fall-damage multiplier"
+        );
+        helper.assertTrue(
+            CavenicBear.NATURAL_SPAWN_WEIGHT == 30
+                && CavenicBear.NATURAL_SPAWN_MIN_COUNT == 1
+                && CavenicBear.NATURAL_SPAWN_MAX_COUNT == 1,
+            "Expected panic follow-up to keep the legacy 30/1/1 natural-spawn constants"
+        );
+        helper.assertTrue(
+            cavenicBear.getMaxSpawnClusterSize() == 1,
+            "Expected panic follow-up to keep the legacy max spawn cluster size of 1"
+        );
+        helper.assertTrue(
+            cavenicBear.getLootTable().equals(EntityType.POLAR_BEAR.getDefaultLootTable()),
+            "Expected panic follow-up to keep the vanilla polar bear loot-table baseline"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void cavenicMeleeRegistersAtRuntime(GameTestHelper helper) {
         helper.assertTrue(ModRegistries.CAVENIC_SWORD.get() != null, "Missing cavenic sword");
         helper.assertTrue(ModRegistries.CAVENIC_AXE.get() != null, "Missing cavenic axe");
@@ -5454,6 +5610,26 @@ public final class CavernSpecialOreGameTests {
             method.invoke(goal, target);
         } catch (ReflectiveOperationException exception) {
             throw new IllegalStateException("Failed to invoke melee attack check on " + goal.getClass().getName(), exception);
+        }
+    }
+
+    private static boolean invokePanicShouldPanic(Goal goal) {
+        try {
+            Method method = findDeclaredMethod(goal.getClass(), "shouldPanic");
+            method.setAccessible(true);
+            return (boolean)method.invoke(goal);
+        } catch (ReflectiveOperationException exception) {
+            throw new IllegalStateException("Failed to invoke panic trigger check on " + goal.getClass().getName(), exception);
+        }
+    }
+
+    private static boolean invokeGoalCanUse(Goal goal) {
+        try {
+            Method method = findDeclaredMethod(goal.getClass(), "canUse");
+            method.setAccessible(true);
+            return (boolean)method.invoke(goal);
+        } catch (ReflectiveOperationException exception) {
+            throw new IllegalStateException("Failed to invoke canUse on " + goal.getClass().getName(), exception);
         }
     }
 

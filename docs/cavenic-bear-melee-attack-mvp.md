@@ -2,7 +2,7 @@
 
 This note documents the bounded melee-attack follow-up for the existing `cavernreborn:cavenic_bear`.
 
-It does not add a new mob, new loot, new spawn rules, new damage behavior, new hostile-targeting rules, panic rewrites, broader pathfinding rewrites, taming, riding, mount behavior or Cavenia content. It restores only the small source-confirmed melee-goal drift from legacy `EntityCavenicBear`.
+It does not add a new mob, new loot, new spawn rules, new damage behavior, new hostile-targeting rules, broader pathfinding rewrites, taming, riding, mount behavior or Cavenia content. It restores only the small source-confirmed melee-goal drift from legacy `EntityCavenicBear`.
 
 ## Legacy References Inspected
 
@@ -50,7 +50,7 @@ That means current vanilla `PolarBear` warns at a wider distance and uses a diff
 
 - Reborn keeps `CavenicBear` on the vanilla `PolarBear` base class.
 - Reborn keeps the accepted hostile-targeting slice unchanged.
-- Reborn keeps vanilla movement/pathfinding, panic, follow-parent, wandering and look goals unchanged.
+- Reborn keeps vanilla movement/pathfinding, follow-parent, wandering and look goals unchanged in this melee slice.
 - Reborn overrides `registerGoals()` only to swap the melee goal on `goalSelector`:
   - remove the vanilla `PolarBearMeleeAttackGoal`
   - add `LegacyCavenicBearMeleeAttackGoal extends MeleeAttackGoal`
@@ -66,6 +66,7 @@ That means current vanilla `PolarBear` warns at a wider distance and uses a diff
 - Standing/warning behavior now uses the narrower legacy warning window instead of the broader modern vanilla polar-bear threshold.
 - Attack cooldown stays on the modern `MeleeAttackGoal` timing path, which still maps to the legacy `20`-tick cadence for this bounded slice.
 - Hostile targeting remains unchanged.
+- Panic behavior is now documented separately in `docs/cavenic-bear-panic-behavior-mvp.md`.
 - Anger behavior remains unchanged.
 - Attributes remain unchanged.
 - Natural spawning remains unchanged.
@@ -78,7 +79,7 @@ That means current vanilla `PolarBear` warns at a wider distance and uses a diff
 
 - The inspected legacy drift is in the melee goal, not in a broad combat system.
 - Reborn therefore replaces only the conflicting vanilla melee goal instead of rewriting the whole polar-bear AI stack.
-- Panic, follow-parent, wandering, watch/look and broader anger/pathfinding feel remain separate follow-up work.
+- Follow-parent, wandering, watch/look and broader anger/pathfinding feel remain separate follow-up work.
 
 ## Testing
 
@@ -93,7 +94,6 @@ That means current vanilla `PolarBear` warns at a wider distance and uses a diff
 
 ## Still Out Of Scope
 
-- panic behavior beyond the current vanilla base
 - follow-parent, wander, watch and look goal parity
 - broader anger rewrites
 - taming, riding and mount behavior

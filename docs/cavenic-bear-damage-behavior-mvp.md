@@ -37,6 +37,7 @@ That means the mob kept taking fall damage, but only at `35%` of the original am
 - the broader vanilla polar bear movement base remains unchanged in this slice.
 - the bounded hostile-targeting follow-up is documented separately in `docs/cavenic-bear-hostile-targeting-mvp.md`.
 - the bounded melee-attack follow-up is documented separately in `docs/cavenic-bear-melee-attack-mvp.md`.
+- the bounded panic-behavior follow-up is documented separately in `docs/cavenic-bear-panic-behavior-mvp.md`.
 - anger behavior remains otherwise unchanged.
 - attributes remain unchanged.
 - natural spawning remains unchanged.

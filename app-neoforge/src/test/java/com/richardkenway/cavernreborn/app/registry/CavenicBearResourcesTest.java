@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CavenicBearResourcesTest {
     @Test
-    void cavenicBearRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnDamageHostileTargetingAndBoundedMeleeBehavior() throws IOException {
+    void cavenicBearRegistersWithDedicatedEntitySpawnEggRendererNaturalSpawnDamageHostileTargetingMeleeAndBoundedPanicBehavior() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -76,10 +76,15 @@ class CavenicBearResourcesTest {
         assertTrue(entitySource.contains("protected void registerGoals()"));
         assertTrue(entitySource.contains("super.registerGoals();"));
         assertTrue(entitySource.contains("this.goalSelector.removeAllGoals(this::isVanillaPolarBearMeleeGoal);"));
+        assertTrue(entitySource.contains("this.goalSelector.removeAllGoals(this::isVanillaPolarBearPanicGoal);"));
         assertTrue(entitySource.contains("this.goalSelector.addGoal(1, new LegacyCavenicBearMeleeAttackGoal())"));
+        assertTrue(entitySource.contains("this.goalSelector.addGoal(1, new LegacyCavenicBearPanicGoal())"));
         assertTrue(entitySource.contains("private boolean isVanillaPolarBearMeleeGoal(Goal goal)"));
         assertTrue(entitySource.contains("goal instanceof MeleeAttackGoal"));
         assertTrue(entitySource.contains("goal.getClass().getSimpleName().equals(\"PolarBearMeleeAttackGoal\")"));
+        assertTrue(entitySource.contains("private boolean isVanillaPolarBearPanicGoal(Goal goal)"));
+        assertTrue(entitySource.contains("goal instanceof PanicGoal"));
+        assertTrue(entitySource.contains("goal.getClass().equals(PanicGoal.class)"));
         assertTrue(entitySource.contains("this.targetSelector.removeAllGoals"));
         assertTrue(entitySource.contains("goal instanceof HurtByTargetGoal"));
         assertTrue(entitySource.contains("goal instanceof NearestAttackableTargetGoal"));
@@ -105,6 +110,10 @@ class CavenicBearResourcesTest {
         assertTrue(entitySource.contains("this.mob.getSensing().hasLineOfSight(target)"));
         assertTrue(entitySource.contains("private double getLegacyAttackReachSqr(LivingEntity target)"));
         assertTrue(entitySource.contains("return 4.0D + target.getBbWidth();"));
+        assertTrue(entitySource.contains("class LegacyCavenicBearPanicGoal extends PanicGoal"));
+        assertTrue(entitySource.contains("super(CavenicBear.this, 2.0D);"));
+        assertTrue(entitySource.contains("protected boolean shouldPanic()"));
+        assertTrue(entitySource.contains("return CavenicBear.this.isOnFire();"));
         assertTrue(entitySource.contains("public int getMaxSpawnClusterSize()"));
         assertTrue(entitySource.contains("return NATURAL_SPAWN_MAX_COUNT;"));
         assertTrue(entitySource.contains("canNaturallySpawnInDimension"));
@@ -112,7 +121,6 @@ class CavenicBearResourcesTest {
         assertTrue(entitySource.contains("CavernNeoForgeDimensions.isCavern"));
         assertTrue(entitySource.contains("Monster.checkMonsterSpawnRules"));
         assertTrue(entitySource.contains("asMonsterSpawnType"));
-        assertFalse(entitySource.contains("PanicGoal"));
         assertFalse(entitySource.contains("FollowParentGoal"));
         assertFalse(entitySource.contains("RandomStrollGoal"));
         assertFalse(entitySource.contains("LookAtPlayerGoal"));
