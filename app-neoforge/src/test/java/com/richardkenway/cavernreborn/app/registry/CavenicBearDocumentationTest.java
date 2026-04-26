@@ -12,6 +12,7 @@ class CavenicBearDocumentationTest {
     private static final Path README = resolveProjectFile("README.md");
     private static final Path CAVENIC_BEAR_BASELINE_MVP = resolveProjectFile("docs", "cavenic-bear-baseline-mvp.md");
     private static final Path CAVENIC_BEAR_NATURAL_SPAWN_MVP = resolveProjectFile("docs", "cavenic-bear-natural-spawn-mvp.md");
+    private static final Path CAVENIC_BEAR_LOOT_ABSENT_OR_DEFERRED = resolveProjectFile("docs", "cavenic-bear-loot-absent-or-deferred.md");
     private static final Path RUNTIME_SMOKE = resolveProjectFile("docs", "runtime-smoke.md");
 
     @Test
@@ -22,11 +23,14 @@ class CavenicBearDocumentationTest {
         assertTrue(readme.contains("docs/cavenic-bear-baseline-mvp.md"));
         assertTrue(readme.contains("Cavenic Bear Natural Spawn MVP"));
         assertTrue(readme.contains("docs/cavenic-bear-natural-spawn-mvp.md"));
+        assertTrue(readme.contains("Cavenic Bear Loot Boundary"));
+        assertTrue(readme.contains("docs/cavenic-bear-loot-absent-or-deferred.md"));
         assertTrue(readme.contains("cavenic_bear"));
         assertTrue(readme.contains("sixth direct Cavenic mob foundation"));
         assertTrue(readme.contains("legacy texture on the vanilla polar bear renderer path"));
         assertTrue(readme.contains("vanilla polar bear loot baseline"));
         assertTrue(readme.contains("bounded CAVERN-only natural spawning"));
+        assertTrue(readme.contains("the inspected legacy bear loot line remains explicitly absent because `EntityCavenicBear` never overrides `dropLoot(...)`"));
     }
 
     @Test
@@ -50,7 +54,10 @@ class CavenicBearDocumentationTest {
         assertTrue(doc.contains("reuses the vanilla polar bear loot table as its base drop source"));
         assertTrue(doc.contains("Natural spawning was intentionally out of scope for the baseline slice"));
         assertTrue(doc.contains("`docs/cavenic-bear-natural-spawn-mvp.md`"));
+        assertTrue(doc.contains("`docs/cavenic-bear-loot-absent-or-deferred.md`"));
         assertTrue(doc.contains("Custom loot remains out of scope"));
+        assertTrue(doc.contains("no direct legacy `dropLoot(...)` override"));
+        assertTrue(doc.contains("no `cavenic_orb` bear branch to port"));
         assertTrue(doc.contains("fall/fire damage behavior remains out of scope"));
         assertTrue(doc.contains("custom bear AI, anger behavior, taming, riding and mount behavior remain out of scope"));
         assertTrue(doc.contains("Cavenia remains out of scope"));
@@ -77,19 +84,43 @@ class CavenicBearDocumentationTest {
         assertTrue(doc.contains("`data/cavernreborn/neoforge/biome_modifier/cavenic_bear_spawns.json`"));
         assertTrue(doc.contains("`data/cavernreborn/tags/worldgen/biome/spawns_cavenic_bear.json`"));
         assertTrue(doc.contains("Natural spawning is deliberately limited to `CAVERN`."));
+        assertTrue(doc.contains("`docs/cavenic-bear-loot-absent-or-deferred.md`"));
+        assertTrue(doc.contains("no direct legacy `cavenic_orb` bear drop was found"));
         assertTrue(doc.contains("custom loot, orb drop, fall/fire damage behavior, custom bear AI, anger behavior, taming, riding and mount behavior remain out of scope"));
         assertTrue(doc.contains("Cavenia remains out of scope"));
         assertTrue(doc.contains("The magic-book system remains intentionally untouched."));
     }
 
     @Test
-    void runtimeSmokeDocMentionsCavenicBearCoverage() throws IOException {
+    void cavenicBearLootBoundaryDocStatesSourceFindingAndExplicitAbsence() throws IOException {
+        String doc = Files.readString(CAVENIC_BEAR_LOOT_ABSENT_OR_DEFERRED);
+
+        assertTrue(doc.contains("`cavern.entity.monster.EntityCavenicBear`"));
+        assertTrue(doc.contains("`cavern.entity.CaveEntityRegistry`"));
+        assertTrue(doc.contains("`cavern.item.ItemCave`"));
+        assertTrue(doc.contains("does not override `dropLoot(...)`"));
+        assertTrue(doc.contains("does not override `getLootTable()`"));
+        assertTrue(doc.contains("does not reference `ItemCave.EnumType.CAVENIC_ORB`"));
+        assertTrue(doc.contains("no direct custom bear loot branch"));
+        assertTrue(doc.contains("`CavenicBear#getDefaultLootTable()`"));
+        assertTrue(doc.contains("`EntityType.POLAR_BEAR.getDefaultLootTable()`"));
+        assertTrue(doc.contains("Reborn does not add a `LivingDropsEvent` hook for `CavenicBear`."));
+        assertTrue(doc.contains("Reborn does not add a pure `CavenicBearLootPolicy`."));
+        assertTrue(doc.contains("does not define a custom loot branch, so there is no custom bear drop path for looting to scale"));
+        assertTrue(doc.contains("does not define a custom bear drop path gated on player kill"));
+        assertTrue(doc.contains("does not define a custom bear drop path tied to difficulty, dimension, progression, economy or Cavenia"));
+        assertTrue(doc.contains("No legacy `cavenic_orb` bear branch was found."));
+    }
+
+    @Test
+    void runtimeSmokeDocMentionsCavenicBearCoverageAndLootBoundary() throws IOException {
         String doc = Files.readString(RUNTIME_SMOKE);
 
         assertTrue(doc.contains("cavenic bear runtime registry id"));
         assertTrue(doc.contains("cavenic bear attribute registration smoke"));
         assertTrue(doc.contains("cavenic bear runtime entity spawn smoke"));
         assertTrue(doc.contains("cavenic bear vanilla polar bear loot-table baseline smoke"));
+        assertTrue(doc.contains("cavenic bear explicit no-custom-loot boundary from the inspected legacy source"));
         assertTrue(doc.contains("cavenic bear spawn egg resolution"));
         assertTrue(doc.contains("cavenic bear spawn egg entity-creation smoke"));
         assertTrue(doc.contains("cavenic bear natural spawn placement registration"));
@@ -97,6 +128,7 @@ class CavenicBearDocumentationTest {
         assertTrue(doc.contains("cavenic bear biome modifier registry smoke"));
         assertTrue(doc.contains("cavenic bear biome tag resolution"));
         assertTrue(doc.contains("actual Cavenic Bear renderer/model visual feel"));
+        assertTrue(doc.contains("actual long-run Cavenic Bear drop-rate balance, although the current source inspection found no direct custom bear loot branch beyond the vanilla polar bear baseline"));
         assertTrue(doc.contains("actual long-run Cavenic Bear population balance inside CAVERN"));
     }
 

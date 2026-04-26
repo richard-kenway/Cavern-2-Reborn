@@ -148,6 +148,7 @@ NeoForge GameTest runtime smoke covers:
 - cavenic bear attribute registration smoke
 - cavenic bear runtime entity spawn smoke
 - cavenic bear vanilla polar bear loot-table baseline smoke
+- cavenic bear explicit no-custom-loot boundary from the inspected legacy source
 - cavenic bear spawn egg resolution
 - cavenic bear spawn egg entity-creation smoke
 - cavenic bear natural spawn placement registration
@@ -215,6 +216,7 @@ NeoForge GameTest runtime smoke covers:
 - actual Cavenic Spider renderer/model visual feel
 - actual Cavenic Witch renderer/model visual feel
 - actual Cavenic Bear renderer/model visual feel
+- actual long-run Cavenic Bear drop-rate balance, although the current source inspection found no direct custom bear loot branch beyond the vanilla polar bear baseline
 - actual long-run cavenic witch orb-drop rate balance
 - actual long-running Cavenic Witch fire/lava gameplay feel
 - actual long-run cavenic spider orb-drop rate balance

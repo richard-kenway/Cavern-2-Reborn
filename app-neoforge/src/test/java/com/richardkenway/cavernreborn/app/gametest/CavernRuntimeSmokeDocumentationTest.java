@@ -140,10 +140,12 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/cavenic-bear-baseline-mvp.md"));
         assertTrue(readme.contains("Cavenic Bear Natural Spawn MVP"));
         assertTrue(readme.contains("docs/cavenic-bear-natural-spawn-mvp.md"));
+        assertTrue(readme.contains("docs/cavenic-bear-loot-absent-or-deferred.md"));
         assertTrue(readme.contains("sixth direct Cavenic mob foundation"));
         assertTrue(readme.contains("legacy texture on the vanilla polar bear renderer path"));
         assertTrue(readme.contains("vanilla polar bear loot baseline"));
         assertTrue(readme.contains("bounded CAVERN-only natural spawning"));
+        assertTrue(readme.contains("the inspected legacy bear loot line remains explicitly absent because `EntityCavenicBear` never overrides `dropLoot(...)`"));
     }
 
     @Test
@@ -349,6 +351,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("cavenic bear attribute registration smoke"));
         assertTrue(doc.contains("cavenic bear runtime entity spawn smoke"));
         assertTrue(doc.contains("cavenic bear vanilla polar bear loot-table baseline smoke"));
+        assertTrue(doc.contains("cavenic bear explicit no-custom-loot boundary from the inspected legacy source"));
         assertTrue(doc.contains("cavenic bear spawn egg resolution"));
         assertTrue(doc.contains("cavenic bear spawn egg entity-creation smoke"));
         assertTrue(doc.contains("cavenic bear natural spawn placement registration"));
@@ -372,6 +375,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("actual Cavenic Creeper fuse timing, explosion feel and block-damage behavior"));
         assertTrue(doc.contains("actual long-run Cavenic Skeleton population balance inside CAVERN"));
         assertTrue(doc.contains("actual Cavenic Bear renderer/model visual feel"));
+        assertTrue(doc.contains("actual long-run Cavenic Bear drop-rate balance, although the current source inspection found no direct custom bear loot branch beyond the vanilla polar bear baseline"));
         assertTrue(doc.contains("actual long-run Cavenic Bear population balance inside CAVERN"));
         assertTrue(doc.contains("legacy Cavenic Bow Rapid/Torch custom projectile behavior and client feel beyond the current bounded Snipe, Rapid and Torch slices"));
         assertTrue(doc.contains("actual long-run Cavenic Zombie population balance inside CAVERN"));

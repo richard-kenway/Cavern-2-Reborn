@@ -88,9 +88,10 @@ It does not add a new mob. It only makes the already registered `cavernreborn:ca
 ## Still Out Of Scope
 
 - the bounded baseline is still documented separately in `docs/cavenic-bear-baseline-mvp.md`
+- the inspected bear loot line is documented separately in `docs/cavenic-bear-loot-absent-or-deferred.md`
 - custom loot, orb drop, fall/fire damage behavior, custom bear AI, anger behavior, taming, riding and mount behavior remain out of scope
 - custom loot remains out of scope
-- any future `cavenic_orb` bear drop remains out of scope
+- no direct legacy `cavenic_orb` bear drop was found in the inspected source
 - fall/fire damage behavior remains out of scope
 - custom bear AI and anger rewrites remain out of scope
 - taming, riding and mount behavior remain out of scope

@@ -31,6 +31,9 @@ class CavenicBearResourcesTest {
         String entityEventSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModEntityEvents.java"
         );
+        String modSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "CavernReborn.java"
+        );
         String clientSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "client", "CavernClientModEvents.java"
         );
@@ -78,6 +81,7 @@ class CavenicBearResourcesTest {
         assertFalse(entitySource.toLowerCase().contains("anger"));
         assertFalse(entitySource.toLowerCase().contains("tame"));
         assertFalse(entitySource.contains("cavenic_orb"));
+        assertFalse(entitySource.contains("dropLoot("));
         assertFalse(entitySource.contains("ItemMagicBook"));
         assertFalse(entitySource.contains("magic_book"));
         assertFalse(entitySource.toLowerCase().contains("cavenia"));
@@ -92,12 +96,16 @@ class CavenicBearResourcesTest {
         assertTrue(rendererSource.contains("getTextureLocation(PolarBear entity)"));
         assertTrue(rendererSource.contains("textures/entity/cavenic_bear.png"));
 
+        assertFalse(modSource.contains("CavenicBearLootEvents"));
         assertFalse(registriesSource.contains("magic_book"));
         assertFalse(registriesSource.contains("ItemMagicBook"));
         assertFalse(registriesSource.toLowerCase().contains("cavenia"));
         assertFalse(registriesSource.contains("EntityRapidArrow"));
         assertFalse(registriesSource.contains("EntityTorchArrow"));
         assertFalse(registriesSource.contains("EntityCavenicArrow"));
+        assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "CavenicBearLootEvents.java");
+        assertMissingProjectFile("core", "src", "main", "java", "com", "richardkenway", "cavernreborn", "core", "loot", "CavenicBearLootPolicy.java");
+        assertMissingProjectFile("core", "src", "test", "java", "com", "richardkenway", "cavernreborn", "core", "loot", "CavenicBearLootPolicyTest.java");
     }
 
     @Test
