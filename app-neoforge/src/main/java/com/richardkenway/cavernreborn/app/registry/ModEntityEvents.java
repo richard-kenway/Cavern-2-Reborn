@@ -67,5 +67,12 @@ public final class ModEntityEvents {
             CavenicWitch::checkCavenicWitchSpawnRules,
             RegisterSpawnPlacementsEvent.Operation.REPLACE
         );
+        event.register(
+            ModRegistries.CAVENIC_BEAR.get(),
+            SpawnPlacementTypes.ON_GROUND,
+            Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+            CavenicBear::checkCavenicBearSpawnRules,
+            RegisterSpawnPlacementsEvent.Operation.REPLACE
+        );
     }
 }

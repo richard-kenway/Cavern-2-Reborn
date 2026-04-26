@@ -62,7 +62,7 @@ The legacy repo contains a direct `EntityCavenicBear`, so this increment stays n
 
 ## Follow-Up Boundaries
 
-- Natural spawning remains out of scope for this baseline slice.
+- Natural spawning was intentionally out of scope for the baseline slice and is now covered separately in `docs/cavenic-bear-natural-spawn-mvp.md`.
 - fall/fire damage behavior remains out of scope for this baseline slice.
 - custom bear AI, anger behavior, taming, riding and mount behavior remain out of scope.
 - custom loot, including any future `cavenic_orb` follow-up, remains out of scope.

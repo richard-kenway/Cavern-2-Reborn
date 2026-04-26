@@ -138,9 +138,12 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("the inspected legacy magic-book branch remains explicitly deferred because `ItemMagicBook` is still a broader subtype/NBT/capability spellbook system"));
         assertTrue(readme.contains("Cavenic Bear Baseline MVP"));
         assertTrue(readme.contains("docs/cavenic-bear-baseline-mvp.md"));
+        assertTrue(readme.contains("Cavenic Bear Natural Spawn MVP"));
+        assertTrue(readme.contains("docs/cavenic-bear-natural-spawn-mvp.md"));
         assertTrue(readme.contains("sixth direct Cavenic mob foundation"));
         assertTrue(readme.contains("legacy texture on the vanilla polar bear renderer path"));
         assertTrue(readme.contains("vanilla polar bear loot baseline"));
+        assertTrue(readme.contains("bounded CAVERN-only natural spawning"));
     }
 
     @Test
@@ -348,6 +351,10 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("cavenic bear vanilla polar bear loot-table baseline smoke"));
         assertTrue(doc.contains("cavenic bear spawn egg resolution"));
         assertTrue(doc.contains("cavenic bear spawn egg entity-creation smoke"));
+        assertTrue(doc.contains("cavenic bear natural spawn placement registration"));
+        assertTrue(doc.contains("cavenic bear CAVERN-only spawn predicate smoke"));
+        assertTrue(doc.contains("cavenic bear biome modifier registry smoke"));
+        assertTrue(doc.contains("cavenic bear biome tag resolution"));
         assertTrue(doc.contains("any broader Cavenic Witch AI-goal or target-selector rewrite beyond the restored ranged-potion slice"));
         assertTrue(doc.contains("actual long-running Cavenic Witch fire/lava gameplay feel"));
         assertTrue(doc.contains("actual long-run cavenic witch orb-drop rate balance"));
@@ -365,7 +372,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("actual Cavenic Creeper fuse timing, explosion feel and block-damage behavior"));
         assertTrue(doc.contains("actual long-run Cavenic Skeleton population balance inside CAVERN"));
         assertTrue(doc.contains("actual Cavenic Bear renderer/model visual feel"));
-        assertTrue(doc.contains("Cavenic Bear natural spawning because that bounded follow-up is still out of scope"));
+        assertTrue(doc.contains("actual long-run Cavenic Bear population balance inside CAVERN"));
         assertTrue(doc.contains("legacy Cavenic Bow Rapid/Torch custom projectile behavior and client feel beyond the current bounded Snipe, Rapid and Torch slices"));
         assertTrue(doc.contains("actual long-run Cavenic Zombie population balance inside CAVERN"));
         assertTrue(doc.contains("actual underwater aquamarine mining feel"));

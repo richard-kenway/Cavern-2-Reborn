@@ -205,6 +205,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_WITCH_RANGED_POTION_SELECTION_ANCHOR = new BlockPos(4576, 96, 0);
     private static final BlockPos CAVENIC_BEAR_ANCHOR = new BlockPos(4672, 96, 0);
     private static final BlockPos CAVENIC_BEAR_SPAWN_EGG_ANCHOR = new BlockPos(4768, 96, 0);
+    private static final BlockPos CAVENIC_BEAR_NATURAL_SPAWN_ANCHOR = new BlockPos(4864, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -2677,6 +2678,83 @@ public final class CavernSpecialOreGameTests {
 
         helper.assertTrue(spawnedEntity instanceof CavenicBear, "Expected spawn egg to create a CavenicBear runtime entity");
         helper.assertTrue(spawnedEntity != null && spawnedEntity.isAlive(), "Expected spawned cavenic bear to be alive");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBearNaturalSpawnPlacementIsRegisteredAndCavernOnly(GameTestHelper helper) {
+        ServerLevel overworldLevel = helper.getLevel().getServer().getLevel(Level.OVERWORLD);
+        BlockPos spawnPos = CAVENIC_BEAR_NATURAL_SPAWN_ANCHOR;
+        RandomSource random = RandomSource.create(5678L);
+
+        helper.assertTrue(overworldLevel != null, "Expected overworld level to resolve for bear spawn predicate smoke");
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CAVENIC_BEAR.get()) == SpawnPlacementTypes.ON_GROUND,
+            "Expected cavenic bear spawn placement type to use ON_GROUND placement"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getHeightmapType(ModRegistries.CAVENIC_BEAR.get()) == Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+            "Expected cavenic bear spawn heightmap to use MOTION_BLOCKING_NO_LEAVES"
+        );
+        helper.assertTrue(
+            CavenicBear.canNaturallySpawnInDimension(CavernNeoForgeDimensions.CAVERN_LEVEL_KEY),
+            "Expected cavenic bear natural-spawn helper to allow the configured CAVERN level key"
+        );
+        helper.assertFalse(
+            CavenicBear.canNaturallySpawnInDimension(Level.OVERWORLD),
+            "Expected cavenic bear natural-spawn helper to reject overworld spawning"
+        );
+        helper.assertTrue(
+            CavenicBear.NATURAL_SPAWN_WEIGHT == 30
+                && CavenicBear.NATURAL_SPAWN_MIN_COUNT == 1
+                && CavenicBear.NATURAL_SPAWN_MAX_COUNT == 1,
+            "Expected cavenic bear natural-spawn constants to stay pinned to legacy 30/1/1 values"
+        );
+
+        CavenicBear spawnedBear = spawnLivingEntity(helper, ModRegistries.CAVENIC_BEAR.get(), spawnPos.east(4));
+        helper.assertTrue(
+            spawnedBear.getMaxSpawnClusterSize() == 1,
+            "Expected cavenic bear max spawn cluster size to stay pinned to the legacy per-chunk limit of 1"
+        );
+
+        prepareNaturalSpawnPlatform(overworldLevel, spawnPos);
+        helper.assertTrue(
+            SpawnPlacements.isSpawnPositionOk(ModRegistries.CAVENIC_BEAR.get(), overworldLevel, spawnPos),
+            "Expected prepared bear spawn position to satisfy ON_GROUND placement"
+        );
+        helper.assertFalse(
+            SpawnPlacements.checkSpawnRules(ModRegistries.CAVENIC_BEAR.get(), overworldLevel, MobSpawnType.SPAWNER, spawnPos, random),
+            "Expected registered cavenic bear spawn rules to reject overworld spawning"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBearNaturalSpawnDataResolvesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_cavenic_bear"));
+
+        assertRegistryKeyPresent(helper, biomeModifiers, NeoForgeRegistries.Keys.BIOME_MODIFIERS, "cavernreborn:cavenic_bear_spawns");
+        helper.assertTrue(biomes.getTag(spawnTag).isPresent(), "Expected cavenic bear spawn biome tag to resolve at runtime");
+
+        Set<String> taggedBiomes = biomes.getTag(spawnTag)
+            .orElseThrow()
+            .stream()
+            .flatMap(holder -> holder.unwrapKey().stream())
+            .map(key -> key.location().toString())
+            .collect(java.util.stream.Collectors.toSet());
+
+        helper.assertTrue(
+            taggedBiomes.equals(Set.of(
+                "cavernreborn:stone_depths",
+                "cavernreborn:lush_grotto",
+                "cavernreborn:dripstone_grotto",
+                "cavernreborn:highland_hollows"
+            )),
+            "Expected cavenic bear natural-spawn tag to stay scoped to the four CAVERN biomes"
+        );
         helper.succeed();
     }
 
