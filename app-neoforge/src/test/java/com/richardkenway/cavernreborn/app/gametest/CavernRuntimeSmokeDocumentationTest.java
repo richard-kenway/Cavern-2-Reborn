@@ -161,6 +161,12 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("bounded legacy melee-attack behavior"));
         assertTrue(readme.contains("bounded legacy panic behavior"));
         assertTrue(readme.contains("the remaining passive/movement bear goals stay on the inherited modern polar bear base"));
+        assertTrue(readme.contains("Crazy Zombie Baseline MVP"));
+        assertTrue(readme.contains("docs/crazy-zombie-baseline-mvp.md"));
+        assertTrue(readme.contains("first legacy crazy-variant foundation follow-up"));
+        assertTrue(readme.contains("`crazy_zombie`"));
+        assertTrue(readme.contains("crazy skeleton, crazy creeper and crazy spider remain follow-up candidates"));
+        assertTrue(readme.contains("vanilla zombie loot baseline"));
     }
 
     @Test
@@ -369,6 +375,13 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("cavenic bear explicit no-custom-loot boundary from the inspected legacy source"));
         assertTrue(doc.contains("cavenic bear spawn egg resolution"));
         assertTrue(doc.contains("cavenic bear spawn egg entity-creation smoke"));
+        assertTrue(doc.contains("crazy zombie runtime registry id"));
+        assertTrue(doc.contains("crazy zombie attribute registration smoke"));
+        assertTrue(doc.contains("`generic.max_health` clamp"));
+        assertTrue(doc.contains("crazy zombie hostile runtime spawn smoke"));
+        assertTrue(doc.contains("crazy zombie spawn egg resolution"));
+        assertTrue(doc.contains("crazy zombie spawn egg entity-creation smoke"));
+        assertTrue(doc.contains("crazy zombie vanilla loot-table baseline smoke"));
         assertTrue(doc.contains("cavenic bear natural spawn placement registration"));
         assertTrue(doc.contains("cavenic bear CAVERN-only spawn predicate smoke"));
         assertTrue(doc.contains("cavenic bear biome modifier registry smoke"));

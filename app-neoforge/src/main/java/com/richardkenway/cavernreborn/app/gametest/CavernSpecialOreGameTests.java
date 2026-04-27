@@ -30,6 +30,7 @@ import com.richardkenway.cavernreborn.app.entity.CavenicWitch;
 import com.richardkenway.cavernreborn.app.entity.CavenicWitchLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombie;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombieLootEvents;
+import com.richardkenway.cavernreborn.app.entity.CrazyZombie;
 import com.richardkenway.cavernreborn.app.item.CavenicBowTorchEvents;
 import com.richardkenway.cavernreborn.app.item.CavenicBowItem;
 import com.richardkenway.cavernreborn.app.item.OreCompassItem;
@@ -226,6 +227,8 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_BEAR_HOSTILE_TARGETING_ANCHOR = new BlockPos(5056, 96, 0);
     private static final BlockPos CAVENIC_BEAR_MELEE_ATTACK_ANCHOR = new BlockPos(5152, 96, 0);
     private static final BlockPos CAVENIC_BEAR_PANIC_ANCHOR = new BlockPos(5248, 96, 0);
+    private static final BlockPos CRAZY_ZOMBIE_ANCHOR = new BlockPos(5344, 96, 0);
+    private static final BlockPos CRAZY_ZOMBIE_SPAWN_EGG_ANCHOR = new BlockPos(5440, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -3345,6 +3348,79 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazyZombieRegistersAtRuntime(GameTestHelper helper) {
+        helper.assertTrue(ModRegistries.CRAZY_ZOMBIE.get() != null, "Missing crazy zombie entity type");
+        helper.assertTrue(ModRegistries.CRAZY_ZOMBIE_SPAWN_EGG.get() != null, "Missing crazy zombie spawn egg");
+
+        assertRegistryId(helper, ModRegistries.CRAZY_ZOMBIE.get(), "cavernreborn:crazy_zombie");
+        assertRegistryId(helper, ModRegistries.CRAZY_ZOMBIE_SPAWN_EGG.get(), "cavernreborn:crazy_zombie_spawn_egg");
+
+        ItemStack spawnEgg = crazyZombieSpawnEgg();
+        helper.assertTrue(!spawnEgg.isEmpty(), "Expected crazy zombie spawn egg to be constructible");
+        helper.assertTrue(spawnEgg.getItem() instanceof SpawnEggItem, "Expected crazy zombie spawn egg runtime item");
+        helper.assertTrue(
+            ((SpawnEggItem) spawnEgg.getItem()).spawnsEntity(spawnEgg, ModRegistries.CRAZY_ZOMBIE.get()),
+            "Expected crazy zombie spawn egg to resolve the crazy zombie entity type"
+        );
+        helper.assertTrue(
+            ModRegistries.CRAZY_ZOMBIE.get().getCategory() == MobCategory.MONSTER,
+            "Expected crazy zombie type category to stay MONSTER"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazyZombieSpawnsWithExpectedAttributesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_ZOMBIE_ANCHOR;
+
+        resetMiningArea(level, origin, 8.0D);
+        CrazyZombie crazyZombie = spawnLivingEntity(helper, ModRegistries.CRAZY_ZOMBIE.get(), origin);
+        Zombie vanillaZombie = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.east(4));
+
+        helper.assertTrue(crazyZombie instanceof Zombie, "Expected crazy zombie to keep vanilla zombie behavior for the baseline slice");
+        helper.assertTrue(crazyZombie.getType().getCategory() == MobCategory.MONSTER, "Expected crazy zombie type category to stay MONSTER");
+        helper.assertTrue(crazyZombie.isAlive(), "Expected spawned crazy zombie to be alive");
+        helper.assertTrue(
+            Math.abs(crazyZombie.getMaxHealth() - 1024.0D) < 1.0E-6D,
+            "Expected crazy zombie runtime max health to clamp to the modern generic.max_health ceiling of 1024.0"
+        );
+        helper.assertTrue(
+            Math.abs(crazyZombie.getAttributeValue(Attributes.MAX_HEALTH) - 1024.0D) < 1.0E-6D,
+            "Expected crazy zombie MAX_HEALTH attribute to clamp to the modern generic.max_health ceiling of 1024.0"
+        );
+        helper.assertTrue(Math.abs(crazyZombie.getAttributeValue(Attributes.FOLLOW_RANGE) - 50.0D) < 1.0E-6D, "Expected crazy zombie follow range to map to legacy 50.0");
+        helper.assertTrue(Math.abs(crazyZombie.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) - 1.0D) < 1.0E-6D, "Expected crazy zombie knockback resistance to map to legacy 1.0");
+        helper.assertTrue(Math.abs(crazyZombie.getAttributeValue(Attributes.ATTACK_DAMAGE) - 7.5D) < 1.0E-6D, "Expected crazy zombie attack damage to map to legacy 7.5");
+        helper.assertTrue(
+            Math.abs(crazyZombie.getAttributeValue(Attributes.MOVEMENT_SPEED) - vanillaZombie.getAttributeValue(Attributes.MOVEMENT_SPEED)) < 1.0E-6D,
+            "Expected crazy zombie movement speed to stay on the vanilla zombie baseline"
+        );
+        helper.assertTrue(
+            crazyZombie.getLootTable().equals(EntityType.ZOMBIE.getDefaultLootTable()),
+            "Expected crazy zombie to keep the vanilla zombie loot table as its baseline"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazyZombieSpawnEggCreatesRuntimeEntity(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos supportPos = CRAZY_ZOMBIE_SPAWN_EGG_ANCHOR;
+
+        resetMiningArea(level, supportPos, 8.0D);
+        level.setBlock(supportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+
+        ItemStack spawnEgg = crazyZombieSpawnEgg();
+        Player player = makeMockPlayer(helper, level, GameType.SURVIVAL, spawnEgg.copy(), supportPos.south(2));
+        Entity spawnedEntity = ModRegistries.CRAZY_ZOMBIE.get().spawn(level, spawnEgg, player, supportPos.above(), MobSpawnType.SPAWN_EGG, true, true);
+
+        helper.assertTrue(spawnedEntity instanceof CrazyZombie, "Expected spawn egg to create a CrazyZombie runtime entity");
+        helper.assertTrue(spawnedEntity != null && spawnedEntity.isAlive(), "Expected spawned crazy zombie to be alive");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void cavenicMeleeRegistersAtRuntime(GameTestHelper helper) {
         helper.assertTrue(ModRegistries.CAVENIC_SWORD.get() != null, "Missing cavenic sword");
         helper.assertTrue(ModRegistries.CAVENIC_AXE.get() != null, "Missing cavenic axe");
@@ -5268,6 +5344,10 @@ public final class CavernSpecialOreGameTests {
 
     private static ItemStack cavenicBearSpawnEgg() {
         return new ItemStack(ModRegistries.CAVENIC_BEAR_SPAWN_EGG.get());
+    }
+
+    private static ItemStack crazyZombieSpawnEgg() {
+        return new ItemStack(ModRegistries.CRAZY_ZOMBIE_SPAWN_EGG.get());
     }
 
     private static void positionTargetAroundMob(LivingEntity target, Mob mob, double xOffset) {
