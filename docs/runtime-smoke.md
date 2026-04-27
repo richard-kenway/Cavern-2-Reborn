@@ -175,6 +175,7 @@ NeoForge GameTest runtime smoke covers:
 - crazy zombie vanilla loot-table baseline smoke
 - crazy zombie spawn egg resolution
 - crazy zombie spawn egg entity-creation smoke
+- explicit Crazy Zombie natural-spawn deferred boundary from the inspected Cavenia-only crazy-roster provider/config path
 - cavenic shroom worldgen configured/placed key resolution
 - aquamarine tool runtime registry ids
 - aquamarine tool repairability with `cavernreborn:aquamarine`
@@ -239,7 +240,8 @@ NeoForge GameTest runtime smoke covers:
 - actual Crazy Zombie renderer/model visual feel
 - a seventh direct `EntityCavenic*` mob baseline, because the inspected legacy direct roster ends at zombie, skeleton, creeper, spider, witch and bear; the remaining related legacy entities are crazy variants, summon variants or non-Cavenic mobs
 - actual Crazy Zombie boss-bar, particle and melee-knockback feel
-- Crazy Zombie natural spawning, custom loot, `cavenic_orb` drops and damage-behavior follow-ups
+- Crazy Zombie natural spawning, because the inspected legacy path is tied to the old Cavenia-only crazy-roster provider/config branch rather than the current `CAVERN` biome-spawn pattern
+- Crazy Zombie custom loot, `cavenic_orb` drops and damage-behavior follow-ups
 - actual long-run Cavenic Bear drop-rate balance, although the current source inspection found no direct custom bear loot branch beyond the vanilla polar bear baseline
 - actual long-running Cavenic Bear fire/lava gameplay feel
 - actual long-running Cavenic Bear melee/pathfinding feel

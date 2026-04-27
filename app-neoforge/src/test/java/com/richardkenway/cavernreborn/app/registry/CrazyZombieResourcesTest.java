@@ -72,8 +72,12 @@ class CrazyZombieResourcesTest {
         assertTrue(entitySource.contains(".add(Attributes.ATTACK_DAMAGE, 7.5D)"));
         assertTrue(entitySource.contains(".add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D)"));
         assertTrue(entitySource.contains("return EntityType.ZOMBIE.getDefaultLootTable();"));
+        assertFalse(entitySource.contains("NATURAL_SPAWN_WEIGHT"));
+        assertFalse(entitySource.contains("NATURAL_SPAWN_MIN_COUNT"));
+        assertFalse(entitySource.contains("NATURAL_SPAWN_MAX_COUNT"));
         assertFalse(entitySource.contains("canNaturallySpawnInDimension"));
         assertFalse(entitySource.contains("checkCrazyZombieSpawnRules"));
+        assertFalse(entitySource.contains("getMaxSpawnClusterSize()"));
         assertFalse(entitySource.contains("DamageTypeTags"));
         assertFalse(entitySource.contains("public boolean hurt(DamageSource source, float damage)"));
         assertFalse(entitySource.contains("registerGoals()"));
@@ -88,6 +92,7 @@ class CrazyZombieResourcesTest {
 
         assertTrue(entityEventSource.contains("event.put(ModRegistries.CRAZY_ZOMBIE.get(), CrazyZombie.createAttributes().build())"));
         assertFalse(entityEventSource.contains("CrazyZombie::check"));
+        assertFalse(entityEventSource.contains("ModRegistries.CRAZY_ZOMBIE.get(),\n            SpawnPlacementTypes"));
         assertTrue(clientSource.contains("event.registerEntityRenderer(ModRegistries.CRAZY_ZOMBIE.get(), CrazyZombieRenderer::new);"));
         assertTrue(rendererSource.contains("extends ZombieRenderer"));
         assertTrue(rendererSource.contains("getTextureLocation(Zombie entity)"));

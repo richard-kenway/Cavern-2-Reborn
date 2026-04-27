@@ -163,8 +163,10 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("the remaining passive/movement bear goals stay on the inherited modern polar bear base"));
         assertTrue(readme.contains("Crazy Zombie Baseline MVP"));
         assertTrue(readme.contains("docs/crazy-zombie-baseline-mvp.md"));
+        assertTrue(readme.contains("docs/crazy-zombie-natural-spawn-absent-or-deferred.md"));
         assertTrue(readme.contains("first legacy crazy-variant foundation follow-up"));
         assertTrue(readme.contains("`crazy_zombie`"));
+        assertTrue(readme.contains("Cavenia-only crazy-roster provider/config branch"));
         assertTrue(readme.contains("crazy skeleton, crazy creeper and crazy spider remain follow-up candidates"));
         assertTrue(readme.contains("vanilla zombie loot baseline"));
     }
@@ -382,6 +384,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("crazy zombie spawn egg resolution"));
         assertTrue(doc.contains("crazy zombie spawn egg entity-creation smoke"));
         assertTrue(doc.contains("crazy zombie vanilla loot-table baseline smoke"));
+        assertTrue(doc.contains("explicit Crazy Zombie natural-spawn deferred boundary"));
+        assertTrue(doc.contains("Cavenia-only crazy-roster provider/config path"));
         assertTrue(doc.contains("cavenic bear natural spawn placement registration"));
         assertTrue(doc.contains("cavenic bear CAVERN-only spawn predicate smoke"));
         assertTrue(doc.contains("cavenic bear biome modifier registry smoke"));

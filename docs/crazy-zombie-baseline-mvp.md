@@ -83,15 +83,18 @@ The other crazy variants remain follow-up candidates for narrower slices:
 ## Natural Spawning
 
 - Natural spawning is intentionally out of scope for this baseline slice.
-- Legacy `CaveEntityRegistry` does define crazy spawn-list entries separately, but Reborn keeps the staged pattern:
-  - baseline entity first
-  - natural spawn rules later
-  - loot, damage and special behavior later
+- The inspected legacy source does not use the normal `CAVERN` hostile-biome path for Crazy Zombie.
+- `EntityCrazyZombie` only appears in the separate legacy `CaveEntityRegistry.CRAZY_SPAWNS` list with weight `1` and group size `1 / 1`.
+- That crazy roster is only selected from the old `WorldProviderCavenia#createSpawnCreature(...)` branch, where `CaveniaConfig.crazySpawnChance` and a nearby non-boss `ICavenicMob` exclusion check decide whether the provider switches away from the normal spawn list.
+- Reborn therefore does not add a fake `CAVERN` biome modifier or normal monster spawn rule for Crazy Zombie.
+- Reborn therefore does not add a fake `CAVERN`-only spawn rule for Crazy Zombie.
+- The exact deferred natural-spawn boundary is documented in `docs/crazy-zombie-natural-spawn-absent-or-deferred.md`.
 
 ## Intentionally Deferred Crazy-Zombie Behavior
 
 This baseline does not yet port the legacy crazy-specific branches:
 
+- Cavenia-only crazy-roster natural spawning
 - boss bar / sky-darkening visibility behavior
 - crazy particle trail
 - knockback-on-hit behavior
