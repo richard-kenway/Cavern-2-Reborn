@@ -163,9 +163,11 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("the remaining passive/movement bear goals stay on the inherited modern polar bear base"));
         assertTrue(readme.contains("Crazy Zombie Baseline MVP"));
         assertTrue(readme.contains("docs/crazy-zombie-baseline-mvp.md"));
+        assertTrue(readme.contains("docs/crazy-zombie-damage-behavior-mvp.md"));
         assertTrue(readme.contains("docs/crazy-zombie-natural-spawn-absent-or-deferred.md"));
         assertTrue(readme.contains("first legacy crazy-variant foundation follow-up"));
         assertTrue(readme.contains("`crazy_zombie`"));
+        assertTrue(readme.contains("inherited legacy fall-damage reduction and fire-damage immunity behavior"));
         assertTrue(readme.contains("Cavenia-only crazy-roster provider/config branch"));
         assertTrue(readme.contains("crazy skeleton, crazy creeper and crazy spider remain follow-up candidates"));
         assertTrue(readme.contains("vanilla zombie loot baseline"));
@@ -384,6 +386,9 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("crazy zombie spawn egg resolution"));
         assertTrue(doc.contains("crazy zombie spawn egg entity-creation smoke"));
         assertTrue(doc.contains("crazy zombie vanilla loot-table baseline smoke"));
+        assertTrue(doc.contains("crazy zombie legacy fall-damage reduction smoke"));
+        assertTrue(doc.contains("crazy zombie legacy fire-damage immunity smoke"));
+        assertTrue(doc.contains("crazy zombie generic-damage baseline smoke"));
         assertTrue(doc.contains("explicit Crazy Zombie natural-spawn deferred boundary"));
         assertTrue(doc.contains("Cavenia-only crazy-roster provider/config path"));
         assertTrue(doc.contains("cavenic bear natural spawn placement registration"));
@@ -427,6 +432,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("actual long-running Cavenic Bear passive follow/wander/look pathfinding feel"));
         assertTrue(doc.contains("actual Cavenic Bear anger/pathfinding feel"));
         assertTrue(doc.contains("actual long-run Cavenic Bear population balance inside CAVERN"));
+        assertTrue(doc.contains("actual long-running Crazy Zombie fire/lava gameplay feel"));
         assertTrue(doc.contains("legacy Cavenic Bow Rapid/Torch custom projectile behavior and client feel beyond the current bounded Snipe, Rapid and Torch slices"));
         assertTrue(doc.contains("actual long-run Cavenic Zombie population balance inside CAVERN"));
         assertTrue(doc.contains("actual underwater aquamarine mining feel"));

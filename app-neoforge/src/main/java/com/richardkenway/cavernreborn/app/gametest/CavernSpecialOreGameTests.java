@@ -229,6 +229,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIC_BEAR_PANIC_ANCHOR = new BlockPos(5248, 96, 0);
     private static final BlockPos CRAZY_ZOMBIE_ANCHOR = new BlockPos(5344, 96, 0);
     private static final BlockPos CRAZY_ZOMBIE_SPAWN_EGG_ANCHOR = new BlockPos(5440, 96, 0);
+    private static final BlockPos CRAZY_ZOMBIE_DAMAGE_ANCHOR = new BlockPos(5536, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -3417,6 +3418,130 @@ public final class CavernSpecialOreGameTests {
 
         helper.assertTrue(spawnedEntity instanceof CrazyZombie, "Expected spawn egg to create a CrazyZombie runtime entity");
         helper.assertTrue(spawnedEntity != null && spawnedEntity.isAlive(), "Expected spawned crazy zombie to be alive");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazyZombieLegacyFallAndFireDamageBehaviorAppliesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_ZOMBIE_DAMAGE_ANCHOR;
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CrazyZombie crazyFallZombie = spawnLivingEntity(helper, ModRegistries.CRAZY_ZOMBIE.get(), origin);
+        Zombie vanillaFallZombie = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.east(4));
+        clearEquipment(crazyFallZombie);
+        clearEquipment(vanillaFallZombie);
+        float fallDamage = 10.0F;
+        float crazyFallHealthBefore = crazyFallZombie.getHealth();
+        float vanillaFallHealthBefore = vanillaFallZombie.getHealth();
+
+        helper.assertTrue(
+            crazyFallZombie.hurt(level.damageSources().fall(), fallDamage),
+            "Expected crazy zombie to still accept fall damage hits through the normal server damage path"
+        );
+        helper.assertTrue(
+            vanillaFallZombie.hurt(level.damageSources().fall(), fallDamage),
+            "Expected vanilla zombie baseline to accept fall damage hits"
+        );
+        helper.assertTrue(
+            Math.abs((crazyFallHealthBefore - crazyFallZombie.getHealth()) - (fallDamage * CrazyZombie.LEGACY_FALL_DAMAGE_MULTIPLIER)) < 1.0E-6F,
+            "Expected crazy zombie fall damage to stay pinned to the inherited legacy 0.35 multiplier"
+        );
+        helper.assertTrue(
+            Math.abs((vanillaFallHealthBefore - vanillaFallZombie.getHealth()) - fallDamage) < 1.0E-6F,
+            "Expected vanilla zombie baseline to keep full fall damage"
+        );
+
+        CrazyZombie crazyFireZombie = spawnLivingEntity(helper, ModRegistries.CRAZY_ZOMBIE.get(), origin.south(8));
+        Zombie vanillaFireZombie = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.south(8).east(4));
+        clearEquipment(crazyFireZombie);
+        clearEquipment(vanillaFireZombie);
+        float fireDamage = 4.0F;
+        float crazyFireHealthBefore = crazyFireZombie.getHealth();
+        float vanillaFireHealthBefore = vanillaFireZombie.getHealth();
+
+        helper.assertFalse(
+            crazyFireZombie.hurt(level.damageSources().lava(), fireDamage),
+            "Expected crazy zombie to reject fire-tagged damage sources like lava"
+        );
+        helper.assertTrue(
+            vanillaFireZombie.hurt(level.damageSources().lava(), fireDamage),
+            "Expected vanilla zombie baseline to take lava damage"
+        );
+        helper.assertTrue(
+            Math.abs(crazyFireHealthBefore - crazyFireZombie.getHealth()) < 1.0E-6F,
+            "Expected crazy zombie health to stay unchanged after fire-tagged damage"
+        );
+        helper.assertTrue(
+            vanillaFireZombie.getHealth() < vanillaFireHealthBefore,
+            "Expected vanilla zombie baseline to lose health from lava damage"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazyZombieLegacyDamageBehaviorKeepsGenericDamageVanillaLikeAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_ZOMBIE_DAMAGE_ANCHOR.north(12);
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceKey<BiomeModifier> crazyZombieSpawnModifier = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_zombie_spawns")
+        );
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_crazy_zombie"));
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CrazyZombie crazyZombie = spawnLivingEntity(helper, ModRegistries.CRAZY_ZOMBIE.get(), origin);
+        Zombie vanillaZombie = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.east(4));
+        clearEquipment(crazyZombie);
+        clearEquipment(vanillaZombie);
+        float genericDamage = 6.0F;
+        float crazyHealthBefore = crazyZombie.getHealth();
+        float vanillaHealthBefore = vanillaZombie.getHealth();
+
+        helper.assertTrue(
+            crazyZombie.hurt(level.damageSources().generic(), genericDamage),
+            "Expected crazy zombie to remain vulnerable to generic non-fire damage"
+        );
+        helper.assertTrue(
+            vanillaZombie.hurt(level.damageSources().generic(), genericDamage),
+            "Expected vanilla zombie baseline to remain vulnerable to generic non-fire damage"
+        );
+        helper.assertTrue(
+            Math.abs((crazyHealthBefore - crazyZombie.getHealth()) - genericDamage) < 1.0E-6F,
+            "Expected crazy zombie generic damage intake to stay vanilla-like"
+        );
+        helper.assertTrue(
+            Math.abs((vanillaHealthBefore - vanillaZombie.getHealth()) - genericDamage) < 1.0E-6F,
+            "Expected vanilla zombie generic damage intake to stay unchanged"
+        );
+        helper.assertTrue(
+            crazyZombie.getLootTable().equals(EntityType.ZOMBIE.getDefaultLootTable()),
+            "Expected crazy zombie damage follow-up to keep the vanilla zombie loot-table baseline"
+        );
+        helper.assertTrue(
+            Math.abs(crazyZombie.getMaxHealth() - 1024.0D) < 1.0E-6D,
+            "Expected crazy zombie damage follow-up to keep the modern 1024.0 runtime max-health clamp"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_ZOMBIE.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected crazy zombie natural-spawn deferral to keep spawn placement unregistered"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getHeightmapType(ModRegistries.CRAZY_ZOMBIE.get()) == Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+            "Expected unregistered crazy zombie spawn placement to keep the default heightmap type"
+        );
+        helper.assertFalse(
+            biomeModifiers.containsKey(crazyZombieSpawnModifier),
+            "Expected crazy zombie natural-spawn deferral to keep the biome modifier absent at runtime"
+        );
+        helper.assertFalse(
+            biomes.getTag(spawnTag).isPresent(),
+            "Expected crazy zombie natural-spawn deferral to keep the spawn biome tag absent at runtime"
+        );
         helper.succeed();
     }
 

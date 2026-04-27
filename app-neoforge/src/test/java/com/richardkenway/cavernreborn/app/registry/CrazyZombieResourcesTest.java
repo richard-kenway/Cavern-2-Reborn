@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CrazyZombieResourcesTest {
     @Test
-    void crazyZombieRegistersWithDedicatedEntitySpawnEggRendererAndNoBehaviorFollowUps() throws IOException {
+    void crazyZombieRegistersWithDedicatedEntitySpawnEggRendererAndBoundedDamageFollowUp() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -71,18 +71,27 @@ class CrazyZombieResourcesTest {
         assertTrue(entitySource.contains(".add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)"));
         assertTrue(entitySource.contains(".add(Attributes.ATTACK_DAMAGE, 7.5D)"));
         assertTrue(entitySource.contains(".add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D)"));
+        assertTrue(entitySource.contains("public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;"));
         assertTrue(entitySource.contains("return EntityType.ZOMBIE.getDefaultLootTable();"));
+        assertTrue(entitySource.contains("public boolean hurt(DamageSource source, float damage)"));
+        assertTrue(entitySource.contains("source.is(DamageTypeTags.IS_FALL)"));
+        assertTrue(entitySource.contains("damage *= LEGACY_FALL_DAMAGE_MULTIPLIER;"));
+        assertTrue(entitySource.contains("source.is(DamageTypeTags.IS_FIRE)"));
+        assertTrue(entitySource.contains("return super.hurt(source, damage);"));
         assertFalse(entitySource.contains("NATURAL_SPAWN_WEIGHT"));
         assertFalse(entitySource.contains("NATURAL_SPAWN_MIN_COUNT"));
         assertFalse(entitySource.contains("NATURAL_SPAWN_MAX_COUNT"));
         assertFalse(entitySource.contains("canNaturallySpawnInDimension"));
         assertFalse(entitySource.contains("checkCrazyZombieSpawnRules"));
         assertFalse(entitySource.contains("getMaxSpawnClusterSize()"));
-        assertFalse(entitySource.contains("DamageTypeTags"));
-        assertFalse(entitySource.contains("public boolean hurt(DamageSource source, float damage)"));
         assertFalse(entitySource.contains("registerGoals()"));
+        assertFalse(entitySource.contains("onUpdate()"));
+        assertFalse(entitySource.contains("updateAITasks()"));
+        assertFalse(entitySource.contains("attackEntityAsMob("));
         assertFalse(entitySource.contains("BossEvent"));
         assertFalse(entitySource.contains("ServerBossEvent"));
+        assertFalse(entitySource.contains("setDarkenSky"));
+        assertFalse(entitySource.contains("ParticleCrazyMob"));
         assertFalse(entitySource.contains("knockBack("));
         assertFalse(entitySource.contains("cavenic_orb"));
         assertFalse(entitySource.contains("dropLoot("));
