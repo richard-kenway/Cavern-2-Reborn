@@ -31,6 +31,7 @@ import com.richardkenway.cavernreborn.app.entity.CavenicWitchLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombie;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombieLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CrazyZombie;
+import com.richardkenway.cavernreborn.app.entity.CrazyZombieLootEvents;
 import com.richardkenway.cavernreborn.app.item.CavenicBowTorchEvents;
 import com.richardkenway.cavernreborn.app.item.CavenicBowItem;
 import com.richardkenway.cavernreborn.app.item.OreCompassItem;
@@ -58,6 +59,7 @@ import com.richardkenway.cavernreborn.core.loot.CavenicSkeletonLootPolicy;
 import com.richardkenway.cavernreborn.core.loot.CavenicSpiderLootPolicy;
 import com.richardkenway.cavernreborn.core.loot.CavenicWitchLootPolicy;
 import com.richardkenway.cavernreborn.core.loot.CavenicZombieLootPolicy;
+import com.richardkenway.cavernreborn.core.loot.CrazyZombieLootPolicy;
 import com.richardkenway.cavernreborn.core.mining.AquamarineAquaToolDecision;
 import com.richardkenway.cavernreborn.core.mining.AquamarineAquaToolPolicy;
 import com.richardkenway.cavernreborn.core.mining.AquamarineAquaToolResult;
@@ -230,6 +232,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CRAZY_ZOMBIE_ANCHOR = new BlockPos(5344, 96, 0);
     private static final BlockPos CRAZY_ZOMBIE_SPAWN_EGG_ANCHOR = new BlockPos(5440, 96, 0);
     private static final BlockPos CRAZY_ZOMBIE_DAMAGE_ANCHOR = new BlockPos(5536, 96, 0);
+    private static final BlockPos CRAZY_ZOMBIE_LOOT_ANCHOR = new BlockPos(5632, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -3541,6 +3544,85 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             biomes.getTag(spawnTag).isPresent(),
             "Expected crazy zombie natural-spawn deferral to keep the spawn biome tag absent at runtime"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazyZombieLegacyOrbDropWiresAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_ZOMBIE_LOOT_ANCHOR;
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceKey<BiomeModifier> crazyZombieSpawnModifier = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_zombie_spawns")
+        );
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_crazy_zombie"));
+        CrazyZombieLootEvents lootEvents = new CrazyZombieLootEvents();
+        List<ItemEntity> drops = new ArrayList<>();
+
+        resetMiningArea(level, origin, 8.0D);
+        CrazyZombie zombie = spawnLivingEntity(helper, ModRegistries.CRAZY_ZOMBIE.get(), origin);
+        clearEquipment(zombie);
+
+        helper.assertTrue(
+            zombie.getLootTable().equals(EntityType.ZOMBIE.getDefaultLootTable()),
+            "Expected crazy zombie to keep the vanilla zombie loot table as its baseline"
+        );
+        helper.assertTrue(
+            CrazyZombieLootPolicy.ORB_DROP_ROLL_BOUND == 8,
+            "Expected crazy zombie orb drop roll bound to stay pinned to the inherited legacy 1/8 chance"
+        );
+        helper.assertFalse(
+            lootEvents.tryAppendLegacyOrbDrop(zombie, drops, 1),
+            "Non-winning orb roll must not append a crazy zombie cavenic orb drop"
+        );
+        helper.assertTrue(drops.isEmpty(), "Non-winning orb roll must leave the drop list unchanged");
+        helper.assertTrue(
+            lootEvents.tryAppendLegacyOrbDrop(zombie, drops, 0),
+            "Winning orb roll must append a crazy zombie cavenic orb drop"
+        );
+        helper.assertTrue(drops.size() == 1, "Winning orb roll must append exactly one cavenic orb drop");
+        helper.assertTrue(
+            drops.getFirst().getItem().is(ModRegistries.CAVENIC_ORB.get()),
+            "Winning orb roll must append cavernreborn:cavenic_orb"
+        );
+        helper.assertTrue(
+            Math.abs(drops.getFirst().getY() - (zombie.getY() + 0.5D)) < 1.0E-6D,
+            "Expected crazy zombie orb drop Y offset to stay aligned with the inherited legacy 0.5 offset"
+        );
+        helper.assertTrue(
+            Math.abs(zombie.getMaxHealth() - 1024.0D) < 1.0E-6D,
+            "Expected crazy zombie loot follow-up to keep the modern 1024.0 runtime max-health clamp"
+        );
+        helper.assertTrue(
+            Math.abs(zombie.getHealth() - zombie.getMaxHealth()) < 1.0E-6F,
+            "Expected deterministic loot helper coverage to leave crazy zombie health unchanged"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_ZOMBIE.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected crazy zombie loot follow-up to keep spawn placement unregistered"
+        );
+        helper.assertFalse(
+            biomeModifiers.containsKey(crazyZombieSpawnModifier),
+            "Expected crazy zombie loot follow-up to keep the biome modifier absent at runtime"
+        );
+        helper.assertFalse(
+            biomes.getTag(spawnTag).isPresent(),
+            "Expected crazy zombie loot follow-up to keep the spawn biome tag absent at runtime"
+        );
+        helper.assertFalse(
+            zombie.hurt(level.damageSources().lava(), 4.0F),
+            "Expected crazy zombie loot follow-up to keep fire-tagged damage rejection intact"
+        );
+        helper.assertTrue(
+            zombie.hurt(level.damageSources().fall(), 10.0F),
+            "Expected crazy zombie loot follow-up to keep fall damage routed through the legacy multiplier hook"
+        );
+        helper.assertTrue(
+            Math.abs(zombie.getHealth() - (zombie.getMaxHealth() - (10.0F * CrazyZombie.LEGACY_FALL_DAMAGE_MULTIPLIER))) < 1.0E-6F,
+            "Expected crazy zombie loot follow-up to keep the legacy 0.35 fall multiplier intact"
         );
         helper.succeed();
     }

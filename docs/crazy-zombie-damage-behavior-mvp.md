@@ -2,7 +2,7 @@
 
 This note documents the bounded incoming-damage follow-up for the existing `cavernreborn:crazy_zombie`.
 
-It does not add natural spawning, custom loot, `cavenic_orb` drops, boss bar behavior, sky-darkening, particle trail, knockback-on-hit behavior, custom AI or broader crazy-mob combat systems. It only restores the small inherited legacy damage drift from `EntityCavenicZombie`.
+It does not add natural spawning, loot changes beyond the separate orb-drop follow-up, boss bar behavior, sky-darkening, particle trail, knockback-on-hit behavior, custom AI or broader crazy-mob combat systems. It only restores the small inherited legacy damage drift from `EntityCavenicZombie`.
 
 ## Legacy References Inspected
 
@@ -47,12 +47,13 @@ It does not add natural spawning, custom loot, `cavenic_orb` drops, boss bar beh
 - That bounded modern mapping includes lava and burning damage because they use fire-tagged damage sources in current 1.21.1 damage-type data.
 - Generic non-fire, non-fall damage remains vanilla-like.
 - Crazy Zombie still resolves the vanilla zombie loot table through `EntityType.ZOMBIE.getDefaultLootTable()`.
+- The separate inherited orb-drop follow-up is documented in `docs/crazy-zombie-loot-mvp.md`.
 - Crazy Zombie still keeps the legacy `2000.0D` source literal in its attribute builder while the runtime effective max health remains clamped to `1024.0`.
 - Crazy Zombie natural spawning remains explicitly deferred because the inspected legacy path is still tied to the old Cavenia-only crazy-roster provider/config branch.
 
 ## Testing
 
-- Resource tests pin the entity-local damage hook, the exact fall/fire tag usage, the preserved `2000.0D` source literal and the continued absence of natural-spawn wiring, custom loot, boss-bar code, particle code and knockback-on-hit code.
+- Resource tests pin the entity-local damage hook, the exact fall/fire tag usage, the preserved `2000.0D` source literal and the continued absence of natural-spawn wiring, boss-bar code, particle code and knockback-on-hit code, while the inherited orb-drop follow-up stays isolated in its own event/policy files.
 - Documentation tests pin the legacy source references, the inherited `0.35F` fall multiplier, the explicit copy-not-inherit mapping and the unchanged natural-spawn deferral.
 - NeoForge GameTest runtime smoke covers:
   - crazy zombie legacy fall-damage reduction smoke
@@ -65,8 +66,7 @@ It does not add natural spawning, custom loot, `cavenic_orb` drops, boss bar beh
 ## Still Out Of Scope
 
 - Crazy Zombie natural spawning
-- Crazy Zombie custom loot
-- Crazy Zombie `cavenic_orb` drops
+- Crazy Zombie custom loot beyond the restored inherited orb-drop branch
 - Crazy Zombie boss bar / sky-darkening
 - Crazy Zombie particle trail
 - Crazy Zombie knockback-on-hit behavior

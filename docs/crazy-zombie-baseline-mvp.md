@@ -78,9 +78,9 @@ The other crazy variants remain follow-up candidates for narrower slices:
 ## Loot Decision
 
 - The bounded baseline reuses the vanilla zombie loot table as its base drop source.
-- Custom loot, `cavenic_orb` drops and inherited Cavenic boss-like follow-ups remain out of scope for this first crazy baseline slice.
+- The inherited legacy orb-drop follow-up is now documented in `docs/crazy-zombie-loot-mvp.md`.
 - The separate inherited damage behavior follow-up is documented in `docs/crazy-zombie-damage-behavior-mvp.md`.
-- That means this baseline slice still does not yet port the remaining legacy parent-line combat/loot drift even though `EntityCrazyZombie` inherits from `EntityCavenicZombie` in legacy source.
+- Custom loot beyond the restored inherited orb-drop branch and inherited Cavenic boss-like follow-ups remain out of scope for this first crazy baseline slice.
 
 ## Natural Spawning
 
@@ -101,11 +101,11 @@ This baseline does not yet port the legacy crazy-specific branches:
 - crazy particle trail
 - knockback-on-hit behavior
 - max-spawn-in-chunk / boss classification follow-up
-- any inherited Cavenic orb-drop behavior
+- custom loot beyond the restored inherited orb-drop branch
 
 ## Testing
 
-- Resource tests cover registry source, spawn egg placement, renderer registration source, texture/model/lang resources and the explicit no-natural-spawn / no-custom-loot boundary plus the separate damage-follow-up source checks.
+- Resource tests cover registry source, spawn egg placement, renderer registration source, texture/model/lang resources, the explicit no-natural-spawn boundary and the separate inherited loot/damage follow-up source checks.
 - Documentation tests cover the legacy references inspected, the crazy-roster summary, the selection rationale, the attribute mapping, renderer/texture provenance, spawn egg decision, the separate damage-follow-up note and the explicit follow-up boundaries.
 - NeoForge GameTest runtime smoke covers:
   - entity registry resolution
@@ -114,6 +114,7 @@ This baseline does not yet port the legacy crazy-specific branches:
   - vanilla zombie loot-table baseline
   - spawn egg resolution
   - spawn egg entity creation
+  - separate inherited loot-behavior smoke documented in `docs/crazy-zombie-loot-mvp.md`
   - separate legacy damage-behavior smoke documented in `docs/crazy-zombie-damage-behavior-mvp.md`
 
 ## Out Of Scope
@@ -123,8 +124,7 @@ This baseline does not yet port the legacy crazy-specific branches:
 - direct Cavenic mobs
 - non-Crazy mobs
 - natural spawning
-- custom loot
-- `cavenic_orb` drops
+- custom loot beyond the restored inherited orb-drop branch
 - custom AI
 - special attacks and boss behavior
 - Cavenia

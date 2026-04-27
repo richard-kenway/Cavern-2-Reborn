@@ -31,6 +31,15 @@ class CrazyZombieResourcesTest {
         String entityEventSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModEntityEvents.java"
         );
+        String dropEventSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "CrazyZombieLootEvents.java"
+        );
+        String mainEntrypoint = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "CavernReborn.java"
+        );
+        String lootPolicySource = readProjectFile(
+            "core", "src", "main", "java", "com", "richardkenway", "cavernreborn", "core", "loot", "CrazyZombieLootPolicy.java"
+        );
         String clientSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "client", "CavernClientModEvents.java"
         );
@@ -93,7 +102,6 @@ class CrazyZombieResourcesTest {
         assertFalse(entitySource.contains("setDarkenSky"));
         assertFalse(entitySource.contains("ParticleCrazyMob"));
         assertFalse(entitySource.contains("knockBack("));
-        assertFalse(entitySource.contains("cavenic_orb"));
         assertFalse(entitySource.contains("dropLoot("));
         assertFalse(entitySource.contains("ItemMagicBook"));
         assertFalse(entitySource.contains("magic_book"));
@@ -102,6 +110,21 @@ class CrazyZombieResourcesTest {
         assertTrue(entityEventSource.contains("event.put(ModRegistries.CRAZY_ZOMBIE.get(), CrazyZombie.createAttributes().build())"));
         assertFalse(entityEventSource.contains("CrazyZombie::check"));
         assertFalse(entityEventSource.contains("ModRegistries.CRAZY_ZOMBIE.get(),\n            SpawnPlacementTypes"));
+        assertTrue(mainEntrypoint.contains("NeoForge.EVENT_BUS.register(new CrazyZombieLootEvents());"));
+        assertTrue(lootPolicySource.contains("public static final int ORB_DROP_ROLL_BOUND = 8;"));
+        assertTrue(lootPolicySource.contains("return roll >= 0 && roll < ORB_DROP_ROLL_BOUND && roll == 0;"));
+        assertTrue(dropEventSource.contains("LivingDropsEvent"));
+        assertTrue(dropEventSource.contains("event.getEntity() instanceof CrazyZombie zombie"));
+        assertTrue(dropEventSource.contains("CrazyZombieLootPolicy.ORB_DROP_ROLL_BOUND"));
+        assertTrue(dropEventSource.contains("CrazyZombieLootPolicy.shouldDropOrb(orbRoll)"));
+        assertTrue(dropEventSource.contains("new ItemStack(ModRegistries.CAVENIC_ORB.get())"));
+        assertTrue(dropEventSource.contains("zombie.getY() + 0.5D"));
+        assertFalse(dropEventSource.toLowerCase().contains("economy"));
+        assertFalse(dropEventSource.toLowerCase().contains("progress"));
+        assertFalse(dropEventSource.contains("BossEvent"));
+        assertFalse(dropEventSource.contains("ServerBossEvent"));
+        assertFalse(dropEventSource.contains("ParticleCrazyMob"));
+        assertFalse(dropEventSource.contains("knockBack("));
         assertTrue(clientSource.contains("event.registerEntityRenderer(ModRegistries.CRAZY_ZOMBIE.get(), CrazyZombieRenderer::new);"));
         assertTrue(rendererSource.contains("extends ZombieRenderer"));
         assertTrue(rendererSource.contains("getTextureLocation(Zombie entity)"));
@@ -111,8 +134,6 @@ class CrazyZombieResourcesTest {
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "tags", "worldgen", "biome", "spawns_crazy_zombie.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "loot_table", "entities", "crazy_zombie.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "loot_tables", "entities", "crazy_zombie.json");
-        assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "CrazyZombieLootEvents.java");
-        assertMissingProjectFile("core", "src", "main", "java", "com", "richardkenway", "cavernreborn", "core", "loot", "CrazyZombieLootPolicy.java");
     }
 
     @Test
