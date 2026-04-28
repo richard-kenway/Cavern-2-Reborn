@@ -175,7 +175,14 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("legacy blue progress boss bar and sky-darkening boss-event branch"));
         assertTrue(readme.contains("legacy client-only portal-tinted particle trail"));
         assertTrue(readme.contains("Cavenia-only crazy-roster provider/config branch"));
-        assertTrue(readme.contains("crazy skeleton, crazy creeper and crazy spider remain follow-up candidates"));
+        assertTrue(readme.contains("Crazy Skeleton Baseline MVP"));
+        assertTrue(readme.contains("docs/crazy-skeleton-baseline-mvp.md"));
+        assertTrue(readme.contains("second crazy-variant foundation follow-up"));
+        assertTrue(readme.contains("`crazy_skeleton`"));
+        assertTrue(readme.contains("vanilla skeleton loot baseline"));
+        assertTrue(readme.contains("legacy `EntityAIAttackCavenicBow` path"));
+        assertTrue(readme.contains("guaranteed `Cavenic Bow` + `Infinity` equipment path remains intentionally deferred"));
+        assertTrue(readme.contains("crazy creeper and crazy spider remain follow-up candidates"));
         assertTrue(readme.contains("vanilla zombie loot baseline"));
     }
 
@@ -410,9 +417,19 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("crazy zombie client-only particle spawn-source smoke"));
         assertTrue(doc.contains("explicit Crazy Zombie natural-spawn deferred boundary"));
         assertTrue(doc.contains("Cavenia-only crazy-roster provider/config path"));
+        assertTrue(doc.contains("crazy skeleton runtime registry id"));
+        assertTrue(doc.contains("crazy skeleton attribute registration"));
+        assertTrue(doc.contains("crazy skeleton hostile runtime spawn"));
+        assertTrue(doc.contains("crazy skeleton spawn egg resolution"));
+        assertTrue(doc.contains("crazy skeleton spawn egg entity creation"));
+        assertTrue(doc.contains("crazy skeleton vanilla skeleton loot-table baseline"));
+        assertTrue(doc.contains("crazy skeleton explicit no-natural-spawn baseline boundary"));
+        assertTrue(doc.contains("crazy skeleton continued vanilla attack-damage baseline and explicit `1024.0` max-health clamp smoke"));
+        assertTrue(doc.contains("crazy skeleton reflection smoke for no custom damage, boss, particle or ranged-AI follow-up overrides on the baseline class"));
         assertTrue(doc.contains("actual Crazy Zombie client boss-bar visual feel"));
         assertTrue(doc.contains("actual Crazy Zombie client particle-trail visual feel"));
         assertTrue(doc.contains("actual long-running Crazy Zombie melee-knockback feel beyond the deterministic helper/runtime smoke"));
+        assertTrue(doc.contains("actual Crazy Skeleton renderer/model visual feel"));
         assertTrue(doc.contains("cavenic bear natural spawn placement registration"));
         assertTrue(doc.contains("cavenic bear CAVERN-only spawn predicate smoke"));
         assertTrue(doc.contains("cavenic bear biome modifier registry smoke"));
@@ -457,6 +474,12 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("actual long-running Crazy Zombie fire/lava gameplay feel"));
         assertTrue(doc.contains("actual long-run Crazy Zombie orb-drop rate balance"));
         assertTrue(doc.contains("Crazy Zombie custom loot beyond the restored inherited `cavenic_orb` branch"));
+        assertTrue(doc.contains("Crazy Skeleton natural spawning, because the inspected legacy path still belongs to the old Cavenia-only crazy-roster provider/config branch rather than the current `CAVERN` biome-spawn pattern"));
+        assertTrue(doc.contains("Crazy Skeleton custom loot and inherited `cavenic_orb` follow-up"));
+        assertTrue(doc.contains("Crazy Skeleton damage-behavior follow-up"));
+        assertTrue(doc.contains("Crazy Skeleton boss bar / sky-darkening follow-up"));
+        assertTrue(doc.contains("Crazy Skeleton particle-trail follow-up"));
+        assertTrue(doc.contains("actual Crazy Skeleton custom ranged Cavenic Bow / Infinity equipment behavior and legacy `EntityAIAttackCavenicBow` feel"));
         assertTrue(doc.contains("legacy Cavenic Bow Rapid/Torch custom projectile behavior and client feel beyond the current bounded Snipe, Rapid and Torch slices"));
         assertTrue(doc.contains("actual long-run Cavenic Zombie population balance inside CAVERN"));
         assertTrue(doc.contains("actual underwater aquamarine mining feel"));

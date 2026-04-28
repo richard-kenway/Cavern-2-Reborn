@@ -117,6 +117,7 @@ It restores only the small legacy Crazy Zombie knockback branch. It does not add
 - Crazy Zombie custom loot beyond the restored inherited orb-drop branch
 - Crazy Zombie incoming-damage behavior changes
 - Crazy Zombie custom AI
-- Crazy Skeleton / Crazy Creeper / Crazy Spider
+- Crazy Skeleton baseline is now documented separately in `docs/crazy-skeleton-baseline-mvp.md`, while its ranged-AI and equipment follow-ups remain separate
+- Crazy Creeper / Crazy Spider
 - Cavenia
 - magic-book or spell systems

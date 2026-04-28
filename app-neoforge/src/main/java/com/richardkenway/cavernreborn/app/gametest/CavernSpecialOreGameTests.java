@@ -30,6 +30,7 @@ import com.richardkenway.cavernreborn.app.entity.CavenicWitch;
 import com.richardkenway.cavernreborn.app.entity.CavenicWitchLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombie;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombieLootEvents;
+import com.richardkenway.cavernreborn.app.entity.CrazySkeleton;
 import com.richardkenway.cavernreborn.app.entity.CrazyZombie;
 import com.richardkenway.cavernreborn.app.entity.CrazyZombieLootEvents;
 import com.richardkenway.cavernreborn.app.item.CavenicBowTorchEvents;
@@ -240,6 +241,8 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CRAZY_ZOMBIE_KNOCKBACK_ANCHOR = new BlockPos(5728, 96, 0);
     private static final BlockPos CRAZY_ZOMBIE_BOSS_BAR_ANCHOR = new BlockPos(5824, 96, 0);
     private static final BlockPos CRAZY_ZOMBIE_PARTICLE_TRAIL_ANCHOR = new BlockPos(5920, 96, 0);
+    private static final BlockPos CRAZY_SKELETON_ANCHOR = new BlockPos(6016, 96, 0);
+    private static final BlockPos CRAZY_SKELETON_SPAWN_EGG_ANCHOR = new BlockPos(6112, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -4088,6 +4091,124 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySkeletonRegistersAtRuntime(GameTestHelper helper) {
+        helper.assertTrue(ModRegistries.CRAZY_SKELETON.get() != null, "Missing crazy skeleton entity type");
+        helper.assertTrue(ModRegistries.CRAZY_SKELETON_SPAWN_EGG.get() != null, "Missing crazy skeleton spawn egg");
+
+        assertRegistryId(helper, ModRegistries.CRAZY_SKELETON.get(), "cavernreborn:crazy_skeleton");
+        assertRegistryId(helper, ModRegistries.CRAZY_SKELETON_SPAWN_EGG.get(), "cavernreborn:crazy_skeleton_spawn_egg");
+
+        ItemStack spawnEgg = crazySkeletonSpawnEgg();
+        helper.assertTrue(!spawnEgg.isEmpty(), "Expected crazy skeleton spawn egg to be constructible");
+        helper.assertTrue(spawnEgg.getItem() instanceof SpawnEggItem, "Expected crazy skeleton spawn egg runtime item");
+        helper.assertTrue(
+            ((SpawnEggItem) spawnEgg.getItem()).spawnsEntity(spawnEgg, ModRegistries.CRAZY_SKELETON.get()),
+            "Expected crazy skeleton spawn egg to resolve the crazy skeleton entity type"
+        );
+        helper.assertTrue(
+            ModRegistries.CRAZY_SKELETON.get().getCategory() == MobCategory.MONSTER,
+            "Expected crazy skeleton type category to stay MONSTER"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySkeletonSpawnsWithExpectedAttributesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_SKELETON_ANCHOR;
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceKey<BiomeModifier> crazySkeletonSpawnModifier = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_skeleton_spawns")
+        );
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_crazy_skeleton"));
+
+        resetMiningArea(level, origin, 12.0D);
+
+        CrazySkeleton crazySkeleton = spawnLivingEntity(helper, ModRegistries.CRAZY_SKELETON.get(), origin);
+        Skeleton vanillaSkeleton = spawnLivingEntity(helper, EntityType.SKELETON, origin.east(4));
+
+        clearEquipment(crazySkeleton);
+        clearEquipment(vanillaSkeleton);
+
+        helper.assertTrue(crazySkeleton instanceof Skeleton, "Expected crazy skeleton to keep vanilla skeleton behavior for the baseline slice");
+        helper.assertTrue(crazySkeleton.getType().getCategory() == MobCategory.MONSTER, "Expected crazy skeleton type category to stay MONSTER");
+        helper.assertTrue(crazySkeleton.isAlive(), "Expected spawned crazy skeleton to be alive");
+        helper.assertTrue(
+            Math.abs(crazySkeleton.getMaxHealth() - 1024.0D) < 1.0E-6D,
+            "Expected crazy skeleton runtime max health to clamp to the modern generic.max_health ceiling of 1024.0"
+        );
+        helper.assertTrue(
+            Math.abs(crazySkeleton.getAttributeValue(Attributes.MAX_HEALTH) - 1024.0D) < 1.0E-6D,
+            "Expected crazy skeleton MAX_HEALTH attribute to clamp to the modern generic.max_health ceiling of 1024.0"
+        );
+        helper.assertTrue(Math.abs(crazySkeleton.getAttributeValue(Attributes.FOLLOW_RANGE) - 22.0D) < 1.0E-6D, "Expected crazy skeleton follow range to map to legacy 22.0");
+        helper.assertTrue(Math.abs(crazySkeleton.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) - 1.0D) < 1.0E-6D, "Expected crazy skeleton knockback resistance to map to legacy 1.0");
+        helper.assertTrue(Math.abs(crazySkeleton.getAttributeValue(Attributes.MOVEMENT_SPEED) - 0.25D) < 1.0E-6D, "Expected crazy skeleton movement speed to map to legacy 0.25");
+        helper.assertTrue(
+            Math.abs(crazySkeleton.getAttributeValue(Attributes.ATTACK_DAMAGE) - vanillaSkeleton.getAttributeValue(Attributes.ATTACK_DAMAGE)) < 1.0E-6D,
+            "Expected crazy skeleton attack damage to stay on the vanilla skeleton baseline"
+        );
+        helper.assertTrue(
+            crazySkeleton.getLootTable().equals(EntityType.SKELETON.getDefaultLootTable()),
+            "Expected crazy skeleton to keep the vanilla skeleton loot table as its baseline"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_SKELETON.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected crazy skeleton baseline to keep spawn placement unregistered"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getHeightmapType(ModRegistries.CRAZY_SKELETON.get()) == Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+            "Expected unregistered crazy skeleton spawn placement to keep the default heightmap type"
+        );
+        helper.assertFalse(
+            biomeModifiers.containsKey(crazySkeletonSpawnModifier),
+            "Expected crazy skeleton baseline to keep the biome modifier absent at runtime"
+        );
+        helper.assertFalse(
+            biomes.getTag(spawnTag).isPresent(),
+            "Expected crazy skeleton baseline to keep the spawn biome tag absent at runtime"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredFields()).anyMatch(field -> field.getType() == ServerBossEvent.class),
+            "Expected crazy skeleton baseline to avoid adding boss-event state"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("hurt")
+                    || name.equals("aiStep")
+                    || name.equals("customServerAiStep")
+                    || name.equals("startSeenByPlayer")
+                    || name.equals("stopSeenByPlayer")
+                    || name.equals("registerGoals")
+                    || name.equals("reassessWeaponGoal")
+                    || name.equals("performRangedAttack")
+                    || name.equals("doHurtTarget")),
+            "Expected crazy skeleton baseline to avoid adding damage, boss, particle, ranged-AI or knockback follow-up overrides"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySkeletonSpawnEggCreatesRuntimeEntity(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos supportPos = CRAZY_SKELETON_SPAWN_EGG_ANCHOR;
+
+        resetMiningArea(level, supportPos, 8.0D);
+        level.setBlock(supportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+
+        ItemStack spawnEgg = crazySkeletonSpawnEgg();
+        Player player = makeMockPlayer(helper, level, GameType.SURVIVAL, spawnEgg.copy(), supportPos.south(2));
+        Entity spawnedEntity = ModRegistries.CRAZY_SKELETON.get().spawn(level, spawnEgg, player, supportPos.above(), MobSpawnType.SPAWN_EGG, true, true);
+
+        helper.assertTrue(spawnedEntity instanceof CrazySkeleton, "Expected spawn egg to create a CrazySkeleton runtime entity");
+        helper.assertTrue(spawnedEntity != null && spawnedEntity.isAlive(), "Expected spawned crazy skeleton to be alive");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void cavenicMeleeRegistersAtRuntime(GameTestHelper helper) {
         helper.assertTrue(ModRegistries.CAVENIC_SWORD.get() != null, "Missing cavenic sword");
         helper.assertTrue(ModRegistries.CAVENIC_AXE.get() != null, "Missing cavenic axe");
@@ -6015,6 +6136,10 @@ public final class CavernSpecialOreGameTests {
 
     private static ItemStack crazyZombieSpawnEgg() {
         return new ItemStack(ModRegistries.CRAZY_ZOMBIE_SPAWN_EGG.get());
+    }
+
+    private static ItemStack crazySkeletonSpawnEgg() {
+        return new ItemStack(ModRegistries.CRAZY_SKELETON_SPAWN_EGG.get());
     }
 
     private static void positionTargetAroundMob(LivingEntity target, Mob mob, double xOffset) {

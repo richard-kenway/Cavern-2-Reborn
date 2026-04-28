@@ -1,6 +1,6 @@
 # Runtime Smoke
 
-This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the bounded `Acresia Crop & Food MVP`, the bounded `Cavenic Shroom & Orb MVP`, the bounded Cavenic Melee MVP, the bounded `Cavenic Bow Baseline MVP`, the bounded `Cavenic Bow Mode State & Cycling MVP`, the bounded `Cavenic Bow Snipe Mode MVP`, the bounded `Cavenic Bow Rapid Mode MVP`, the bounded `Cavenic Bow Torch Mode MVP`, the bounded `Cavenic Zombie Baseline MVP`, the bounded `Cavenic Zombie Natural Spawn MVP`, the bounded `Cavenic Zombie Legacy Orb Drop MVP`, the bounded `Cavenic Zombie Legacy Damage Behavior MVP`, the bounded `Cavenic Skeleton Baseline MVP`, the bounded `Cavenic Skeleton Natural Spawn MVP`, the bounded `Cavenic Skeleton Legacy Orb Drop MVP`, the bounded `Cavenic Skeleton Legacy Damage Behavior MVP`, the bounded `Cavenic Creeper Baseline MVP`, the bounded `Cavenic Creeper Natural Spawn MVP`, the bounded `Cavenic Creeper Legacy Orb Drop MVP`, the bounded `Cavenic Creeper Legacy Damage Behavior MVP`, the bounded `Cavenic Creeper Legacy Fuse/Explosion MVP`, the bounded `Cavenic Spider Baseline MVP`, the bounded `Cavenic Spider Natural Spawn MVP`, the bounded `Cavenic Spider Legacy Orb Drop MVP`, the bounded `Cavenic Spider Legacy Damage Behavior MVP`, the bounded `Cavenic Spider Blindness-On-Hit MVP`, the bounded `Cavenic Witch Baseline MVP`, the bounded `Cavenic Witch Natural Spawn MVP`, the bounded `Cavenic Witch Legacy Loot MVP`, the bounded `Cavenic Witch Legacy Damage Behavior MVP`, the bounded `Cavenic Witch Same-Type Projectile Immunity MVP`, the bounded `Cavenic Witch Friendship Targeting MVP`, the bounded `Cavenic Witch Custom Ranged Potion MVP`, the bounded `Cavenic Bear Baseline MVP`, the bounded `Cavenic Bear Natural Spawn MVP`, the bounded `Cavenic Bear Legacy Damage Behavior MVP`, the bounded `Cavenic Bear Legacy Hostile Targeting MVP`, the bounded `Cavenic Bear Legacy Melee Attack MVP`, the bounded `Cavenic Bear Legacy Panic Behavior MVP`, the bounded `Cavenic Bear Passive / Movement AI Boundary MVP`, the direct Cavenic mob roster boundary, the bounded `Crazy Zombie Baseline MVP`, the bounded `Crazy Zombie Legacy Loot / Orb Drop Boundary MVP`, the bounded `Crazy Zombie Legacy Damage Behavior MVP`, the bounded `Crazy Zombie Knockback-On-Hit MVP`, the bounded `Crazy Zombie Boss Bar / Sky-Darkening MVP`, the bounded `Crazy Zombie Particle Trail MVP`, the bounded Aquamarine Utility Tools MVP, the bounded Magnite Tool Set MVP, the bounded `Magnite Armor MVP`, the follow-up `hexcite` tool-set MVP, the bounded `Hexcite Armor MVP`, the bounded Mining Assist slice, the first Miner's Orb MVP and the Ore Compass MVP plus tracking UX follow-up.
+This document defines the automated runtime smoke layer for the completed `CAVERN` special ore/content parity tranche 2, the bounded `Acresia Crop & Food MVP`, the bounded `Cavenic Shroom & Orb MVP`, the bounded Cavenic Melee MVP, the bounded `Cavenic Bow Baseline MVP`, the bounded `Cavenic Bow Mode State & Cycling MVP`, the bounded `Cavenic Bow Snipe Mode MVP`, the bounded `Cavenic Bow Rapid Mode MVP`, the bounded `Cavenic Bow Torch Mode MVP`, the bounded `Cavenic Zombie Baseline MVP`, the bounded `Cavenic Zombie Natural Spawn MVP`, the bounded `Cavenic Zombie Legacy Orb Drop MVP`, the bounded `Cavenic Zombie Legacy Damage Behavior MVP`, the bounded `Cavenic Skeleton Baseline MVP`, the bounded `Cavenic Skeleton Natural Spawn MVP`, the bounded `Cavenic Skeleton Legacy Orb Drop MVP`, the bounded `Cavenic Skeleton Legacy Damage Behavior MVP`, the bounded `Cavenic Creeper Baseline MVP`, the bounded `Cavenic Creeper Natural Spawn MVP`, the bounded `Cavenic Creeper Legacy Orb Drop MVP`, the bounded `Cavenic Creeper Legacy Damage Behavior MVP`, the bounded `Cavenic Creeper Legacy Fuse/Explosion MVP`, the bounded `Cavenic Spider Baseline MVP`, the bounded `Cavenic Spider Natural Spawn MVP`, the bounded `Cavenic Spider Legacy Orb Drop MVP`, the bounded `Cavenic Spider Legacy Damage Behavior MVP`, the bounded `Cavenic Spider Blindness-On-Hit MVP`, the bounded `Cavenic Witch Baseline MVP`, the bounded `Cavenic Witch Natural Spawn MVP`, the bounded `Cavenic Witch Legacy Loot MVP`, the bounded `Cavenic Witch Legacy Damage Behavior MVP`, the bounded `Cavenic Witch Same-Type Projectile Immunity MVP`, the bounded `Cavenic Witch Friendship Targeting MVP`, the bounded `Cavenic Witch Custom Ranged Potion MVP`, the bounded `Cavenic Bear Baseline MVP`, the bounded `Cavenic Bear Natural Spawn MVP`, the bounded `Cavenic Bear Legacy Damage Behavior MVP`, the bounded `Cavenic Bear Legacy Hostile Targeting MVP`, the bounded `Cavenic Bear Legacy Melee Attack MVP`, the bounded `Cavenic Bear Legacy Panic Behavior MVP`, the bounded `Cavenic Bear Passive / Movement AI Boundary MVP`, the direct Cavenic mob roster boundary, the bounded `Crazy Zombie Baseline MVP`, the bounded `Crazy Zombie Legacy Loot / Orb Drop Boundary MVP`, the bounded `Crazy Zombie Legacy Damage Behavior MVP`, the bounded `Crazy Zombie Knockback-On-Hit MVP`, the bounded `Crazy Zombie Boss Bar / Sky-Darkening MVP`, the bounded `Crazy Zombie Particle Trail MVP`, the bounded `Crazy Skeleton Baseline MVP`, the bounded Aquamarine Utility Tools MVP, the bounded Magnite Tool Set MVP, the bounded `Magnite Armor MVP`, the follow-up `hexcite` tool-set MVP, the bounded `Hexcite Armor MVP`, the bounded Mining Assist slice, the first Miner's Orb MVP and the Ore Compass MVP plus tracking UX follow-up.
 
 It is intentionally a NeoForge GameTest server pass, not a visual client smoke pass.
 
@@ -192,6 +192,15 @@ NeoForge GameTest runtime smoke covers:
 - crazy zombie particle description resource smoke
 - crazy zombie client-only particle spawn-source smoke
 - explicit Crazy Zombie natural-spawn deferred boundary from the inspected Cavenia-only crazy-roster provider/config path
+- crazy skeleton runtime registry id
+- crazy skeleton attribute registration
+- crazy skeleton hostile runtime spawn
+- crazy skeleton spawn egg resolution
+- crazy skeleton spawn egg entity creation
+- crazy skeleton vanilla skeleton loot-table baseline
+- crazy skeleton explicit no-natural-spawn baseline boundary
+- crazy skeleton continued vanilla attack-damage baseline and explicit `1024.0` max-health clamp smoke
+- crazy skeleton reflection smoke for no custom damage, boss, particle or ranged-AI follow-up overrides on the baseline class
 - cavenic shroom worldgen configured/placed key resolution
 - aquamarine tool runtime registry ids
 - aquamarine tool repairability with `cavernreborn:aquamarine`
@@ -254,6 +263,7 @@ NeoForge GameTest runtime smoke covers:
 - actual Cavenic Witch renderer/model visual feel
 - actual Cavenic Bear renderer/model visual feel
 - actual Crazy Zombie renderer/model visual feel
+- actual Crazy Skeleton renderer/model visual feel
 - a seventh direct `EntityCavenic*` mob baseline, because the inspected legacy direct roster ends at zombie, skeleton, creeper, spider, witch and bear; the remaining related legacy entities are crazy variants, summon variants or non-Cavenic mobs
 - actual long-run Crazy Zombie orb-drop rate balance
 - actual long-running Crazy Zombie fire/lava gameplay feel
@@ -262,6 +272,12 @@ NeoForge GameTest runtime smoke covers:
 - actual long-running Crazy Zombie melee-knockback feel beyond the deterministic helper/runtime smoke
 - Crazy Zombie natural spawning, because the inspected legacy path is tied to the old Cavenia-only crazy-roster provider/config branch rather than the current `CAVERN` biome-spawn pattern
 - Crazy Zombie custom loot beyond the restored inherited `cavenic_orb` branch
+- Crazy Skeleton natural spawning, because the inspected legacy path still belongs to the old Cavenia-only crazy-roster provider/config branch rather than the current `CAVERN` biome-spawn pattern
+- Crazy Skeleton custom loot and inherited `cavenic_orb` follow-up
+- Crazy Skeleton damage-behavior follow-up
+- Crazy Skeleton boss bar / sky-darkening follow-up
+- Crazy Skeleton particle-trail follow-up
+- actual Crazy Skeleton custom ranged Cavenic Bow / Infinity equipment behavior and legacy `EntityAIAttackCavenicBow` feel
 - actual long-run Cavenic Bear drop-rate balance, although the current source inspection found no direct custom bear loot branch beyond the vanilla polar bear baseline
 - actual long-running Cavenic Bear fire/lava gameplay feel
 - actual long-running Cavenic Bear melee/pathfinding feel

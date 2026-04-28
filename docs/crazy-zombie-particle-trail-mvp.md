@@ -104,6 +104,7 @@ It restores only the legacy Crazy Zombie particle trail. It does not change natu
 - Crazy Zombie natural spawning
 - Crazy Zombie custom loot beyond the restored inherited orb-drop branch
 - Crazy Zombie custom AI
-- Crazy Skeleton / Crazy Creeper / Crazy Spider
+- Crazy Skeleton baseline is now documented separately in `docs/crazy-skeleton-baseline-mvp.md`, while its ranged-AI and equipment follow-ups remain separate
+- Crazy Creeper / Crazy Spider
 - Cavenia
 - magic-book or spell systems
