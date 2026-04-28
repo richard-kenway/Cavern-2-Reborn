@@ -53,6 +53,7 @@ This note documents the inspected legacy natural-spawn path for `cavernreborn:cr
 - Reborn does not add a fake `CAVERN`-only spawn rule, because the inspected legacy source does not use one for Crazy Zombie.
 - The separate inherited loot follow-up is documented in `docs/crazy-zombie-loot-mvp.md`.
 - This natural-spawn deferral does not change the separate inherited damage follow-up documented in `docs/crazy-zombie-damage-behavior-mvp.md`.
+- The separate knockback-on-hit follow-up is documented in `docs/crazy-zombie-knockback-on-hit-mvp.md`.
 
 ## Testing
 
@@ -72,8 +73,8 @@ This note documents the inspected legacy natural-spawn path for `cavernreborn:cr
 - weighted crazy-roster switching across Crazy Skeleton, Crazy Creeper, Crazy Zombie and Crazy Spider
 - Crazy Zombie custom loot beyond the restored inherited orb-drop branch
 - Crazy Zombie damage behavior is handled separately in `docs/crazy-zombie-damage-behavior-mvp.md`
+- Crazy Zombie knockback-on-hit behavior is handled separately in `docs/crazy-zombie-knockback-on-hit-mvp.md`
 - boss bar / sky-darkening
 - particle trail
-- knockback-on-hit behavior
 - custom AI
 - magic-book or spell systems

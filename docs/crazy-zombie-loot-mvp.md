@@ -2,7 +2,7 @@
 
 This note documents the bounded loot follow-up for the existing `cavernreborn:crazy_zombie`.
 
-It does not add natural spawning, damage-behavior changes, boss bar behavior, sky-darkening, particle trail, knockback-on-hit behavior, custom AI or broader crazy-mob combat systems. It only restores the small inherited legacy loot drift from `EntityCavenicZombie`.
+It does not add natural spawning, damage-behavior changes, boss bar behavior, sky-darkening, particle trail, custom AI or broader crazy-mob combat systems. It only restores the small inherited legacy loot drift from `EntityCavenicZombie`.
 
 ## Legacy References Inspected
 
@@ -25,7 +25,8 @@ It does not add natural spawning, damage-behavior changes, boss bar behavior, sk
 - The inherited drop branch does not check `wasRecentlyHit`.
 - No direct Crazy Zombie loot-table override was found.
 - No direct Crazy Zombie non-orb custom drop branch was found.
-- The legacy `attackEntityAsMob(...)` knockback branch, client particle trail and boss bar / sky-darkening updates are separate from loot handling and remain out of scope for this slice.
+- The legacy `attackEntityAsMob(...)` knockback branch is separate from loot handling and is now documented in `docs/crazy-zombie-knockback-on-hit-mvp.md`.
+- The client particle trail and boss bar / sky-darkening updates remain out of scope for this slice.
 
 ## Reborn Mapping
 
@@ -56,6 +57,7 @@ It does not add natural spawning, damage-behavior changes, boss bar behavior, sk
 - Progression, dimension, economy, Cavenia, boss state and spawn path do not affect this restored orb drop.
 - Crazy Zombie natural spawning remains explicitly deferred because the inspected legacy path is still tied to the old Cavenia-only crazy-roster provider/config branch.
 - Crazy Zombie damage behavior remains documented separately in `docs/crazy-zombie-damage-behavior-mvp.md`.
+- Crazy Zombie knockback-on-hit behavior remains documented separately in `docs/crazy-zombie-knockback-on-hit-mvp.md`.
 
 ## Testing
 
@@ -66,7 +68,7 @@ It does not add natural spawning, damage-behavior changes, boss bar behavior, sk
   - the `LivingDropsEvent` listener wiring
   - the continued `Zombie` base instead of Reborn `CavenicZombie`
   - the preserved `2000.0D` source literal and `0.35F` damage multiplier constants
-  - the continued absence of natural-spawn wiring, boss-bar code, particle code and knockback-on-hit code
+  - the continued absence of natural-spawn wiring, boss-bar code and particle code
 - Documentation tests pin the legacy source references, the inherited `1/8` orb chance, the explicit copy-not-inherit mapping and the unchanged natural-spawn deferral.
 - NeoForge GameTest runtime smoke covers:
   - crazy zombie vanilla loot-table baseline smoke
@@ -82,7 +84,6 @@ It does not add natural spawning, damage-behavior changes, boss bar behavior, sk
 - Crazy Zombie damage behavior changes
 - Crazy Zombie boss bar / sky-darkening
 - Crazy Zombie particle trail
-- Crazy Zombie knockback-on-hit behavior
 - Crazy Zombie custom AI
 - Crazy Zombie custom loot beyond the restored inherited orb-drop branch
 - Crazy Skeleton / Crazy Creeper / Crazy Spider

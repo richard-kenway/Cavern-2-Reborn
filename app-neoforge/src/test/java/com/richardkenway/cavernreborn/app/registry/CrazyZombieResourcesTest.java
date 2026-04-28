@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CrazyZombieResourcesTest {
     @Test
-    void crazyZombieRegistersWithDedicatedEntitySpawnEggRendererAndBoundedDamageFollowUp() throws IOException {
+    void crazyZombieRegistersWithDedicatedEntitySpawnEggRendererAndBoundedDamageLootAndKnockbackFollowUps() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -87,6 +87,20 @@ class CrazyZombieResourcesTest {
         assertTrue(entitySource.contains("damage *= LEGACY_FALL_DAMAGE_MULTIPLIER;"));
         assertTrue(entitySource.contains("source.is(DamageTypeTags.IS_FIRE)"));
         assertTrue(entitySource.contains("return super.hurt(source, damage);"));
+        assertTrue(entitySource.contains("public static final int LEGACY_KNOCKBACK_TRIGGER_ROLL_BOUND = 5;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_KNOCKBACK_POWER_VARIANT_COUNT = 3;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_KNOCKBACK_BASE_POWER = 3;"));
+        assertTrue(entitySource.contains("public static final float LEGACY_KNOCKBACK_STRENGTH_MULTIPLIER = 0.5F;"));
+        assertTrue(entitySource.contains("public static final double LEGACY_NON_LIVING_KNOCKBACK_VERTICAL_BOOST = 0.1D;"));
+        assertTrue(entitySource.contains("public boolean doHurtTarget(Entity target)"));
+        assertTrue(entitySource.contains("int triggerRoll = random.nextInt(LEGACY_KNOCKBACK_TRIGGER_ROLL_BOUND);"));
+        assertTrue(entitySource.contains("random.nextInt(LEGACY_KNOCKBACK_POWER_VARIANT_COUNT) + LEGACY_KNOCKBACK_BASE_POWER"));
+        assertTrue(entitySource.contains("public static int getLegacyKnockbackPower(int triggerRoll, int magnitudeRoll)"));
+        assertTrue(entitySource.contains("public boolean tryApplyLegacyKnockback(Entity target, int power)"));
+        assertTrue(entitySource.contains("target instanceof LivingEntity livingTarget"));
+        assertTrue(entitySource.contains("livingTarget.knockback(knockbackStrength, Mth.sin(yawRadians), -Mth.cos(yawRadians));"));
+        assertTrue(entitySource.contains("target.push("));
+        assertTrue(entitySource.contains("LEGACY_NON_LIVING_KNOCKBACK_VERTICAL_BOOST"));
         assertFalse(entitySource.contains("NATURAL_SPAWN_WEIGHT"));
         assertFalse(entitySource.contains("NATURAL_SPAWN_MIN_COUNT"));
         assertFalse(entitySource.contains("NATURAL_SPAWN_MAX_COUNT"));
@@ -101,7 +115,6 @@ class CrazyZombieResourcesTest {
         assertFalse(entitySource.contains("ServerBossEvent"));
         assertFalse(entitySource.contains("setDarkenSky"));
         assertFalse(entitySource.contains("ParticleCrazyMob"));
-        assertFalse(entitySource.contains("knockBack("));
         assertFalse(entitySource.contains("dropLoot("));
         assertFalse(entitySource.contains("ItemMagicBook"));
         assertFalse(entitySource.contains("magic_book"));

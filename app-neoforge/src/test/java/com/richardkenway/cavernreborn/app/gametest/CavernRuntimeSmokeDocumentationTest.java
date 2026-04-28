@@ -393,8 +393,12 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("crazy zombie legacy fall-damage reduction smoke"));
         assertTrue(doc.contains("crazy zombie legacy fire-damage immunity smoke"));
         assertTrue(doc.contains("crazy zombie generic-damage baseline smoke"));
+        assertTrue(doc.contains("crazy zombie legacy knockback-on-hit melee smoke"));
+        assertTrue(doc.contains("crazy zombie deterministic legacy knockback helper smoke"));
         assertTrue(doc.contains("explicit Crazy Zombie natural-spawn deferred boundary"));
         assertTrue(doc.contains("Cavenia-only crazy-roster provider/config path"));
+        assertTrue(doc.contains("actual Crazy Zombie boss-bar and particle feel"));
+        assertTrue(doc.contains("actual long-running Crazy Zombie melee-knockback feel beyond the deterministic helper/runtime smoke"));
         assertTrue(doc.contains("cavenic bear natural spawn placement registration"));
         assertTrue(doc.contains("cavenic bear CAVERN-only spawn predicate smoke"));
         assertTrue(doc.contains("cavenic bear biome modifier registry smoke"));

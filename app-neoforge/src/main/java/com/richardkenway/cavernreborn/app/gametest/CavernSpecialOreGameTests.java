@@ -233,6 +233,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CRAZY_ZOMBIE_SPAWN_EGG_ANCHOR = new BlockPos(5440, 96, 0);
     private static final BlockPos CRAZY_ZOMBIE_DAMAGE_ANCHOR = new BlockPos(5536, 96, 0);
     private static final BlockPos CRAZY_ZOMBIE_LOOT_ANCHOR = new BlockPos(5632, 96, 0);
+    private static final BlockPos CRAZY_ZOMBIE_KNOCKBACK_ANCHOR = new BlockPos(5728, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -3628,6 +3629,183 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazyZombieLegacyKnockbackOnHitAppliesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_ZOMBIE_KNOCKBACK_ANCHOR;
+
+        resetMiningArea(level, origin, 16.0D);
+        prepareCombatPlatform(level, origin);
+        prepareCombatPlatform(level, origin.east(2));
+        prepareCombatPlatform(level, origin.south(8));
+        prepareCombatPlatform(level, origin.south(8).east(2));
+        prepareCombatPlatform(level, origin.north(8));
+        prepareCombatPlatform(level, origin.north(8).east(2));
+
+        CrazyZombie crazyZombie = spawnLivingEntity(helper, ModRegistries.CRAZY_ZOMBIE.get(), origin);
+        Zombie crazyAttackTarget = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.east(2));
+        clearEquipment(crazyZombie);
+        clearEquipment(crazyAttackTarget);
+        faceEntity(crazyZombie, 0.0F);
+        float crazyAttackHealthBefore = crazyAttackTarget.getHealth();
+
+        helper.assertTrue(
+            crazyZombie.doHurtTarget(crazyAttackTarget),
+            "Expected crazy zombie melee attack to still succeed through the normal zombie combat path before checking the legacy knockback slice"
+        );
+        helper.assertTrue(
+            crazyAttackTarget.getHealth() < crazyAttackHealthBefore,
+            "Expected successful crazy zombie melee attack to still deal vanilla-like melee damage"
+        );
+
+        CrazyZombie deterministicZombie = spawnLivingEntity(helper, ModRegistries.CRAZY_ZOMBIE.get(), origin.south(8));
+        Zombie deterministicTarget = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.south(8).east(2));
+        clearEquipment(deterministicZombie);
+        clearEquipment(deterministicTarget);
+        faceEntity(deterministicZombie, 0.0F);
+        resetKnockbackTarget(deterministicTarget);
+
+        helper.assertTrue(
+            CrazyZombie.getLegacyKnockbackPower(0, 0) == 3,
+            "Expected winning legacy crazy zombie knockback rolls to map to power 3"
+        );
+        helper.assertTrue(
+            CrazyZombie.getLegacyKnockbackPower(0, 2) == 5,
+            "Expected highest winning legacy crazy zombie knockback magnitude roll to map to power 5"
+        );
+        helper.assertTrue(
+            CrazyZombie.getLegacyKnockbackPower(1, 0) == 0,
+            "Expected losing legacy crazy zombie knockback trigger rolls to map to power 0"
+        );
+        helper.assertFalse(
+            deterministicZombie.tryApplyLegacyKnockback(deterministicTarget, CrazyZombie.getLegacyKnockbackPower(1, 0)),
+            "Expected losing legacy crazy zombie knockback rolls to leave extra knockback inactive"
+        );
+        helper.assertTrue(
+            deterministicTarget.getDeltaMovement().lengthSqr() < 1.0E-8D,
+            "Expected losing legacy crazy zombie knockback rolls to leave the target motion unchanged"
+        );
+
+        resetKnockbackTarget(deterministicTarget);
+        helper.assertTrue(
+            deterministicZombie.tryApplyLegacyKnockback(deterministicTarget, CrazyZombie.getLegacyKnockbackPower(0, 0)),
+            "Expected winning legacy crazy zombie knockback rolls to apply extra knockback"
+        );
+        helper.assertTrue(
+            Math.abs(deterministicTarget.getDeltaMovement().x) < 1.0E-6D,
+            "Expected legacy crazy zombie knockback to preserve the zero-X lane when the attacker faces due south"
+        );
+        helper.assertTrue(
+            Math.abs(deterministicTarget.getDeltaMovement().y - 0.4D) < 1.0E-6D,
+            "Expected grounded living-target crazy zombie knockback to keep the modern 0.4 vertical cap"
+        );
+        helper.assertTrue(
+            deterministicTarget.getDeltaMovement().z > 1.0D,
+            "Expected legacy crazy zombie knockback to add a strong forward Z push for a grounded living target"
+        );
+        Vec3 legacyKnockbackMotion = deterministicTarget.getDeltaMovement();
+
+        Zombie vanillaZombie = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.north(8));
+        Zombie vanillaTarget = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.north(8).east(2));
+        clearEquipment(vanillaZombie);
+        clearEquipment(vanillaTarget);
+        faceEntity(vanillaZombie, 0.0F);
+        resetKnockbackTarget(vanillaTarget);
+
+        helper.assertTrue(
+            vanillaZombie.doHurtTarget(vanillaTarget),
+            "Expected vanilla zombie baseline melee attack to still succeed under the same deterministic setup"
+        );
+        helper.assertTrue(
+            vanillaTarget.getDeltaMovement().length() + 1.0E-6D < legacyKnockbackMotion.length(),
+            "Expected vanilla zombie baseline to keep weaker motion than the extra crazy-zombie knockback branch"
+        );
+        helper.assertTrue(
+            vanillaTarget.getDeltaMovement().z + 1.0E-6D < legacyKnockbackMotion.z,
+            "Expected vanilla zombie baseline to keep a smaller forward Z push than the legacy crazy-zombie knockback branch"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazyZombieLegacyKnockbackKeepsExistingSlicesStableAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_ZOMBIE_KNOCKBACK_ANCHOR.north(12);
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceKey<BiomeModifier> crazyZombieSpawnModifier = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_zombie_spawns")
+        );
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_crazy_zombie"));
+        CrazyZombieLootEvents lootEvents = new CrazyZombieLootEvents();
+        List<ItemEntity> drops = new ArrayList<>();
+
+        resetMiningArea(level, origin, 16.0D);
+        prepareCombatPlatform(level, origin);
+
+        CrazyZombie zombie = spawnLivingEntity(helper, ModRegistries.CRAZY_ZOMBIE.get(), origin);
+        clearEquipment(zombie);
+        faceEntity(zombie, 0.0F);
+
+        helper.assertTrue(
+            zombie.getLootTable().equals(EntityType.ZOMBIE.getDefaultLootTable()),
+            "Expected crazy zombie knockback follow-up to keep the vanilla zombie loot-table baseline"
+        );
+        helper.assertTrue(
+            CrazyZombieLootPolicy.ORB_DROP_ROLL_BOUND == 8,
+            "Expected crazy zombie knockback follow-up to keep the inherited 1/8 orb-drop roll bound"
+        );
+        helper.assertTrue(
+            lootEvents.tryAppendLegacyOrbDrop(zombie, drops, 0),
+            "Expected crazy zombie knockback follow-up to keep the winning orb-drop branch available"
+        );
+        helper.assertTrue(
+            drops.size() == 1 && drops.getFirst().getItem().is(ModRegistries.CAVENIC_ORB.get()),
+            "Expected crazy zombie knockback follow-up to keep appending exactly one cavenic orb on the winning roll"
+        );
+        helper.assertTrue(
+            Math.abs(zombie.getMaxHealth() - 1024.0D) < 1.0E-6D,
+            "Expected crazy zombie knockback follow-up to keep the modern 1024.0 runtime max-health clamp"
+        );
+        helper.assertFalse(
+            zombie.hurt(level.damageSources().lava(), 4.0F),
+            "Expected crazy zombie knockback follow-up to keep fire-tagged damage rejection intact"
+        );
+        helper.assertTrue(
+            zombie.hurt(level.damageSources().fall(), 10.0F),
+            "Expected crazy zombie knockback follow-up to keep fall damage routed through the legacy multiplier hook"
+        );
+        helper.assertTrue(
+            Math.abs(zombie.getHealth() - (zombie.getMaxHealth() - (10.0F * CrazyZombie.LEGACY_FALL_DAMAGE_MULTIPLIER))) < 1.0E-6F,
+            "Expected crazy zombie knockback follow-up to keep the legacy 0.35 fall multiplier intact"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_ZOMBIE.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected crazy zombie knockback follow-up to keep spawn placement unregistered"
+        );
+        helper.assertFalse(
+            biomeModifiers.containsKey(crazyZombieSpawnModifier),
+            "Expected crazy zombie knockback follow-up to keep the biome modifier absent at runtime"
+        );
+        helper.assertFalse(
+            biomes.getTag(spawnTag).isPresent(),
+            "Expected crazy zombie knockback follow-up to keep the spawn biome tag absent at runtime"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazyZombie.class.getDeclaredFields())
+                .anyMatch(field -> field.getType().getSimpleName().contains("BossEvent")),
+            "Expected crazy zombie knockback follow-up to keep boss-bar state out of the entity class"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazyZombie.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("tick") || name.equals("aiStep") || name.equals("customServerAiStep") || name.equals("startSeenByPlayer") || name.equals("stopSeenByPlayer")),
+            "Expected crazy zombie knockback follow-up to keep particle and boss-tracking tick hooks out of the entity class"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void cavenicMeleeRegistersAtRuntime(GameTestHelper helper) {
         helper.assertTrue(ModRegistries.CAVENIC_SWORD.get() != null, "Missing cavenic sword");
         helper.assertTrue(ModRegistries.CAVENIC_AXE.get() != null, "Missing cavenic axe");
@@ -5966,6 +6144,23 @@ public final class CavernSpecialOreGameTests {
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             entity.setItemSlot(slot, ItemStack.EMPTY);
         }
+    }
+
+    private static void faceEntity(LivingEntity entity, float yRot) {
+        entity.setYRot(yRot);
+        entity.setYHeadRot(yRot);
+        entity.setYBodyRot(yRot);
+    }
+
+    private static void prepareCombatPlatform(ServerLevel level, BlockPos pos) {
+        level.setBlock(pos.below(), Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(pos.above(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+    }
+
+    private static void resetKnockbackTarget(LivingEntity entity) {
+        entity.setDeltaMovement(Vec3.ZERO);
+        entity.setOnGround(true);
     }
 
 
