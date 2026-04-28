@@ -16,6 +16,7 @@ class CrazyZombieDocumentationTest {
     private static final Path KNOCKBACK_DOC = resolveProjectFile("docs", "crazy-zombie-knockback-on-hit-mvp.md");
     private static final Path LOOT_DOC = resolveProjectFile("docs", "crazy-zombie-loot-mvp.md");
     private static final Path NATURAL_SPAWN_DOC = resolveProjectFile("docs", "crazy-zombie-natural-spawn-absent-or-deferred.md");
+    private static final Path PARTICLE_TRAIL_DOC = resolveProjectFile("docs", "crazy-zombie-particle-trail-mvp.md");
     private static final Path RUNTIME_SMOKE = resolveProjectFile("docs", "runtime-smoke.md");
 
     @Test
@@ -35,6 +36,8 @@ class CrazyZombieDocumentationTest {
         assertTrue(readme.contains("legacy roll-gated melee-knockback branch"));
         assertTrue(readme.contains("docs/crazy-zombie-boss-bar-mvp.md"));
         assertTrue(readme.contains("legacy blue progress boss bar and sky-darkening boss-event branch"));
+        assertTrue(readme.contains("docs/crazy-zombie-particle-trail-mvp.md"));
+        assertTrue(readme.contains("legacy client-only portal-tinted particle trail"));
         assertTrue(readme.contains("docs/crazy-zombie-natural-spawn-absent-or-deferred.md"));
         assertTrue(readme.contains("Cavenia-only crazy-roster provider/config branch"));
         assertTrue(readme.contains("crazy skeleton, crazy creeper and crazy spider remain follow-up candidates"));
@@ -60,6 +63,7 @@ class CrazyZombieDocumentationTest {
         assertTrue(doc.contains("docs/crazy-zombie-damage-behavior-mvp.md"));
         assertTrue(doc.contains("docs/crazy-zombie-knockback-on-hit-mvp.md"));
         assertTrue(doc.contains("docs/crazy-zombie-boss-bar-mvp.md"));
+        assertTrue(doc.contains("docs/crazy-zombie-particle-trail-mvp.md"));
         assertTrue(doc.contains("max health: `2000.0`"));
         assertTrue(doc.contains("generic.max_health"));
         assertTrue(doc.contains("cap"));
@@ -83,7 +87,7 @@ class CrazyZombieDocumentationTest {
         assertTrue(doc.contains("The separate inherited damage behavior follow-up is documented in `docs/crazy-zombie-damage-behavior-mvp.md`."));
         assertTrue(doc.contains("The legacy Crazy Zombie knockback-on-hit follow-up is now restored explicitly on Reborn `CrazyZombie` and documented in `docs/crazy-zombie-knockback-on-hit-mvp.md`."));
         assertTrue(doc.contains("The legacy Crazy Zombie boss bar / sky-darkening follow-up is now restored explicitly on Reborn `CrazyZombie` and documented in `docs/crazy-zombie-boss-bar-mvp.md`."));
-        assertTrue(doc.contains("crazy particle trail"));
+        assertTrue(doc.contains("The legacy client-only Crazy Zombie particle-trail follow-up is now restored explicitly on Reborn `CrazyZombie` and documented in `docs/crazy-zombie-particle-trail-mvp.md`."));
         assertTrue(doc.contains("Crazy Skeleton remains a follow-up because it depends on the legacy `EntityAIAttackCavenicBow` path"));
         assertTrue(doc.contains("Crazy Creeper remains a follow-up because its direct legacy identity depends on a huge fuse/explosion branch"));
         assertTrue(doc.contains("Crazy Spider remains a follow-up because it carries stronger blindness/poison combat hooks"));
@@ -114,7 +118,7 @@ class CrazyZombieDocumentationTest {
         assertTrue(doc.contains("copies only the confirmed inherited loot branch explicitly onto `CrazyZombie`"));
         assertTrue(doc.contains("natural spawning remains explicitly deferred"));
         assertTrue(doc.contains("boss bar / sky-darkening behavior remains documented separately"));
-        assertTrue(doc.contains("particle trail"));
+        assertTrue(doc.contains("particle trail is now documented separately in `docs/crazy-zombie-particle-trail-mvp.md`"));
         assertTrue(doc.contains("Crazy Skeleton / Crazy Creeper / Crazy Spider"));
         assertTrue(doc.contains("Cavenia"));
     }
@@ -140,7 +144,7 @@ class CrazyZombieDocumentationTest {
         assertTrue(doc.contains("lava and burning damage"));
         assertTrue(doc.contains("Generic non-fire, non-fall damage remains vanilla-like."));
         assertTrue(doc.contains("boss bar / sky-darkening behavior remains documented separately"));
-        assertTrue(doc.contains("particle trail"));
+        assertTrue(doc.contains("particle trail is now documented separately in `docs/crazy-zombie-particle-trail-mvp.md`"));
         assertTrue(doc.contains("runtime effective max health remains clamped to `1024.0`"));
         assertTrue(doc.contains("natural spawning remains explicitly deferred"));
         assertTrue(doc.contains("Crazy Skeleton / Crazy Creeper / Crazy Spider"));
@@ -177,7 +181,7 @@ class CrazyZombieDocumentationTest {
         assertTrue(doc.contains("`updateLegacyBossEvent()`"));
         assertTrue(doc.contains("single global boss event"));
         assertTrue(doc.contains("keeps `CrazyZombie extends Zombie`"));
-        assertTrue(doc.contains("particle trail remains a separate client-only follow-up"));
+        assertTrue(doc.contains("particle trail is now restored separately in `docs/crazy-zombie-particle-trail-mvp.md`"));
         assertTrue(doc.contains("knockback-on-hit remains unchanged"));
         assertTrue(doc.contains("damage behavior remains unchanged"));
         assertTrue(doc.contains("loot behavior remains unchanged"));
@@ -215,8 +219,7 @@ class CrazyZombieDocumentationTest {
         assertTrue(doc.contains("keeps `CrazyZombie extends Zombie`"));
         assertTrue(doc.contains("boss bar and sky-darkening path is now restored separately"));
         assertTrue(doc.contains("docs/crazy-zombie-boss-bar-mvp.md"));
-        assertTrue(doc.contains("particle trail is still a separate client-only visual system"));
-        assertTrue(doc.contains("Crazy Zombie particle trail"));
+        assertTrue(doc.contains("particle trail is now restored separately in `docs/crazy-zombie-particle-trail-mvp.md`"));
         assertTrue(doc.contains("Crazy Skeleton / Crazy Creeper / Crazy Spider"));
     }
 
@@ -243,13 +246,49 @@ class CrazyZombieDocumentationTest {
         assertTrue(doc.contains("docs/crazy-zombie-damage-behavior-mvp.md"));
         assertTrue(doc.contains("docs/crazy-zombie-knockback-on-hit-mvp.md"));
         assertTrue(doc.contains("docs/crazy-zombie-boss-bar-mvp.md"));
+        assertTrue(doc.contains("docs/crazy-zombie-particle-trail-mvp.md"));
         assertTrue(doc.contains("loot follow-up stays explicit and independent from natural spawning"));
         assertTrue(doc.contains("damage-behavior follow-up stays explicit and independent from natural spawning"));
         assertTrue(doc.contains("weighted crazy-roster switching across Crazy Skeleton, Crazy Creeper, Crazy Zombie and Crazy Spider"));
     }
 
     @Test
-    void runtimeSmokeDocMentionsCrazyZombieBaselineDamageAndNaturalSpawnBoundaryCoverage() throws IOException {
+    void crazyZombieParticleTrailDocStatesLegacyClientOnlyMappingBoundariesAndTests() throws IOException {
+        String doc = Files.readString(PARTICLE_TRAIL_DOC);
+
+        assertTrue(doc.contains("`cavern.entity.monster.EntityCrazyZombie`"));
+        assertTrue(doc.contains("`cavern.client.particle.ParticleCrazyMob`"));
+        assertTrue(doc.contains("`ParticleCrazyMob extends ParticlePortal`"));
+        assertTrue(doc.contains("`world.isRemote`"));
+        assertTrue(doc.contains("spawns `3` particles per tick"));
+        assertTrue(doc.contains("`var1 = rand.nextInt(2) * 2 - 1`"));
+        assertTrue(doc.contains("`ptX = posX + 0.25D * var1`"));
+        assertTrue(doc.contains("`ptY = posY + 0.65D + rand.nextFloat()`"));
+        assertTrue(doc.contains("`motionX = rand.nextFloat() * 1.0F * var1`"));
+        assertTrue(doc.contains("`(rand.nextFloat() - 0.25D) * 0.125D`"));
+        assertTrue(doc.contains("`float f = rand.nextFloat() * 0.5F + 0.4F`"));
+        assertTrue(doc.contains("`particleRed = particleGreen = particleBlue = 0.65F * f * 0.8F`"));
+        assertTrue(doc.contains("no dedicated legacy particle texture asset"));
+        assertTrue(doc.contains("`cavernreborn:crazy_mob`"));
+        assertTrue(doc.contains("`SimpleParticleType`"));
+        assertTrue(doc.contains("`CrazyMobParticle extends PortalParticle`"));
+        assertTrue(doc.contains("`RegisterParticleProvidersEvent`"));
+        assertTrue(doc.contains("`assets/cavernreborn/particles/crazy_mob.json`"));
+        assertTrue(doc.contains("`minecraft:generic_0`"));
+        assertTrue(doc.contains("`CrazyZombie#aiStep()`"));
+        assertTrue(doc.contains("client-only guard"));
+        assertTrue(doc.contains("no custom packets were added"));
+        assertTrue(doc.contains("boss bar remains unchanged"));
+        assertTrue(doc.contains("knockback remains unchanged"));
+        assertTrue(doc.contains("damage remains unchanged"));
+        assertTrue(doc.contains("loot remains unchanged"));
+        assertTrue(doc.contains("natural spawning remains deferred"));
+        assertTrue(doc.contains("keeps `CrazyZombie extends Zombie`"));
+        assertTrue(doc.contains("Actual client visual particle feel remains manual"));
+    }
+
+    @Test
+    void runtimeSmokeDocMentionsCrazyZombieBaselineDamageParticleAndNaturalSpawnBoundaryCoverage() throws IOException {
         String doc = Files.readString(RUNTIME_SMOKE);
 
         assertTrue(doc.contains("crazy zombie runtime registry id"));
@@ -270,12 +309,16 @@ class CrazyZombieDocumentationTest {
         assertTrue(doc.contains("crazy zombie boss-percent update smoke"));
         assertTrue(doc.contains("crazy zombie tracked-player add/remove smoke"));
         assertTrue(doc.contains("crazy zombie sky-darkening smoke"));
+        assertTrue(doc.contains("crazy zombie particle type registry id smoke"));
+        assertTrue(doc.contains("crazy zombie particle provider registration source smoke"));
+        assertTrue(doc.contains("crazy zombie particle description resource smoke"));
+        assertTrue(doc.contains("crazy zombie client-only particle spawn-source smoke"));
         assertTrue(doc.contains("explicit Crazy Zombie natural-spawn deferred boundary"));
         assertTrue(doc.contains("Cavenia-only crazy-roster provider/config path"));
         assertTrue(doc.contains("actual Crazy Zombie renderer/model visual feel"));
         assertTrue(doc.contains("actual long-running Crazy Zombie fire/lava gameplay feel"));
         assertTrue(doc.contains("actual Crazy Zombie client boss-bar visual feel"));
-        assertTrue(doc.contains("Crazy Zombie particle trail remains out of scope"));
+        assertTrue(doc.contains("actual Crazy Zombie client particle-trail visual feel"));
         assertTrue(doc.contains("actual long-running Crazy Zombie melee-knockback feel beyond the deterministic helper/runtime smoke"));
         assertTrue(doc.contains("Crazy Zombie natural spawning, because the inspected legacy path is tied to the old Cavenia-only crazy-roster provider/config branch"));
         assertTrue(doc.contains("actual long-run Crazy Zombie orb-drop rate balance"));

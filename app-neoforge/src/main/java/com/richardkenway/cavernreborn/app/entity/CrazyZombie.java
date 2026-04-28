@@ -1,5 +1,7 @@
 package com.richardkenway.cavernreborn.app.entity;
 
+import com.richardkenway.cavernreborn.app.registry.ModRegistries;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
@@ -27,6 +29,11 @@ public final class CrazyZombie extends Zombie {
     public static final int LEGACY_KNOCKBACK_BASE_POWER = 3;
     public static final float LEGACY_KNOCKBACK_STRENGTH_MULTIPLIER = 0.5F;
     public static final double LEGACY_NON_LIVING_KNOCKBACK_VERTICAL_BOOST = 0.1D;
+    public static final int LEGACY_PARTICLE_COUNT_PER_TICK = 3;
+    public static final double LEGACY_PARTICLE_HORIZONTAL_OFFSET = 0.25D;
+    public static final double LEGACY_PARTICLE_BASE_Y_OFFSET = 0.65D;
+    public static final double LEGACY_PARTICLE_VERTICAL_MOTION_OFFSET = 0.25D;
+    public static final double LEGACY_PARTICLE_VERTICAL_MOTION_SCALE = 0.125D;
     public static final double LEGACY_BOSS_BAR_VISIBILITY_DISTANCE = 20.0D;
     public static final double LEGACY_BOSS_BAR_DARKEN_SKY_DISTANCE = 30.0D;
 
@@ -48,6 +55,26 @@ public final class CrazyZombie extends Zombie {
             .add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)
             .add(Attributes.ATTACK_DAMAGE, 7.5D)
             .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
+    }
+
+    @Override
+    public void aiStep() {
+        super.aiStep();
+
+        if (this.level().isClientSide()) {
+            for (int i = 0; i < LEGACY_PARTICLE_COUNT_PER_TICK; ++i) {
+                int particleXDirection = this.random.nextInt(2) * 2 - 1;
+                int particleZDirection = this.random.nextInt(2) * 2 - 1;
+                double particleX = this.getX() + LEGACY_PARTICLE_HORIZONTAL_OFFSET * particleXDirection;
+                double particleY = this.getY() + LEGACY_PARTICLE_BASE_Y_OFFSET + this.random.nextFloat();
+                double particleZ = this.getZ() + LEGACY_PARTICLE_HORIZONTAL_OFFSET * particleZDirection;
+                double motionX = this.random.nextFloat() * 1.0F * particleXDirection;
+                double motionY = (this.random.nextFloat() - LEGACY_PARTICLE_VERTICAL_MOTION_OFFSET) * LEGACY_PARTICLE_VERTICAL_MOTION_SCALE;
+                double motionZ = this.random.nextFloat() * 1.0F * particleZDirection;
+
+                this.level().addParticle(ModRegistries.CRAZY_MOB_PARTICLE.get(), particleX, particleY, particleZ, motionX, motionY, motionZ);
+            }
+        }
     }
 
     @Override

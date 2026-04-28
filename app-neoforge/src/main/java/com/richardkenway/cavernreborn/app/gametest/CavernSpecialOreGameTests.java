@@ -239,6 +239,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CRAZY_ZOMBIE_LOOT_ANCHOR = new BlockPos(5632, 96, 0);
     private static final BlockPos CRAZY_ZOMBIE_KNOCKBACK_ANCHOR = new BlockPos(5728, 96, 0);
     private static final BlockPos CRAZY_ZOMBIE_BOSS_BAR_ANCHOR = new BlockPos(5824, 96, 0);
+    private static final BlockPos CRAZY_ZOMBIE_PARTICLE_TRAIL_ANCHOR = new BlockPos(5920, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -3924,10 +3925,6 @@ public final class CavernSpecialOreGameTests {
                 .anyMatch(name -> name.equals("customServerAiStep") || name.equals("startSeenByPlayer") || name.equals("stopSeenByPlayer")),
             "Expected crazy zombie boss-bar follow-up to keep the tracked-player boss-event hooks on the entity class"
         );
-        helper.assertFalse(
-            java.util.Arrays.stream(CrazyZombie.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("aiStep") || name.equals("onUpdate")),
-            "Expected crazy zombie boss-bar follow-up to avoid adding a client particle tick override"
-        );
         helper.assertTrue(
             zombie.getLegacyCrazyBossEventForTests().getColor() == BossEvent.BossBarColor.BLUE
                 && zombie.getLegacyCrazyBossEventForTests().getOverlay() == BossEvent.BossBarOverlay.PROGRESS,
@@ -3988,6 +3985,104 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             biomes.getTag(spawnTag).isPresent(),
             "Expected crazy zombie boss-bar follow-up to keep the spawn biome tag absent at runtime"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazyZombieParticleTrailRegistrationKeepsExistingSlicesStableAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_ZOMBIE_PARTICLE_TRAIL_ANCHOR;
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceKey<BiomeModifier> crazyZombieSpawnModifier = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_zombie_spawns")
+        );
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_crazy_zombie"));
+        CrazyZombieLootEvents lootEvents = new CrazyZombieLootEvents();
+        List<ItemEntity> drops = new ArrayList<>();
+
+        resetMiningArea(level, origin, 16.0D);
+        prepareCombatPlatform(level, origin);
+
+        CrazyZombie zombie = spawnLivingEntity(helper, ModRegistries.CRAZY_ZOMBIE.get(), origin);
+        clearEquipment(zombie);
+        faceEntity(zombie, 0.0F);
+        zombie.aiStep();
+
+        helper.assertTrue(
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_mob").equals(BuiltInRegistries.PARTICLE_TYPE.getKey(ModRegistries.CRAZY_MOB_PARTICLE.get())),
+            "Expected crazy zombie particle-trail follow-up to register the crazy_mob particle type"
+        );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazyZombie.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("aiStep")),
+            "Expected crazy zombie particle-trail follow-up to keep the bounded aiStep particle hook on the entity class"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazyZombie.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("onUpdate") || name.equals("tick")),
+            "Expected crazy zombie particle-trail follow-up to avoid reviving the legacy onUpdate hook or broad full-tick overrides"
+        );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazyZombie.class.getDeclaredFields()).anyMatch(field -> field.getType() == ServerBossEvent.class),
+            "Expected crazy zombie particle-trail follow-up to keep the restored boss-event field intact"
+        );
+        helper.assertTrue(
+            zombie.getLegacyCrazyBossEventForTests().getColor() == BossEvent.BossBarColor.BLUE
+                && zombie.getLegacyCrazyBossEventForTests().getOverlay() == BossEvent.BossBarOverlay.PROGRESS,
+            "Expected crazy zombie particle-trail follow-up to keep the legacy blue progress boss-event styling"
+        );
+        helper.assertTrue(
+            zombie.getLootTable().equals(EntityType.ZOMBIE.getDefaultLootTable()),
+            "Expected crazy zombie particle-trail follow-up to keep the vanilla zombie loot-table baseline"
+        );
+        helper.assertTrue(
+            CrazyZombieLootPolicy.ORB_DROP_ROLL_BOUND == 8,
+            "Expected crazy zombie particle-trail follow-up to keep the inherited 1/8 orb-drop roll bound"
+        );
+        helper.assertTrue(
+            lootEvents.tryAppendLegacyOrbDrop(zombie, drops, 0),
+            "Expected crazy zombie particle-trail follow-up to keep the winning orb-drop branch available"
+        );
+        helper.assertTrue(
+            drops.size() == 1 && drops.getFirst().getItem().is(ModRegistries.CAVENIC_ORB.get()),
+            "Expected crazy zombie particle-trail follow-up to keep appending exactly one cavenic orb on the winning roll"
+        );
+        helper.assertTrue(
+            Math.abs(zombie.getMaxHealth() - 1024.0D) < 1.0E-6D,
+            "Expected crazy zombie particle-trail follow-up to keep the modern 1024.0 runtime max-health clamp"
+        );
+        helper.assertFalse(
+            zombie.hurt(level.damageSources().lava(), 4.0F),
+            "Expected crazy zombie particle-trail follow-up to keep fire-tagged damage rejection intact"
+        );
+        helper.assertTrue(
+            zombie.hurt(level.damageSources().fall(), 10.0F),
+            "Expected crazy zombie particle-trail follow-up to keep fall damage routed through the legacy multiplier hook"
+        );
+        helper.assertTrue(
+            Math.abs(zombie.getHealth() - (zombie.getMaxHealth() - (10.0F * CrazyZombie.LEGACY_FALL_DAMAGE_MULTIPLIER))) < 1.0E-6F,
+            "Expected crazy zombie particle-trail follow-up to keep the legacy 0.35 fall multiplier intact"
+        );
+        helper.assertTrue(
+            CrazyZombie.LEGACY_KNOCKBACK_TRIGGER_ROLL_BOUND == 5
+                && CrazyZombie.LEGACY_KNOCKBACK_POWER_VARIANT_COUNT == 3
+                && CrazyZombie.LEGACY_KNOCKBACK_BASE_POWER == 3
+                && Math.abs(CrazyZombie.LEGACY_KNOCKBACK_STRENGTH_MULTIPLIER - 0.5F) < 1.0E-6F
+                && Math.abs(CrazyZombie.LEGACY_NON_LIVING_KNOCKBACK_VERTICAL_BOOST - 0.1D) < 1.0E-6D,
+            "Expected crazy zombie particle-trail follow-up to keep the legacy knockback constants stable"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_ZOMBIE.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected crazy zombie particle-trail follow-up to keep spawn placement unregistered"
+        );
+        helper.assertFalse(
+            biomeModifiers.containsKey(crazyZombieSpawnModifier),
+            "Expected crazy zombie particle-trail follow-up to keep the biome modifier absent at runtime"
+        );
+        helper.assertFalse(
+            biomes.getTag(spawnTag).isPresent(),
+            "Expected crazy zombie particle-trail follow-up to keep the spawn biome tag absent at runtime"
         );
         helper.succeed();
     }

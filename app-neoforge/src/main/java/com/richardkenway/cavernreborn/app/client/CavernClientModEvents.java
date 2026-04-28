@@ -2,6 +2,7 @@ package com.richardkenway.cavernreborn.app.client;
 
 import com.richardkenway.cavernreborn.CavernReborn;
 import com.richardkenway.cavernreborn.app.compass.OreCompassClientAngleResolver;
+import com.richardkenway.cavernreborn.app.client.particle.CrazyMobParticle;
 import com.richardkenway.cavernreborn.app.client.renderer.CavenicBearRenderer;
 import com.richardkenway.cavernreborn.app.client.renderer.CavenicCreeperRenderer;
 import com.richardkenway.cavernreborn.app.client.renderer.CavenicSkeletonRenderer;
@@ -20,6 +21,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 
 @EventBusSubscriber(modid = CavernReborn.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class CavernClientModEvents {
@@ -31,6 +33,11 @@ public final class CavernClientModEvents {
     @SubscribeEvent
     public static void registerDimensionSpecialEffects(RegisterDimensionSpecialEffectsEvent event) {
         event.register(CavernNeoForgeDimensions.CAVERN_LOCATION, new CavernDimensionSpecialEffects());
+    }
+
+    @SubscribeEvent
+    public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
+        event.registerSpriteSet(ModRegistries.CRAZY_MOB_PARTICLE.get(), CrazyMobParticle.Provider::new);
     }
 
     @SubscribeEvent

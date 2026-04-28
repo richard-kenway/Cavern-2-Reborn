@@ -2,7 +2,7 @@
 
 This note documents the bounded outgoing-combat follow-up for the existing `cavernreborn:crazy_zombie`.
 
-It restores only the small legacy Crazy Zombie knockback branch. It does not add natural spawning, loot changes, incoming-damage changes, particle trail, custom AI or broader crazy-mob combat rewrites.
+It restores only the small legacy Crazy Zombie knockback branch. It does not add natural spawning, loot changes, incoming-damage changes, boss-event changes, custom AI or broader crazy-mob combat rewrites.
 
 ## Legacy References Inspected
 
@@ -80,7 +80,7 @@ It restores only the small legacy Crazy Zombie knockback branch. It does not add
 ## Why Boss Bar And Particles Are Separate
 
 - The boss bar and sky-darkening path is now restored separately in `docs/crazy-zombie-boss-bar-mvp.md`.
-- The particle trail is still a separate client-only visual system with a dedicated legacy particle class.
+- The particle trail is now restored separately in `docs/crazy-zombie-particle-trail-mvp.md`.
 - This increment restores only one behavior family.
 - Knockback-on-hit is the smallest source-confirmed server-side combat slice that maps cleanly without touching the separate boss-event and particle follow-ups.
 
@@ -98,7 +98,7 @@ It restores only the small legacy Crazy Zombie knockback branch. It does not add
   - the legacy knockback constants
   - the deterministic helper methods
   - the preserved vanilla `Zombie` base
-  - the continued absence of particle code and natural-spawn wiring
+  - the continued absence of natural-spawn wiring
 - Documentation tests pin:
   - the exact boss-bar color/overlay/darken-sky findings
   - the client-only particle trail findings
@@ -109,11 +109,10 @@ It restores only the small legacy Crazy Zombie knockback branch. It does not add
   - deterministic losing and winning knockback helper smoke
   - vanilla zombie baseline comparison with no extra crazy-zombie knockback branch
   - continued orb-drop, incoming-damage, max-health-clamp and natural-spawn-deferral stability
-  - continued boss-event separation from the knockback branch and continued absence of particle wiring on the Reborn entity class
+  - continued boss-event and particle-trail separation from the knockback branch
 
 ## Still Out Of Scope
 
-- Crazy Zombie particle trail
 - Crazy Zombie natural spawning
 - Crazy Zombie custom loot beyond the restored inherited orb-drop branch
 - Crazy Zombie incoming-damage behavior changes

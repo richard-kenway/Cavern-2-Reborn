@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CrazyZombieResourcesTest {
     @Test
-    void crazyZombieRegistersWithDedicatedEntitySpawnEggRendererAndBoundedDamageLootKnockbackAndBossBarFollowUps() throws IOException {
+    void crazyZombieRegistersWithDedicatedEntitySpawnEggRendererParticleTrailAndBoundedDamageLootKnockbackAndBossBarFollowUps() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -43,6 +43,9 @@ class CrazyZombieResourcesTest {
         String clientSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "client", "CavernClientModEvents.java"
         );
+        String particleSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "client", "particle", "CrazyMobParticle.java"
+        );
         String rendererSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "client", "renderer", "CrazyZombieRenderer.java"
         );
@@ -57,6 +60,9 @@ class CrazyZombieResourcesTest {
         );
         assertTrue(registriesSource.contains("EntityType.Builder.of(CrazyZombie::new, MobCategory.MONSTER)"));
         assertTrue(registriesSource.contains(".build(ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, \"crazy_zombie\").toString())"));
+        assertTrue(registriesSource.contains("DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister.create(Registries.PARTICLE_TYPE, CavernReborn.MOD_ID);"));
+        assertTrue(registriesSource.contains("PARTICLE_TYPES.register(\n        \"crazy_mob\","));
+        assertTrue(registriesSource.contains("() -> new SimpleParticleType(false)"));
         assertTrue(registriesSource.contains("new DeferredSpawnEggItem(() -> CRAZY_ZOMBIE.get(), 0x909090, 0x00A0A0, new Item.Properties())"));
         assertInOrder(registriesSource, List.of(
             "output.accept(CAVENIC_BOW.get())",
@@ -92,8 +98,22 @@ class CrazyZombieResourcesTest {
         assertTrue(entitySource.contains("public static final int LEGACY_KNOCKBACK_BASE_POWER = 3;"));
         assertTrue(entitySource.contains("public static final float LEGACY_KNOCKBACK_STRENGTH_MULTIPLIER = 0.5F;"));
         assertTrue(entitySource.contains("public static final double LEGACY_NON_LIVING_KNOCKBACK_VERTICAL_BOOST = 0.1D;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_PARTICLE_COUNT_PER_TICK = 3;"));
+        assertTrue(entitySource.contains("public static final double LEGACY_PARTICLE_HORIZONTAL_OFFSET = 0.25D;"));
+        assertTrue(entitySource.contains("public static final double LEGACY_PARTICLE_BASE_Y_OFFSET = 0.65D;"));
+        assertTrue(entitySource.contains("public static final double LEGACY_PARTICLE_VERTICAL_MOTION_OFFSET = 0.25D;"));
+        assertTrue(entitySource.contains("public static final double LEGACY_PARTICLE_VERTICAL_MOTION_SCALE = 0.125D;"));
         assertTrue(entitySource.contains("public static final double LEGACY_BOSS_BAR_VISIBILITY_DISTANCE = 20.0D;"));
         assertTrue(entitySource.contains("public static final double LEGACY_BOSS_BAR_DARKEN_SKY_DISTANCE = 30.0D;"));
+        assertTrue(entitySource.contains("public void aiStep()"));
+        assertTrue(entitySource.contains("if (this.level().isClientSide()) {"));
+        assertTrue(entitySource.contains("for (int i = 0; i < LEGACY_PARTICLE_COUNT_PER_TICK; ++i) {"));
+        assertTrue(entitySource.contains("this.random.nextInt(2) * 2 - 1"));
+        assertTrue(entitySource.contains("this.getX() + LEGACY_PARTICLE_HORIZONTAL_OFFSET * particleXDirection"));
+        assertTrue(entitySource.contains("this.getY() + LEGACY_PARTICLE_BASE_Y_OFFSET + this.random.nextFloat()"));
+        assertTrue(entitySource.contains("this.random.nextFloat() * 1.0F * particleXDirection"));
+        assertTrue(entitySource.contains("(this.random.nextFloat() - LEGACY_PARTICLE_VERTICAL_MOTION_OFFSET) * LEGACY_PARTICLE_VERTICAL_MOTION_SCALE"));
+        assertTrue(entitySource.contains("this.level().addParticle(ModRegistries.CRAZY_MOB_PARTICLE.get(), particleX, particleY, particleZ, motionX, motionY, motionZ);"));
         assertTrue(entitySource.contains("private final ServerBossEvent legacyBossEvent = new ServerBossEvent("));
         assertTrue(entitySource.contains("BossEvent.BossBarColor.BLUE"));
         assertTrue(entitySource.contains("BossEvent.BossBarOverlay.PROGRESS"));
@@ -137,7 +157,6 @@ class CrazyZombieResourcesTest {
         assertFalse(entitySource.contains("updateAITasks()"));
         assertFalse(entitySource.contains("attackEntityAsMob("));
         assertFalse(entitySource.contains("ParticleCrazyMob"));
-        assertFalse(entitySource.contains("addParticle("));
         assertFalse(entitySource.contains("ClientboundBossEventPacket"));
         assertFalse(entitySource.contains("dropLoot("));
         assertFalse(entitySource.contains("ItemMagicBook"));
@@ -162,7 +181,16 @@ class CrazyZombieResourcesTest {
         assertFalse(dropEventSource.contains("ServerBossEvent"));
         assertFalse(dropEventSource.contains("ParticleCrazyMob"));
         assertFalse(dropEventSource.contains("knockBack("));
+        assertTrue(particleSource.contains("extends PortalParticle"));
+        assertTrue(particleSource.contains("float f = this.random.nextFloat() * 0.5F + 0.4F;"));
+        assertTrue(particleSource.contains("float color = 0.65F * f * 0.8F;"));
+        assertTrue(particleSource.contains("this.setColor(color, color, color);"));
+        assertTrue(particleSource.contains("implements ParticleProvider<SimpleParticleType>"));
+        assertTrue(particleSource.contains("particle.pickSprite(this.sprite);"));
+        assertFalse(particleSource.contains("ParticleCrazyMob"));
+        assertFalse(particleSource.contains("ClientboundBossEventPacket"));
         assertTrue(clientSource.contains("event.registerEntityRenderer(ModRegistries.CRAZY_ZOMBIE.get(), CrazyZombieRenderer::new);"));
+        assertTrue(clientSource.contains("event.registerSpriteSet(ModRegistries.CRAZY_MOB_PARTICLE.get(), CrazyMobParticle.Provider::new);"));
         assertTrue(rendererSource.contains("extends ZombieRenderer"));
         assertTrue(rendererSource.contains("getTextureLocation(Zombie entity)"));
         assertTrue(rendererSource.contains("textures/entity/crazy_zombie.png"));
@@ -171,18 +199,30 @@ class CrazyZombieResourcesTest {
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "tags", "worldgen", "biome", "spawns_crazy_zombie.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "loot_table", "entities", "crazy_zombie.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "loot_tables", "entities", "crazy_zombie.json");
+        assertMissingProjectFile("app-neoforge", "src", "main", "resources", "assets", "cavernreborn", "textures", "particle", "crazy_mob_0.png");
     }
 
     @Test
-    void crazyZombieResourcesCoverLangSpawnEggModelAndTextureClasspath() throws IOException {
+    void crazyZombieResourcesCoverLangSpawnEggModelParticleJsonAndTextureClasspath() throws IOException {
         JsonObject lang = readJsonResource("assets/cavernreborn/lang/en_us.json");
         JsonObject spawnEggModel = readJsonResource("assets/cavernreborn/models/item/crazy_zombie_spawn_egg.json");
+        JsonObject particleDescription = readJsonResource("assets/cavernreborn/particles/crazy_mob.json");
 
         assertEquals("Crazy Zombie", lang.get("entity.cavernreborn.crazy_zombie").getAsString());
         assertEquals("Crazy Zombie Spawn Egg", lang.get("item.cavernreborn.crazy_zombie_spawn_egg").getAsString());
         assertEquals("minecraft:item/template_spawn_egg", spawnEggModel.get("parent").getAsString());
+        assertEquals(8, particleDescription.getAsJsonArray("textures").size());
+        assertEquals("minecraft:generic_0", particleDescription.getAsJsonArray("textures").get(0).getAsString());
+        assertEquals("minecraft:generic_1", particleDescription.getAsJsonArray("textures").get(1).getAsString());
+        assertEquals("minecraft:generic_2", particleDescription.getAsJsonArray("textures").get(2).getAsString());
+        assertEquals("minecraft:generic_3", particleDescription.getAsJsonArray("textures").get(3).getAsString());
+        assertEquals("minecraft:generic_4", particleDescription.getAsJsonArray("textures").get(4).getAsString());
+        assertEquals("minecraft:generic_5", particleDescription.getAsJsonArray("textures").get(5).getAsString());
+        assertEquals("minecraft:generic_6", particleDescription.getAsJsonArray("textures").get(6).getAsString());
+        assertEquals("minecraft:generic_7", particleDescription.getAsJsonArray("textures").get(7).getAsString());
 
         assertClassPathOrigin(resourceUrl("assets/cavernreborn/models/item/crazy_zombie_spawn_egg.json"), "assets/cavernreborn/models/item/crazy_zombie_spawn_egg.json");
+        assertClassPathOrigin(resourceUrl("assets/cavernreborn/particles/crazy_mob.json"), "assets/cavernreborn/particles/crazy_mob.json");
         assertClassPathOrigin(resourceUrl("assets/cavernreborn/textures/entity/crazy_zombie.png"), "assets/cavernreborn/textures/entity/crazy_zombie.png");
         assertMissingResource("data/cavernreborn/neoforge/biome_modifier/crazy_zombie_spawns.json");
         assertMissingResource("data/cavernreborn/tags/worldgen/biome/spawns_crazy_zombie.json");

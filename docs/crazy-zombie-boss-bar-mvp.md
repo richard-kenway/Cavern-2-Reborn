@@ -89,7 +89,7 @@ It restores only the legacy Crazy Zombie boss bar / sky-darkening branch. It doe
 - damage behavior remains unchanged and is documented in `docs/crazy-zombie-damage-behavior-mvp.md`
 - loot behavior remains unchanged and is documented in `docs/crazy-zombie-loot-mvp.md`
 - natural spawning remains deferred and is documented in `docs/crazy-zombie-natural-spawn-absent-or-deferred.md`
-- particle trail remains a separate client-only follow-up
+- particle trail is now restored separately in `docs/crazy-zombie-particle-trail-mvp.md`
 - no custom packets were added
 - no custom AI was added
 - no Cavenia content was added
@@ -103,12 +103,12 @@ It restores only the legacy Crazy Zombie boss bar / sky-darkening branch. It doe
   - percent updates from `health / maxHealth`
   - the exact `20.0D` visibility threshold
   - the exact `30.0D` darken-sky threshold
-  - continued absence of particle code, custom packets and natural-spawn wiring
+  - continued absence of custom packets and natural-spawn wiring on the boss-event branch
 - Documentation tests pin:
   - the exact legacy boss-event references
   - the single global boss event ambiguity note
   - the explicit copy-not-inherit mapping
-  - the separate particle follow-up boundary
+  - the separate particle-trail document boundary
 - NeoForge GameTest runtime smoke covers:
   - crazy zombie boss-event wiring smoke
   - crazy zombie boss-bar color/overlay smoke
@@ -119,7 +119,6 @@ It restores only the legacy Crazy Zombie boss bar / sky-darkening branch. It doe
 
 ## Still Out Of Scope
 
-- Crazy Zombie particle trail
 - Crazy Zombie natural spawning
 - Crazy Zombie custom loot beyond the restored inherited orb-drop branch
 - Crazy Zombie custom AI

@@ -48,6 +48,7 @@ The other crazy variants remain follow-up candidates for narrower slices:
 - The inherited legacy fall/fire damage behavior is now restored explicitly on Reborn `CrazyZombie` and documented in `docs/crazy-zombie-damage-behavior-mvp.md`.
 - The legacy Crazy Zombie knockback-on-hit follow-up is now restored explicitly on Reborn `CrazyZombie` and documented in `docs/crazy-zombie-knockback-on-hit-mvp.md`.
 - The legacy Crazy Zombie boss bar / sky-darkening follow-up is now restored explicitly on Reborn `CrazyZombie` and documented in `docs/crazy-zombie-boss-bar-mvp.md`.
+- The legacy client-only Crazy Zombie particle-trail follow-up is now restored explicitly on Reborn `CrazyZombie` and documented in `docs/crazy-zombie-particle-trail-mvp.md`.
 - The mob keeps vanilla zombie AI and general hostile behavior for this baseline slice.
 
 ## Attributes
@@ -99,7 +100,6 @@ The other crazy variants remain follow-up candidates for narrower slices:
 This baseline does not yet port the legacy crazy-specific branches:
 
 - Cavenia-only crazy-roster natural spawning
-- crazy particle trail
 - max-spawn-in-chunk / boss classification follow-up
 - custom loot beyond the restored inherited orb-drop branch
 
@@ -118,6 +118,7 @@ This baseline does not yet port the legacy crazy-specific branches:
   - separate legacy damage-behavior smoke documented in `docs/crazy-zombie-damage-behavior-mvp.md`
   - separate legacy knockback-on-hit smoke documented in `docs/crazy-zombie-knockback-on-hit-mvp.md`
   - separate legacy boss-bar / sky-darkening smoke documented in `docs/crazy-zombie-boss-bar-mvp.md`
+  - separate legacy particle-trail source/runtime-boundary smoke documented in `docs/crazy-zombie-particle-trail-mvp.md`
 
 ## Out Of Scope
 
@@ -129,7 +130,6 @@ This baseline does not yet port the legacy crazy-specific branches:
 - custom loot beyond the restored inherited orb-drop branch
 - custom AI
 - special attacks and remaining boss-like behavior beyond the restored boss-event branch
-- crazy particle trail
 - Cavenia
 - Cavenia remains out of scope.
 - magic-book or spell systems
