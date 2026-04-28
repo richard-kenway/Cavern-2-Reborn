@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 class CrazyZombieDocumentationTest {
     private static final Path README = resolveProjectFile("README.md");
     private static final Path BASELINE_DOC = resolveProjectFile("docs", "crazy-zombie-baseline-mvp.md");
+    private static final Path BOSS_BAR_DOC = resolveProjectFile("docs", "crazy-zombie-boss-bar-mvp.md");
     private static final Path DAMAGE_BEHAVIOR_DOC = resolveProjectFile("docs", "crazy-zombie-damage-behavior-mvp.md");
     private static final Path KNOCKBACK_DOC = resolveProjectFile("docs", "crazy-zombie-knockback-on-hit-mvp.md");
     private static final Path LOOT_DOC = resolveProjectFile("docs", "crazy-zombie-loot-mvp.md");
@@ -32,6 +33,8 @@ class CrazyZombieDocumentationTest {
         assertTrue(readme.contains("inherited legacy fall-damage reduction and fire-damage immunity behavior"));
         assertTrue(readme.contains("docs/crazy-zombie-knockback-on-hit-mvp.md"));
         assertTrue(readme.contains("legacy roll-gated melee-knockback branch"));
+        assertTrue(readme.contains("docs/crazy-zombie-boss-bar-mvp.md"));
+        assertTrue(readme.contains("legacy blue progress boss bar and sky-darkening boss-event branch"));
         assertTrue(readme.contains("docs/crazy-zombie-natural-spawn-absent-or-deferred.md"));
         assertTrue(readme.contains("Cavenia-only crazy-roster provider/config branch"));
         assertTrue(readme.contains("crazy skeleton, crazy creeper and crazy spider remain follow-up candidates"));
@@ -56,6 +59,7 @@ class CrazyZombieDocumentationTest {
         assertTrue(doc.contains("does not extend the current Reborn `CavenicZombie` baseline"));
         assertTrue(doc.contains("docs/crazy-zombie-damage-behavior-mvp.md"));
         assertTrue(doc.contains("docs/crazy-zombie-knockback-on-hit-mvp.md"));
+        assertTrue(doc.contains("docs/crazy-zombie-boss-bar-mvp.md"));
         assertTrue(doc.contains("max health: `2000.0`"));
         assertTrue(doc.contains("generic.max_health"));
         assertTrue(doc.contains("cap"));
@@ -78,7 +82,7 @@ class CrazyZombieDocumentationTest {
         assertTrue(doc.contains("The inherited legacy orb-drop follow-up is now documented in `docs/crazy-zombie-loot-mvp.md`."));
         assertTrue(doc.contains("The separate inherited damage behavior follow-up is documented in `docs/crazy-zombie-damage-behavior-mvp.md`."));
         assertTrue(doc.contains("The legacy Crazy Zombie knockback-on-hit follow-up is now restored explicitly on Reborn `CrazyZombie` and documented in `docs/crazy-zombie-knockback-on-hit-mvp.md`."));
-        assertTrue(doc.contains("boss bar / sky-darkening"));
+        assertTrue(doc.contains("The legacy Crazy Zombie boss bar / sky-darkening follow-up is now restored explicitly on Reborn `CrazyZombie` and documented in `docs/crazy-zombie-boss-bar-mvp.md`."));
         assertTrue(doc.contains("crazy particle trail"));
         assertTrue(doc.contains("Crazy Skeleton remains a follow-up because it depends on the legacy `EntityAIAttackCavenicBow` path"));
         assertTrue(doc.contains("Crazy Creeper remains a follow-up because its direct legacy identity depends on a huge fuse/explosion branch"));
@@ -103,12 +107,13 @@ class CrazyZombieDocumentationTest {
         assertTrue(doc.contains("does not check `wasRecentlyHit`"));
         assertTrue(doc.contains("vanilla zombie loot table as its baseline"));
         assertTrue(doc.contains("docs/crazy-zombie-knockback-on-hit-mvp.md"));
+        assertTrue(doc.contains("docs/crazy-zombie-boss-bar-mvp.md"));
         assertTrue(doc.contains("`CrazyZombieLootPolicy.ORB_DROP_ROLL_BOUND = 8`"));
         assertTrue(doc.contains("`CrazyZombieLootEvents`"));
         assertTrue(doc.contains("intentionally extends vanilla `Zombie`, not Reborn `CavenicZombie`"));
         assertTrue(doc.contains("copies only the confirmed inherited loot branch explicitly onto `CrazyZombie`"));
         assertTrue(doc.contains("natural spawning remains explicitly deferred"));
-        assertTrue(doc.contains("boss bar / sky-darkening"));
+        assertTrue(doc.contains("boss bar / sky-darkening behavior remains documented separately"));
         assertTrue(doc.contains("particle trail"));
         assertTrue(doc.contains("Crazy Skeleton / Crazy Creeper / Crazy Spider"));
         assertTrue(doc.contains("Cavenia"));
@@ -131,14 +136,52 @@ class CrazyZombieDocumentationTest {
         assertTrue(doc.contains("intentionally extends vanilla `Zombie`, not Reborn `CavenicZombie`"));
         assertTrue(doc.contains("copies only the confirmed incoming-damage behavior explicitly onto `CrazyZombie`"));
         assertTrue(doc.contains("docs/crazy-zombie-knockback-on-hit-mvp.md"));
+        assertTrue(doc.contains("docs/crazy-zombie-boss-bar-mvp.md"));
         assertTrue(doc.contains("lava and burning damage"));
         assertTrue(doc.contains("Generic non-fire, non-fall damage remains vanilla-like."));
-        assertTrue(doc.contains("boss bar / sky-darkening"));
+        assertTrue(doc.contains("boss bar / sky-darkening behavior remains documented separately"));
         assertTrue(doc.contains("particle trail"));
         assertTrue(doc.contains("runtime effective max health remains clamped to `1024.0`"));
         assertTrue(doc.contains("natural spawning remains explicitly deferred"));
         assertTrue(doc.contains("Crazy Skeleton / Crazy Creeper / Crazy Spider"));
         assertTrue(doc.contains("Cavenia"));
+    }
+
+    @Test
+    void crazyZombieBossBarDocStatesLegacyBossEventMappingBoundariesAndTests() throws IOException {
+        String doc = Files.readString(BOSS_BAR_DOC);
+
+        assertTrue(doc.contains("`cavern.entity.monster.EntityCrazyZombie`"));
+        assertTrue(doc.contains("`cavern.entity.monster.EntityCavenicZombie`"));
+        assertTrue(doc.contains("`BossInfoServer`"));
+        assertTrue(doc.contains("`BossInfo.Color.BLUE`"));
+        assertTrue(doc.contains("`BossInfo.Overlay.PROGRESS`"));
+        assertTrue(doc.contains("`EntityCrazyZombie#isNonBoss()` returns `false`"));
+        assertTrue(doc.contains("`updateAITasks()`"));
+        assertTrue(doc.contains("`bossInfo.setDarkenSky(!canSee || distance < 30.0D)`"));
+        assertTrue(doc.contains("`bossInfo.setVisible(canSee)`"));
+        assertTrue(doc.contains("`bossInfo.setPercent(getHealth() / getMaxHealth())`"));
+        assertTrue(doc.contains("within `20.0D`"));
+        assertTrue(doc.contains("`addTrackingPlayer(...)`"));
+        assertTrue(doc.contains("`removeTrackingPlayer(...)`"));
+        assertTrue(doc.contains("`readEntityFromNBT(...)`"));
+        assertTrue(doc.contains("`setCustomNameTag(...)`"));
+        assertTrue(doc.contains("`ServerBossEvent`"));
+        assertTrue(doc.contains("`BossEvent.BossBarColor.BLUE`"));
+        assertTrue(doc.contains("`BossEvent.BossBarOverlay.PROGRESS`"));
+        assertTrue(doc.contains("`startSeenByPlayer(ServerPlayer player)`"));
+        assertTrue(doc.contains("`stopSeenByPlayer(ServerPlayer player)`"));
+        assertTrue(doc.contains("`customServerAiStep()`"));
+        assertTrue(doc.contains("`shouldShowLegacyBossBarTo(ServerPlayer player)`"));
+        assertTrue(doc.contains("`shouldDarkenLegacyBossSkyFor(ServerPlayer player)`"));
+        assertTrue(doc.contains("`updateLegacyBossEvent()`"));
+        assertTrue(doc.contains("single global boss event"));
+        assertTrue(doc.contains("keeps `CrazyZombie extends Zombie`"));
+        assertTrue(doc.contains("particle trail remains a separate client-only follow-up"));
+        assertTrue(doc.contains("knockback-on-hit remains unchanged"));
+        assertTrue(doc.contains("damage behavior remains unchanged"));
+        assertTrue(doc.contains("loot behavior remains unchanged"));
+        assertTrue(doc.contains("natural spawning remains deferred"));
     }
 
     @Test
@@ -170,9 +213,9 @@ class CrazyZombieDocumentationTest {
         assertTrue(doc.contains("`getLegacyKnockbackPower(int triggerRoll, int magnitudeRoll)`"));
         assertTrue(doc.contains("`tryApplyLegacyKnockback(Entity target, int power)`"));
         assertTrue(doc.contains("keeps `CrazyZombie extends Zombie`"));
-        assertTrue(doc.contains("boss bar and sky-darkening path is a separate boss-event family"));
-        assertTrue(doc.contains("particle trail is a separate client-only visual system"));
-        assertTrue(doc.contains("Crazy Zombie boss bar / sky-darkening"));
+        assertTrue(doc.contains("boss bar and sky-darkening path is now restored separately"));
+        assertTrue(doc.contains("docs/crazy-zombie-boss-bar-mvp.md"));
+        assertTrue(doc.contains("particle trail is still a separate client-only visual system"));
         assertTrue(doc.contains("Crazy Zombie particle trail"));
         assertTrue(doc.contains("Crazy Skeleton / Crazy Creeper / Crazy Spider"));
     }
@@ -199,6 +242,7 @@ class CrazyZombieDocumentationTest {
         assertTrue(doc.contains("docs/crazy-zombie-loot-mvp.md"));
         assertTrue(doc.contains("docs/crazy-zombie-damage-behavior-mvp.md"));
         assertTrue(doc.contains("docs/crazy-zombie-knockback-on-hit-mvp.md"));
+        assertTrue(doc.contains("docs/crazy-zombie-boss-bar-mvp.md"));
         assertTrue(doc.contains("loot follow-up stays explicit and independent from natural spawning"));
         assertTrue(doc.contains("damage-behavior follow-up stays explicit and independent from natural spawning"));
         assertTrue(doc.contains("weighted crazy-roster switching across Crazy Skeleton, Crazy Creeper, Crazy Zombie and Crazy Spider"));
@@ -221,11 +265,17 @@ class CrazyZombieDocumentationTest {
         assertTrue(doc.contains("crazy zombie generic-damage baseline smoke"));
         assertTrue(doc.contains("crazy zombie legacy knockback-on-hit melee smoke"));
         assertTrue(doc.contains("crazy zombie deterministic legacy knockback helper smoke"));
+        assertTrue(doc.contains("crazy zombie boss-event wiring smoke"));
+        assertTrue(doc.contains("crazy zombie boss-bar color/overlay smoke"));
+        assertTrue(doc.contains("crazy zombie boss-percent update smoke"));
+        assertTrue(doc.contains("crazy zombie tracked-player add/remove smoke"));
+        assertTrue(doc.contains("crazy zombie sky-darkening smoke"));
         assertTrue(doc.contains("explicit Crazy Zombie natural-spawn deferred boundary"));
         assertTrue(doc.contains("Cavenia-only crazy-roster provider/config path"));
         assertTrue(doc.contains("actual Crazy Zombie renderer/model visual feel"));
         assertTrue(doc.contains("actual long-running Crazy Zombie fire/lava gameplay feel"));
-        assertTrue(doc.contains("actual Crazy Zombie boss-bar and particle feel"));
+        assertTrue(doc.contains("actual Crazy Zombie client boss-bar visual feel"));
+        assertTrue(doc.contains("Crazy Zombie particle trail remains out of scope"));
         assertTrue(doc.contains("actual long-running Crazy Zombie melee-knockback feel beyond the deterministic helper/runtime smoke"));
         assertTrue(doc.contains("Crazy Zombie natural spawning, because the inspected legacy path is tied to the old Cavenia-only crazy-roster provider/config branch"));
         assertTrue(doc.contains("actual long-run Crazy Zombie orb-drop rate balance"));

@@ -54,6 +54,7 @@ This note documents the inspected legacy natural-spawn path for `cavernreborn:cr
 - The separate inherited loot follow-up is documented in `docs/crazy-zombie-loot-mvp.md`.
 - This natural-spawn deferral does not change the separate inherited damage follow-up documented in `docs/crazy-zombie-damage-behavior-mvp.md`.
 - The separate knockback-on-hit follow-up is documented in `docs/crazy-zombie-knockback-on-hit-mvp.md`.
+- The separate boss bar / sky-darkening follow-up is documented in `docs/crazy-zombie-boss-bar-mvp.md`.
 
 ## Testing
 
@@ -74,7 +75,7 @@ This note documents the inspected legacy natural-spawn path for `cavernreborn:cr
 - Crazy Zombie custom loot beyond the restored inherited orb-drop branch
 - Crazy Zombie damage behavior is handled separately in `docs/crazy-zombie-damage-behavior-mvp.md`
 - Crazy Zombie knockback-on-hit behavior is handled separately in `docs/crazy-zombie-knockback-on-hit-mvp.md`
-- boss bar / sky-darkening
+- Crazy Zombie boss bar / sky-darkening behavior is handled separately in `docs/crazy-zombie-boss-bar-mvp.md`
 - particle trail
 - custom AI
 - magic-book or spell systems

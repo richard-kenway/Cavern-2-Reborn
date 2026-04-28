@@ -47,6 +47,7 @@ The other crazy variants remain follow-up candidates for narrower slices:
 - Legacy `EntityCrazyZombie` extends `EntityCavenicZombie`, but this baseline does not extend the current Reborn `CavenicZombie` baseline because that would silently pull in staged Cavenic orb-drop and damage behavior before those crazy follow-ups are inspected honestly.
 - The inherited legacy fall/fire damage behavior is now restored explicitly on Reborn `CrazyZombie` and documented in `docs/crazy-zombie-damage-behavior-mvp.md`.
 - The legacy Crazy Zombie knockback-on-hit follow-up is now restored explicitly on Reborn `CrazyZombie` and documented in `docs/crazy-zombie-knockback-on-hit-mvp.md`.
+- The legacy Crazy Zombie boss bar / sky-darkening follow-up is now restored explicitly on Reborn `CrazyZombie` and documented in `docs/crazy-zombie-boss-bar-mvp.md`.
 - The mob keeps vanilla zombie AI and general hostile behavior for this baseline slice.
 
 ## Attributes
@@ -98,7 +99,6 @@ The other crazy variants remain follow-up candidates for narrower slices:
 This baseline does not yet port the legacy crazy-specific branches:
 
 - Cavenia-only crazy-roster natural spawning
-- boss bar / sky-darkening visibility behavior
 - crazy particle trail
 - max-spawn-in-chunk / boss classification follow-up
 - custom loot beyond the restored inherited orb-drop branch
@@ -117,6 +117,7 @@ This baseline does not yet port the legacy crazy-specific branches:
   - separate inherited loot-behavior smoke documented in `docs/crazy-zombie-loot-mvp.md`
   - separate legacy damage-behavior smoke documented in `docs/crazy-zombie-damage-behavior-mvp.md`
   - separate legacy knockback-on-hit smoke documented in `docs/crazy-zombie-knockback-on-hit-mvp.md`
+  - separate legacy boss-bar / sky-darkening smoke documented in `docs/crazy-zombie-boss-bar-mvp.md`
 
 ## Out Of Scope
 
@@ -127,7 +128,8 @@ This baseline does not yet port the legacy crazy-specific branches:
 - natural spawning
 - custom loot beyond the restored inherited orb-drop branch
 - custom AI
-- special attacks and boss behavior
+- special attacks and remaining boss-like behavior beyond the restored boss-event branch
+- crazy particle trail
 - Cavenia
 - Cavenia remains out of scope.
 - magic-book or spell systems

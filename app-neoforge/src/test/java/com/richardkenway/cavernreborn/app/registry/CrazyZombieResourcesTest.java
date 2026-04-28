@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CrazyZombieResourcesTest {
     @Test
-    void crazyZombieRegistersWithDedicatedEntitySpawnEggRendererAndBoundedDamageLootAndKnockbackFollowUps() throws IOException {
+    void crazyZombieRegistersWithDedicatedEntitySpawnEggRendererAndBoundedDamageLootKnockbackAndBossBarFollowUps() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -92,6 +92,31 @@ class CrazyZombieResourcesTest {
         assertTrue(entitySource.contains("public static final int LEGACY_KNOCKBACK_BASE_POWER = 3;"));
         assertTrue(entitySource.contains("public static final float LEGACY_KNOCKBACK_STRENGTH_MULTIPLIER = 0.5F;"));
         assertTrue(entitySource.contains("public static final double LEGACY_NON_LIVING_KNOCKBACK_VERTICAL_BOOST = 0.1D;"));
+        assertTrue(entitySource.contains("public static final double LEGACY_BOSS_BAR_VISIBILITY_DISTANCE = 20.0D;"));
+        assertTrue(entitySource.contains("public static final double LEGACY_BOSS_BAR_DARKEN_SKY_DISTANCE = 30.0D;"));
+        assertTrue(entitySource.contains("private final ServerBossEvent legacyBossEvent = new ServerBossEvent("));
+        assertTrue(entitySource.contains("BossEvent.BossBarColor.BLUE"));
+        assertTrue(entitySource.contains("BossEvent.BossBarOverlay.PROGRESS"));
+        assertTrue(entitySource.contains("public void readAdditionalSaveData(CompoundTag compound)"));
+        assertTrue(entitySource.contains("if (this.hasCustomName()) {"));
+        assertTrue(entitySource.contains("this.legacyBossEvent.setName(this.getDisplayName());"));
+        assertTrue(entitySource.contains("public void setCustomName(@Nullable Component name)"));
+        assertTrue(entitySource.contains("protected void customServerAiStep()"));
+        assertTrue(entitySource.contains("this.updateLegacyBossEvent();"));
+        assertTrue(entitySource.contains("public void startSeenByPlayer(ServerPlayer player)"));
+        assertTrue(entitySource.contains("this.legacyBossEvent.addPlayer(player);"));
+        assertTrue(entitySource.contains("public void stopSeenByPlayer(ServerPlayer player)"));
+        assertTrue(entitySource.contains("this.legacyBossEvent.removePlayer(player);"));
+        assertTrue(entitySource.contains("public ServerBossEvent getLegacyCrazyBossEventForTests()"));
+        assertTrue(entitySource.contains("public boolean shouldShowLegacyBossBarTo(ServerPlayer player)"));
+        assertTrue(entitySource.contains("this.hasLineOfSight(player) && this.distanceTo(player) < LEGACY_BOSS_BAR_VISIBILITY_DISTANCE"));
+        assertTrue(entitySource.contains("public boolean shouldDarkenLegacyBossSkyFor(ServerPlayer player)"));
+        assertTrue(entitySource.contains("return !canSee || distance < LEGACY_BOSS_BAR_DARKEN_SKY_DISTANCE;"));
+        assertTrue(entitySource.contains("public void updateLegacyBossEvent()"));
+        assertTrue(entitySource.contains("for (ServerPlayer player : this.legacyBossEvent.getPlayers())"));
+        assertTrue(entitySource.contains("this.legacyBossEvent.setDarkenScreen(!canSee || distance < LEGACY_BOSS_BAR_DARKEN_SKY_DISTANCE);"));
+        assertTrue(entitySource.contains("this.legacyBossEvent.setVisible(canSee);"));
+        assertTrue(entitySource.contains("this.legacyBossEvent.setProgress(this.getHealth() / this.getMaxHealth());"));
         assertTrue(entitySource.contains("public boolean doHurtTarget(Entity target)"));
         assertTrue(entitySource.contains("int triggerRoll = random.nextInt(LEGACY_KNOCKBACK_TRIGGER_ROLL_BOUND);"));
         assertTrue(entitySource.contains("random.nextInt(LEGACY_KNOCKBACK_POWER_VARIANT_COUNT) + LEGACY_KNOCKBACK_BASE_POWER"));
@@ -111,10 +136,9 @@ class CrazyZombieResourcesTest {
         assertFalse(entitySource.contains("onUpdate()"));
         assertFalse(entitySource.contains("updateAITasks()"));
         assertFalse(entitySource.contains("attackEntityAsMob("));
-        assertFalse(entitySource.contains("BossEvent"));
-        assertFalse(entitySource.contains("ServerBossEvent"));
-        assertFalse(entitySource.contains("setDarkenSky"));
         assertFalse(entitySource.contains("ParticleCrazyMob"));
+        assertFalse(entitySource.contains("addParticle("));
+        assertFalse(entitySource.contains("ClientboundBossEventPacket"));
         assertFalse(entitySource.contains("dropLoot("));
         assertFalse(entitySource.contains("ItemMagicBook"));
         assertFalse(entitySource.contains("magic_book"));

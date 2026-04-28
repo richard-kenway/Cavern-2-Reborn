@@ -86,9 +86,13 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -234,6 +238,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CRAZY_ZOMBIE_DAMAGE_ANCHOR = new BlockPos(5536, 96, 0);
     private static final BlockPos CRAZY_ZOMBIE_LOOT_ANCHOR = new BlockPos(5632, 96, 0);
     private static final BlockPos CRAZY_ZOMBIE_KNOCKBACK_ANCHOR = new BlockPos(5728, 96, 0);
+    private static final BlockPos CRAZY_ZOMBIE_BOSS_BAR_ANCHOR = new BlockPos(5824, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -3791,16 +3796,198 @@ public final class CavernSpecialOreGameTests {
             biomes.getTag(spawnTag).isPresent(),
             "Expected crazy zombie knockback follow-up to keep the spawn biome tag absent at runtime"
         );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazyZombieLegacyBossBarWiresAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_ZOMBIE_BOSS_BAR_ANCHOR;
+        BlockPos playerPos = origin.south(2);
+        BlockPos wallPos = origin.south(1);
+        BlockPos absolutePlayerPos = helper.absolutePos(playerPos);
+        BlockPos absoluteWallPos = helper.absolutePos(wallPos);
+
+        resetMiningArea(level, origin, 16.0D);
+        prepareCombatPlatform(level, origin);
+        prepareCombatPlatform(level, playerPos);
+
+        CrazyZombie zombie = spawnLivingEntity(helper, ModRegistries.CRAZY_ZOMBIE.get(), origin);
+        clearEquipment(zombie);
+        zombie.updateLegacyBossEvent();
+
+        ServerBossEvent bossEvent = zombie.getLegacyCrazyBossEventForTests();
+        helper.assertTrue(bossEvent != null, "Expected crazy zombie boss follow-up to expose a ServerBossEvent");
+        helper.assertTrue(bossEvent.getColor() == BossEvent.BossBarColor.BLUE, "Expected crazy zombie boss bar color to map to legacy blue");
+        helper.assertTrue(
+            bossEvent.getOverlay() == BossEvent.BossBarOverlay.PROGRESS,
+            "Expected crazy zombie boss bar overlay to map to the legacy progress style"
+        );
+        helper.assertTrue(
+            Math.abs(bossEvent.getProgress() - 1.0F) < 1.0E-6F,
+            "Expected fresh crazy zombie boss progress to start at full health"
+        );
+
+        ServerPlayer trackedPlayer = helper.makeMockServerPlayerInLevel();
+        trackedPlayer.teleportTo(level, absolutePlayerPos.getX() + 0.5D, absolutePlayerPos.getY() + 1.0D, absolutePlayerPos.getZ() + 0.5D, EnumSet.noneOf(RelativeMovement.class), 0.0F, 0.0F);
+        zombie.startSeenByPlayer(trackedPlayer);
+        helper.assertTrue(
+            bossEvent.getPlayers().contains(trackedPlayer),
+            "Expected startSeenByPlayer to register the tracked player on the crazy zombie boss event"
+        );
+
+        zombie.updateLegacyBossEvent();
+        helper.assertTrue(
+            zombie.shouldShowLegacyBossBarTo(trackedPlayer),
+            "Expected a nearby tracked player with clear line of sight to satisfy the legacy boss-bar visibility rule"
+        );
+        helper.assertTrue(
+            zombie.shouldDarkenLegacyBossSkyFor(trackedPlayer),
+            "Expected the legacy Crazy Zombie sky-darkening helper to stay active for a nearby visible tracked player"
+        );
+        helper.assertTrue(bossEvent.isVisible(), "Expected the crazy zombie boss event to stay visible for a nearby tracked player");
+        helper.assertTrue(bossEvent.shouldDarkenScreen(), "Expected the legacy Crazy Zombie boss event to keep darken-screen enabled");
+
+        float damage = 64.0F;
+        helper.assertTrue(
+            zombie.hurt(level.damageSources().generic(), damage),
+            "Expected boss-event coverage to leave generic Crazy Zombie damage intake working"
+        );
+        zombie.updateLegacyBossEvent();
+        helper.assertTrue(
+            Math.abs(bossEvent.getProgress() - (zombie.getHealth() / zombie.getMaxHealth())) < 1.0E-6F,
+            "Expected crazy zombie boss progress to track the current health-to-max-health ratio"
+        );
+
+        zombie.setCustomName(Component.literal("Legacy Boss Name"));
+        helper.assertTrue(
+            "Legacy Boss Name".equals(bossEvent.getName().getString()),
+            "Expected the crazy zombie boss-event name to follow setCustomName"
+        );
+
+        placeVisibilityWall(level, absoluteWallPos);
+        zombie.updateLegacyBossEvent();
         helper.assertFalse(
-            java.util.Arrays.stream(CrazyZombie.class.getDeclaredFields())
-                .anyMatch(field -> field.getType().getSimpleName().contains("BossEvent")),
-            "Expected crazy zombie knockback follow-up to keep boss-bar state out of the entity class"
+            zombie.shouldShowLegacyBossBarTo(trackedPlayer),
+            "Expected the legacy boss-bar helper to fail once a solid wall blocks line of sight"
+        );
+        helper.assertTrue(
+            zombie.shouldDarkenLegacyBossSkyFor(trackedPlayer),
+            "Expected the legacy Crazy Zombie sky-darkening helper to stay active when line of sight is blocked"
         );
         helper.assertFalse(
+            bossEvent.isVisible(),
+            "Expected the crazy zombie boss event to hide itself when the tracked player is no longer visible"
+        );
+        helper.assertTrue(
+            bossEvent.shouldDarkenScreen(),
+            "Expected the legacy Crazy Zombie boss event to keep darken-screen true under the inspected blocked-visibility rule"
+        );
+
+        zombie.stopSeenByPlayer(trackedPlayer);
+        helper.assertFalse(
+            bossEvent.getPlayers().contains(trackedPlayer),
+            "Expected stopSeenByPlayer to remove the tracked player from the crazy zombie boss event"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazyZombieLegacyBossBarKeepsExistingSlicesStableAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_ZOMBIE_BOSS_BAR_ANCHOR.north(12);
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceKey<BiomeModifier> crazyZombieSpawnModifier = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_zombie_spawns")
+        );
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_crazy_zombie"));
+        CrazyZombieLootEvents lootEvents = new CrazyZombieLootEvents();
+        List<ItemEntity> drops = new ArrayList<>();
+
+        resetMiningArea(level, origin, 16.0D);
+        prepareCombatPlatform(level, origin);
+
+        CrazyZombie zombie = spawnLivingEntity(helper, ModRegistries.CRAZY_ZOMBIE.get(), origin);
+        clearEquipment(zombie);
+        faceEntity(zombie, 0.0F);
+        zombie.updateLegacyBossEvent();
+
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazyZombie.class.getDeclaredFields()).anyMatch(field -> field.getType() == ServerBossEvent.class),
+            "Expected crazy zombie boss-bar follow-up to keep the ServerBossEvent field on the entity class"
+        );
+        helper.assertTrue(
             java.util.Arrays.stream(CrazyZombie.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("tick") || name.equals("aiStep") || name.equals("customServerAiStep") || name.equals("startSeenByPlayer") || name.equals("stopSeenByPlayer")),
-            "Expected crazy zombie knockback follow-up to keep particle and boss-tracking tick hooks out of the entity class"
+                .anyMatch(name -> name.equals("customServerAiStep") || name.equals("startSeenByPlayer") || name.equals("stopSeenByPlayer")),
+            "Expected crazy zombie boss-bar follow-up to keep the tracked-player boss-event hooks on the entity class"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazyZombie.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("aiStep") || name.equals("onUpdate")),
+            "Expected crazy zombie boss-bar follow-up to avoid adding a client particle tick override"
+        );
+        helper.assertTrue(
+            zombie.getLegacyCrazyBossEventForTests().getColor() == BossEvent.BossBarColor.BLUE
+                && zombie.getLegacyCrazyBossEventForTests().getOverlay() == BossEvent.BossBarOverlay.PROGRESS,
+            "Expected crazy zombie boss-bar follow-up to keep the legacy blue progress boss-event styling"
+        );
+        helper.assertTrue(
+            zombie.getLootTable().equals(EntityType.ZOMBIE.getDefaultLootTable()),
+            "Expected crazy zombie boss-bar follow-up to keep the vanilla zombie loot-table baseline"
+        );
+        helper.assertTrue(
+            CrazyZombieLootPolicy.ORB_DROP_ROLL_BOUND == 8,
+            "Expected crazy zombie boss-bar follow-up to keep the inherited 1/8 orb-drop roll bound"
+        );
+        helper.assertTrue(
+            lootEvents.tryAppendLegacyOrbDrop(zombie, drops, 0),
+            "Expected crazy zombie boss-bar follow-up to keep the winning orb-drop branch available"
+        );
+        helper.assertTrue(
+            drops.size() == 1 && drops.getFirst().getItem().is(ModRegistries.CAVENIC_ORB.get()),
+            "Expected crazy zombie boss-bar follow-up to keep appending exactly one cavenic orb on the winning roll"
+        );
+        helper.assertTrue(
+            Math.abs(zombie.getMaxHealth() - 1024.0D) < 1.0E-6D,
+            "Expected crazy zombie boss-bar follow-up to keep the modern 1024.0 runtime max-health clamp"
+        );
+        helper.assertFalse(
+            zombie.hurt(level.damageSources().lava(), 4.0F),
+            "Expected crazy zombie boss-bar follow-up to keep fire-tagged damage rejection intact"
+        );
+        helper.assertTrue(
+            zombie.hurt(level.damageSources().fall(), 10.0F),
+            "Expected crazy zombie boss-bar follow-up to keep fall damage routed through the legacy multiplier hook"
+        );
+        helper.assertTrue(
+            Math.abs(zombie.getHealth() - (zombie.getMaxHealth() - (10.0F * CrazyZombie.LEGACY_FALL_DAMAGE_MULTIPLIER))) < 1.0E-6F,
+            "Expected crazy zombie boss-bar follow-up to keep the legacy 0.35 fall multiplier intact"
+        );
+        helper.assertTrue(
+            CrazyZombie.LEGACY_KNOCKBACK_TRIGGER_ROLL_BOUND == 5
+                && CrazyZombie.LEGACY_KNOCKBACK_POWER_VARIANT_COUNT == 3
+                && CrazyZombie.LEGACY_KNOCKBACK_BASE_POWER == 3
+                && Math.abs(CrazyZombie.LEGACY_KNOCKBACK_STRENGTH_MULTIPLIER - 0.5F) < 1.0E-6F
+                && Math.abs(CrazyZombie.LEGACY_NON_LIVING_KNOCKBACK_VERTICAL_BOOST - 0.1D) < 1.0E-6D,
+            "Expected crazy zombie boss-bar follow-up to keep the legacy knockback constants stable"
+        );
+        helper.assertTrue(
+            CrazyZombie.getLegacyKnockbackPower(0, 0) == 3 && CrazyZombie.getLegacyKnockbackPower(1, 0) == 0,
+            "Expected crazy zombie boss-bar follow-up to keep the deterministic knockback helper mapping intact"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_ZOMBIE.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected crazy zombie boss-bar follow-up to keep spawn placement unregistered"
+        );
+        helper.assertFalse(
+            biomeModifiers.containsKey(crazyZombieSpawnModifier),
+            "Expected crazy zombie boss-bar follow-up to keep the biome modifier absent at runtime"
+        );
+        helper.assertFalse(
+            biomes.getTag(spawnTag).isPresent(),
+            "Expected crazy zombie boss-bar follow-up to keep the spawn biome tag absent at runtime"
         );
         helper.succeed();
     }
@@ -6156,6 +6343,14 @@ public final class CavernSpecialOreGameTests {
         level.setBlock(pos.below(), Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
         level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
         level.setBlock(pos.above(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+    }
+
+    private static void placeVisibilityWall(ServerLevel level, BlockPos pos) {
+        for (int x = pos.getX() - 1; x <= pos.getX() + 1; x++) {
+            for (int y = pos.getY(); y <= pos.getY() + 2; y++) {
+                level.setBlock(new BlockPos(x, y, pos.getZ()), Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+            }
+        }
     }
 
     private static void resetKnockbackTarget(LivingEntity entity) {

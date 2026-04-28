@@ -2,7 +2,7 @@
 
 This note documents the bounded outgoing-combat follow-up for the existing `cavernreborn:crazy_zombie`.
 
-It restores only the small legacy Crazy Zombie knockback branch. It does not add natural spawning, loot changes, incoming-damage changes, boss bar behavior, sky-darkening, particle trail, custom AI or broader crazy-mob combat rewrites.
+It restores only the small legacy Crazy Zombie knockback branch. It does not add natural spawning, loot changes, incoming-damage changes, particle trail, custom AI or broader crazy-mob combat rewrites.
 
 ## Legacy References Inspected
 
@@ -77,12 +77,12 @@ It restores only the small legacy Crazy Zombie knockback branch. It does not add
   - `getLegacyKnockbackPower(int triggerRoll, int magnitudeRoll)`
   - `tryApplyLegacyKnockback(Entity target, int power)`
 
-## Why Boss Bar And Particles Stay Deferred
+## Why Boss Bar And Particles Are Separate
 
-- The boss bar and sky-darkening path is a separate boss-event family with tracked-player registration, per-tick visibility updates and world-darkening semantics.
-- The particle trail is a separate client-only visual system with a dedicated legacy particle class.
+- The boss bar and sky-darkening path is now restored separately in `docs/crazy-zombie-boss-bar-mvp.md`.
+- The particle trail is still a separate client-only visual system with a dedicated legacy particle class.
 - This increment restores only one behavior family.
-- Knockback-on-hit is the smallest source-confirmed server-side slice that maps cleanly without adding boss-event state, client particle wiring or packet work.
+- Knockback-on-hit is the smallest source-confirmed server-side combat slice that maps cleanly without touching the separate boss-event and particle follow-ups.
 
 ## Why The Behavior Is Copied Explicitly
 
@@ -98,7 +98,7 @@ It restores only the small legacy Crazy Zombie knockback branch. It does not add
   - the legacy knockback constants
   - the deterministic helper methods
   - the preserved vanilla `Zombie` base
-  - the continued absence of boss-bar code, particle code and natural-spawn wiring
+  - the continued absence of particle code and natural-spawn wiring
 - Documentation tests pin:
   - the exact boss-bar color/overlay/darken-sky findings
   - the client-only particle trail findings
@@ -109,11 +109,10 @@ It restores only the small legacy Crazy Zombie knockback branch. It does not add
   - deterministic losing and winning knockback helper smoke
   - vanilla zombie baseline comparison with no extra crazy-zombie knockback branch
   - continued orb-drop, incoming-damage, max-health-clamp and natural-spawn-deferral stability
-  - continued absence of boss-bar tracking fields and particle/boss tick hooks on the Reborn entity class
+  - continued boss-event separation from the knockback branch and continued absence of particle wiring on the Reborn entity class
 
 ## Still Out Of Scope
 
-- Crazy Zombie boss bar / sky-darkening
 - Crazy Zombie particle trail
 - Crazy Zombie natural spawning
 - Crazy Zombie custom loot beyond the restored inherited orb-drop branch
