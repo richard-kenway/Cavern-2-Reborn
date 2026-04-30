@@ -21,12 +21,15 @@ import com.google.gson.JsonParser;
 
 class CrazySkeletonResourcesTest {
     @Test
-    void crazySkeletonRegistersWithDedicatedEntitySpawnEggRendererAndBaselineOnlyBoundaries() throws IOException {
+    void crazySkeletonRegistersWithDedicatedEntitySpawnEggRendererAndEquipmentFollowUpWhileKeepingRangedAiDeferred() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
         String entitySource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "CrazySkeleton.java"
+        );
+        String bowSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "item", "CavenicBowItem.java"
         );
         String entityEventSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModEntityEvents.java"
@@ -72,6 +75,15 @@ class CrazySkeletonResourcesTest {
         assertTrue(entitySource.contains(".add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)"));
         assertTrue(entitySource.contains(".add(Attributes.MOVEMENT_SPEED, 0.25D)"));
         assertTrue(entitySource.contains(".add(Attributes.FOLLOW_RANGE, 22.0D)"));
+        assertTrue(entitySource.contains("public static final float LEGACY_MAINHAND_DROP_CHANCE = 1.0F;"));
+        assertTrue(entitySource.contains("this.setDropChance(EquipmentSlot.MAINHAND, LEGACY_MAINHAND_DROP_CHANCE);"));
+        assertTrue(entitySource.contains("public static ItemStack createLegacyCrazySkeletonBow(RegistryAccess registryAccess)"));
+        assertTrue(entitySource.contains("new ItemStack(ModRegistries.CAVENIC_BOW.get())"));
+        assertTrue(entitySource.contains("lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.INFINITY)"));
+        assertTrue(entitySource.contains("stack.enchant("));
+        assertTrue(entitySource.contains("protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty)"));
+        assertTrue(entitySource.contains("super.populateDefaultEquipmentSlots(random, difficulty);"));
+        assertTrue(entitySource.contains("this.setItemSlot(EquipmentSlot.MAINHAND, createLegacyCrazySkeletonBow(this.registryAccess()));"));
         assertTrue(entitySource.contains("return EntityType.SKELETON.getDefaultLootTable();"));
         assertFalse(entitySource.contains("NATURAL_SPAWN_WEIGHT"));
         assertFalse(entitySource.contains("NATURAL_SPAWN_MIN_COUNT"));
@@ -89,16 +101,12 @@ class CrazySkeletonResourcesTest {
         assertFalse(entitySource.contains("ParticleCrazyMob"));
         assertFalse(entitySource.contains("doHurtTarget("));
         assertFalse(entitySource.contains("EntityAIAttackCavenicBow"));
-        assertFalse(entitySource.contains("CAVENIC_BOW"));
-        assertFalse(entitySource.contains("Enchantments"));
-        assertFalse(entitySource.contains("setDropChance"));
-        assertFalse(entitySource.contains("setItemSlot"));
-        assertFalse(entitySource.contains("populateDefaultEquipmentSlots"));
         assertFalse(entitySource.contains("registerGoals()"));
         assertFalse(entitySource.contains("reassessWeaponGoal"));
         assertFalse(entitySource.contains("performRangedAttack"));
         assertFalse(entitySource.toLowerCase().contains("cavenia"));
         assertFalse(entitySource.contains("magic_book"));
+        assertFalse(bowSource.contains("CrazySkeleton"));
 
         assertTrue(entityEventSource.contains("event.put(ModRegistries.CRAZY_SKELETON.get(), CrazySkeleton.createAttributes().build())"));
         assertFalse(entityEventSource.contains("ModRegistries.CRAZY_SKELETON.get(),\n            SpawnPlacementTypes"));
@@ -125,6 +133,9 @@ class CrazySkeletonResourcesTest {
         );
         assertMissingProjectFile(
             "core", "src", "main", "java", "com", "richardkenway", "cavernreborn", "core", "loot", "CrazySkeletonLootPolicy.java"
+        );
+        assertMissingProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "ai", "EntityAIAttackCavenicBow.java"
         );
     }
 

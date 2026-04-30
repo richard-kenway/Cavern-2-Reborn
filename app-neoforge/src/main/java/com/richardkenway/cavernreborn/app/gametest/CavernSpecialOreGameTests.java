@@ -92,6 +92,7 @@ import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
@@ -142,6 +143,7 @@ import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.level.GameType;
@@ -243,6 +245,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CRAZY_ZOMBIE_PARTICLE_TRAIL_ANCHOR = new BlockPos(5920, 96, 0);
     private static final BlockPos CRAZY_SKELETON_ANCHOR = new BlockPos(6016, 96, 0);
     private static final BlockPos CRAZY_SKELETON_SPAWN_EGG_ANCHOR = new BlockPos(6112, 96, 0);
+    private static final BlockPos CRAZY_SKELETON_EQUIPMENT_ANCHOR = new BlockPos(6208, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -4143,7 +4146,10 @@ public final class CavernSpecialOreGameTests {
             Math.abs(crazySkeleton.getAttributeValue(Attributes.MAX_HEALTH) - 1024.0D) < 1.0E-6D,
             "Expected crazy skeleton MAX_HEALTH attribute to clamp to the modern generic.max_health ceiling of 1024.0"
         );
-        helper.assertTrue(Math.abs(crazySkeleton.getAttributeValue(Attributes.FOLLOW_RANGE) - 22.0D) < 1.0E-6D, "Expected crazy skeleton follow range to map to legacy 22.0");
+        helper.assertTrue(
+            Math.abs(crazySkeleton.getAttributeBaseValue(Attributes.FOLLOW_RANGE) - 22.0D) < 1.0E-6D,
+            "Expected crazy skeleton follow-range base value to map to legacy 22.0"
+        );
         helper.assertTrue(Math.abs(crazySkeleton.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) - 1.0D) < 1.0E-6D, "Expected crazy skeleton knockback resistance to map to legacy 1.0");
         helper.assertTrue(Math.abs(crazySkeleton.getAttributeValue(Attributes.MOVEMENT_SPEED) - 0.25D) < 1.0E-6D, "Expected crazy skeleton movement speed to map to legacy 0.25");
         helper.assertTrue(
@@ -4205,6 +4211,110 @@ public final class CavernSpecialOreGameTests {
 
         helper.assertTrue(spawnedEntity instanceof CrazySkeleton, "Expected spawn egg to create a CrazySkeleton runtime entity");
         helper.assertTrue(spawnedEntity != null && spawnedEntity.isAlive(), "Expected spawned crazy skeleton to be alive");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySkeletonLegacyCavenicBowEquipmentAppliesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_SKELETON_EQUIPMENT_ANCHOR;
+        HolderLookup.RegistryLookup<Enchantment> enchantments = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+
+        resetMiningArea(level, origin, 12.0D);
+
+        CrazySkeleton crazySkeleton = spawnLivingEntity(helper, ModRegistries.CRAZY_SKELETON.get(), origin);
+        Skeleton vanillaSkeleton = spawnLivingEntity(helper, EntityType.SKELETON, origin.east(4));
+        invokePopulateDefaultEquipmentSlots(crazySkeleton, RandomSource.create(1234L), level.getCurrentDifficultyAt(origin));
+        invokePopulateDefaultEquipmentSlots(vanillaSkeleton, RandomSource.create(1234L), level.getCurrentDifficultyAt(origin.east(4)));
+
+        ItemStack crazyMainHand = crazySkeleton.getMainHandItem();
+        ItemStack vanillaMainHand = vanillaSkeleton.getMainHandItem();
+
+        helper.assertTrue(crazyMainHand.is(ModRegistries.CAVENIC_BOW.get()), "Expected crazy skeleton to spawn with the guaranteed legacy Cavenic Bow");
+        helper.assertTrue(vanillaMainHand.is(Items.BOW), "Expected vanilla skeleton comparison spawn to keep the vanilla bow");
+        helper.assertTrue(
+            EnchantmentHelper.getItemEnchantmentLevel(enchantments.getOrThrow(Enchantments.INFINITY), crazyMainHand) == 1,
+            "Expected crazy skeleton to keep the guaranteed legacy Infinity I bow enchantment"
+        );
+        helper.assertTrue(
+            Math.abs(getEquipmentDropChance(crazySkeleton, EquipmentSlot.MAINHAND) - CrazySkeleton.LEGACY_MAINHAND_DROP_CHANCE) < 1.0E-6F,
+            "Expected crazy skeleton mainhand drop chance to stay pinned to the legacy 1.0F value"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("registerGoals") || name.equals("reassessWeaponGoal") || name.equals("performRangedAttack")),
+            "Expected crazy skeleton equipment follow-up to avoid adding custom ranged-AI overrides"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySkeletonLegacyCavenicBowEquipmentKeepsBaselineStableAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_SKELETON_EQUIPMENT_ANCHOR.south(8);
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceKey<BiomeModifier> crazySkeletonSpawnModifier = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_skeleton_spawns")
+        );
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_crazy_skeleton"));
+
+        resetMiningArea(level, origin, 12.0D);
+
+        CrazySkeleton crazySkeleton = spawnLivingEntity(helper, ModRegistries.CRAZY_SKELETON.get(), origin);
+        invokePopulateDefaultEquipmentSlots(crazySkeleton, RandomSource.create(5678L), level.getCurrentDifficultyAt(origin));
+        ItemStack crazyMainHand = crazySkeleton.getMainHandItem();
+
+        helper.assertTrue(
+            Math.abs(crazySkeleton.getMaxHealth() - 1024.0D) < 1.0E-6D,
+            "Expected crazy skeleton equipment follow-up to keep the modern 1024.0 runtime max-health clamp stable"
+        );
+        helper.assertTrue(
+            Math.abs(crazySkeleton.getAttributeBaseValue(Attributes.FOLLOW_RANGE) - 22.0D) < 1.0E-6D,
+            "Expected crazy skeleton equipment follow-up to keep the follow-range base value at legacy 22.0"
+        );
+        helper.assertTrue(Math.abs(crazySkeleton.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) - 1.0D) < 1.0E-6D, "Expected crazy skeleton equipment follow-up to keep knockback resistance at legacy 1.0");
+        helper.assertTrue(Math.abs(crazySkeleton.getAttributeValue(Attributes.MOVEMENT_SPEED) - 0.25D) < 1.0E-6D, "Expected crazy skeleton equipment follow-up to keep movement speed at legacy 0.25");
+        helper.assertTrue(
+            crazySkeleton.getLootTable().equals(EntityType.SKELETON.getDefaultLootTable()),
+            "Expected crazy skeleton equipment follow-up to keep the vanilla skeleton loot table baseline"
+        );
+        helper.assertTrue(
+            crazyMainHand.is(ModRegistries.CAVENIC_BOW.get()) && crazyMainHand.getItem() instanceof CavenicBowItem,
+            "Expected crazy skeleton equipment follow-up to use the existing Reborn Cavenic Bow without replacing its item class"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_SKELETON.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected crazy skeleton equipment follow-up to keep spawn placement unregistered"
+        );
+        helper.assertFalse(
+            biomeModifiers.containsKey(crazySkeletonSpawnModifier),
+            "Expected crazy skeleton equipment follow-up to keep the biome modifier absent at runtime"
+        );
+        helper.assertFalse(
+            biomes.getTag(spawnTag).isPresent(),
+            "Expected crazy skeleton equipment follow-up to keep the spawn biome tag absent at runtime"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredFields()).anyMatch(field -> field.getType() == ServerBossEvent.class),
+            "Expected crazy skeleton equipment follow-up to avoid adding boss-event state"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("hurt")
+                    || name.equals("aiStep")
+                    || name.equals("customServerAiStep")
+                    || name.equals("startSeenByPlayer")
+                    || name.equals("stopSeenByPlayer")
+                    || name.equals("registerGoals")
+                    || name.equals("reassessWeaponGoal")
+                    || name.equals("performRangedAttack")
+                    || name.equals("doHurtTarget")),
+            "Expected crazy skeleton equipment follow-up to keep damage, boss, particle, custom ranged-AI and knockback follow-up overrides absent"
+        );
         helper.succeed();
     }
 
@@ -6445,6 +6555,26 @@ public final class CavernSpecialOreGameTests {
         T entity = helper.spawn(type, pos);
         helper.assertTrue(entity.isAlive(), "Expected spawned entity to be alive: " + BuiltInRegistries.ENTITY_TYPE.getKey(type));
         return entity;
+    }
+
+    private static float getEquipmentDropChance(Mob mob, EquipmentSlot slot) {
+        try {
+            Method method = findDeclaredMethod(mob.getClass(), "getEquipmentDropChance", EquipmentSlot.class);
+            method.setAccessible(true);
+            return (float)method.invoke(mob, slot);
+        } catch (ReflectiveOperationException exception) {
+            throw new IllegalStateException("Failed to read equipment drop chance for " + mob.getClass().getName(), exception);
+        }
+    }
+
+    private static void invokePopulateDefaultEquipmentSlots(Mob mob, RandomSource random, DifficultyInstance difficulty) {
+        try {
+            Method method = findDeclaredMethod(mob.getClass(), "populateDefaultEquipmentSlots", RandomSource.class, DifficultyInstance.class);
+            method.setAccessible(true);
+            method.invoke(mob, random, difficulty);
+        } catch (ReflectiveOperationException exception) {
+            throw new IllegalStateException("Failed to invoke populateDefaultEquipmentSlots on " + mob.getClass().getName(), exception);
+        }
     }
 
     private static long countGoals(Mob mob, Class<? extends Goal> goalClass) {

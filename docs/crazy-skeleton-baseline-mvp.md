@@ -35,7 +35,6 @@ The inspected direct crazy roster in legacy Cavern 2 is:
 The risky parts are separate follow-up branches rather than prerequisites for the entity to exist:
 
 - legacy `EntityAIAttackCavenicBow`
-- guaranteed `Cavenic Bow` equipment with `Infinity`
 - inherited `cavenic_orb` drop behavior from `EntityCavenicSkeleton`
 - inherited fall/fire damage behavior from `EntityCavenicSkeleton`
 - direct boss-bar / sky-darkening behavior
@@ -50,7 +49,9 @@ The risky parts are separate follow-up branches rather than prerequisites for th
 - The spawn egg id is `cavernreborn:crazy_skeleton_spawn_egg`.
 - Reborn `CrazySkeleton` extends vanilla `Skeleton`.
 - Legacy `EntityCrazySkeleton` extends `EntityCavenicSkeleton`, but this baseline does not extend the current Reborn `CavenicSkeleton` baseline because that would silently inherit staged Reborn orb-drop, damage-behavior and natural-spawn slices before each Crazy Skeleton follow-up is inspected honestly.
-- The mob keeps vanilla skeleton AI, vanilla skeleton ranged behavior and vanilla equipment rules for this baseline slice.
+- The original baseline kept vanilla skeleton AI, vanilla skeleton ranged behavior and vanilla equipment rules.
+- The dedicated follow-up documented in `docs/crazy-skeleton-cavenic-bow-equipment-mvp.md` now restores the guaranteed legacy `Cavenic Bow` + `Infinity` mainhand identity and the legacy `1.0F` mainhand drop chance without changing the vanilla `Skeleton` base.
+- The custom ranged AI identity is still deferred and documented in `docs/crazy-skeleton-ranged-ai-boundary.md`.
 
 ## Attributes
 
@@ -94,9 +95,9 @@ The risky parts are separate follow-up branches rather than prerequisites for th
 - Like Crazy Zombie, that crazy roster is only selected from the old `WorldProviderCavenia#createSpawnCreature(...)` branch instead of the normal `CAVERN` hostile-biome path.
 - Reborn therefore does not add a fake `CAVERN` spawn placement or biome modifier for Crazy Skeleton.
 
-## Ranged AI / Cavenic Bow / Infinity Equipment Boundary
+## Cavenic Bow Equipment / Ranged AI Boundary
 
-Legacy `EntityCrazySkeleton` includes a separate ranged-combat identity that is intentionally deferred from this baseline:
+Legacy `EntityCrazySkeleton` includes a separate ranged-combat identity:
 
 - the constructor sets mainhand drop chance to `1.0F`
 - `initCustomAI()` swaps in `EntityAIAttackCavenicBow<>(this, 0.99D, 6.0F, 1)`
@@ -104,15 +105,19 @@ Legacy `EntityCrazySkeleton` includes a separate ranged-combat identity that is 
 - `setEquipmentBasedOnDifficulty(...)` always equips `CaveItems.CAVENIC_BOW`
 - that bow is forced to carry `Enchantments.INFINITY`
 
-Reborn does not port any of that in this baseline slice:
+Reborn now restores only the equipment-only portion in the dedicated follow-up:
+
+- guaranteed `Cavenic Bow`
+- guaranteed `Infinity`
+- constructor sets mainhand drop chance to `1.0F`
+
+Reborn still does not port the custom AI/combat portion:
 
 - no `EntityAIAttackCavenicBow`
-- no guaranteed `Cavenic Bow`
-- no guaranteed `Infinity`
 - no custom ranged-combat loop
 - no Cavenic Bow behavior changes
 
-The baseline is still safe because vanilla `Skeleton` already exists and can spawn/function without those legacy Crazy Skeleton-specific ranged branches.
+The baseline stayed safe because vanilla `Skeleton` already exists and can spawn/function without those legacy Crazy Skeleton-specific ranged branches, and the later equipment-only slice still keeps that same vanilla `Skeleton` base intact.
 
 ## Other Deferred Follow-Ups
 
@@ -127,8 +132,8 @@ The baseline is still safe because vanilla `Skeleton` already exists and can spa
 
 ## Testing
 
-- Resource tests cover registry source, spawn egg placement, renderer registration source, texture/model/lang resources, the explicit vanilla `Skeleton` base, the explicit vanilla skeleton loot-table baseline and the continued absence of natural-spawn, loot, damage, boss, particle and `EntityAIAttackCavenicBow` ports.
-- Documentation tests cover the legacy references inspected, the crazy-roster context, the attribute mapping, renderer/texture provenance, spawn egg decision, the Cavenia-tied natural-spawn deferral and the deferred Cavenic Bow / Infinity equipment boundary.
+- Resource tests cover registry source, spawn egg placement, renderer registration source, texture/model/lang resources, the explicit vanilla `Skeleton` base, the explicit vanilla skeleton loot-table baseline, the restored guaranteed `Cavenic Bow` + `Infinity` equipment hook and the continued absence of natural-spawn, loot, damage, boss, particle and `EntityAIAttackCavenicBow` ports.
+- Documentation tests cover the legacy references inspected, the crazy-roster context, the attribute mapping, renderer/texture provenance, spawn egg decision, the Cavenia-tied natural-spawn deferral, the dedicated equipment follow-up and the deferred custom ranged AI boundary.
 - NeoForge GameTest runtime smoke covers:
   - crazy skeleton runtime registry id
   - attribute registration
@@ -136,6 +141,9 @@ The baseline is still safe because vanilla `Skeleton` already exists and can spa
   - spawn egg resolution
   - spawn egg entity creation
   - vanilla skeleton loot-table baseline
+  - guaranteed Cavenic Bow equipment smoke
+  - Infinity enchantment smoke
+  - mainhand drop chance smoke
   - explicit no-natural-spawn baseline boundary
 
 ## Out Of Scope
@@ -148,7 +156,6 @@ The baseline is still safe because vanilla `Skeleton` already exists and can spa
 - Crazy Skeleton particle-trail follow-up
 - Crazy Skeleton custom ranged AI
 - `EntityAIAttackCavenicBow`
-- guaranteed `Cavenic Bow` / `Infinity` equipment
 - Crazy Creeper / Crazy Spider
 - summon variants
 - direct Cavenic mobs
