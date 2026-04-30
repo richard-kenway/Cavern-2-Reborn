@@ -62,7 +62,7 @@ This keeps the currently accepted boundaries intact:
 - no custom arrows are added
 - no `Cavenic Bow` behavior is changed
 - no natural-spawn changes are added
-- no loot/orb changes are added
+- no new loot/orb behavior is introduced in this equipment slice; the inherited orb-drop follow-up is documented separately in `docs/crazy-skeleton-loot-mvp.md`
 - no damage changes are added
 - no boss bar / sky-darkening is added
 - no particle trail is added

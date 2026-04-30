@@ -201,6 +201,8 @@ NeoForge GameTest runtime smoke covers:
 - crazy skeleton guaranteed cavenic bow equipment smoke
 - crazy skeleton Infinity enchantment smoke
 - crazy skeleton mainhand drop chance smoke
+- crazy skeleton legacy orb-drop event wiring smoke
+- crazy skeleton legacy orb-drop deterministic winning/losing roll smoke
 - crazy skeleton explicit no-natural-spawn baseline boundary
 - crazy skeleton continued vanilla attack-damage baseline and explicit `1024.0` max-health clamp smoke
 - crazy skeleton reflection smoke for no custom damage, boss, particle or custom ranged-AI follow-up overrides beyond the explicit equipment hook
@@ -277,7 +279,7 @@ NeoForge GameTest runtime smoke covers:
 - Crazy Zombie natural spawning, because the inspected legacy path is tied to the old Cavenia-only crazy-roster provider/config branch rather than the current `CAVERN` biome-spawn pattern
 - Crazy Zombie custom loot beyond the restored inherited `cavenic_orb` branch
 - Crazy Skeleton natural spawning, because the inspected legacy path still belongs to the old Cavenia-only crazy-roster provider/config branch rather than the current `CAVERN` biome-spawn pattern
-- Crazy Skeleton custom loot and inherited `cavenic_orb` follow-up
+- Crazy Skeleton custom loot beyond the restored inherited `cavenic_orb` branch
 - Crazy Skeleton damage-behavior follow-up
 - Crazy Skeleton boss bar / sky-darkening follow-up
 - Crazy Skeleton particle-trail follow-up

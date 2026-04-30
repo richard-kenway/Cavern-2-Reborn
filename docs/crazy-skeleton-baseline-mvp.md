@@ -84,8 +84,8 @@ The risky parts are separate follow-up branches rather than prerequisites for th
 
 - The bounded baseline reuses the vanilla skeleton loot table as its base drop source.
 - Legacy `EntityCrazySkeleton` inherits the `1/5` `cavenic_orb` drop from `EntityCavenicSkeleton`.
-- That inherited loot branch is intentionally deferred in this baseline slice.
-- Reborn does not add a Crazy Skeleton loot event, loot policy or custom loot table yet.
+- The dedicated follow-up documented in `docs/crazy-skeleton-loot-mvp.md` now restores that inherited orb branch explicitly while keeping the vanilla skeleton loot table as the baseline drop source.
+- Reborn still does not add a custom Crazy Skeleton loot table JSON.
 
 ## Natural Spawning
 
@@ -122,7 +122,7 @@ The baseline stayed safe because vanilla `Skeleton` already exists and can spawn
 ## Other Deferred Follow-Ups
 
 - inherited fall/fire damage behavior from `EntityCavenicSkeleton`
-- inherited `cavenic_orb` drop behavior from `EntityCavenicSkeleton`
+- inherited `cavenic_orb` drop behavior from `EntityCavenicSkeleton`, now restored explicitly in `docs/crazy-skeleton-loot-mvp.md`
 - boss bar / sky-darkening behavior
 - client-only particle trail
 - `isNonBoss()`
@@ -132,7 +132,7 @@ The baseline stayed safe because vanilla `Skeleton` already exists and can spawn
 
 ## Testing
 
-- Resource tests cover registry source, spawn egg placement, renderer registration source, texture/model/lang resources, the explicit vanilla `Skeleton` base, the explicit vanilla skeleton loot-table baseline, the restored guaranteed `Cavenic Bow` + `Infinity` equipment hook and the continued absence of natural-spawn, loot, damage, boss, particle and `EntityAIAttackCavenicBow` ports.
+- Resource tests cover registry source, spawn egg placement, renderer registration source, texture/model/lang resources, the explicit vanilla `Skeleton` base, the explicit vanilla skeleton loot-table baseline, the restored guaranteed `Cavenic Bow` + `Infinity` equipment hook, the restored inherited `1/5` orb-drop event wiring and the continued absence of natural-spawn, damage, boss, particle and `EntityAIAttackCavenicBow` ports.
 - Documentation tests cover the legacy references inspected, the crazy-roster context, the attribute mapping, renderer/texture provenance, spawn egg decision, the Cavenia-tied natural-spawn deferral, the dedicated equipment follow-up and the deferred custom ranged AI boundary.
 - NeoForge GameTest runtime smoke covers:
   - crazy skeleton runtime registry id
@@ -144,13 +144,13 @@ The baseline stayed safe because vanilla `Skeleton` already exists and can spawn
   - guaranteed Cavenic Bow equipment smoke
   - Infinity enchantment smoke
   - mainhand drop chance smoke
+  - inherited legacy orb-drop deterministic winning/losing roll smoke
   - explicit no-natural-spawn baseline boundary
 
 ## Out Of Scope
 
 - Crazy Skeleton natural spawning
-- Crazy Skeleton custom loot
-- Crazy Skeleton `cavenic_orb` drop follow-up
+- Crazy Skeleton custom loot beyond the restored inherited `cavenic_orb` branch
 - Crazy Skeleton damage-behavior follow-up
 - Crazy Skeleton boss bar / sky-darkening follow-up
 - Crazy Skeleton particle-trail follow-up

@@ -69,7 +69,7 @@ This equipment-only follow-up restores the held bow identity without porting the
 - no custom `performRangedAttack(...)` override
 - no melee fallback rewrite
 - no bow/projectile rewrite
-- no natural-spawn, loot, damage, boss-bar or particle follow-up
+- no natural-spawn, inherited orb-drop, damage, boss-bar or particle follow-up
 
 ## Testing Boundary
 
@@ -83,7 +83,7 @@ This equipment-only follow-up restores the held bow identity without porting the
 - melee fallback parity
 - rapid-fire cadence parity
 - natural spawning
-- loot / `cavenic_orb`
+- loot / `cavenic_orb`, now documented separately in `docs/crazy-skeleton-loot-mvp.md`
 - damage behavior
 - boss bar / sky-darkening
 - particle trail

@@ -31,6 +31,9 @@ class CrazySkeletonResourcesTest {
         String bowSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "item", "CavenicBowItem.java"
         );
+        String appSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "CavernReborn.java"
+        );
         String entityEventSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModEntityEvents.java"
         );
@@ -39,6 +42,12 @@ class CrazySkeletonResourcesTest {
         );
         String rendererSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "client", "renderer", "CrazySkeletonRenderer.java"
+        );
+        String lootEventSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "CrazySkeletonLootEvents.java"
+        );
+        String lootPolicySource = readProjectFile(
+            "core", "src", "main", "java", "com", "richardkenway", "cavernreborn", "core", "loot", "CrazySkeletonLootPolicy.java"
         );
 
         assertEquals(
@@ -107,6 +116,21 @@ class CrazySkeletonResourcesTest {
         assertFalse(entitySource.toLowerCase().contains("cavenia"));
         assertFalse(entitySource.contains("magic_book"));
         assertFalse(bowSource.contains("CrazySkeleton"));
+        assertTrue(lootPolicySource.contains("public static final int ORB_DROP_ROLL_BOUND = 5;"));
+        assertTrue(lootPolicySource.contains("return roll >= 0 && roll < ORB_DROP_ROLL_BOUND && roll == 0;"));
+        assertTrue(lootEventSource.contains("class CrazySkeletonLootEvents"));
+        assertTrue(lootEventSource.contains("LivingDropsEvent"));
+        assertTrue(lootEventSource.contains("event.getEntity() instanceof CrazySkeleton skeleton"));
+        assertTrue(lootEventSource.contains("CrazySkeletonLootPolicy.ORB_DROP_ROLL_BOUND"));
+        assertTrue(lootEventSource.contains("CrazySkeletonLootPolicy.shouldDropOrb(orbRoll)"));
+        assertTrue(lootEventSource.contains("new ItemStack(ModRegistries.CAVENIC_ORB.get())"));
+        assertTrue(lootEventSource.contains("skeleton.getY() + 0.5D"));
+        assertFalse(lootEventSource.toLowerCase().contains("economy"));
+        assertFalse(lootEventSource.toLowerCase().contains("progression"));
+        assertFalse(lootEventSource.contains("ServerBossEvent"));
+        assertFalse(lootEventSource.contains("ParticleCrazyMob"));
+        assertFalse(lootEventSource.contains("EntityAIAttackCavenicBow"));
+        assertTrue(appSource.contains("NeoForge.EVENT_BUS.register(new CrazySkeletonLootEvents());"));
 
         assertTrue(entityEventSource.contains("event.put(ModRegistries.CRAZY_SKELETON.get(), CrazySkeleton.createAttributes().build())"));
         assertFalse(entityEventSource.contains("ModRegistries.CRAZY_SKELETON.get(),\n            SpawnPlacementTypes"));
@@ -127,12 +151,6 @@ class CrazySkeletonResourcesTest {
         );
         assertMissingProjectFile(
             "app-neoforge", "src", "main", "resources", "data", "cavernreborn", "loot_tables", "entities", "crazy_skeleton.json"
-        );
-        assertMissingProjectFile(
-            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "CrazySkeletonLootEvents.java"
-        );
-        assertMissingProjectFile(
-            "core", "src", "main", "java", "com", "richardkenway", "cavernreborn", "core", "loot", "CrazySkeletonLootPolicy.java"
         );
         assertMissingProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "ai", "EntityAIAttackCavenicBow.java"

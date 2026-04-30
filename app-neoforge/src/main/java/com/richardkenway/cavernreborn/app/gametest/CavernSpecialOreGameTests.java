@@ -31,6 +31,7 @@ import com.richardkenway.cavernreborn.app.entity.CavenicWitchLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombie;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombieLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CrazySkeleton;
+import com.richardkenway.cavernreborn.app.entity.CrazySkeletonLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CrazyZombie;
 import com.richardkenway.cavernreborn.app.entity.CrazyZombieLootEvents;
 import com.richardkenway.cavernreborn.app.item.CavenicBowTorchEvents;
@@ -60,6 +61,7 @@ import com.richardkenway.cavernreborn.core.loot.CavenicSkeletonLootPolicy;
 import com.richardkenway.cavernreborn.core.loot.CavenicSpiderLootPolicy;
 import com.richardkenway.cavernreborn.core.loot.CavenicWitchLootPolicy;
 import com.richardkenway.cavernreborn.core.loot.CavenicZombieLootPolicy;
+import com.richardkenway.cavernreborn.core.loot.CrazySkeletonLootPolicy;
 import com.richardkenway.cavernreborn.core.loot.CrazyZombieLootPolicy;
 import com.richardkenway.cavernreborn.core.mining.AquamarineAquaToolDecision;
 import com.richardkenway.cavernreborn.core.mining.AquamarineAquaToolPolicy;
@@ -4314,6 +4316,101 @@ public final class CavernSpecialOreGameTests {
                     || name.equals("performRangedAttack")
                     || name.equals("doHurtTarget")),
             "Expected crazy skeleton equipment follow-up to keep damage, boss, particle, custom ranged-AI and knockback follow-up overrides absent"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySkeletonLegacyOrbDropWiresAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_SKELETON_EQUIPMENT_ANCHOR.south(16);
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceKey<BiomeModifier> crazySkeletonSpawnModifier = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_skeleton_spawns")
+        );
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_crazy_skeleton"));
+        CrazySkeletonLootEvents lootEvents = new CrazySkeletonLootEvents();
+        List<ItemEntity> drops = new ArrayList<>();
+
+        resetMiningArea(level, origin, 12.0D);
+
+        CrazySkeleton crazySkeleton = spawnLivingEntity(helper, ModRegistries.CRAZY_SKELETON.get(), origin);
+        invokePopulateDefaultEquipmentSlots(crazySkeleton, RandomSource.create(9876L), level.getCurrentDifficultyAt(origin));
+        ItemStack crazyMainHand = crazySkeleton.getMainHandItem();
+        HolderLookup.RegistryLookup<Enchantment> enchantments = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+
+        helper.assertTrue(
+            crazySkeleton.getLootTable().equals(EntityType.SKELETON.getDefaultLootTable()),
+            "Expected crazy skeleton to keep the vanilla skeleton loot table as its baseline"
+        );
+        helper.assertTrue(
+            CrazySkeletonLootPolicy.ORB_DROP_ROLL_BOUND == 5,
+            "Expected crazy skeleton orb drop roll bound to stay pinned to the inherited legacy 1/5 chance"
+        );
+        helper.assertFalse(
+            lootEvents.tryAppendLegacyOrbDrop(crazySkeleton, drops, 1),
+            "Non-winning orb roll must not append a crazy skeleton cavenic orb drop"
+        );
+        helper.assertTrue(drops.isEmpty(), "Non-winning orb roll must leave the drop list unchanged");
+        helper.assertTrue(
+            lootEvents.tryAppendLegacyOrbDrop(crazySkeleton, drops, 0),
+            "Winning orb roll must append a crazy skeleton cavenic orb drop"
+        );
+        helper.assertTrue(drops.size() == 1, "Winning orb roll must append exactly one cavenic orb drop");
+        helper.assertTrue(
+            drops.getFirst().getItem().is(ModRegistries.CAVENIC_ORB.get()),
+            "Winning orb roll must append cavernreborn:cavenic_orb"
+        );
+        helper.assertTrue(
+            Math.abs(drops.getFirst().getY() - (crazySkeleton.getY() + 0.5D)) < 1.0E-6D,
+            "Expected crazy skeleton orb drop Y offset to stay aligned with the inherited legacy 0.5 offset"
+        );
+        helper.assertTrue(
+            Math.abs(crazySkeleton.getMaxHealth() - 1024.0D) < 1.0E-6D,
+            "Expected crazy skeleton loot follow-up to keep the modern 1024.0 runtime max-health clamp stable"
+        );
+        helper.assertTrue(
+            crazyMainHand.is(ModRegistries.CAVENIC_BOW.get()),
+            "Expected crazy skeleton loot follow-up to keep the guaranteed Cavenic Bow equipment intact"
+        );
+        helper.assertTrue(
+            EnchantmentHelper.getItemEnchantmentLevel(enchantments.getOrThrow(Enchantments.INFINITY), crazyMainHand) == 1,
+            "Expected crazy skeleton loot follow-up to keep the Infinity I bow enchantment intact"
+        );
+        helper.assertTrue(
+            Math.abs(getEquipmentDropChance(crazySkeleton, EquipmentSlot.MAINHAND) - CrazySkeleton.LEGACY_MAINHAND_DROP_CHANCE) < 1.0E-6F,
+            "Expected crazy skeleton loot follow-up to keep the legacy 1.0F mainhand drop chance intact"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_SKELETON.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected crazy skeleton loot follow-up to keep spawn placement unregistered"
+        );
+        helper.assertFalse(
+            biomeModifiers.containsKey(crazySkeletonSpawnModifier),
+            "Expected crazy skeleton loot follow-up to keep the biome modifier absent at runtime"
+        );
+        helper.assertFalse(
+            biomes.getTag(spawnTag).isPresent(),
+            "Expected crazy skeleton loot follow-up to keep the spawn biome tag absent at runtime"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredFields()).anyMatch(field -> field.getType() == ServerBossEvent.class),
+            "Expected crazy skeleton loot follow-up to avoid adding boss-event state"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("hurt")
+                    || name.equals("aiStep")
+                    || name.equals("customServerAiStep")
+                    || name.equals("startSeenByPlayer")
+                    || name.equals("stopSeenByPlayer")
+                    || name.equals("registerGoals")
+                    || name.equals("reassessWeaponGoal")
+                    || name.equals("performRangedAttack")),
+            "Expected crazy skeleton loot follow-up to avoid adding damage, boss, particle or custom ranged-AI overrides"
         );
         helper.succeed();
     }
