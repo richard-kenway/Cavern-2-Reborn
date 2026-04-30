@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CrazySkeletonResourcesTest {
     @Test
-    void crazySkeletonRegistersWithDedicatedEntitySpawnEggRendererAndDamageLootEquipmentFollowUpsWhileKeepingRangedAiDeferred() throws IOException {
+    void crazySkeletonRegistersWithDedicatedEntitySpawnEggRendererAndBossDamageLootEquipmentFollowUpsWhileKeepingRangedAiDeferred() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -86,6 +86,11 @@ class CrazySkeletonResourcesTest {
         assertTrue(entitySource.contains(".add(Attributes.FOLLOW_RANGE, 22.0D)"));
         assertTrue(entitySource.contains("public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;"));
         assertTrue(entitySource.contains("public static final float LEGACY_MAINHAND_DROP_CHANCE = 1.0F;"));
+        assertTrue(entitySource.contains("public static final double LEGACY_BOSS_BAR_VISIBILITY_DISTANCE = 20.0D;"));
+        assertTrue(entitySource.contains("public static final double LEGACY_BOSS_BAR_DARKEN_SKY_DISTANCE = 30.0D;"));
+        assertTrue(entitySource.contains("private final ServerBossEvent legacyBossEvent = new ServerBossEvent("));
+        assertTrue(entitySource.contains("BossEvent.BossBarColor.WHITE"));
+        assertTrue(entitySource.contains("BossEvent.BossBarOverlay.PROGRESS"));
         assertTrue(entitySource.contains("this.setDropChance(EquipmentSlot.MAINHAND, LEGACY_MAINHAND_DROP_CHANCE);"));
         assertTrue(entitySource.contains("public static ItemStack createLegacyCrazySkeletonBow(RegistryAccess registryAccess)"));
         assertTrue(entitySource.contains("new ItemStack(ModRegistries.CAVENIC_BOW.get())"));
@@ -94,23 +99,30 @@ class CrazySkeletonResourcesTest {
         assertTrue(entitySource.contains("protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty)"));
         assertTrue(entitySource.contains("super.populateDefaultEquipmentSlots(random, difficulty);"));
         assertTrue(entitySource.contains("this.setItemSlot(EquipmentSlot.MAINHAND, createLegacyCrazySkeletonBow(this.registryAccess()));"));
+        assertTrue(entitySource.contains("public void readAdditionalSaveData(CompoundTag compound)"));
+        assertTrue(entitySource.contains("public void setCustomName(@Nullable Component name)"));
         assertTrue(entitySource.contains("public boolean hurt(DamageSource source, float damage)"));
         assertTrue(entitySource.contains("source.is(DamageTypeTags.IS_FALL)"));
         assertTrue(entitySource.contains("damage *= LEGACY_FALL_DAMAGE_MULTIPLIER;"));
         assertTrue(entitySource.contains("source.is(DamageTypeTags.IS_FIRE)"));
         assertTrue(entitySource.contains("return super.hurt(source, damage);"));
+        assertTrue(entitySource.contains("protected void customServerAiStep()"));
+        assertTrue(entitySource.contains("public void startSeenByPlayer(ServerPlayer player)"));
+        assertTrue(entitySource.contains("public void stopSeenByPlayer(ServerPlayer player)"));
+        assertTrue(entitySource.contains("public ServerBossEvent getLegacyCrazyBossEventForTests()"));
+        assertTrue(entitySource.contains("public boolean shouldShowLegacyBossBarTo(ServerPlayer player)"));
+        assertTrue(entitySource.contains("public boolean shouldDarkenLegacyBossSkyFor(ServerPlayer player)"));
+        assertTrue(entitySource.contains("public void updateLegacyBossEvent()"));
+        assertTrue(entitySource.contains("this.legacyBossEvent.setDarkenScreen(!canSee || distance < LEGACY_BOSS_BAR_DARKEN_SKY_DISTANCE);"));
+        assertTrue(entitySource.contains("this.legacyBossEvent.setVisible(canSee);"));
+        assertTrue(entitySource.contains("this.legacyBossEvent.setProgress(this.getHealth() / this.getMaxHealth());"));
         assertTrue(entitySource.contains("return EntityType.SKELETON.getDefaultLootTable();"));
         assertFalse(entitySource.contains("NATURAL_SPAWN_WEIGHT"));
         assertFalse(entitySource.contains("NATURAL_SPAWN_MIN_COUNT"));
         assertFalse(entitySource.contains("NATURAL_SPAWN_MAX_COUNT"));
         assertFalse(entitySource.contains("canNaturallySpawnInDimension"));
         assertFalse(entitySource.contains("checkCrazySkeletonSpawnRules"));
-        assertFalse(entitySource.contains("ServerBossEvent"));
-        assertFalse(entitySource.contains("BossEvent"));
         assertFalse(entitySource.contains("public void aiStep()"));
-        assertFalse(entitySource.contains("customServerAiStep"));
-        assertFalse(entitySource.contains("startSeenByPlayer"));
-        assertFalse(entitySource.contains("stopSeenByPlayer"));
         assertFalse(entitySource.contains("addParticle("));
         assertFalse(entitySource.contains("ParticleCrazyMob"));
         assertFalse(entitySource.contains("doHurtTarget("));

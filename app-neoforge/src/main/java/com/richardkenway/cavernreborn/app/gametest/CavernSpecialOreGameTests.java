@@ -249,6 +249,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CRAZY_SKELETON_SPAWN_EGG_ANCHOR = new BlockPos(6112, 96, 0);
     private static final BlockPos CRAZY_SKELETON_EQUIPMENT_ANCHOR = new BlockPos(6208, 96, 0);
     private static final BlockPos CRAZY_SKELETON_DAMAGE_ANCHOR = new BlockPos(6304, 96, 0);
+    private static final BlockPos CRAZY_SKELETON_BOSS_BAR_ANCHOR = new BlockPos(6400, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -4179,22 +4180,27 @@ public final class CavernSpecialOreGameTests {
             biomes.getTag(spawnTag).isPresent(),
             "Expected crazy skeleton baseline to keep the spawn biome tag absent at runtime"
         );
-        helper.assertFalse(
-            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredFields()).anyMatch(field -> field.getType() == ServerBossEvent.class),
-            "Expected crazy skeleton baseline to avoid adding boss-event state"
+        helper.assertTrue(
+            crazySkeleton.getLegacyCrazyBossEventForTests() != null,
+            "Expected crazy skeleton baseline to keep the restored boss event accessible on the runtime entity"
+        );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("customServerAiStep")
+                    || name.equals("startSeenByPlayer")
+                    || name.equals("stopSeenByPlayer")),
+            "Expected crazy skeleton baseline to keep the tracked-player boss-event hooks on the entity class"
         );
         helper.assertFalse(
             java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
                 .map(Method::getName)
                 .anyMatch(name -> name.equals("aiStep")
-                    || name.equals("customServerAiStep")
-                    || name.equals("startSeenByPlayer")
-                    || name.equals("stopSeenByPlayer")
                     || name.equals("registerGoals")
                     || name.equals("reassessWeaponGoal")
                     || name.equals("performRangedAttack")
                     || name.equals("doHurtTarget")),
-            "Expected crazy skeleton baseline to avoid adding boss, particle, ranged-AI or knockback follow-up overrides beyond the explicit damage hook"
+            "Expected crazy skeleton baseline to avoid adding particle, ranged-AI or knockback follow-up overrides beyond the explicit damage and boss hooks"
         );
         helper.succeed();
     }
@@ -4299,22 +4305,27 @@ public final class CavernSpecialOreGameTests {
             biomes.getTag(spawnTag).isPresent(),
             "Expected crazy skeleton equipment follow-up to keep the spawn biome tag absent at runtime"
         );
-        helper.assertFalse(
-            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredFields()).anyMatch(field -> field.getType() == ServerBossEvent.class),
-            "Expected crazy skeleton equipment follow-up to avoid adding boss-event state"
+        helper.assertTrue(
+            crazySkeleton.getLegacyCrazyBossEventForTests() != null,
+            "Expected crazy skeleton equipment follow-up to keep the restored boss event accessible on the runtime entity"
+        );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("customServerAiStep")
+                    || name.equals("startSeenByPlayer")
+                    || name.equals("stopSeenByPlayer")),
+            "Expected crazy skeleton equipment follow-up to keep the tracked-player boss-event hooks intact"
         );
         helper.assertFalse(
             java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
                 .map(Method::getName)
                 .anyMatch(name -> name.equals("aiStep")
-                    || name.equals("customServerAiStep")
-                    || name.equals("startSeenByPlayer")
-                    || name.equals("stopSeenByPlayer")
                     || name.equals("registerGoals")
                     || name.equals("reassessWeaponGoal")
                     || name.equals("performRangedAttack")
                     || name.equals("doHurtTarget")),
-            "Expected crazy skeleton equipment follow-up to keep boss, particle, custom ranged-AI and knockback follow-up overrides absent beyond the explicit damage hook"
+            "Expected crazy skeleton equipment follow-up to keep particle, custom ranged-AI and knockback follow-up overrides absent beyond the explicit damage and boss hooks"
         );
         helper.succeed();
     }
@@ -4394,26 +4405,31 @@ public final class CavernSpecialOreGameTests {
             biomes.getTag(spawnTag).isPresent(),
             "Expected crazy skeleton loot follow-up to keep the spawn biome tag absent at runtime"
         );
-        helper.assertFalse(
-            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredFields()).anyMatch(field -> field.getType() == ServerBossEvent.class),
-            "Expected crazy skeleton loot follow-up to avoid adding boss-event state"
+        helper.assertTrue(
+            crazySkeleton.getLegacyCrazyBossEventForTests() != null,
+            "Expected crazy skeleton loot follow-up to keep the restored boss event accessible on the runtime entity"
         );
         helper.assertTrue(
             java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("hurt")),
             "Expected crazy skeleton loot follow-up to coexist with the explicit inherited damage hook"
         );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("customServerAiStep")
+                    || name.equals("startSeenByPlayer")
+                    || name.equals("stopSeenByPlayer")),
+            "Expected crazy skeleton loot follow-up to keep the tracked-player boss-event hooks intact"
+        );
         helper.assertFalse(
             java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
                 .map(Method::getName)
                 .anyMatch(name -> name.equals("aiStep")
-                    || name.equals("customServerAiStep")
-                    || name.equals("startSeenByPlayer")
-                    || name.equals("stopSeenByPlayer")
                     || name.equals("registerGoals")
                     || name.equals("reassessWeaponGoal")
                     || name.equals("performRangedAttack")
                     || name.equals("doHurtTarget")),
-            "Expected crazy skeleton loot follow-up to avoid adding boss, particle or custom ranged-AI overrides beyond the explicit damage hook"
+            "Expected crazy skeleton loot follow-up to avoid adding particle or custom ranged-AI overrides beyond the explicit damage and boss hooks"
         );
         helper.succeed();
     }
@@ -4563,22 +4579,227 @@ public final class CavernSpecialOreGameTests {
             biomes.getTag(spawnTag).isPresent(),
             "Expected crazy skeleton damage follow-up to keep the spawn biome tag absent at runtime"
         );
-        helper.assertFalse(
-            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredFields()).anyMatch(field -> field.getType() == ServerBossEvent.class),
-            "Expected crazy skeleton damage follow-up to avoid adding boss-event state"
+        helper.assertTrue(
+            crazySkeleton.getLegacyCrazyBossEventForTests() != null,
+            "Expected crazy skeleton damage follow-up to keep the restored boss event accessible on the runtime entity"
+        );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("customServerAiStep")
+                    || name.equals("startSeenByPlayer")
+                    || name.equals("stopSeenByPlayer")),
+            "Expected crazy skeleton damage follow-up to keep the tracked-player boss-event hooks intact"
         );
         helper.assertFalse(
             java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
                 .map(Method::getName)
                 .anyMatch(name -> name.equals("aiStep")
-                    || name.equals("customServerAiStep")
-                    || name.equals("startSeenByPlayer")
-                    || name.equals("stopSeenByPlayer")
                     || name.equals("registerGoals")
                     || name.equals("reassessWeaponGoal")
                     || name.equals("performRangedAttack")
                     || name.equals("doHurtTarget")),
-            "Expected crazy skeleton damage follow-up to keep boss, particle and custom ranged-AI overrides absent"
+            "Expected crazy skeleton damage follow-up to keep particle and custom ranged-AI overrides absent"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySkeletonLegacyBossBarWiresAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_SKELETON_BOSS_BAR_ANCHOR;
+        BlockPos playerPos = origin.south(2);
+        BlockPos wallPos = origin.south(1);
+        BlockPos absolutePlayerPos = helper.absolutePos(playerPos);
+        BlockPos absoluteWallPos = helper.absolutePos(wallPos);
+
+        resetMiningArea(level, origin, 16.0D);
+        prepareCombatPlatform(level, origin);
+        prepareCombatPlatform(level, playerPos);
+
+        CrazySkeleton skeleton = spawnLivingEntity(helper, ModRegistries.CRAZY_SKELETON.get(), origin);
+        invokePopulateDefaultEquipmentSlots(skeleton, RandomSource.create(1357L), level.getCurrentDifficultyAt(origin));
+        skeleton.updateLegacyBossEvent();
+
+        ServerBossEvent bossEvent = skeleton.getLegacyCrazyBossEventForTests();
+        helper.assertTrue(bossEvent != null, "Expected crazy skeleton boss follow-up to expose a ServerBossEvent");
+        helper.assertTrue(bossEvent.getColor() == BossEvent.BossBarColor.WHITE, "Expected crazy skeleton boss bar color to map to legacy white");
+        helper.assertTrue(
+            bossEvent.getOverlay() == BossEvent.BossBarOverlay.PROGRESS,
+            "Expected crazy skeleton boss bar overlay to map to the legacy progress style"
+        );
+        helper.assertTrue(
+            Math.abs(bossEvent.getProgress() - 1.0F) < 1.0E-6F,
+            "Expected fresh crazy skeleton boss progress to start at full health"
+        );
+
+        ServerPlayer trackedPlayer = helper.makeMockServerPlayerInLevel();
+        trackedPlayer.teleportTo(level, absolutePlayerPos.getX() + 0.5D, absolutePlayerPos.getY() + 1.0D, absolutePlayerPos.getZ() + 0.5D, EnumSet.noneOf(RelativeMovement.class), 0.0F, 0.0F);
+        skeleton.startSeenByPlayer(trackedPlayer);
+        helper.assertTrue(
+            bossEvent.getPlayers().contains(trackedPlayer),
+            "Expected startSeenByPlayer to register the tracked player on the crazy skeleton boss event"
+        );
+
+        skeleton.updateLegacyBossEvent();
+        helper.assertTrue(
+            skeleton.shouldShowLegacyBossBarTo(trackedPlayer),
+            "Expected a nearby tracked player with clear line of sight to satisfy the legacy crazy skeleton boss-bar visibility rule"
+        );
+        helper.assertTrue(
+            skeleton.shouldDarkenLegacyBossSkyFor(trackedPlayer),
+            "Expected the legacy Crazy Skeleton sky-darkening helper to stay active for a nearby visible tracked player"
+        );
+        helper.assertTrue(bossEvent.isVisible(), "Expected the crazy skeleton boss event to stay visible for a nearby tracked player");
+        helper.assertTrue(bossEvent.shouldDarkenScreen(), "Expected the legacy Crazy Skeleton boss event to keep darken-screen enabled");
+
+        float damage = 64.0F;
+        helper.assertTrue(
+            skeleton.hurt(level.damageSources().generic(), damage),
+            "Expected boss-event coverage to leave generic Crazy Skeleton damage intake working"
+        );
+        skeleton.updateLegacyBossEvent();
+        helper.assertTrue(
+            Math.abs(bossEvent.getProgress() - (skeleton.getHealth() / skeleton.getMaxHealth())) < 1.0E-6F,
+            "Expected crazy skeleton boss progress to track the current health-to-max-health ratio"
+        );
+
+        skeleton.setCustomName(Component.literal("Legacy White Boss"));
+        helper.assertTrue(
+            "Legacy White Boss".equals(bossEvent.getName().getString()),
+            "Expected the crazy skeleton boss-event name to follow setCustomName"
+        );
+
+        placeVisibilityWall(level, absoluteWallPos);
+        skeleton.updateLegacyBossEvent();
+        helper.assertFalse(
+            skeleton.shouldShowLegacyBossBarTo(trackedPlayer),
+            "Expected the legacy crazy skeleton boss-bar helper to fail once a solid wall blocks line of sight"
+        );
+        helper.assertTrue(
+            skeleton.shouldDarkenLegacyBossSkyFor(trackedPlayer),
+            "Expected the legacy Crazy Skeleton sky-darkening helper to stay active when line of sight is blocked"
+        );
+        helper.assertFalse(
+            bossEvent.isVisible(),
+            "Expected the crazy skeleton boss event to hide itself when the tracked player is no longer visible"
+        );
+        helper.assertTrue(
+            bossEvent.shouldDarkenScreen(),
+            "Expected the legacy Crazy Skeleton boss event to keep darken-screen true under the inspected blocked-visibility rule"
+        );
+
+        skeleton.stopSeenByPlayer(trackedPlayer);
+        helper.assertFalse(
+            bossEvent.getPlayers().contains(trackedPlayer),
+            "Expected stopSeenByPlayer to remove the tracked player from the crazy skeleton boss event"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySkeletonLegacyBossBarKeepsExistingSlicesStableAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_SKELETON_BOSS_BAR_ANCHOR.north(12);
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceKey<BiomeModifier> crazySkeletonSpawnModifier = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_skeleton_spawns")
+        );
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_crazy_skeleton"));
+        CrazySkeletonLootEvents lootEvents = new CrazySkeletonLootEvents();
+        List<ItemEntity> drops = new ArrayList<>();
+        HolderLookup.RegistryLookup<Enchantment> enchantments = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+
+        resetMiningArea(level, origin, 16.0D);
+        prepareCombatPlatform(level, origin);
+
+        CrazySkeleton skeleton = spawnLivingEntity(helper, ModRegistries.CRAZY_SKELETON.get(), origin);
+        invokePopulateDefaultEquipmentSlots(skeleton, RandomSource.create(8642L), level.getCurrentDifficultyAt(origin));
+        skeleton.updateLegacyBossEvent();
+        ItemStack mainHand = skeleton.getMainHandItem();
+
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredFields()).anyMatch(field -> field.getType() == ServerBossEvent.class),
+            "Expected crazy skeleton boss-bar follow-up to keep the ServerBossEvent field on the entity class"
+        );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("customServerAiStep") || name.equals("startSeenByPlayer") || name.equals("stopSeenByPlayer")),
+            "Expected crazy skeleton boss-bar follow-up to keep the tracked-player boss-event hooks on the entity class"
+        );
+        helper.assertTrue(
+            skeleton.getLegacyCrazyBossEventForTests().getColor() == BossEvent.BossBarColor.WHITE
+                && skeleton.getLegacyCrazyBossEventForTests().getOverlay() == BossEvent.BossBarOverlay.PROGRESS,
+            "Expected crazy skeleton boss-bar follow-up to keep the legacy white progress boss-event styling"
+        );
+        helper.assertTrue(
+            skeleton.getLootTable().equals(EntityType.SKELETON.getDefaultLootTable()),
+            "Expected crazy skeleton boss-bar follow-up to keep the vanilla skeleton loot-table baseline"
+        );
+        helper.assertTrue(
+            Math.abs(skeleton.getMaxHealth() - 1024.0D) < 1.0E-6D,
+            "Expected crazy skeleton boss-bar follow-up to keep the modern 1024.0 runtime max-health clamp"
+        );
+        helper.assertTrue(
+            mainHand.is(ModRegistries.CAVENIC_BOW.get()),
+            "Expected crazy skeleton boss-bar follow-up to keep the guaranteed Cavenic Bow equipment intact"
+        );
+        helper.assertTrue(
+            EnchantmentHelper.getItemEnchantmentLevel(enchantments.getOrThrow(Enchantments.INFINITY), mainHand) == 1,
+            "Expected crazy skeleton boss-bar follow-up to keep the Infinity I bow enchantment intact"
+        );
+        helper.assertTrue(
+            Math.abs(getEquipmentDropChance(skeleton, EquipmentSlot.MAINHAND) - CrazySkeleton.LEGACY_MAINHAND_DROP_CHANCE) < 1.0E-6F,
+            "Expected crazy skeleton boss-bar follow-up to keep the legacy 1.0F mainhand drop chance intact"
+        );
+        helper.assertTrue(
+            CrazySkeletonLootPolicy.ORB_DROP_ROLL_BOUND == 5,
+            "Expected crazy skeleton boss-bar follow-up to keep the inherited 1/5 orb-drop roll bound"
+        );
+        helper.assertTrue(
+            lootEvents.tryAppendLegacyOrbDrop(skeleton, drops, 0),
+            "Expected crazy skeleton boss-bar follow-up to keep the winning orb-drop branch available"
+        );
+        helper.assertTrue(
+            drops.size() == 1 && drops.getFirst().getItem().is(ModRegistries.CAVENIC_ORB.get()),
+            "Expected crazy skeleton boss-bar follow-up to keep appending exactly one cavenic orb on the winning roll"
+        );
+        helper.assertFalse(
+            skeleton.hurt(level.damageSources().lava(), 4.0F),
+            "Expected crazy skeleton boss-bar follow-up to keep fire-tagged damage rejection intact"
+        );
+        helper.assertTrue(
+            skeleton.hurt(level.damageSources().fall(), 10.0F),
+            "Expected crazy skeleton boss-bar follow-up to keep fall damage routed through the legacy multiplier hook"
+        );
+        helper.assertTrue(
+            Math.abs(skeleton.getHealth() - (skeleton.getMaxHealth() - (10.0F * CrazySkeleton.LEGACY_FALL_DAMAGE_MULTIPLIER))) < 1.0E-6F,
+            "Expected crazy skeleton boss-bar follow-up to keep the legacy 0.35 fall multiplier intact"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_SKELETON.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected crazy skeleton boss-bar follow-up to keep spawn placement unregistered"
+        );
+        helper.assertFalse(
+            biomeModifiers.containsKey(crazySkeletonSpawnModifier),
+            "Expected crazy skeleton boss-bar follow-up to keep the biome modifier absent at runtime"
+        );
+        helper.assertFalse(
+            biomes.getTag(spawnTag).isPresent(),
+            "Expected crazy skeleton boss-bar follow-up to keep the spawn biome tag absent at runtime"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("aiStep")
+                    || name.equals("registerGoals")
+                    || name.equals("reassessWeaponGoal")
+                    || name.equals("performRangedAttack")
+                    || name.equals("doHurtTarget")),
+            "Expected crazy skeleton boss-bar follow-up to keep particle and custom ranged-AI overrides absent"
         );
         helper.succeed();
     }
