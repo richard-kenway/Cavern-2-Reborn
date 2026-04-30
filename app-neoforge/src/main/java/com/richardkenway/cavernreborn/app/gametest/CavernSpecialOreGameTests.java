@@ -248,6 +248,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CRAZY_SKELETON_ANCHOR = new BlockPos(6016, 96, 0);
     private static final BlockPos CRAZY_SKELETON_SPAWN_EGG_ANCHOR = new BlockPos(6112, 96, 0);
     private static final BlockPos CRAZY_SKELETON_EQUIPMENT_ANCHOR = new BlockPos(6208, 96, 0);
+    private static final BlockPos CRAZY_SKELETON_DAMAGE_ANCHOR = new BlockPos(6304, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -4185,8 +4186,7 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("hurt")
-                    || name.equals("aiStep")
+                .anyMatch(name -> name.equals("aiStep")
                     || name.equals("customServerAiStep")
                     || name.equals("startSeenByPlayer")
                     || name.equals("stopSeenByPlayer")
@@ -4194,7 +4194,7 @@ public final class CavernSpecialOreGameTests {
                     || name.equals("reassessWeaponGoal")
                     || name.equals("performRangedAttack")
                     || name.equals("doHurtTarget")),
-            "Expected crazy skeleton baseline to avoid adding damage, boss, particle, ranged-AI or knockback follow-up overrides"
+            "Expected crazy skeleton baseline to avoid adding boss, particle, ranged-AI or knockback follow-up overrides beyond the explicit damage hook"
         );
         helper.succeed();
     }
@@ -4306,8 +4306,7 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("hurt")
-                    || name.equals("aiStep")
+                .anyMatch(name -> name.equals("aiStep")
                     || name.equals("customServerAiStep")
                     || name.equals("startSeenByPlayer")
                     || name.equals("stopSeenByPlayer")
@@ -4315,7 +4314,7 @@ public final class CavernSpecialOreGameTests {
                     || name.equals("reassessWeaponGoal")
                     || name.equals("performRangedAttack")
                     || name.equals("doHurtTarget")),
-            "Expected crazy skeleton equipment follow-up to keep damage, boss, particle, custom ranged-AI and knockback follow-up overrides absent"
+            "Expected crazy skeleton equipment follow-up to keep boss, particle, custom ranged-AI and knockback follow-up overrides absent beyond the explicit damage hook"
         );
         helper.succeed();
     }
@@ -4399,18 +4398,187 @@ public final class CavernSpecialOreGameTests {
             java.util.Arrays.stream(CrazySkeleton.class.getDeclaredFields()).anyMatch(field -> field.getType() == ServerBossEvent.class),
             "Expected crazy skeleton loot follow-up to avoid adding boss-event state"
         );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("hurt")),
+            "Expected crazy skeleton loot follow-up to coexist with the explicit inherited damage hook"
+        );
         helper.assertFalse(
             java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("hurt")
-                    || name.equals("aiStep")
+                .anyMatch(name -> name.equals("aiStep")
                     || name.equals("customServerAiStep")
                     || name.equals("startSeenByPlayer")
                     || name.equals("stopSeenByPlayer")
                     || name.equals("registerGoals")
                     || name.equals("reassessWeaponGoal")
-                    || name.equals("performRangedAttack")),
-            "Expected crazy skeleton loot follow-up to avoid adding damage, boss, particle or custom ranged-AI overrides"
+                    || name.equals("performRangedAttack")
+                    || name.equals("doHurtTarget")),
+            "Expected crazy skeleton loot follow-up to avoid adding boss, particle or custom ranged-AI overrides beyond the explicit damage hook"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySkeletonLegacyFallAndFireDamageBehaviorAppliesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_SKELETON_DAMAGE_ANCHOR;
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CrazySkeleton crazyFallSkeleton = spawnLivingEntity(helper, ModRegistries.CRAZY_SKELETON.get(), origin);
+        Skeleton vanillaFallSkeleton = spawnLivingEntity(helper, EntityType.SKELETON, origin.east(4));
+        clearEquipment(crazyFallSkeleton);
+        clearEquipment(vanillaFallSkeleton);
+        float fallDamage = 10.0F;
+        float crazyFallHealthBefore = crazyFallSkeleton.getHealth();
+        float vanillaFallHealthBefore = vanillaFallSkeleton.getHealth();
+
+        helper.assertTrue(
+            crazyFallSkeleton.hurt(level.damageSources().fall(), fallDamage),
+            "Expected crazy skeleton to still accept fall damage hits through the normal server damage path"
+        );
+        helper.assertTrue(
+            vanillaFallSkeleton.hurt(level.damageSources().fall(), fallDamage),
+            "Expected vanilla skeleton baseline to accept fall damage hits"
+        );
+        helper.assertTrue(
+            Math.abs((crazyFallHealthBefore - crazyFallSkeleton.getHealth()) - (fallDamage * CrazySkeleton.LEGACY_FALL_DAMAGE_MULTIPLIER)) < 1.0E-6F,
+            "Expected crazy skeleton fall damage to stay pinned to the inherited legacy 0.35 multiplier"
+        );
+        helper.assertTrue(
+            Math.abs((vanillaFallHealthBefore - vanillaFallSkeleton.getHealth()) - fallDamage) < 1.0E-6F,
+            "Expected vanilla skeleton baseline to keep full fall damage"
+        );
+
+        CrazySkeleton crazyFireSkeleton = spawnLivingEntity(helper, ModRegistries.CRAZY_SKELETON.get(), origin.south(8));
+        Skeleton vanillaFireSkeleton = spawnLivingEntity(helper, EntityType.SKELETON, origin.south(8).east(4));
+        clearEquipment(crazyFireSkeleton);
+        clearEquipment(vanillaFireSkeleton);
+        float fireDamage = 4.0F;
+        float crazyFireHealthBefore = crazyFireSkeleton.getHealth();
+        float vanillaFireHealthBefore = vanillaFireSkeleton.getHealth();
+
+        helper.assertFalse(
+            crazyFireSkeleton.hurt(level.damageSources().lava(), fireDamage),
+            "Expected crazy skeleton to reject fire-tagged damage sources like lava"
+        );
+        helper.assertTrue(
+            vanillaFireSkeleton.hurt(level.damageSources().lava(), fireDamage),
+            "Expected vanilla skeleton baseline to take lava damage"
+        );
+        helper.assertTrue(
+            Math.abs(crazyFireHealthBefore - crazyFireSkeleton.getHealth()) < 1.0E-6F,
+            "Expected crazy skeleton health to stay unchanged after fire-tagged damage"
+        );
+        helper.assertTrue(
+            vanillaFireSkeleton.getHealth() < vanillaFireHealthBefore,
+            "Expected vanilla skeleton baseline to lose health from lava damage"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySkeletonLegacyDamageBehaviorKeepsGenericDamageVanillaLikeAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_SKELETON_DAMAGE_ANCHOR.south(12);
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceKey<BiomeModifier> crazySkeletonSpawnModifier = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_skeleton_spawns")
+        );
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_crazy_skeleton"));
+        CrazySkeletonLootEvents lootEvents = new CrazySkeletonLootEvents();
+        List<ItemEntity> drops = new ArrayList<>();
+        HolderLookup.RegistryLookup<Enchantment> enchantments = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CrazySkeleton crazySkeleton = spawnLivingEntity(helper, ModRegistries.CRAZY_SKELETON.get(), origin);
+        Skeleton vanillaSkeleton = spawnLivingEntity(helper, EntityType.SKELETON, origin.east(4));
+        invokePopulateDefaultEquipmentSlots(crazySkeleton, RandomSource.create(2468L), level.getCurrentDifficultyAt(origin));
+        clearEquipment(vanillaSkeleton);
+        float genericDamage = 6.0F;
+        float crazyHealthBefore = crazySkeleton.getHealth();
+        float vanillaHealthBefore = vanillaSkeleton.getHealth();
+        ItemStack crazyMainHand = crazySkeleton.getMainHandItem();
+
+        helper.assertTrue(
+            crazySkeleton.hurt(level.damageSources().generic(), genericDamage),
+            "Expected crazy skeleton to remain vulnerable to generic non-fire damage"
+        );
+        helper.assertTrue(
+            vanillaSkeleton.hurt(level.damageSources().generic(), genericDamage),
+            "Expected vanilla skeleton baseline to remain vulnerable to generic non-fire damage"
+        );
+        helper.assertTrue(
+            Math.abs((crazyHealthBefore - crazySkeleton.getHealth()) - genericDamage) < 1.0E-6F,
+            "Expected crazy skeleton generic damage intake to stay vanilla-like"
+        );
+        helper.assertTrue(
+            Math.abs((vanillaHealthBefore - vanillaSkeleton.getHealth()) - genericDamage) < 1.0E-6F,
+            "Expected vanilla skeleton generic damage intake to stay unchanged"
+        );
+        helper.assertTrue(
+            crazySkeleton.getLootTable().equals(EntityType.SKELETON.getDefaultLootTable()),
+            "Expected crazy skeleton damage follow-up to keep the vanilla skeleton loot-table baseline"
+        );
+        helper.assertTrue(
+            Math.abs(crazySkeleton.getMaxHealth() - 1024.0D) < 1.0E-6D,
+            "Expected crazy skeleton damage follow-up to keep the modern 1024.0 runtime max-health clamp stable"
+        );
+        helper.assertTrue(
+            crazyMainHand.is(ModRegistries.CAVENIC_BOW.get()),
+            "Expected crazy skeleton damage follow-up to keep the guaranteed Cavenic Bow equipment intact"
+        );
+        helper.assertTrue(
+            EnchantmentHelper.getItemEnchantmentLevel(enchantments.getOrThrow(Enchantments.INFINITY), crazyMainHand) == 1,
+            "Expected crazy skeleton damage follow-up to keep the Infinity I bow enchantment intact"
+        );
+        helper.assertTrue(
+            Math.abs(getEquipmentDropChance(crazySkeleton, EquipmentSlot.MAINHAND) - CrazySkeleton.LEGACY_MAINHAND_DROP_CHANCE) < 1.0E-6F,
+            "Expected crazy skeleton damage follow-up to keep the legacy 1.0F mainhand drop chance intact"
+        );
+        helper.assertTrue(
+            CrazySkeletonLootPolicy.ORB_DROP_ROLL_BOUND == 5,
+            "Expected crazy skeleton damage follow-up to keep the inherited legacy orb roll bound pinned to 5"
+        );
+        helper.assertTrue(
+            lootEvents.tryAppendLegacyOrbDrop(crazySkeleton, drops, 0),
+            "Expected crazy skeleton damage follow-up to keep the winning orb-drop roll wired"
+        );
+        helper.assertTrue(
+            drops.size() == 1 && drops.getFirst().getItem().is(ModRegistries.CAVENIC_ORB.get()),
+            "Expected crazy skeleton damage follow-up to keep appending exactly one cavernreborn:cavenic_orb on the winning roll"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_SKELETON.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected crazy skeleton damage follow-up to keep spawn placement unregistered"
+        );
+        helper.assertFalse(
+            biomeModifiers.containsKey(crazySkeletonSpawnModifier),
+            "Expected crazy skeleton damage follow-up to keep the biome modifier absent at runtime"
+        );
+        helper.assertFalse(
+            biomes.getTag(spawnTag).isPresent(),
+            "Expected crazy skeleton damage follow-up to keep the spawn biome tag absent at runtime"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredFields()).anyMatch(field -> field.getType() == ServerBossEvent.class),
+            "Expected crazy skeleton damage follow-up to avoid adding boss-event state"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("aiStep")
+                    || name.equals("customServerAiStep")
+                    || name.equals("startSeenByPlayer")
+                    || name.equals("stopSeenByPlayer")
+                    || name.equals("registerGoals")
+                    || name.equals("reassessWeaponGoal")
+                    || name.equals("performRangedAttack")
+                    || name.equals("doHurtTarget")),
+            "Expected crazy skeleton damage follow-up to keep boss, particle and custom ranged-AI overrides absent"
         );
         helper.succeed();
     }

@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CrazySkeletonResourcesTest {
     @Test
-    void crazySkeletonRegistersWithDedicatedEntitySpawnEggRendererAndEquipmentFollowUpWhileKeepingRangedAiDeferred() throws IOException {
+    void crazySkeletonRegistersWithDedicatedEntitySpawnEggRendererAndDamageLootEquipmentFollowUpsWhileKeepingRangedAiDeferred() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -84,6 +84,7 @@ class CrazySkeletonResourcesTest {
         assertTrue(entitySource.contains(".add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)"));
         assertTrue(entitySource.contains(".add(Attributes.MOVEMENT_SPEED, 0.25D)"));
         assertTrue(entitySource.contains(".add(Attributes.FOLLOW_RANGE, 22.0D)"));
+        assertTrue(entitySource.contains("public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;"));
         assertTrue(entitySource.contains("public static final float LEGACY_MAINHAND_DROP_CHANCE = 1.0F;"));
         assertTrue(entitySource.contains("this.setDropChance(EquipmentSlot.MAINHAND, LEGACY_MAINHAND_DROP_CHANCE);"));
         assertTrue(entitySource.contains("public static ItemStack createLegacyCrazySkeletonBow(RegistryAccess registryAccess)"));
@@ -93,13 +94,17 @@ class CrazySkeletonResourcesTest {
         assertTrue(entitySource.contains("protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty)"));
         assertTrue(entitySource.contains("super.populateDefaultEquipmentSlots(random, difficulty);"));
         assertTrue(entitySource.contains("this.setItemSlot(EquipmentSlot.MAINHAND, createLegacyCrazySkeletonBow(this.registryAccess()));"));
+        assertTrue(entitySource.contains("public boolean hurt(DamageSource source, float damage)"));
+        assertTrue(entitySource.contains("source.is(DamageTypeTags.IS_FALL)"));
+        assertTrue(entitySource.contains("damage *= LEGACY_FALL_DAMAGE_MULTIPLIER;"));
+        assertTrue(entitySource.contains("source.is(DamageTypeTags.IS_FIRE)"));
+        assertTrue(entitySource.contains("return super.hurt(source, damage);"));
         assertTrue(entitySource.contains("return EntityType.SKELETON.getDefaultLootTable();"));
         assertFalse(entitySource.contains("NATURAL_SPAWN_WEIGHT"));
         assertFalse(entitySource.contains("NATURAL_SPAWN_MIN_COUNT"));
         assertFalse(entitySource.contains("NATURAL_SPAWN_MAX_COUNT"));
         assertFalse(entitySource.contains("canNaturallySpawnInDimension"));
         assertFalse(entitySource.contains("checkCrazySkeletonSpawnRules"));
-        assertFalse(entitySource.contains("public boolean hurt("));
         assertFalse(entitySource.contains("ServerBossEvent"));
         assertFalse(entitySource.contains("BossEvent"));
         assertFalse(entitySource.contains("public void aiStep()"));

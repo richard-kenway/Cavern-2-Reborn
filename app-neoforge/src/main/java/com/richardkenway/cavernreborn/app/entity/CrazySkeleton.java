@@ -5,7 +5,9 @@ import com.richardkenway.cavernreborn.app.registry.ModRegistries;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -18,6 +20,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 public final class CrazySkeleton extends Skeleton {
+    public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;
     public static final float LEGACY_MAINHAND_DROP_CHANCE = 1.0F;
 
     public CrazySkeleton(EntityType<? extends Skeleton> entityType, Level level) {
@@ -44,6 +47,19 @@ public final class CrazySkeleton extends Skeleton {
     protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
         super.populateDefaultEquipmentSlots(random, difficulty);
         this.setItemSlot(EquipmentSlot.MAINHAND, createLegacyCrazySkeletonBow(this.registryAccess()));
+    }
+
+    @Override
+    public boolean hurt(DamageSource source, float damage) {
+        if (source.is(DamageTypeTags.IS_FALL)) {
+            damage *= LEGACY_FALL_DAMAGE_MULTIPLIER;
+        }
+
+        if (source.is(DamageTypeTags.IS_FIRE)) {
+            return false;
+        }
+
+        return super.hurt(source, damage);
     }
 
     @Override

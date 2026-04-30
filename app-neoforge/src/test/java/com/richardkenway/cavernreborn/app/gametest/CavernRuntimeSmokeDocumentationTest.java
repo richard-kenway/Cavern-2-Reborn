@@ -181,7 +181,9 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("`crazy_skeleton`"));
         assertTrue(readme.contains("vanilla skeleton loot baseline"));
         assertTrue(readme.contains("docs/crazy-skeleton-loot-mvp.md"));
+        assertTrue(readme.contains("docs/crazy-skeleton-damage-behavior-mvp.md"));
         assertTrue(readme.contains("inherited legacy `1/5` `cavenic_orb` drop is now restored explicitly on top of that same vanilla skeleton loot baseline"));
+        assertTrue(readme.contains("inherited legacy fall-damage reduction and fire-damage immunity behavior are now restored explicitly on top of that same vanilla skeleton baseline"));
         assertTrue(readme.contains("legacy `EntityAIAttackCavenicBow` path"));
         assertTrue(readme.contains("docs/crazy-skeleton-cavenic-bow-equipment-mvp.md"));
         assertTrue(readme.contains("docs/crazy-skeleton-ranged-ai-boundary.md"));
@@ -433,9 +435,12 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("crazy skeleton mainhand drop chance smoke"));
         assertTrue(doc.contains("crazy skeleton legacy orb-drop event wiring smoke"));
         assertTrue(doc.contains("crazy skeleton legacy orb-drop deterministic winning/losing roll smoke"));
+        assertTrue(doc.contains("crazy skeleton legacy fall-damage reduction smoke"));
+        assertTrue(doc.contains("crazy skeleton legacy fire-damage immunity smoke"));
+        assertTrue(doc.contains("crazy skeleton generic-damage baseline smoke"));
         assertTrue(doc.contains("crazy skeleton explicit no-natural-spawn baseline boundary"));
-        assertTrue(doc.contains("crazy skeleton continued vanilla attack-damage baseline and explicit `1024.0` max-health clamp smoke"));
-        assertTrue(doc.contains("crazy skeleton reflection smoke for no custom damage, boss, particle or custom ranged-AI follow-up overrides beyond the explicit equipment hook"));
+        assertTrue(doc.contains("crazy skeleton continued vanilla attack-damage baseline, explicit `1024.0` max-health clamp and guaranteed `Cavenic Bow` + `Infinity` equipment stability smoke"));
+        assertTrue(doc.contains("crazy skeleton reflection smoke for no boss, particle or custom ranged-AI follow-up overrides beyond the explicit damage, loot and equipment hooks"));
         assertTrue(doc.contains("crazy skeleton explicit custom ranged AI / `EntityAIAttackCavenicBow` deferred boundary"));
         assertTrue(doc.contains("actual Crazy Zombie client boss-bar visual feel"));
         assertTrue(doc.contains("actual Crazy Zombie client particle-trail visual feel"));
@@ -487,7 +492,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("Crazy Zombie custom loot beyond the restored inherited `cavenic_orb` branch"));
         assertTrue(doc.contains("Crazy Skeleton natural spawning, because the inspected legacy path still belongs to the old Cavenia-only crazy-roster provider/config branch rather than the current `CAVERN` biome-spawn pattern"));
         assertTrue(doc.contains("Crazy Skeleton custom loot beyond the restored inherited `cavenic_orb` branch"));
-        assertTrue(doc.contains("Crazy Skeleton damage-behavior follow-up"));
+        assertTrue(doc.contains("actual long-running Crazy Skeleton fire/lava gameplay feel"));
         assertTrue(doc.contains("Crazy Skeleton boss bar / sky-darkening follow-up"));
         assertTrue(doc.contains("Crazy Skeleton particle-trail follow-up"));
         assertTrue(doc.contains("actual Crazy Skeleton ranged combat feel remains manual / follow-up because the equipment-only slice intentionally does not port `EntityAIAttackCavenicBow`"));

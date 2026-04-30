@@ -13,22 +13,25 @@ class CrazySkeletonDocumentationTest {
     private static final Path BASELINE_DOC = resolveProjectFile("docs", "crazy-skeleton-baseline-mvp.md");
     private static final Path EQUIPMENT_DOC = resolveProjectFile("docs", "crazy-skeleton-cavenic-bow-equipment-mvp.md");
     private static final Path LOOT_DOC = resolveProjectFile("docs", "crazy-skeleton-loot-mvp.md");
+    private static final Path DAMAGE_DOC = resolveProjectFile("docs", "crazy-skeleton-damage-behavior-mvp.md");
     private static final Path AI_BOUNDARY_DOC = resolveProjectFile("docs", "crazy-skeleton-ranged-ai-boundary.md");
     private static final Path RUNTIME_SMOKE = resolveProjectFile("docs", "runtime-smoke.md");
 
     @Test
-    void readmeMentionsCrazySkeletonBaselineEquipmentLootFollowUpsAndAiBoundaryDocs() throws IOException {
+    void readmeMentionsCrazySkeletonBaselineEquipmentLootDamageFollowUpsAndAiBoundaryDocs() throws IOException {
         String readme = Files.readString(README);
 
         assertTrue(readme.contains("Crazy Skeleton Baseline MVP"));
         assertTrue(readme.contains("docs/crazy-skeleton-baseline-mvp.md"));
         assertTrue(readme.contains("docs/crazy-skeleton-cavenic-bow-equipment-mvp.md"));
         assertTrue(readme.contains("docs/crazy-skeleton-loot-mvp.md"));
+        assertTrue(readme.contains("docs/crazy-skeleton-damage-behavior-mvp.md"));
         assertTrue(readme.contains("docs/crazy-skeleton-ranged-ai-boundary.md"));
         assertTrue(readme.contains("second crazy-variant foundation follow-up"));
         assertTrue(readme.contains("`crazy_skeleton`"));
         assertTrue(readme.contains("vanilla skeleton loot baseline"));
         assertTrue(readme.contains("inherited legacy `1/5` `cavenic_orb` drop is now restored explicitly on top of that same vanilla skeleton loot baseline"));
+        assertTrue(readme.contains("inherited legacy fall-damage reduction and fire-damage immunity behavior are now restored explicitly on top of that same vanilla skeleton baseline"));
         assertTrue(readme.contains("legacy `2000.0` max-health request explicitly clamped by the modern `generic.max_health` runtime ceiling of `1024.0`"));
         assertTrue(readme.contains("legacy `EntityAIAttackCavenicBow` path"));
         assertTrue(readme.contains("guaranteed `Cavenic Bow` mainhand, forced `Infinity` enchantment and `1.0F` mainhand drop chance are now restored explicitly"));
@@ -77,6 +80,7 @@ class CrazySkeletonDocumentationTest {
         assertTrue(doc.contains("constructor sets mainhand drop chance to `1.0F`"));
         assertTrue(doc.contains("The dedicated follow-up documented in `docs/crazy-skeleton-cavenic-bow-equipment-mvp.md` now restores the guaranteed legacy `Cavenic Bow` + `Infinity` mainhand identity"));
         assertTrue(doc.contains("The custom ranged AI identity is still deferred and documented in `docs/crazy-skeleton-ranged-ai-boundary.md`."));
+        assertTrue(doc.contains("The dedicated follow-up documented in `docs/crazy-skeleton-damage-behavior-mvp.md` now restores the inherited legacy fall-damage reduction and fire-damage immunity behavior explicitly while keeping the vanilla `Skeleton` base."));
         assertTrue(doc.contains("inherited `cavenic_orb` drop behavior from `EntityCavenicSkeleton`, now restored explicitly in `docs/crazy-skeleton-loot-mvp.md`"));
         assertTrue(doc.contains("no `EntityAIAttackCavenicBow`"));
         assertTrue(doc.contains("no custom ranged-combat loop"));
@@ -110,7 +114,7 @@ class CrazySkeletonDocumentationTest {
         assertTrue(doc.contains("Infinity enchantment"));
         assertTrue(doc.contains("no natural-spawn changes"));
         assertTrue(doc.contains("no new loot/orb behavior is introduced in this equipment slice; the inherited orb-drop follow-up is documented separately in `docs/crazy-skeleton-loot-mvp.md`"));
-        assertTrue(doc.contains("no damage changes"));
+        assertTrue(doc.contains("no new damage changes are introduced in this equipment slice; the inherited fall/fire damage follow-up is documented separately in `docs/crazy-skeleton-damage-behavior-mvp.md`"));
     }
 
     @Test
@@ -135,7 +139,32 @@ class CrazySkeletonDocumentationTest {
         assertTrue(doc.contains("guaranteed `Cavenic Bow` equipment do not affect this restored orb drop"));
         assertTrue(doc.contains("Reborn `CrazySkeleton` intentionally extends vanilla `Skeleton`, not Reborn `CavenicSkeleton`."));
         assertTrue(doc.contains("the preserved guaranteed `Cavenic Bow` + `Infinity` equipment hook and `1.0F` mainhand drop chance"));
-        assertTrue(doc.contains("continued absence of natural-spawn wiring, damage behavior, boss-event state, particles and custom ranged-AI overrides"));
+        assertTrue(doc.contains("continued absence of natural-spawn wiring, boss-event state, particles and custom ranged-AI overrides beyond the explicit damage hook"));
+    }
+
+    @Test
+    void crazySkeletonDamageDocStatesInheritedFallFireMappingAndTestingBoundaries() throws IOException {
+        String doc = Files.readString(DAMAGE_DOC);
+
+        assertTrue(doc.contains("`cavern.entity.monster.EntityCrazySkeleton`"));
+        assertTrue(doc.contains("`cavern.entity.monster.EntityCavenicSkeleton`"));
+        assertTrue(doc.contains("does not override `attackEntityFrom(...)`"));
+        assertTrue(doc.contains("inherits `EntityCavenicSkeleton#attackEntityFrom"));
+        assertTrue(doc.contains("`source == DamageSource.FALL`"));
+        assertTrue(doc.contains("`damage *= 0.35F`"));
+        assertTrue(doc.contains("`!source.isFireDamage()`"));
+        assertTrue(doc.contains("`hurt(DamageSource source, float damage)`"));
+        assertTrue(doc.contains("`DamageTypeTags.IS_FALL`"));
+        assertTrue(doc.contains("`LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F`"));
+        assertTrue(doc.contains("`DamageTypeTags.IS_FIRE`"));
+        assertTrue(doc.contains("Generic non-fire, non-fall damage remains vanilla-like."));
+        assertTrue(doc.contains("Equipment remains unchanged."));
+        assertTrue(doc.contains("Loot/orb behavior remains unchanged."));
+        assertTrue(doc.contains("custom ranged AI / `EntityAIAttackCavenicBow` remains deferred"));
+        assertTrue(doc.contains("Reborn `CrazySkeleton` intentionally extends vanilla `Skeleton`, not Reborn `CavenicSkeleton`."));
+        assertTrue(doc.contains("continued guaranteed `Cavenic Bow` + `Infinity` equipment stability"));
+        assertTrue(doc.contains("continued inherited `1/5` orb-drop wiring stability"));
+        assertTrue(doc.contains("continued natural-spawn deferral"));
     }
 
     @Test
@@ -153,7 +182,7 @@ class CrazySkeletonDocumentationTest {
     }
 
     @Test
-    void runtimeSmokeMentionsCrazySkeletonEquipmentCoverageAndAiBoundary() throws IOException {
+    void runtimeSmokeMentionsCrazySkeletonEquipmentLootDamageCoverageAndAiBoundary() throws IOException {
         String runtimeSmoke = Files.readString(RUNTIME_SMOKE);
 
         assertTrue(runtimeSmoke.contains("crazy skeleton runtime registry id"));
@@ -167,10 +196,14 @@ class CrazySkeletonDocumentationTest {
         assertTrue(runtimeSmoke.contains("crazy skeleton mainhand drop chance smoke"));
         assertTrue(runtimeSmoke.contains("crazy skeleton legacy orb-drop event wiring smoke"));
         assertTrue(runtimeSmoke.contains("crazy skeleton legacy orb-drop deterministic winning/losing roll smoke"));
+        assertTrue(runtimeSmoke.contains("crazy skeleton legacy fall-damage reduction smoke"));
+        assertTrue(runtimeSmoke.contains("crazy skeleton legacy fire-damage immunity smoke"));
+        assertTrue(runtimeSmoke.contains("crazy skeleton generic-damage baseline smoke"));
         assertTrue(runtimeSmoke.contains("crazy skeleton explicit no-natural-spawn baseline boundary"));
         assertTrue(runtimeSmoke.contains("crazy skeleton explicit custom ranged AI / `EntityAIAttackCavenicBow` deferred boundary"));
         assertTrue(runtimeSmoke.contains("actual Crazy Skeleton renderer/model visual feel"));
         assertTrue(runtimeSmoke.contains("actual Crazy Skeleton ranged combat feel remains manual / follow-up"));
+        assertTrue(runtimeSmoke.contains("actual long-running Crazy Skeleton fire/lava gameplay feel"));
         assertTrue(runtimeSmoke.contains("Crazy Skeleton natural spawning"));
         assertTrue(runtimeSmoke.contains("Crazy Skeleton custom ranged Cavenic Bow behavior"));
     }
