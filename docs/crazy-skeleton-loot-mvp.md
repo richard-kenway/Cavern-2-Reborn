@@ -58,7 +58,7 @@ It does not add natural spawning, equipment changes, ranged-AI changes, damage b
 - Crazy Skeleton natural spawning remains explicitly deferred because the inspected legacy path is still tied to the old Cavenia-only crazy-roster provider/config branch.
 - Crazy Skeleton damage behavior remains documented separately in `docs/crazy-skeleton-damage-behavior-mvp.md`.
 - Crazy Skeleton boss bar / sky-darkening remains documented separately in `docs/crazy-skeleton-boss-bar-mvp.md`.
-- Crazy Skeleton particle trail remains out of scope in this slice.
+- Crazy Skeleton particle trail now remains documented separately in `docs/crazy-skeleton-particle-trail-mvp.md`.
 - Crazy Skeleton custom ranged AI remains out of scope in this slice.
 
 ## Testing
@@ -71,7 +71,7 @@ It does not add natural spawning, equipment changes, ranged-AI changes, damage b
   - the continued `Skeleton` base instead of Reborn `CavenicSkeleton`
   - the preserved `2000.0D` source literal
   - the preserved guaranteed `Cavenic Bow` + `Infinity` equipment hook and `1.0F` mainhand drop chance
-  - the continued absence of natural-spawn wiring, particles and custom ranged-AI overrides beyond the explicit damage and boss hooks
+  - the continued absence of natural-spawn wiring and custom ranged-AI overrides beyond the explicit particle, damage and boss hooks
 - Documentation tests pin the legacy source references, the inherited `1/5` orb chance, the explicit copy-not-inherit mapping and the unchanged natural-spawn/equipment/ranged-AI boundaries.
 - NeoForge GameTest runtime smoke covers:
   - crazy skeleton vanilla skeleton loot-table baseline smoke
@@ -88,7 +88,6 @@ It does not add natural spawning, equipment changes, ranged-AI changes, damage b
 - Crazy Skeleton custom ranged AI
 - Crazy Skeleton natural spawning
 - Crazy Skeleton damage behavior
-- Crazy Skeleton particle trail
 - Crazy Creeper / Crazy Spider
 - Cavenia
 - magic-book or spell systems

@@ -54,6 +54,7 @@ The risky parts are separate follow-up branches rather than prerequisites for th
 - The custom ranged AI identity is still deferred and documented in `docs/crazy-skeleton-ranged-ai-boundary.md`.
 - The dedicated follow-up documented in `docs/crazy-skeleton-damage-behavior-mvp.md` now restores the inherited legacy fall-damage reduction and fire-damage immunity behavior explicitly while keeping the vanilla `Skeleton` base.
 - The dedicated follow-up documented in `docs/crazy-skeleton-boss-bar-mvp.md` now restores the legacy white progress boss-event / sky-darkening branch explicitly while keeping the vanilla `Skeleton` base.
+- The dedicated follow-up documented in `docs/crazy-skeleton-particle-trail-mvp.md` now restores the legacy client-only `ParticleCrazyMob` trail explicitly while keeping the vanilla `Skeleton` base.
 
 ## Attributes
 
@@ -126,7 +127,7 @@ The baseline stayed safe because vanilla `Skeleton` already exists and can spawn
 - inherited fall/fire damage behavior from `EntityCavenicSkeleton`, now restored explicitly in `docs/crazy-skeleton-damage-behavior-mvp.md`
 - inherited `cavenic_orb` drop behavior from `EntityCavenicSkeleton`, now restored explicitly in `docs/crazy-skeleton-loot-mvp.md`
 - legacy white progress boss-event / sky-darkening behavior, now restored explicitly in `docs/crazy-skeleton-boss-bar-mvp.md`
-- client-only particle trail
+- client-only particle trail, now restored explicitly in `docs/crazy-skeleton-particle-trail-mvp.md`
 - `isNonBoss()`
 - `canBeRidden(...)`
 - lightning immunity override
@@ -134,7 +135,7 @@ The baseline stayed safe because vanilla `Skeleton` already exists and can spawn
 
 ## Testing
 
-- Resource tests cover registry source, spawn egg placement, renderer registration source, texture/model/lang resources, the explicit vanilla `Skeleton` base, the explicit vanilla skeleton loot-table baseline, the restored guaranteed `Cavenic Bow` + `Infinity` equipment hook, the restored inherited `1/5` orb-drop event wiring, the restored inherited fall/fire damage hook, the restored legacy white progress boss-event wiring and the continued absence of natural-spawn, particle and `EntityAIAttackCavenicBow` ports.
+- Resource tests cover registry source, spawn egg placement, renderer registration source, texture/model/lang resources, the explicit vanilla `Skeleton` base, the explicit vanilla skeleton loot-table baseline, the restored guaranteed `Cavenic Bow` + `Infinity` equipment hook, the restored inherited `1/5` orb-drop event wiring, the restored inherited fall/fire damage hook, the restored legacy white progress boss-event wiring, the restored shared `crazy_mob` particle hook and the continued absence of natural-spawn and `EntityAIAttackCavenicBow` ports.
 - Documentation tests cover the legacy references inspected, the crazy-roster context, the attribute mapping, renderer/texture provenance, spawn egg decision, the Cavenia-tied natural-spawn deferral, the dedicated equipment follow-up and the deferred custom ranged AI boundary.
 - NeoForge GameTest runtime smoke covers:
   - crazy skeleton runtime registry id
@@ -151,13 +152,13 @@ The baseline stayed safe because vanilla `Skeleton` already exists and can spawn
   - inherited legacy fire-damage immunity smoke
   - inherited legacy generic-damage baseline smoke
   - inherited legacy white progress boss-event / sky-darkening smoke
+  - shared crazy skeleton `crazy_mob` particle source/resource smoke
   - explicit no-natural-spawn baseline boundary
 
 ## Out Of Scope
 
 - Crazy Skeleton natural spawning
 - Crazy Skeleton custom loot beyond the restored inherited `cavenic_orb` branch
-- Crazy Skeleton particle-trail follow-up
 - Crazy Skeleton custom ranged AI
 - `EntityAIAttackCavenicBow`
 - Crazy Creeper / Crazy Spider

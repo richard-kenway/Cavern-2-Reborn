@@ -29,6 +29,11 @@ import net.minecraft.world.level.storage.loot.LootTable;
 public final class CrazySkeleton extends Skeleton {
     public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;
     public static final float LEGACY_MAINHAND_DROP_CHANCE = 1.0F;
+    public static final int LEGACY_PARTICLE_COUNT_PER_TICK = 3;
+    public static final double LEGACY_PARTICLE_HORIZONTAL_OFFSET = 0.25D;
+    public static final double LEGACY_PARTICLE_BASE_Y_OFFSET = 0.65D;
+    public static final double LEGACY_PARTICLE_VERTICAL_MOTION_OFFSET = 0.25D;
+    public static final double LEGACY_PARTICLE_VERTICAL_MOTION_SCALE = 0.125D;
     public static final double LEGACY_BOSS_BAR_VISIBILITY_DISTANCE = 20.0D;
     public static final double LEGACY_BOSS_BAR_DARKEN_SKY_DISTANCE = 30.0D;
 
@@ -62,6 +67,26 @@ public final class CrazySkeleton extends Skeleton {
     protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
         super.populateDefaultEquipmentSlots(random, difficulty);
         this.setItemSlot(EquipmentSlot.MAINHAND, createLegacyCrazySkeletonBow(this.registryAccess()));
+    }
+
+    @Override
+    public void aiStep() {
+        super.aiStep();
+
+        if (this.level().isClientSide()) {
+            for (int i = 0; i < LEGACY_PARTICLE_COUNT_PER_TICK; ++i) {
+                int particleXDirection = this.random.nextInt(2) * 2 - 1;
+                int particleZDirection = this.random.nextInt(2) * 2 - 1;
+                double particleX = this.getX() + LEGACY_PARTICLE_HORIZONTAL_OFFSET * particleXDirection;
+                double particleY = this.getY() + LEGACY_PARTICLE_BASE_Y_OFFSET + this.random.nextFloat();
+                double particleZ = this.getZ() + LEGACY_PARTICLE_HORIZONTAL_OFFSET * particleZDirection;
+                double motionX = this.random.nextFloat() * 1.0F * particleXDirection;
+                double motionY = (this.random.nextFloat() - LEGACY_PARTICLE_VERTICAL_MOTION_OFFSET) * LEGACY_PARTICLE_VERTICAL_MOTION_SCALE;
+                double motionZ = this.random.nextFloat() * 1.0F * particleZDirection;
+
+                this.level().addParticle(ModRegistries.CRAZY_MOB_PARTICLE.get(), particleX, particleY, particleZ, motionX, motionY, motionZ);
+            }
+        }
     }
 
     @Override

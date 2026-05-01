@@ -250,6 +250,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CRAZY_SKELETON_EQUIPMENT_ANCHOR = new BlockPos(6208, 96, 0);
     private static final BlockPos CRAZY_SKELETON_DAMAGE_ANCHOR = new BlockPos(6304, 96, 0);
     private static final BlockPos CRAZY_SKELETON_BOSS_BAR_ANCHOR = new BlockPos(6400, 96, 0);
+    private static final BlockPos CRAZY_SKELETON_PARTICLE_TRAIL_ANCHOR = new BlockPos(6496, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -4195,12 +4196,11 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("aiStep")
-                    || name.equals("registerGoals")
+                .anyMatch(name -> name.equals("registerGoals")
                     || name.equals("reassessWeaponGoal")
                     || name.equals("performRangedAttack")
                     || name.equals("doHurtTarget")),
-            "Expected crazy skeleton baseline to avoid adding particle, ranged-AI or knockback follow-up overrides beyond the explicit damage and boss hooks"
+            "Expected crazy skeleton baseline to avoid adding custom ranged-AI or knockback follow-up overrides beyond the explicit particle, damage and boss hooks"
         );
         helper.succeed();
     }
@@ -4320,12 +4320,11 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("aiStep")
-                    || name.equals("registerGoals")
+                .anyMatch(name -> name.equals("registerGoals")
                     || name.equals("reassessWeaponGoal")
                     || name.equals("performRangedAttack")
                     || name.equals("doHurtTarget")),
-            "Expected crazy skeleton equipment follow-up to keep particle, custom ranged-AI and knockback follow-up overrides absent beyond the explicit damage and boss hooks"
+            "Expected crazy skeleton equipment follow-up to keep custom ranged-AI and knockback follow-up overrides absent beyond the explicit particle, damage and boss hooks"
         );
         helper.succeed();
     }
@@ -4424,12 +4423,11 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("aiStep")
-                    || name.equals("registerGoals")
+                .anyMatch(name -> name.equals("registerGoals")
                     || name.equals("reassessWeaponGoal")
                     || name.equals("performRangedAttack")
                     || name.equals("doHurtTarget")),
-            "Expected crazy skeleton loot follow-up to avoid adding particle or custom ranged-AI overrides beyond the explicit damage and boss hooks"
+            "Expected crazy skeleton loot follow-up to avoid custom ranged-AI overrides beyond the explicit particle, damage and boss hooks"
         );
         helper.succeed();
     }
@@ -4594,12 +4592,11 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("aiStep")
-                    || name.equals("registerGoals")
+                .anyMatch(name -> name.equals("registerGoals")
                     || name.equals("reassessWeaponGoal")
                     || name.equals("performRangedAttack")
                     || name.equals("doHurtTarget")),
-            "Expected crazy skeleton damage follow-up to keep particle and custom ranged-AI overrides absent"
+            "Expected crazy skeleton damage follow-up to keep custom ranged-AI overrides absent beyond the explicit particle hook"
         );
         helper.succeed();
     }
@@ -4794,12 +4791,123 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("aiStep")
-                    || name.equals("registerGoals")
+                .anyMatch(name -> name.equals("registerGoals")
                     || name.equals("reassessWeaponGoal")
                     || name.equals("performRangedAttack")
                     || name.equals("doHurtTarget")),
-            "Expected crazy skeleton boss-bar follow-up to keep particle and custom ranged-AI overrides absent"
+            "Expected crazy skeleton boss-bar follow-up to keep custom ranged-AI overrides absent beyond the explicit particle hook"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySkeletonParticleTrailRegistrationKeepsExistingSlicesStableAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_SKELETON_PARTICLE_TRAIL_ANCHOR;
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceKey<BiomeModifier> crazySkeletonSpawnModifier = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_skeleton_spawns")
+        );
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_crazy_skeleton"));
+        CrazySkeletonLootEvents lootEvents = new CrazySkeletonLootEvents();
+        List<ItemEntity> drops = new ArrayList<>();
+        HolderLookup.RegistryLookup<Enchantment> enchantments = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+
+        resetMiningArea(level, origin, 16.0D);
+        prepareCombatPlatform(level, origin);
+
+        CrazySkeleton skeleton = spawnLivingEntity(helper, ModRegistries.CRAZY_SKELETON.get(), origin);
+        invokePopulateDefaultEquipmentSlots(skeleton, RandomSource.create(9753L), level.getCurrentDifficultyAt(origin));
+        skeleton.aiStep();
+        ItemStack mainHand = skeleton.getMainHandItem();
+
+        helper.assertTrue(
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_mob").equals(BuiltInRegistries.PARTICLE_TYPE.getKey(ModRegistries.CRAZY_MOB_PARTICLE.get())),
+            "Expected crazy skeleton particle-trail follow-up to reuse the shared crazy_mob particle type"
+        );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("aiStep")),
+            "Expected crazy skeleton particle-trail follow-up to keep the bounded aiStep particle hook on the entity class"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("onUpdate") || name.equals("tick")),
+            "Expected crazy skeleton particle-trail follow-up to avoid reviving the legacy onUpdate hook or broad full-tick overrides"
+        );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredFields()).anyMatch(field -> field.getType() == ServerBossEvent.class),
+            "Expected crazy skeleton particle-trail follow-up to keep the restored boss-event field intact"
+        );
+        helper.assertTrue(
+            skeleton.getLegacyCrazyBossEventForTests().getColor() == BossEvent.BossBarColor.WHITE
+                && skeleton.getLegacyCrazyBossEventForTests().getOverlay() == BossEvent.BossBarOverlay.PROGRESS,
+            "Expected crazy skeleton particle-trail follow-up to keep the legacy white progress boss-event styling"
+        );
+        helper.assertTrue(
+            skeleton.getLootTable().equals(EntityType.SKELETON.getDefaultLootTable()),
+            "Expected crazy skeleton particle-trail follow-up to keep the vanilla skeleton loot-table baseline"
+        );
+        helper.assertTrue(
+            CrazySkeletonLootPolicy.ORB_DROP_ROLL_BOUND == 5,
+            "Expected crazy skeleton particle-trail follow-up to keep the inherited 1/5 orb-drop roll bound"
+        );
+        helper.assertTrue(
+            lootEvents.tryAppendLegacyOrbDrop(skeleton, drops, 0),
+            "Expected crazy skeleton particle-trail follow-up to keep the winning orb-drop branch available"
+        );
+        helper.assertTrue(
+            drops.size() == 1 && drops.getFirst().getItem().is(ModRegistries.CAVENIC_ORB.get()),
+            "Expected crazy skeleton particle-trail follow-up to keep appending exactly one cavenic orb on the winning roll"
+        );
+        helper.assertTrue(
+            Math.abs(skeleton.getMaxHealth() - 1024.0D) < 1.0E-6D,
+            "Expected crazy skeleton particle-trail follow-up to keep the modern 1024.0 runtime max-health clamp"
+        );
+        helper.assertFalse(
+            skeleton.hurt(level.damageSources().lava(), 4.0F),
+            "Expected crazy skeleton particle-trail follow-up to keep fire-tagged damage rejection intact"
+        );
+        helper.assertTrue(
+            skeleton.hurt(level.damageSources().fall(), 10.0F),
+            "Expected crazy skeleton particle-trail follow-up to keep fall damage routed through the legacy multiplier hook"
+        );
+        helper.assertTrue(
+            Math.abs(CrazySkeleton.LEGACY_FALL_DAMAGE_MULTIPLIER - 0.35F) < 1.0E-6F,
+            "Expected crazy skeleton particle-trail follow-up to keep the legacy 0.35 fall multiplier intact"
+        );
+        helper.assertTrue(
+            mainHand.is(ModRegistries.CAVENIC_BOW.get()),
+            "Expected crazy skeleton particle-trail follow-up to keep the guaranteed Cavenic Bow equipment intact"
+        );
+        helper.assertTrue(
+            EnchantmentHelper.getItemEnchantmentLevel(enchantments.getOrThrow(Enchantments.INFINITY), mainHand) == 1,
+            "Expected crazy skeleton particle-trail follow-up to keep the Infinity I bow enchantment intact"
+        );
+        helper.assertTrue(
+            Math.abs(getEquipmentDropChance(skeleton, EquipmentSlot.MAINHAND) - CrazySkeleton.LEGACY_MAINHAND_DROP_CHANCE) < 1.0E-6F,
+            "Expected crazy skeleton particle-trail follow-up to keep the legacy 1.0F mainhand drop chance intact"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_SKELETON.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected crazy skeleton particle-trail follow-up to keep spawn placement unregistered"
+        );
+        helper.assertFalse(
+            biomeModifiers.containsKey(crazySkeletonSpawnModifier),
+            "Expected crazy skeleton particle-trail follow-up to keep the biome modifier absent at runtime"
+        );
+        helper.assertFalse(
+            biomes.getTag(spawnTag).isPresent(),
+            "Expected crazy skeleton particle-trail follow-up to keep the spawn biome tag absent at runtime"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("registerGoals")
+                    || name.equals("reassessWeaponGoal")
+                    || name.equals("performRangedAttack")
+                    || name.equals("doHurtTarget")),
+            "Expected crazy skeleton particle-trail follow-up to keep custom ranged-AI overrides absent beyond the explicit particle, damage, loot, equipment and boss hooks"
         );
         helper.succeed();
     }

@@ -65,7 +65,7 @@ This keeps the currently accepted boundaries intact:
 - no new loot/orb behavior is introduced in this equipment slice; the inherited orb-drop follow-up is documented separately in `docs/crazy-skeleton-loot-mvp.md`
 - no new damage changes are introduced in this equipment slice; the inherited fall/fire damage follow-up is documented separately in `docs/crazy-skeleton-damage-behavior-mvp.md`
 - no new boss-bar or sky-darkening changes are introduced in this equipment slice; the legacy boss-event follow-up is documented separately in `docs/crazy-skeleton-boss-bar-mvp.md`
-- no particle trail is added
+- no new particle-trail changes are introduced in this equipment slice; the shared legacy `ParticleCrazyMob` follow-up is documented separately in `docs/crazy-skeleton-particle-trail-mvp.md`
 
 ## Why The Base Class Stays Vanilla
 
@@ -129,6 +129,5 @@ The bow is only equipped onto Crazy Skeleton.
 - Crazy Skeleton natural spawning
 - Crazy Skeleton custom loot / `cavenic_orb` drop
 - Crazy Skeleton damage behavior
-- Crazy Skeleton particle trail
 - Crazy Creeper / Crazy Spider
 - Cavenia

@@ -69,7 +69,7 @@ This equipment-only follow-up restores the held bow identity without porting the
 - no custom `performRangedAttack(...)` override
 - no melee fallback rewrite
 - no bow/projectile rewrite
-- no natural-spawn, inherited orb-drop, damage, boss-bar or particle follow-up beyond the separately restored slices documented in `docs/crazy-skeleton-loot-mvp.md`, `docs/crazy-skeleton-damage-behavior-mvp.md` and `docs/crazy-skeleton-boss-bar-mvp.md`
+- no natural-spawn, inherited orb-drop, damage, boss-bar or particle follow-up beyond the separately restored slices documented in `docs/crazy-skeleton-loot-mvp.md`, `docs/crazy-skeleton-damage-behavior-mvp.md`, `docs/crazy-skeleton-boss-bar-mvp.md` and `docs/crazy-skeleton-particle-trail-mvp.md`
 
 ## Testing Boundary
 
@@ -86,6 +86,6 @@ This equipment-only follow-up restores the held bow identity without porting the
 - loot / `cavenic_orb`, now documented separately in `docs/crazy-skeleton-loot-mvp.md`
 - damage behavior, now documented separately in `docs/crazy-skeleton-damage-behavior-mvp.md`
 - boss bar / sky-darkening, now documented separately in `docs/crazy-skeleton-boss-bar-mvp.md`
-- particle trail
+- particle trail, now documented separately in `docs/crazy-skeleton-particle-trail-mvp.md`
 - Crazy Creeper / Crazy Spider
 - Cavenia

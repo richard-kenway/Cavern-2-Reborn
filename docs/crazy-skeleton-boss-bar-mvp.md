@@ -92,7 +92,7 @@ It restores only the legacy Crazy Skeleton boss bar / sky-darkening branch. It d
 - Damage remains unchanged.
 - natural spawning remains deferred
 - custom ranged AI remains deferred
-- particles remain a separate client-visual follow-up
+- particles now remain documented separately in `docs/crazy-skeleton-particle-trail-mvp.md`
 - no custom packets were added
 - no Cavenia content was added
 
@@ -117,7 +117,7 @@ More specifically:
   - the exact legacy boss-event references
   - the single global boss-event ambiguity note
   - the explicit copy-not-inherit mapping
-  - the separate particle-trail follow-up boundary
+  - the separate particle-trail follow-up mapping
 - NeoForge GameTest runtime smoke covers:
   - crazy skeleton boss-event wiring smoke
   - crazy skeleton boss-bar color/overlay smoke
@@ -128,7 +128,6 @@ More specifically:
 
 ## Still Out Of Scope
 
-- Crazy Skeleton particle trail
 - `EntityAIAttackCavenicBow`
 - Crazy Skeleton custom ranged AI
 - Crazy Skeleton natural spawning

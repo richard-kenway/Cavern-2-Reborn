@@ -15,11 +15,12 @@ class CrazySkeletonDocumentationTest {
     private static final Path LOOT_DOC = resolveProjectFile("docs", "crazy-skeleton-loot-mvp.md");
     private static final Path DAMAGE_DOC = resolveProjectFile("docs", "crazy-skeleton-damage-behavior-mvp.md");
     private static final Path BOSS_DOC = resolveProjectFile("docs", "crazy-skeleton-boss-bar-mvp.md");
+    private static final Path PARTICLE_DOC = resolveProjectFile("docs", "crazy-skeleton-particle-trail-mvp.md");
     private static final Path AI_BOUNDARY_DOC = resolveProjectFile("docs", "crazy-skeleton-ranged-ai-boundary.md");
     private static final Path RUNTIME_SMOKE = resolveProjectFile("docs", "runtime-smoke.md");
 
     @Test
-    void readmeMentionsCrazySkeletonBaselineEquipmentLootDamageBossFollowUpsAndAiBoundaryDocs() throws IOException {
+    void readmeMentionsCrazySkeletonBaselineEquipmentLootDamageBossParticleFollowUpsAndAiBoundaryDocs() throws IOException {
         String readme = Files.readString(README);
 
         assertTrue(readme.contains("Crazy Skeleton Baseline MVP"));
@@ -28,6 +29,7 @@ class CrazySkeletonDocumentationTest {
         assertTrue(readme.contains("docs/crazy-skeleton-loot-mvp.md"));
         assertTrue(readme.contains("docs/crazy-skeleton-damage-behavior-mvp.md"));
         assertTrue(readme.contains("docs/crazy-skeleton-boss-bar-mvp.md"));
+        assertTrue(readme.contains("docs/crazy-skeleton-particle-trail-mvp.md"));
         assertTrue(readme.contains("docs/crazy-skeleton-ranged-ai-boundary.md"));
         assertTrue(readme.contains("second crazy-variant foundation follow-up"));
         assertTrue(readme.contains("`crazy_skeleton`"));
@@ -35,6 +37,7 @@ class CrazySkeletonDocumentationTest {
         assertTrue(readme.contains("inherited legacy `1/5` `cavenic_orb` drop is now restored explicitly on top of that same vanilla skeleton loot baseline"));
         assertTrue(readme.contains("inherited legacy fall-damage reduction and fire-damage immunity behavior are now restored explicitly on top of that same vanilla skeleton baseline"));
         assertTrue(readme.contains("legacy white progress boss bar and sky-darkening boss-event branch are now restored explicitly on top of that same vanilla skeleton baseline"));
+        assertTrue(readme.contains("legacy client-only portal-tinted particle trail is now restored explicitly on top of that same vanilla skeleton baseline"));
         assertTrue(readme.contains("legacy `2000.0` max-health request explicitly clamped by the modern `generic.max_health` runtime ceiling of `1024.0`"));
         assertTrue(readme.contains("legacy `EntityAIAttackCavenicBow` path"));
         assertTrue(readme.contains("guaranteed `Cavenic Bow` mainhand, forced `Infinity` enchantment and `1.0F` mainhand drop chance are now restored explicitly"));
@@ -85,11 +88,12 @@ class CrazySkeletonDocumentationTest {
         assertTrue(doc.contains("The custom ranged AI identity is still deferred and documented in `docs/crazy-skeleton-ranged-ai-boundary.md`."));
         assertTrue(doc.contains("The dedicated follow-up documented in `docs/crazy-skeleton-damage-behavior-mvp.md` now restores the inherited legacy fall-damage reduction and fire-damage immunity behavior explicitly while keeping the vanilla `Skeleton` base."));
         assertTrue(doc.contains("The dedicated follow-up documented in `docs/crazy-skeleton-boss-bar-mvp.md` now restores the legacy white progress boss-event / sky-darkening branch explicitly while keeping the vanilla `Skeleton` base."));
+        assertTrue(doc.contains("The dedicated follow-up documented in `docs/crazy-skeleton-particle-trail-mvp.md` now restores the legacy client-only `ParticleCrazyMob` trail explicitly while keeping the vanilla `Skeleton` base."));
         assertTrue(doc.contains("inherited `cavenic_orb` drop behavior from `EntityCavenicSkeleton`, now restored explicitly in `docs/crazy-skeleton-loot-mvp.md`"));
         assertTrue(doc.contains("no `EntityAIAttackCavenicBow`"));
         assertTrue(doc.contains("no custom ranged-combat loop"));
         assertTrue(doc.contains("no Cavenic Bow behavior changes"));
-        assertTrue(doc.contains("client-only particle trail"));
+        assertTrue(doc.contains("client-only particle trail, now restored explicitly in `docs/crazy-skeleton-particle-trail-mvp.md`"));
         assertTrue(doc.contains("Crazy Creeper"));
         assertTrue(doc.contains("Crazy Spider"));
         assertTrue(doc.contains("Cavenia"));
@@ -119,6 +123,7 @@ class CrazySkeletonDocumentationTest {
         assertTrue(doc.contains("no new loot/orb behavior is introduced in this equipment slice; the inherited orb-drop follow-up is documented separately in `docs/crazy-skeleton-loot-mvp.md`"));
         assertTrue(doc.contains("no new damage changes are introduced in this equipment slice; the inherited fall/fire damage follow-up is documented separately in `docs/crazy-skeleton-damage-behavior-mvp.md`"));
         assertTrue(doc.contains("no new boss-bar or sky-darkening changes are introduced in this equipment slice; the legacy boss-event follow-up is documented separately in `docs/crazy-skeleton-boss-bar-mvp.md`"));
+        assertTrue(doc.contains("no new particle-trail changes are introduced in this equipment slice; the shared legacy `ParticleCrazyMob` follow-up is documented separately in `docs/crazy-skeleton-particle-trail-mvp.md`"));
     }
 
     @Test
@@ -143,7 +148,7 @@ class CrazySkeletonDocumentationTest {
         assertTrue(doc.contains("guaranteed `Cavenic Bow` equipment do not affect this restored orb drop"));
         assertTrue(doc.contains("Reborn `CrazySkeleton` intentionally extends vanilla `Skeleton`, not Reborn `CavenicSkeleton`."));
         assertTrue(doc.contains("the preserved guaranteed `Cavenic Bow` + `Infinity` equipment hook and `1.0F` mainhand drop chance"));
-        assertTrue(doc.contains("continued absence of natural-spawn wiring, particles and custom ranged-AI overrides beyond the explicit damage and boss hooks"));
+        assertTrue(doc.contains("continued absence of natural-spawn wiring and custom ranged-AI overrides beyond the explicit particle, damage and boss hooks"));
     }
 
     @Test
@@ -169,6 +174,7 @@ class CrazySkeletonDocumentationTest {
         assertTrue(doc.contains("continued guaranteed `Cavenic Bow` + `Infinity` equipment stability"));
         assertTrue(doc.contains("continued inherited `1/5` orb-drop wiring stability"));
         assertTrue(doc.contains("continued natural-spawn deferral"));
+        assertTrue(doc.contains("Crazy Skeleton particle trail now remains documented separately in `docs/crazy-skeleton-particle-trail-mvp.md`."));
     }
 
     @Test
@@ -194,11 +200,47 @@ class CrazySkeletonDocumentationTest {
         assertTrue(doc.contains("`stopSeenByPlayer(ServerPlayer player)`"));
         assertTrue(doc.contains("`setCustomName(@Nullable Component name)`"));
         assertTrue(doc.contains("`readAdditionalSaveData(CompoundTag compound)`"));
-        assertTrue(doc.contains("particles remain a separate client-visual follow-up"));
+        assertTrue(doc.contains("particles now remain documented separately in `docs/crazy-skeleton-particle-trail-mvp.md`"));
         assertTrue(doc.contains("Equipment remains unchanged."));
         assertTrue(doc.contains("Loot remains unchanged."));
         assertTrue(doc.contains("Damage remains unchanged."));
         assertTrue(doc.contains("custom ranged AI remains deferred"));
+    }
+
+    @Test
+    void crazySkeletonParticleTrailDocStatesLegacySharedCrazyMobMappingBoundariesAndTests() throws IOException {
+        String doc = Files.readString(PARTICLE_DOC);
+
+        assertTrue(doc.contains("`cavern.entity.monster.EntityCrazySkeleton`"));
+        assertTrue(doc.contains("`cavern.entity.monster.EntityCavenicSkeleton`"));
+        assertTrue(doc.contains("`cavern.client.particle.ParticleCrazyMob`"));
+        assertTrue(doc.contains("`ParticleCrazyMob extends ParticlePortal`"));
+        assertTrue(doc.contains("`world.isRemote`"));
+        assertTrue(doc.contains("spawns `3` particles per tick"));
+        assertTrue(doc.contains("`var1 = rand.nextInt(2) * 2 - 1`"));
+        assertTrue(doc.contains("`ptX = posX + 0.25D * var1`"));
+        assertTrue(doc.contains("`ptY = posY + 0.65D + rand.nextFloat()`"));
+        assertTrue(doc.contains("`motionX = rand.nextFloat() * 1.0F * var1`"));
+        assertTrue(doc.contains("`(rand.nextFloat() - 0.25D) * 0.125D`"));
+        assertTrue(doc.contains("`particleRed = particleGreen = particleBlue = 0.65F * f * 0.8F`"));
+        assertTrue(doc.contains("matches the inspected legacy Crazy Zombie particle trail exactly"));
+        assertTrue(doc.contains("no dedicated legacy particle texture asset"));
+        assertTrue(doc.contains("`cavernreborn:crazy_mob`"));
+        assertTrue(doc.contains("`SimpleParticleType`"));
+        assertTrue(doc.contains("`CrazyMobParticle extends PortalParticle`"));
+        assertTrue(doc.contains("`RegisterParticleProvidersEvent`"));
+        assertTrue(doc.contains("`assets/cavernreborn/particles/crazy_mob.json`"));
+        assertTrue(doc.contains("`minecraft:generic_0`"));
+        assertTrue(doc.contains("`CrazySkeleton#aiStep()`"));
+        assertTrue(doc.contains("client-only guard"));
+        assertTrue(doc.contains("boss bar remains unchanged"));
+        assertTrue(doc.contains("equipment remains unchanged"));
+        assertTrue(doc.contains("damage remains unchanged"));
+        assertTrue(doc.contains("loot remains unchanged"));
+        assertTrue(doc.contains("custom ranged AI remains deferred"));
+        assertTrue(doc.contains("natural spawning remains deferred"));
+        assertTrue(doc.contains("keeps `CrazySkeleton extends Skeleton`"));
+        assertTrue(doc.contains("Actual client visual particle feel remains manual"));
     }
 
     @Test
@@ -213,10 +255,11 @@ class CrazySkeletonDocumentationTest {
         assertTrue(doc.contains("custom ranged AI remains intentionally deferred"));
         assertTrue(doc.contains("equipment-only follow-up restores the held bow identity without porting the custom goal"));
         assertTrue(doc.contains("Actual ranged combat feel remains manual / follow-up."));
+        assertTrue(doc.contains("particle trail, now documented separately in `docs/crazy-skeleton-particle-trail-mvp.md`"));
     }
 
     @Test
-    void runtimeSmokeMentionsCrazySkeletonEquipmentLootDamageBossCoverageAndAiBoundary() throws IOException {
+    void runtimeSmokeMentionsCrazySkeletonEquipmentLootDamageBossParticleCoverageAndAiBoundary() throws IOException {
         String runtimeSmoke = Files.readString(RUNTIME_SMOKE);
 
         assertTrue(runtimeSmoke.contains("crazy skeleton runtime registry id"));
@@ -238,13 +281,17 @@ class CrazySkeletonDocumentationTest {
         assertTrue(runtimeSmoke.contains("crazy skeleton boss-percent update smoke"));
         assertTrue(runtimeSmoke.contains("crazy skeleton tracked-player add/remove smoke"));
         assertTrue(runtimeSmoke.contains("crazy skeleton sky-darkening smoke"));
+        assertTrue(runtimeSmoke.contains("crazy skeleton particle type registry id smoke"));
+        assertTrue(runtimeSmoke.contains("crazy skeleton particle provider registration source smoke"));
+        assertTrue(runtimeSmoke.contains("crazy skeleton particle description resource smoke"));
+        assertTrue(runtimeSmoke.contains("crazy skeleton client-only particle spawn-source smoke"));
         assertTrue(runtimeSmoke.contains("crazy skeleton explicit no-natural-spawn baseline boundary"));
         assertTrue(runtimeSmoke.contains("crazy skeleton explicit custom ranged AI / `EntityAIAttackCavenicBow` deferred boundary"));
         assertTrue(runtimeSmoke.contains("actual client-visible Crazy Skeleton boss-bar feel remains manual"));
+        assertTrue(runtimeSmoke.contains("actual Crazy Skeleton client particle-trail visual feel"));
         assertTrue(runtimeSmoke.contains("actual Crazy Skeleton renderer/model visual feel"));
         assertTrue(runtimeSmoke.contains("actual Crazy Skeleton ranged combat feel remains manual / follow-up"));
         assertTrue(runtimeSmoke.contains("actual long-running Crazy Skeleton fire/lava gameplay feel"));
-        assertTrue(runtimeSmoke.contains("Crazy Skeleton particle-trail follow-up"));
         assertTrue(runtimeSmoke.contains("Crazy Skeleton natural spawning"));
         assertTrue(runtimeSmoke.contains("Crazy Skeleton custom ranged Cavenic Bow behavior"));
     }

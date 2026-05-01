@@ -40,6 +40,9 @@ class CrazySkeletonResourcesTest {
         String clientSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "client", "CavernClientModEvents.java"
         );
+        String particleSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "client", "particle", "CrazyMobParticle.java"
+        );
         String rendererSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "client", "renderer", "CrazySkeletonRenderer.java"
         );
@@ -58,10 +61,15 @@ class CrazySkeletonResourcesTest {
             List.of("crazy_zombie_spawn_egg", "crazy_skeleton_spawn_egg"),
             extractMatches(registriesSource, Pattern.compile("ITEMS\\.register\\(\\s*\"(crazy_[a-z_]+_spawn_egg)\"", Pattern.MULTILINE))
         );
+        assertEquals(
+            List.of("crazy_mob"),
+            extractMatches(registriesSource, Pattern.compile("PARTICLE_TYPES\\.register\\(\\s*\"([a-z_]+)\"", Pattern.MULTILINE))
+        );
         assertTrue(registriesSource.contains("ENTITY_TYPES.register(\n        \"crazy_skeleton\""));
         assertTrue(registriesSource.contains("EntityType.Builder.of(CrazySkeleton::new, MobCategory.MONSTER)"));
         assertTrue(registriesSource.contains(".build(ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, \"crazy_skeleton\").toString())"));
         assertTrue(registriesSource.contains("new DeferredSpawnEggItem(() -> CRAZY_SKELETON.get(), 0x909090, 0xDDDDDD, new Item.Properties())"));
+        assertTrue(registriesSource.contains("PARTICLE_TYPES.register(\n        \"crazy_mob\","));
         assertInOrder(registriesSource, List.of(
             "output.accept(CAVENIC_BOW.get())",
             "output.accept(CAVENIC_ZOMBIE_SPAWN_EGG.get())",
@@ -86,6 +94,11 @@ class CrazySkeletonResourcesTest {
         assertTrue(entitySource.contains(".add(Attributes.FOLLOW_RANGE, 22.0D)"));
         assertTrue(entitySource.contains("public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;"));
         assertTrue(entitySource.contains("public static final float LEGACY_MAINHAND_DROP_CHANCE = 1.0F;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_PARTICLE_COUNT_PER_TICK = 3;"));
+        assertTrue(entitySource.contains("public static final double LEGACY_PARTICLE_HORIZONTAL_OFFSET = 0.25D;"));
+        assertTrue(entitySource.contains("public static final double LEGACY_PARTICLE_BASE_Y_OFFSET = 0.65D;"));
+        assertTrue(entitySource.contains("public static final double LEGACY_PARTICLE_VERTICAL_MOTION_OFFSET = 0.25D;"));
+        assertTrue(entitySource.contains("public static final double LEGACY_PARTICLE_VERTICAL_MOTION_SCALE = 0.125D;"));
         assertTrue(entitySource.contains("public static final double LEGACY_BOSS_BAR_VISIBILITY_DISTANCE = 20.0D;"));
         assertTrue(entitySource.contains("public static final double LEGACY_BOSS_BAR_DARKEN_SKY_DISTANCE = 30.0D;"));
         assertTrue(entitySource.contains("private final ServerBossEvent legacyBossEvent = new ServerBossEvent("));
@@ -99,6 +112,15 @@ class CrazySkeletonResourcesTest {
         assertTrue(entitySource.contains("protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty)"));
         assertTrue(entitySource.contains("super.populateDefaultEquipmentSlots(random, difficulty);"));
         assertTrue(entitySource.contains("this.setItemSlot(EquipmentSlot.MAINHAND, createLegacyCrazySkeletonBow(this.registryAccess()));"));
+        assertTrue(entitySource.contains("public void aiStep()"));
+        assertTrue(entitySource.contains("if (this.level().isClientSide()) {"));
+        assertTrue(entitySource.contains("for (int i = 0; i < LEGACY_PARTICLE_COUNT_PER_TICK; ++i) {"));
+        assertTrue(entitySource.contains("this.random.nextInt(2) * 2 - 1"));
+        assertTrue(entitySource.contains("this.getX() + LEGACY_PARTICLE_HORIZONTAL_OFFSET * particleXDirection"));
+        assertTrue(entitySource.contains("this.getY() + LEGACY_PARTICLE_BASE_Y_OFFSET + this.random.nextFloat()"));
+        assertTrue(entitySource.contains("this.random.nextFloat() * 1.0F * particleXDirection"));
+        assertTrue(entitySource.contains("(this.random.nextFloat() - LEGACY_PARTICLE_VERTICAL_MOTION_OFFSET) * LEGACY_PARTICLE_VERTICAL_MOTION_SCALE"));
+        assertTrue(entitySource.contains("this.level().addParticle(ModRegistries.CRAZY_MOB_PARTICLE.get(), particleX, particleY, particleZ, motionX, motionY, motionZ);"));
         assertTrue(entitySource.contains("public void readAdditionalSaveData(CompoundTag compound)"));
         assertTrue(entitySource.contains("public void setCustomName(@Nullable Component name)"));
         assertTrue(entitySource.contains("public boolean hurt(DamageSource source, float damage)"));
@@ -122,8 +144,6 @@ class CrazySkeletonResourcesTest {
         assertFalse(entitySource.contains("NATURAL_SPAWN_MAX_COUNT"));
         assertFalse(entitySource.contains("canNaturallySpawnInDimension"));
         assertFalse(entitySource.contains("checkCrazySkeletonSpawnRules"));
-        assertFalse(entitySource.contains("public void aiStep()"));
-        assertFalse(entitySource.contains("addParticle("));
         assertFalse(entitySource.contains("ParticleCrazyMob"));
         assertFalse(entitySource.contains("doHurtTarget("));
         assertFalse(entitySource.contains("EntityAIAttackCavenicBow"));
@@ -153,6 +173,10 @@ class CrazySkeletonResourcesTest {
         assertFalse(entityEventSource.contains("ModRegistries.CRAZY_SKELETON.get(),\n            SpawnPlacementTypes"));
 
         assertTrue(clientSource.contains("event.registerEntityRenderer(ModRegistries.CRAZY_SKELETON.get(), CrazySkeletonRenderer::new);"));
+        assertTrue(clientSource.contains("event.registerSpriteSet(ModRegistries.CRAZY_MOB_PARTICLE.get(), CrazyMobParticle.Provider::new);"));
+        assertTrue(particleSource.contains("extends PortalParticle"));
+        assertTrue(particleSource.contains("float f = this.random.nextFloat() * 0.5F + 0.4F;"));
+        assertTrue(particleSource.contains("float color = 0.65F * f * 0.8F;"));
         assertTrue(rendererSource.contains("extends SkeletonRenderer<CrazySkeleton>"));
         assertTrue(rendererSource.contains("textures/entity/crazy_skeleton.png"));
         assertTrue(rendererSource.contains("poseStack.scale(1.1F, 1.1F, 1.1F);"));
@@ -178,14 +202,21 @@ class CrazySkeletonResourcesTest {
     void crazySkeletonResourcesCoverLangSpawnEggModelAndTextureClasspath() throws IOException {
         JsonObject lang = readJsonResource("assets/cavernreborn/lang/en_us.json");
         JsonObject spawnEggModel = readJsonResource("assets/cavernreborn/models/item/crazy_skeleton_spawn_egg.json");
+        JsonObject particleDescription = readJsonResource("assets/cavernreborn/particles/crazy_mob.json");
 
         assertEquals("Crazy Skeleton", lang.get("entity.cavernreborn.crazy_skeleton").getAsString());
         assertEquals("Crazy Skeleton Spawn Egg", lang.get("item.cavernreborn.crazy_skeleton_spawn_egg").getAsString());
         assertEquals("minecraft:item/template_spawn_egg", spawnEggModel.get("parent").getAsString());
+        assertEquals(8, particleDescription.getAsJsonArray("textures").size());
+        assertEquals("minecraft:generic_0", particleDescription.getAsJsonArray("textures").get(0).getAsString());
 
         assertClassPathOrigin(
             resourceUrl("assets/cavernreborn/models/item/crazy_skeleton_spawn_egg.json"),
             "assets/cavernreborn/models/item/crazy_skeleton_spawn_egg.json"
+        );
+        assertClassPathOrigin(
+            resourceUrl("assets/cavernreborn/particles/crazy_mob.json"),
+            "assets/cavernreborn/particles/crazy_mob.json"
         );
         assertClassPathOrigin(
             resourceUrl("assets/cavernreborn/textures/entity/crazy_skeleton.png"),
