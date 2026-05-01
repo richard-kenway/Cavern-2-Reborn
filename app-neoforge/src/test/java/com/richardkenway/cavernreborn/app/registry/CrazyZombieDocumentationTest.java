@@ -41,7 +41,8 @@ class CrazyZombieDocumentationTest {
         assertTrue(readme.contains("docs/crazy-zombie-natural-spawn-absent-or-deferred.md"));
         assertTrue(readme.contains("Cavenia-only crazy-roster provider/config branch"));
         assertTrue(readme.contains("docs/crazy-skeleton-baseline-mvp.md"));
-        assertTrue(readme.contains("crazy creeper and crazy spider remain follow-up candidates"));
+        assertTrue(readme.contains("Crazy Creeper now has its own bounded baseline documented separately"));
+        assertTrue(readme.contains("Crazy Spider remains a follow-up candidate"));
     }
 
     @Test
@@ -91,7 +92,7 @@ class CrazyZombieDocumentationTest {
         assertTrue(doc.contains("The legacy client-only Crazy Zombie particle-trail follow-up is now restored explicitly on Reborn `CrazyZombie` and documented in `docs/crazy-zombie-particle-trail-mvp.md`."));
         assertTrue(doc.contains("Crazy Skeleton was initially deferred because it depends on the legacy `EntityAIAttackCavenicBow` path"));
         assertTrue(doc.contains("docs/crazy-skeleton-baseline-mvp.md"));
-        assertTrue(doc.contains("Crazy Creeper remains a follow-up because its direct legacy identity depends on a huge fuse/explosion branch"));
+        assertTrue(doc.contains("Crazy Creeper now has its baseline documented separately in `docs/crazy-creeper-baseline-mvp.md`"));
         assertTrue(doc.contains("Crazy Spider remains a follow-up because it carries stronger blindness/poison combat hooks"));
         assertTrue(doc.contains("Cavenia remains out of scope"));
         assertTrue(doc.contains("The magic-book system remains intentionally untouched."));
@@ -122,7 +123,7 @@ class CrazyZombieDocumentationTest {
         assertTrue(doc.contains("boss bar / sky-darkening behavior remains documented separately"));
         assertTrue(doc.contains("particle trail is now documented separately in `docs/crazy-zombie-particle-trail-mvp.md`"));
         assertTrue(doc.contains("docs/crazy-skeleton-baseline-mvp.md"));
-        assertTrue(doc.contains("Crazy Creeper / Crazy Spider"));
+        assertTrue(doc.contains("docs/crazy-creeper-baseline-mvp.md"));
         assertTrue(doc.contains("Cavenia"));
     }
 
@@ -151,7 +152,7 @@ class CrazyZombieDocumentationTest {
         assertTrue(doc.contains("runtime effective max health remains clamped to `1024.0`"));
         assertTrue(doc.contains("natural spawning remains explicitly deferred"));
         assertTrue(doc.contains("docs/crazy-skeleton-baseline-mvp.md"));
-        assertTrue(doc.contains("Crazy Creeper / Crazy Spider"));
+        assertTrue(doc.contains("docs/crazy-creeper-baseline-mvp.md"));
         assertTrue(doc.contains("Cavenia"));
     }
 
@@ -225,7 +226,7 @@ class CrazyZombieDocumentationTest {
         assertTrue(doc.contains("docs/crazy-zombie-boss-bar-mvp.md"));
         assertTrue(doc.contains("particle trail is now restored separately in `docs/crazy-zombie-particle-trail-mvp.md`"));
         assertTrue(doc.contains("docs/crazy-skeleton-baseline-mvp.md"));
-        assertTrue(doc.contains("Crazy Creeper / Crazy Spider"));
+        assertTrue(doc.contains("docs/crazy-creeper-baseline-mvp.md"));
     }
 
     @Test

@@ -10,6 +10,7 @@ import com.richardkenway.cavernreborn.app.entity.CavenicSkeleton;
 import com.richardkenway.cavernreborn.app.entity.CavenicSpider;
 import com.richardkenway.cavernreborn.app.entity.CavenicWitch;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombie;
+import com.richardkenway.cavernreborn.app.entity.CrazyCreeper;
 import com.richardkenway.cavernreborn.app.entity.CrazySkeleton;
 import com.richardkenway.cavernreborn.app.entity.CrazyZombie;
 import com.richardkenway.cavernreborn.app.block.FissuredStoneBlock;
@@ -181,6 +182,13 @@ public final class ModRegistries {
             .clientTrackingRange(8)
             .build(ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_skeleton").toString())
     );
+    public static final DeferredHolder<EntityType<?>, EntityType<CrazyCreeper>> CRAZY_CREEPER = ENTITY_TYPES.register(
+        "crazy_creeper",
+        () -> EntityType.Builder.of(CrazyCreeper::new, MobCategory.MONSTER)
+            .sized(0.6F, 1.7F)
+            .clientTrackingRange(8)
+            .build(ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_creeper").toString())
+    );
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> CRAZY_MOB_PARTICLE = PARTICLE_TYPES.register(
         "crazy_mob",
         () -> new SimpleParticleType(false)
@@ -231,6 +239,10 @@ public final class ModRegistries {
     public static final DeferredItem<Item> CRAZY_SKELETON_SPAWN_EGG = ITEMS.register(
         "crazy_skeleton_spawn_egg",
         () -> new DeferredSpawnEggItem(() -> CRAZY_SKELETON.get(), 0x909090, 0xDDDDDD, new Item.Properties())
+    );
+    public static final DeferredItem<Item> CRAZY_CREEPER_SPAWN_EGG = ITEMS.register(
+        "crazy_creeper_spawn_egg",
+        () -> new DeferredSpawnEggItem(() -> CRAZY_CREEPER.get(), 0x909090, 0x2E8B57, new Item.Properties())
     );
     public static final DeferredItem<Item> ORE_COMPASS = ITEMS.register(
         "ore_compass",
@@ -370,6 +382,7 @@ public final class ModRegistries {
                 output.accept(CAVENIC_BEAR_SPAWN_EGG.get());
                 output.accept(CRAZY_ZOMBIE_SPAWN_EGG.get());
                 output.accept(CRAZY_SKELETON_SPAWN_EGG.get());
+                output.accept(CRAZY_CREEPER_SPAWN_EGG.get());
                 output.accept(ORE_COMPASS.get());
                 output.accept(HEXCITE_PICKAXE.get());
                 output.accept(HEXCITE_AXE.get());

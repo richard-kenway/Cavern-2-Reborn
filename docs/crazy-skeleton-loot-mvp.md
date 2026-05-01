@@ -88,6 +88,6 @@ It does not add natural spawning, equipment changes, ranged-AI changes, damage b
 - Crazy Skeleton custom ranged AI
 - Crazy Skeleton natural spawning
 - Crazy Skeleton damage behavior
-- Crazy Creeper / Crazy Spider
+- Crazy Creeper follow-up branches documented after `docs/crazy-creeper-baseline-mvp.md` / Crazy Spider
 - Cavenia
 - magic-book or spell systems

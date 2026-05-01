@@ -42,7 +42,8 @@ class CrazySkeletonDocumentationTest {
         assertTrue(readme.contains("legacy `EntityAIAttackCavenicBow` path"));
         assertTrue(readme.contains("guaranteed `Cavenic Bow` mainhand, forced `Infinity` enchantment and `1.0F` mainhand drop chance are now restored explicitly"));
         assertTrue(readme.contains("custom ranged AI identity stays intentionally deferred"));
-        assertTrue(readme.contains("crazy creeper and crazy spider remain follow-up candidates"));
+        assertTrue(readme.contains("Crazy Creeper now has its own bounded baseline documented separately"));
+        assertTrue(readme.contains("Crazy Spider remains a follow-up candidate"));
     }
 
     @Test

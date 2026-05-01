@@ -30,6 +30,7 @@ import com.richardkenway.cavernreborn.app.entity.CavenicWitch;
 import com.richardkenway.cavernreborn.app.entity.CavenicWitchLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombie;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombieLootEvents;
+import com.richardkenway.cavernreborn.app.entity.CrazyCreeper;
 import com.richardkenway.cavernreborn.app.entity.CrazySkeleton;
 import com.richardkenway.cavernreborn.app.entity.CrazySkeletonLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CrazyZombie;
@@ -251,6 +252,9 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CRAZY_SKELETON_DAMAGE_ANCHOR = new BlockPos(6304, 96, 0);
     private static final BlockPos CRAZY_SKELETON_BOSS_BAR_ANCHOR = new BlockPos(6400, 96, 0);
     private static final BlockPos CRAZY_SKELETON_PARTICLE_TRAIL_ANCHOR = new BlockPos(6496, 96, 0);
+    private static final BlockPos CRAZY_CREEPER_ANCHOR = new BlockPos(6592, 96, 0);
+    private static final BlockPos CRAZY_CREEPER_SPAWN_EGG_ANCHOR = new BlockPos(6688, 96, 0);
+    private static final BlockPos CRAZY_CREEPER_BASELINE_ANCHOR = new BlockPos(6784, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -4913,6 +4917,128 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazyCreeperRegistersAtRuntime(GameTestHelper helper) {
+        helper.assertTrue(ModRegistries.CRAZY_CREEPER.get() != null, "Missing crazy creeper entity type");
+        helper.assertTrue(ModRegistries.CRAZY_CREEPER_SPAWN_EGG.get() != null, "Missing crazy creeper spawn egg");
+
+        assertRegistryId(helper, ModRegistries.CRAZY_CREEPER.get(), "cavernreborn:crazy_creeper");
+        assertRegistryId(helper, ModRegistries.CRAZY_CREEPER_SPAWN_EGG.get(), "cavernreborn:crazy_creeper_spawn_egg");
+
+        ItemStack spawnEgg = crazyCreeperSpawnEgg();
+        helper.assertTrue(!spawnEgg.isEmpty(), "Expected crazy creeper spawn egg to be constructible");
+        helper.assertTrue(spawnEgg.getItem() instanceof SpawnEggItem, "Expected crazy creeper spawn egg runtime item");
+        helper.assertTrue(
+            SpawnEggItem.byId(ModRegistries.CRAZY_CREEPER.get()) == spawnEgg.getItem(),
+            "Expected crazy creeper spawn egg to resolve the crazy creeper entity type"
+        );
+        helper.assertTrue(
+            ModRegistries.CRAZY_CREEPER.get().getCategory() == MobCategory.MONSTER,
+            "Expected crazy creeper type category to stay MONSTER"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazyCreeperSpawnsWithExpectedAttributesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_CREEPER_BASELINE_ANCHOR;
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceKey<BiomeModifier> crazyCreeperSpawnModifier = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_creeper_spawns")
+        );
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_crazy_creeper"));
+
+        resetMiningArea(level, origin, 12.0D);
+
+        CrazyCreeper crazyCreeper = spawnLivingEntity(helper, ModRegistries.CRAZY_CREEPER.get(), origin);
+        Creeper vanillaCreeper = spawnLivingEntity(helper, EntityType.CREEPER, origin.east(4));
+
+        helper.assertTrue(crazyCreeper instanceof Monster, "Expected crazy creeper to remain a hostile monster");
+        helper.assertTrue(crazyCreeper instanceof Creeper, "Expected crazy creeper to keep vanilla creeper behavior");
+        helper.assertTrue(CrazyCreeper.class.getSuperclass() == Creeper.class, "Expected crazy creeper baseline to extend vanilla Creeper directly");
+        helper.assertTrue(crazyCreeper.getType().getCategory() == MobCategory.MONSTER, "Expected crazy creeper type category to stay MONSTER");
+        helper.assertTrue(crazyCreeper.isAlive(), "Expected spawned crazy creeper to be alive");
+        helper.assertTrue(
+            Math.abs(crazyCreeper.getMaxHealth() - 1024.0D) < 1.0E-6D,
+            "Expected crazy creeper runtime max health to clamp to the modern generic.max_health ceiling of 1024.0"
+        );
+        helper.assertTrue(
+            Math.abs(crazyCreeper.getAttributeValue(Attributes.MAX_HEALTH) - 1024.0D) < 1.0E-6D,
+            "Expected crazy creeper MAX_HEALTH attribute to clamp to the modern generic.max_health ceiling of 1024.0"
+        );
+        helper.assertTrue(
+            Math.abs(crazyCreeper.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) - 1.0D) < 1.0E-6D,
+            "Expected crazy creeper knockback resistance to map to legacy 1.0"
+        );
+        helper.assertTrue(
+            Math.abs(crazyCreeper.getAttributeValue(Attributes.MOVEMENT_SPEED) - 0.23D) < 1.0E-6D,
+            "Expected crazy creeper movement speed to map to legacy 0.23"
+        );
+        helper.assertTrue(
+            Math.abs(crazyCreeper.getAttributeValue(Attributes.FOLLOW_RANGE) - vanillaCreeper.getAttributeValue(Attributes.FOLLOW_RANGE)) < 1.0E-6D,
+            "Expected crazy creeper follow range to stay on the vanilla creeper baseline"
+        );
+        helper.assertTrue(
+            crazyCreeper.getLootTable().equals(EntityType.CREEPER.getDefaultLootTable()),
+            "Expected crazy creeper to keep the vanilla creeper loot table as its baseline"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_CREEPER.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected crazy creeper spawn placement to stay unregistered"
+        );
+        helper.assertFalse(
+            biomeModifiers.containsKey(crazyCreeperSpawnModifier),
+            "Expected crazy creeper baseline to keep the biome modifier absent at runtime"
+        );
+        helper.assertFalse(
+            biomes.getTag(spawnTag).isPresent(),
+            "Expected crazy creeper baseline to keep the spawn biome tag absent at runtime"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazyCreeper.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("hurt")
+                    || name.equals("aiStep")
+                    || name.equals("customServerAiStep")
+                    || name.equals("startSeenByPlayer")
+                    || name.equals("stopSeenByPlayer")
+                    || name.equals("explodeCreeper")
+                    || name.equals("thunderHit")
+                    || name.equals("registerGoals")),
+            "Expected crazy creeper baseline to avoid damage, boss, particle, fuse/explosion and custom AI follow-up overrides"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazyCreeper.class.getDeclaredFields())
+                .map(Field::getName)
+                .anyMatch(name -> name.toLowerCase().contains("boss")
+                    || name.toLowerCase().contains("fuse")
+                    || name.toLowerCase().contains("explosion")
+                    || name.toLowerCase().contains("ignited")),
+            "Expected crazy creeper baseline to avoid custom boss, fuse and explosion state fields"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazyCreeperSpawnEggCreatesRuntimeEntity(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos supportPos = CRAZY_CREEPER_SPAWN_EGG_ANCHOR;
+
+        resetMiningArea(level, supportPos, 8.0D);
+        level.setBlock(supportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+
+        ItemStack spawnEgg = crazyCreeperSpawnEgg();
+        Player player = makeMockPlayer(helper, level, GameType.SURVIVAL, spawnEgg.copy(), supportPos.south(2));
+        Entity spawnedEntity = ModRegistries.CRAZY_CREEPER.get().spawn(level, spawnEgg, player, supportPos.above(), MobSpawnType.SPAWN_EGG, true, true);
+
+        helper.assertTrue(spawnedEntity instanceof CrazyCreeper, "Expected spawn egg to create a CrazyCreeper runtime entity");
+        helper.assertTrue(spawnedEntity != null && spawnedEntity.isAlive(), "Expected spawned crazy creeper to be alive");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void cavenicMeleeRegistersAtRuntime(GameTestHelper helper) {
         helper.assertTrue(ModRegistries.CAVENIC_SWORD.get() != null, "Missing cavenic sword");
         helper.assertTrue(ModRegistries.CAVENIC_AXE.get() != null, "Missing cavenic axe");
@@ -6844,6 +6970,10 @@ public final class CavernSpecialOreGameTests {
 
     private static ItemStack crazySkeletonSpawnEgg() {
         return new ItemStack(ModRegistries.CRAZY_SKELETON_SPAWN_EGG.get());
+    }
+
+    private static ItemStack crazyCreeperSpawnEgg() {
+        return new ItemStack(ModRegistries.CRAZY_CREEPER_SPAWN_EGG.get());
     }
 
     private static void positionTargetAroundMob(LivingEntity target, Mob mob, double xOffset) {

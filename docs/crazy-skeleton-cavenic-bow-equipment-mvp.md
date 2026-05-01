@@ -129,5 +129,5 @@ The bow is only equipped onto Crazy Skeleton.
 - Crazy Skeleton natural spawning
 - Crazy Skeleton custom loot / `cavenic_orb` drop
 - Crazy Skeleton damage behavior
-- Crazy Creeper / Crazy Spider
+- Crazy Creeper follow-up branches documented after `docs/crazy-creeper-baseline-mvp.md` / Crazy Spider
 - Cavenia

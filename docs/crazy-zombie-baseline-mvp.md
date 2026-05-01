@@ -36,7 +36,7 @@ The inspected direct crazy roster in legacy Cavern 2 is:
 The other crazy variants were inspected as follow-up candidates for narrower slices:
 
 - Crazy Skeleton was initially deferred because it depends on the legacy `EntityAIAttackCavenicBow` path, guaranteed Infinity bow equipment and mixed ranged/melee AI. Its safe baseline is now documented separately in `docs/crazy-skeleton-baseline-mvp.md`.
-- Crazy Creeper remains a follow-up because its direct legacy identity depends on a huge fuse/explosion branch.
+- Crazy Creeper now has its baseline documented separately in `docs/crazy-creeper-baseline-mvp.md`, while its direct fuse/explosion, boss, particle, loot and damage branches remain later follow-ups.
 - Crazy Spider remains a follow-up because it carries stronger blindness/poison combat hooks on top of the spider baseline.
 
 ## Runtime Shape

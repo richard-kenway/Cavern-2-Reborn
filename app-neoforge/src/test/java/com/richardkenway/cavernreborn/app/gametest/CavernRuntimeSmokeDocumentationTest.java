@@ -191,7 +191,13 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/crazy-skeleton-ranged-ai-boundary.md"));
         assertTrue(readme.contains("guaranteed `Cavenic Bow` mainhand, forced `Infinity` enchantment and `1.0F` mainhand drop chance are now restored explicitly"));
         assertTrue(readme.contains("custom ranged AI identity stays intentionally deferred"));
-        assertTrue(readme.contains("crazy creeper and crazy spider remain follow-up candidates"));
+        assertTrue(readme.contains("Crazy Creeper Baseline MVP"));
+        assertTrue(readme.contains("docs/crazy-creeper-baseline-mvp.md"));
+        assertTrue(readme.contains("third crazy-variant foundation follow-up"));
+        assertTrue(readme.contains("`crazy_creeper`"));
+        assertTrue(readme.contains("vanilla creeper loot baseline"));
+        assertTrue(readme.contains("Crazy Creeper fuse/explosion, boss, particle, loot and damage follow-ups remain intentionally deferred"));
+        assertTrue(readme.contains("Crazy Spider remains the next crazy-variant follow-up candidate"));
         assertTrue(readme.contains("vanilla zombie loot baseline"));
     }
 

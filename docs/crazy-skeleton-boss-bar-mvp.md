@@ -131,6 +131,6 @@ More specifically:
 - `EntityAIAttackCavenicBow`
 - Crazy Skeleton custom ranged AI
 - Crazy Skeleton natural spawning
-- Crazy Creeper / Crazy Spider
+- Crazy Creeper follow-up branches documented after `docs/crazy-creeper-baseline-mvp.md` / Crazy Spider
 - Cavenia
 - magic-book or spell systems

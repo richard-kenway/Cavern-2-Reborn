@@ -87,5 +87,5 @@ This equipment-only follow-up restores the held bow identity without porting the
 - damage behavior, now documented separately in `docs/crazy-skeleton-damage-behavior-mvp.md`
 - boss bar / sky-darkening, now documented separately in `docs/crazy-skeleton-boss-bar-mvp.md`
 - particle trail, now documented separately in `docs/crazy-skeleton-particle-trail-mvp.md`
-- Crazy Creeper / Crazy Spider
+- Crazy Creeper follow-up branches documented after `docs/crazy-creeper-baseline-mvp.md` / Crazy Spider
 - Cavenia

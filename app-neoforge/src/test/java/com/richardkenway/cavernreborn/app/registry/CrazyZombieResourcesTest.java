@@ -51,11 +51,11 @@ class CrazyZombieResourcesTest {
         );
 
         assertEquals(
-            List.of("crazy_zombie", "crazy_skeleton"),
+            List.of("crazy_zombie", "crazy_skeleton", "crazy_creeper"),
             extractMatches(registriesSource, Pattern.compile("ENTITY_TYPES\\.register\\(\\s*\"(crazy_[a-z_]+)\"", Pattern.MULTILINE))
         );
         assertEquals(
-            List.of("crazy_zombie_spawn_egg", "crazy_skeleton_spawn_egg"),
+            List.of("crazy_zombie_spawn_egg", "crazy_skeleton_spawn_egg", "crazy_creeper_spawn_egg"),
             extractMatches(registriesSource, Pattern.compile("ITEMS\\.register\\(\\s*\"(crazy_[a-z_]+_spawn_egg)\"", Pattern.MULTILINE))
         );
         assertTrue(registriesSource.contains("EntityType.Builder.of(CrazyZombie::new, MobCategory.MONSTER)"));
@@ -74,6 +74,7 @@ class CrazyZombieResourcesTest {
             "output.accept(CAVENIC_BEAR_SPAWN_EGG.get())",
             "output.accept(CRAZY_ZOMBIE_SPAWN_EGG.get())",
             "output.accept(CRAZY_SKELETON_SPAWN_EGG.get())",
+            "output.accept(CRAZY_CREEPER_SPAWN_EGG.get())",
             "output.accept(ORE_COMPASS.get())"
         ));
 

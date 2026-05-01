@@ -41,7 +41,7 @@ The risky parts are separate follow-up branches rather than prerequisites for th
 - direct client-only particle trail
 - legacy crazy-roster natural spawning through the old `Cavenia` provider/config path
 
-`Crazy Creeper` and `Crazy Spider` remain later crazy-variant follow-up candidates.
+`Crazy Creeper` now has its own bounded baseline documented in `docs/crazy-creeper-baseline-mvp.md`. `Crazy Spider` remains the next later crazy-variant follow-up candidate.
 
 ## Runtime Shape
 
@@ -161,7 +161,7 @@ The baseline stayed safe because vanilla `Skeleton` already exists and can spawn
 - Crazy Skeleton custom loot beyond the restored inherited `cavenic_orb` branch
 - Crazy Skeleton custom ranged AI
 - `EntityAIAttackCavenicBow`
-- Crazy Creeper / Crazy Spider
+- Crazy Creeper fuse/explosion, boss, particle, loot and damage follow-ups / Crazy Spider
 - summon variants
 - direct Cavenic mobs
 - non-Crazy mobs
