@@ -82,7 +82,7 @@ The risky parts are separate follow-up branches rather than prerequisites for th
 
 - The bounded baseline reuses the vanilla creeper loot table as its base drop source.
 - Legacy `EntityCrazyCreeper` inherits the `1/5` `cavenic_orb` drop from `EntityCavenicCreeper`.
-- This baseline does not restore that inherited orb branch yet.
+- The dedicated follow-up documented in `docs/crazy-creeper-loot-mvp.md` now restores that inherited orb branch explicitly while keeping the vanilla creeper loot table as the baseline drop source.
 - Reborn does not add a custom Crazy Creeper loot table JSON.
 
 ## Natural Spawning
@@ -118,7 +118,7 @@ The baseline stayed safe because vanilla `Creeper` already exists and can spawn/
 - Legacy `EntityCrazyCreeper` inherits the `cavenic_orb` drop from `EntityCavenicCreeper`.
 - Legacy `EntityCrazyCreeper` overrides `canBeRidden(Entity entity)` to return `false`.
 - This baseline keeps an explicit damage behavior boundary.
-- This baseline keeps an explicit loot/orb boundary.
+- The inherited loot/orb branch is now restored explicitly in `docs/crazy-creeper-loot-mvp.md` while the rest of the baseline stays narrow.
 - This baseline keeps an explicit boss/particle boundary.
 - This baseline does not restore boss bar, particles, damage behavior, loot/orb behavior, or any lightning/charged/swelling follow-up.
 
@@ -141,7 +141,6 @@ The baseline stayed safe because vanilla `Creeper` already exists and can spawn/
 
 - Crazy Creeper natural spawning
 - Crazy Creeper custom loot
-- Crazy Creeper `cavenic_orb` drop
 - Crazy Creeper damage behavior
 - Crazy Creeper boss bar / sky-darkening
 - Crazy Creeper particle trail

@@ -21,15 +21,24 @@ import com.google.gson.JsonParser;
 
 class CrazyCreeperResourcesTest {
     @Test
-    void crazyCreeperRegistersWithDedicatedEntitySpawnEggRendererAndExplicitBaselineBoundaries() throws IOException {
+    void crazyCreeperRegistersWithDedicatedEntitySpawnEggRendererAndExplicitLootBoundaries() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
         String entitySource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "CrazyCreeper.java"
         );
+        String dropEventSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "CrazyCreeperLootEvents.java"
+        );
+        String dropPolicySource = readProjectFile(
+            "core", "src", "main", "java", "com", "richardkenway", "cavernreborn", "core", "loot", "CrazyCreeperLootPolicy.java"
+        );
         String cavenicCreeperSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "CavenicCreeper.java"
+        );
+        String modSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "CavernReborn.java"
         );
         String entityEventSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModEntityEvents.java"
@@ -111,6 +120,22 @@ class CrazyCreeperResourcesTest {
 
         assertTrue(cavenicCreeperSource.contains("public static final short LEGACY_FUSE_TIME = 15;"));
         assertTrue(cavenicCreeperSource.contains("public static final byte LEGACY_EXPLOSION_RADIUS = 5;"));
+        assertTrue(dropEventSource.contains("LivingDropsEvent"));
+        assertTrue(dropEventSource.contains("event.getEntity() instanceof CrazyCreeper creeper"));
+        assertTrue(dropEventSource.contains("CrazyCreeperLootPolicy.ORB_DROP_ROLL_BOUND"));
+        assertTrue(dropEventSource.contains("CrazyCreeperLootPolicy.shouldDropOrb(orbRoll)"));
+        assertTrue(dropEventSource.contains("new ItemStack(ModRegistries.CAVENIC_ORB.get())"));
+        assertTrue(dropEventSource.contains("creeper.getY() + 0.5D"));
+        assertTrue(dropEventSource.contains("orbDrop.setDefaultPickUpDelay();"));
+        assertFalse(dropEventSource.toLowerCase().contains("economy"));
+        assertFalse(dropEventSource.toLowerCase().contains("progression"));
+        assertFalse(dropEventSource.contains("BossEvent"));
+        assertFalse(dropEventSource.contains("ParticleCrazyMob"));
+        assertFalse(dropEventSource.contains("Explosion"));
+        assertFalse(dropEventSource.toLowerCase().contains("charged"));
+        assertTrue(dropPolicySource.contains("public static final int ORB_DROP_ROLL_BOUND = 5;"));
+        assertTrue(dropPolicySource.contains("return roll >= 0 && roll < ORB_DROP_ROLL_BOUND && roll == 0;"));
+        assertTrue(modSource.contains("NeoForge.EVENT_BUS.register(new CrazyCreeperLootEvents());"));
         assertTrue(entityEventSource.contains("event.put(ModRegistries.CRAZY_CREEPER.get(), CrazyCreeper.createAttributes().build())"));
         assertFalse(entityEventSource.contains("ModRegistries.CRAZY_CREEPER.get(),\n            SpawnPlacementTypes"));
 
@@ -132,12 +157,6 @@ class CrazyCreeperResourcesTest {
         );
         assertMissingProjectFile(
             "app-neoforge", "src", "main", "resources", "data", "cavernreborn", "loot_tables", "entities", "crazy_creeper.json"
-        );
-        assertMissingProjectFile(
-            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "CrazyCreeperLootEvents.java"
-        );
-        assertMissingProjectFile(
-            "core", "src", "main", "java", "com", "richardkenway", "cavernreborn", "core", "loot", "CrazyCreeperLootPolicy.java"
         );
     }
 

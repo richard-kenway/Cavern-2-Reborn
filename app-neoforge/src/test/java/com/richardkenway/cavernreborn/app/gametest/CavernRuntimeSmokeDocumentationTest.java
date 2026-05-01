@@ -193,10 +193,12 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("custom ranged AI identity stays intentionally deferred"));
         assertTrue(readme.contains("Crazy Creeper Baseline MVP"));
         assertTrue(readme.contains("docs/crazy-creeper-baseline-mvp.md"));
+        assertTrue(readme.contains("docs/crazy-creeper-loot-mvp.md"));
         assertTrue(readme.contains("third crazy-variant foundation follow-up"));
         assertTrue(readme.contains("`crazy_creeper`"));
         assertTrue(readme.contains("vanilla creeper loot baseline"));
-        assertTrue(readme.contains("Crazy Creeper fuse/explosion, boss, particle, loot and damage follow-ups remain intentionally deferred"));
+        assertTrue(readme.contains("inherited legacy `1/5` `cavenic_orb` drop is now restored explicitly on top of that same vanilla creeper loot baseline"));
+        assertTrue(readme.contains("Crazy Creeper fuse/explosion, boss, particle and damage follow-ups remain intentionally deferred"));
         assertTrue(readme.contains("Crazy Spider remains the next crazy-variant follow-up candidate"));
         assertTrue(readme.contains("vanilla zombie loot baseline"));
     }
@@ -285,6 +287,17 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("cavenic creeper generic-damage baseline smoke"));
         assertTrue(doc.contains("cavenic creeper legacy fuse-time smoke"));
         assertTrue(doc.contains("cavenic creeper legacy explosion-radius smoke"));
+        assertTrue(doc.contains("crazy creeper runtime registry id"));
+        assertTrue(doc.contains("crazy creeper attribute registration"));
+        assertTrue(doc.contains("crazy creeper hostile runtime spawn"));
+        assertTrue(doc.contains("crazy creeper spawn egg resolution"));
+        assertTrue(doc.contains("crazy creeper spawn egg entity creation"));
+        assertTrue(doc.contains("crazy creeper vanilla creeper loot-table baseline"));
+        assertTrue(doc.contains("crazy creeper legacy orb-drop event wiring smoke"));
+        assertTrue(doc.contains("crazy creeper legacy orb-drop deterministic winning/losing roll smoke"));
+        assertTrue(doc.contains("crazy creeper explicit no-natural-spawn baseline boundary"));
+        assertTrue(doc.contains("crazy creeper custom fuse/explosion branch remains follow-up"));
+        assertTrue(doc.contains("crazy creeper custom lightning/charged/swelling behavior remains follow-up"));
         assertTrue(doc.contains("cavenic spider runtime registry id"));
         assertTrue(doc.contains("cavenic spider attribute registration smoke"));
         assertTrue(doc.contains("cavenic spider hostile runtime spawn smoke"));

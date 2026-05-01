@@ -31,6 +31,7 @@ import com.richardkenway.cavernreborn.app.entity.CavenicWitchLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombie;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombieLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CrazyCreeper;
+import com.richardkenway.cavernreborn.app.entity.CrazyCreeperLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CrazySkeleton;
 import com.richardkenway.cavernreborn.app.entity.CrazySkeletonLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CrazyZombie;
@@ -62,6 +63,7 @@ import com.richardkenway.cavernreborn.core.loot.CavenicSkeletonLootPolicy;
 import com.richardkenway.cavernreborn.core.loot.CavenicSpiderLootPolicy;
 import com.richardkenway.cavernreborn.core.loot.CavenicWitchLootPolicy;
 import com.richardkenway.cavernreborn.core.loot.CavenicZombieLootPolicy;
+import com.richardkenway.cavernreborn.core.loot.CrazyCreeperLootPolicy;
 import com.richardkenway.cavernreborn.core.loot.CrazySkeletonLootPolicy;
 import com.richardkenway.cavernreborn.core.loot.CrazyZombieLootPolicy;
 import com.richardkenway.cavernreborn.core.mining.AquamarineAquaToolDecision;
@@ -255,6 +257,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CRAZY_CREEPER_ANCHOR = new BlockPos(6592, 96, 0);
     private static final BlockPos CRAZY_CREEPER_SPAWN_EGG_ANCHOR = new BlockPos(6688, 96, 0);
     private static final BlockPos CRAZY_CREEPER_BASELINE_ANCHOR = new BlockPos(6784, 96, 0);
+    private static final BlockPos CRAZY_CREEPER_LOOT_ANCHOR = new BlockPos(6880, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -5035,6 +5038,103 @@ public final class CavernSpecialOreGameTests {
 
         helper.assertTrue(spawnedEntity instanceof CrazyCreeper, "Expected spawn egg to create a CrazyCreeper runtime entity");
         helper.assertTrue(spawnedEntity != null && spawnedEntity.isAlive(), "Expected spawned crazy creeper to be alive");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazyCreeperLegacyOrbDropWiresAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_CREEPER_LOOT_ANCHOR;
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceKey<BiomeModifier> crazyCreeperSpawnModifier = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_creeper_spawns")
+        );
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_crazy_creeper"));
+        CrazyCreeperLootEvents lootEvents = new CrazyCreeperLootEvents();
+        List<ItemEntity> drops = new ArrayList<>();
+
+        resetMiningArea(level, origin, 8.0D);
+        CrazyCreeper crazyCreeper = spawnLivingEntity(helper, ModRegistries.CRAZY_CREEPER.get(), origin);
+        Creeper vanillaCreeper = spawnLivingEntity(helper, EntityType.CREEPER, origin.east(4));
+
+        helper.assertTrue(
+            crazyCreeper.getLootTable().equals(EntityType.CREEPER.getDefaultLootTable()),
+            "Expected crazy creeper to keep the vanilla creeper loot table as its baseline"
+        );
+        helper.assertTrue(
+            CrazyCreeperLootPolicy.ORB_DROP_ROLL_BOUND == 5,
+            "Expected crazy creeper orb drop roll bound to stay pinned to the inherited legacy 1/5 chance"
+        );
+        helper.assertTrue(
+            Math.abs(crazyCreeper.getMaxHealth() - 1024.0D) < 1.0E-6D,
+            "Expected crazy creeper runtime max health to stay clamped to the modern generic.max_health ceiling of 1024.0"
+        );
+        helper.assertTrue(
+            Math.abs(crazyCreeper.getAttributeValue(Attributes.MOVEMENT_SPEED) - 0.23D) < 1.0E-6D,
+            "Expected crazy creeper movement speed to stay pinned to legacy 0.23 while wiring the orb branch"
+        );
+        helper.assertTrue(
+            Math.abs(crazyCreeper.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) - 1.0D) < 1.0E-6D,
+            "Expected crazy creeper knockback resistance to stay pinned to legacy 1.0 while wiring the orb branch"
+        );
+        helper.assertTrue(
+            Math.abs(crazyCreeper.getAttributeValue(Attributes.FOLLOW_RANGE) - vanillaCreeper.getAttributeValue(Attributes.FOLLOW_RANGE)) < 1.0E-6D,
+            "Expected crazy creeper follow range to stay on the vanilla creeper baseline"
+        );
+        helper.assertFalse(
+            lootEvents.tryAppendLegacyOrbDrop(crazyCreeper, drops, 1),
+            "Non-winning orb roll must not append a cavenic orb drop"
+        );
+        helper.assertTrue(drops.isEmpty(), "Non-winning orb roll must leave the drop list unchanged");
+        helper.assertTrue(
+            lootEvents.tryAppendLegacyOrbDrop(crazyCreeper, drops, 0),
+            "Winning orb roll must append a cavenic orb drop"
+        );
+        helper.assertTrue(drops.size() == 1, "Winning orb roll must append exactly one cavenic orb drop");
+        helper.assertTrue(
+            drops.getFirst().getItem().is(ModRegistries.CAVENIC_ORB.get()),
+            "Winning orb roll must append cavernreborn:cavenic_orb"
+        );
+        helper.assertTrue(
+            Math.abs(drops.getFirst().getY() - (crazyCreeper.getY() + 0.5D)) < 1.0E-6D,
+            "Expected crazy creeper orb drop Y offset to stay aligned with the inherited legacy 0.5 offset"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_CREEPER.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected crazy creeper natural spawn placement to stay unregistered"
+        );
+        helper.assertFalse(
+            biomeModifiers.containsKey(crazyCreeperSpawnModifier),
+            "Expected crazy creeper loot follow-up to keep the biome modifier absent at runtime"
+        );
+        helper.assertFalse(
+            biomes.getTag(spawnTag).isPresent(),
+            "Expected crazy creeper loot follow-up to keep the spawn biome tag absent at runtime"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazyCreeper.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("hurt")
+                    || name.equals("aiStep")
+                    || name.equals("customServerAiStep")
+                    || name.equals("startSeenByPlayer")
+                    || name.equals("stopSeenByPlayer")
+                    || name.equals("explodeCreeper")
+                    || name.equals("thunderHit")
+                    || name.equals("registerGoals")),
+            "Expected crazy creeper loot follow-up to avoid damage, boss, particle, fuse/explosion and custom AI overrides"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazyCreeper.class.getDeclaredFields())
+                .map(Field::getName)
+                .anyMatch(name -> name.toLowerCase().contains("boss")
+                    || name.toLowerCase().contains("fuse")
+                    || name.toLowerCase().contains("explosion")
+                    || name.toLowerCase().contains("ignited")),
+            "Expected crazy creeper loot follow-up to avoid custom boss, fuse and explosion state fields"
+        );
         helper.succeed();
     }
 
