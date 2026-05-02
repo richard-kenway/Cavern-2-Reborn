@@ -41,7 +41,7 @@ This note documents the bounded inherited Crazy Creeper loot follow-up on top of
 - Damage behavior remains unchanged in this loot slice.
 - Damage behavior now remains documented separately in `docs/crazy-creeper-damage-behavior-mvp.md`.
 - Boss bar / sky-darkening now remains documented separately in `docs/crazy-creeper-boss-bar-mvp.md`.
-- Particle trail remains unchanged in this loot slice.
+- Particle trail now remains documented separately in `docs/crazy-creeper-particle-trail-mvp.md`.
 - Custom fuse/explosion behavior remains unchanged in this loot slice.
 - Lightning / charged / swelling behavior remains unchanged in this loot slice.
 - Cavenia remains out of scope.
@@ -57,7 +57,7 @@ This note documents the bounded inherited Crazy Creeper loot follow-up on top of
   - event registration in `CavernReborn`
   - continued vanilla creeper loot-table baseline
   - continued absence of natural-spawn resources
-  - continued absence of damage, boss, particle, fuse/explosion and lightning follow-up code
+  - continued absence of custom fuse/explosion and lightning follow-up code
 - NeoForge GameTest runtime smoke covers:
   - crazy creeper vanilla creeper loot-table baseline
   - crazy creeper legacy orb-drop event wiring
@@ -65,13 +65,12 @@ This note documents the bounded inherited Crazy Creeper loot follow-up on top of
   - expected `0.5D` drop offset
   - continued max-health clamp and baseline attribute stability
   - continued no-natural-spawn boundary
-  - continued no-particle / no-fuse overrides, with damage and boss behavior documented separately
+  - continued no-fuse overrides, with damage, boss and particle behavior documented separately
 
 ## Out Of Scope
 
 - Crazy Creeper natural spawning
 - Crazy Creeper damage behavior
-- Crazy Creeper particle trail
 - Crazy Creeper custom fuse/explosion behavior
 - Crazy Creeper lightning/charged/swelling behavior
 - Crazy Spider

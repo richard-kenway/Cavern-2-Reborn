@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CrazyCreeperResourcesTest {
     @Test
-    void crazyCreeperRegistersWithDedicatedEntitySpawnEggRendererAndExplicitLootDamageAndBossBoundaries() throws IOException {
+    void crazyCreeperRegistersWithDedicatedEntitySpawnEggRendererAndExplicitLootDamageBossAndParticleFollowUps() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -45,6 +45,9 @@ class CrazyCreeperResourcesTest {
         );
         String clientSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "client", "CavernClientModEvents.java"
+        );
+        String particleSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "client", "particle", "CrazyMobParticle.java"
         );
         String rendererSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "client", "renderer", "CrazyCreeperRenderer.java"
@@ -88,9 +91,23 @@ class CrazyCreeperResourcesTest {
         assertTrue(entitySource.contains(".add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)"));
         assertTrue(entitySource.contains(".add(Attributes.MOVEMENT_SPEED, 0.23D)"));
         assertTrue(entitySource.contains("public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_PARTICLE_COUNT_PER_TICK = 3;"));
+        assertTrue(entitySource.contains("public static final double LEGACY_PARTICLE_HORIZONTAL_OFFSET = 0.25D;"));
+        assertTrue(entitySource.contains("public static final double LEGACY_PARTICLE_BASE_Y_OFFSET = 0.65D;"));
+        assertTrue(entitySource.contains("public static final double LEGACY_PARTICLE_VERTICAL_MOTION_OFFSET = 0.25D;"));
+        assertTrue(entitySource.contains("public static final double LEGACY_PARTICLE_VERTICAL_MOTION_SCALE = 0.125D;"));
         assertTrue(entitySource.contains("public static final double LEGACY_BOSS_BAR_VISIBILITY_DISTANCE = 20.0D;"));
         assertTrue(entitySource.contains("public static final double LEGACY_BOSS_BAR_DARKEN_SKY_DISTANCE = 30.0D;"));
         assertTrue(entitySource.contains("return EntityType.CREEPER.getDefaultLootTable();"));
+        assertTrue(entitySource.contains("public void aiStep()"));
+        assertTrue(entitySource.contains("if (this.level().isClientSide()) {"));
+        assertTrue(entitySource.contains("for (int i = 0; i < LEGACY_PARTICLE_COUNT_PER_TICK; ++i) {"));
+        assertTrue(entitySource.contains("this.random.nextInt(2) * 2 - 1"));
+        assertTrue(entitySource.contains("this.getX() + LEGACY_PARTICLE_HORIZONTAL_OFFSET * particleXDirection"));
+        assertTrue(entitySource.contains("this.getY() + LEGACY_PARTICLE_BASE_Y_OFFSET + this.random.nextFloat()"));
+        assertTrue(entitySource.contains("this.random.nextFloat() * 1.0F * particleXDirection"));
+        assertTrue(entitySource.contains("(this.random.nextFloat() - LEGACY_PARTICLE_VERTICAL_MOTION_OFFSET) * LEGACY_PARTICLE_VERTICAL_MOTION_SCALE"));
+        assertTrue(entitySource.contains("this.level().addParticle(ModRegistries.CRAZY_MOB_PARTICLE.get(), particleX, particleY, particleZ, motionX, motionY, motionZ);"));
         assertTrue(entitySource.contains("private final ServerBossEvent legacyBossEvent = new ServerBossEvent("));
         assertTrue(entitySource.contains("BossEvent.BossBarColor.GREEN"));
         assertTrue(entitySource.contains("BossEvent.BossBarOverlay.PROGRESS"));
@@ -125,8 +142,6 @@ class CrazyCreeperResourcesTest {
         assertFalse(entitySource.contains("canNaturallySpawnInDimension"));
         assertFalse(entitySource.contains("checkCrazyCreeperSpawnRules"));
         assertFalse(entitySource.contains("ParticleCrazyMob"));
-        assertFalse(entitySource.contains("CRAZY_MOB_PARTICLE"));
-        assertFalse(entitySource.contains("aiStep()"));
         assertFalse(entitySource.contains("explodeCreeper"));
         assertFalse(entitySource.contains("Explosion"));
         assertFalse(entitySource.contains("fuseTime"));
@@ -164,6 +179,12 @@ class CrazyCreeperResourcesTest {
         assertFalse(entityEventSource.contains("ModRegistries.CRAZY_CREEPER.get(),\n            SpawnPlacementTypes"));
 
         assertTrue(clientSource.contains("event.registerEntityRenderer(ModRegistries.CRAZY_CREEPER.get(), CrazyCreeperRenderer::new);"));
+        assertTrue(clientSource.contains("event.registerSpriteSet(ModRegistries.CRAZY_MOB_PARTICLE.get(), CrazyMobParticle.Provider::new);"));
+        assertTrue(particleSource.contains("extends PortalParticle"));
+        assertTrue(particleSource.contains("float f = this.random.nextFloat() * 0.5F + 0.4F;"));
+        assertTrue(particleSource.contains("float color = 0.65F * f * 0.8F;"));
+        assertTrue(particleSource.contains("this.setColor(color, color, color);"));
+        assertFalse(particleSource.contains("ParticleCrazyMob"));
         assertTrue(rendererSource.contains("extends CreeperRenderer"));
         assertTrue(rendererSource.contains("textures/entity/crazy_creeper.png"));
         assertFalse(rendererSource.contains("scale("));
@@ -185,17 +206,24 @@ class CrazyCreeperResourcesTest {
     }
 
     @Test
-    void crazyCreeperResourcesCoverLangSpawnEggModelAndTextureClasspath() throws IOException {
+    void crazyCreeperResourcesCoverLangSpawnEggModelParticleJsonAndTextureClasspath() throws IOException {
         JsonObject lang = readJsonResource("assets/cavernreborn/lang/en_us.json");
         JsonObject spawnEggModel = readJsonResource("assets/cavernreborn/models/item/crazy_creeper_spawn_egg.json");
+        JsonObject particleDescription = readJsonResource("assets/cavernreborn/particles/crazy_mob.json");
 
         assertEquals("Crazy Creeper", lang.get("entity.cavernreborn.crazy_creeper").getAsString());
         assertEquals("Crazy Creeper Spawn Egg", lang.get("item.cavernreborn.crazy_creeper_spawn_egg").getAsString());
         assertEquals("minecraft:item/template_spawn_egg", spawnEggModel.get("parent").getAsString());
+        assertEquals(8, particleDescription.getAsJsonArray("textures").size());
+        assertEquals("minecraft:generic_0", particleDescription.getAsJsonArray("textures").get(0).getAsString());
 
         assertClassPathOrigin(
             resourceUrl("assets/cavernreborn/models/item/crazy_creeper_spawn_egg.json"),
             "assets/cavernreborn/models/item/crazy_creeper_spawn_egg.json"
+        );
+        assertClassPathOrigin(
+            resourceUrl("assets/cavernreborn/particles/crazy_mob.json"),
+            "assets/cavernreborn/particles/crazy_mob.json"
         );
         assertClassPathOrigin(
             resourceUrl("assets/cavernreborn/textures/entity/crazy_creeper.png"),

@@ -56,12 +56,12 @@ It does not add natural spawning, loot changes, particles, custom fuse/explosion
 - Custom fuse/explosion behavior remains deferred.
 - Lightning/charged/swelling behavior remains deferred.
 - Boss bar / sky-darkening now remains documented separately in `docs/crazy-creeper-boss-bar-mvp.md`.
-- Particle trail remains out of scope.
+- Particle trail now remains documented separately in `docs/crazy-creeper-particle-trail-mvp.md`.
 - Crazy Spider, Cavenia and magic-book systems remain out of scope.
 
 ## Testing
 
-- Resource tests pin the entity-local damage hook, the exact fall/fire tag usage, the preserved `1500.0D` source literal, the preserved vanilla creeper loot-table baseline, the preserved `CrazyCreeperLootEvents` / `CrazyCreeperLootPolicy` wiring and the continued absence of natural-spawn, boss, particle, fuse/explosion and lightning follow-up code.
+- Resource tests pin the entity-local damage hook, the exact fall/fire tag usage, the preserved `1500.0D` source literal, the preserved vanilla creeper loot-table baseline, the preserved `CrazyCreeperLootEvents` / `CrazyCreeperLootPolicy` wiring and the continued absence of natural-spawn, fuse/explosion and lightning follow-up code beyond the separately restored boss and particle branches.
 - Documentation tests pin the legacy source references, the inherited `0.35F` fall multiplier, the explicit copy-not-inherit mapping and the unchanged loot/natural-spawn/fuse boundaries.
 - NeoForge GameTest runtime smoke covers:
   - crazy creeper legacy fall-damage reduction smoke
@@ -71,12 +71,11 @@ It does not add natural spawning, loot changes, particles, custom fuse/explosion
   - continued runtime `1024.0` max-health clamp stability
   - continued inherited `1/5` orb-drop wiring stability
   - continued natural-spawn deferral through absent placement/biome-modifier/biome-tag wiring
-  - continued absence of particle, fuse/explosion and lightning overrides beyond the separately restored boss branch
+  - continued absence of fuse/explosion and lightning overrides beyond the separately restored boss and particle branches
 
 ## Still Out Of Scope
 
 - Crazy Creeper natural spawning
-- Crazy Creeper particle trail
 - Crazy Creeper custom fuse/explosion behavior
 - Crazy Creeper lightning/charged/swelling behavior
 - Crazy Spider

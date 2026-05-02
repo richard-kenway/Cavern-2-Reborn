@@ -93,7 +93,7 @@ It restores only the legacy Crazy Creeper boss bar / sky-darkening branch. It do
 - Loot remains unchanged.
 - Damage remains unchanged.
 - Natural spawning remains deferred.
-- Particles remain a separate client-visual follow-up.
+- Particles now remain documented separately in `docs/crazy-creeper-particle-trail-mvp.md`.
 - Fuse/explosion behavior remains deferred.
 - Lightning/charged/swelling behavior remains deferred.
 - no custom packets were added
@@ -118,7 +118,7 @@ More specifically:
   - the exact legacy boss-event references
   - the single global boss-event ambiguity note
   - the explicit copy-not-inherit mapping
-  - the separate particle-trail follow-up mapping
+  - the separate particle-trail documentation mapping
 - NeoForge GameTest runtime smoke covers:
   - crazy creeper boss-event wiring smoke
   - crazy creeper boss-bar color/overlay smoke
