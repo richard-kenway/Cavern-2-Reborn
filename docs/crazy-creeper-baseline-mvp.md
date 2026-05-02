@@ -117,10 +117,11 @@ The baseline stayed safe because vanilla `Creeper` already exists and can spawn/
 - Legacy `EntityCrazyCreeper` inherits fall/fire damage behavior from `EntityCavenicCreeper`.
 - Legacy `EntityCrazyCreeper` inherits the `cavenic_orb` drop from `EntityCavenicCreeper`.
 - Legacy `EntityCrazyCreeper` overrides `canBeRidden(Entity entity)` to return `false`.
-- This baseline keeps an explicit damage behavior boundary.
+- This baseline originally kept an explicit damage behavior boundary.
+- The inherited damage branch is now restored explicitly in `docs/crazy-creeper-damage-behavior-mvp.md` while the rest of the baseline stays narrow.
 - The inherited loot/orb branch is now restored explicitly in `docs/crazy-creeper-loot-mvp.md` while the rest of the baseline stays narrow.
 - This baseline keeps an explicit boss/particle boundary.
-- This baseline does not restore boss bar, particles, damage behavior, loot/orb behavior, or any lightning/charged/swelling follow-up.
+- This baseline does not restore boss bar, particles, or any lightning/charged/swelling follow-up.
 
 ## Testing
 

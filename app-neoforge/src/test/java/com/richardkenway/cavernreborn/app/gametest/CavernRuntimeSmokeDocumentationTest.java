@@ -194,11 +194,13 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("Crazy Creeper Baseline MVP"));
         assertTrue(readme.contains("docs/crazy-creeper-baseline-mvp.md"));
         assertTrue(readme.contains("docs/crazy-creeper-loot-mvp.md"));
+        assertTrue(readme.contains("docs/crazy-creeper-damage-behavior-mvp.md"));
         assertTrue(readme.contains("third crazy-variant foundation follow-up"));
         assertTrue(readme.contains("`crazy_creeper`"));
         assertTrue(readme.contains("vanilla creeper loot baseline"));
         assertTrue(readme.contains("inherited legacy `1/5` `cavenic_orb` drop is now restored explicitly on top of that same vanilla creeper loot baseline"));
-        assertTrue(readme.contains("Crazy Creeper fuse/explosion, boss, particle and damage follow-ups remain intentionally deferred"));
+        assertTrue(readme.contains("inherited legacy fall-damage reduction and fire-damage immunity behavior are now restored explicitly on top of that same vanilla creeper baseline"));
+        assertTrue(readme.contains("Crazy Creeper fuse/explosion, boss and particle follow-ups remain intentionally deferred"));
         assertTrue(readme.contains("Crazy Spider remains the next crazy-variant follow-up candidate"));
         assertTrue(readme.contains("vanilla zombie loot baseline"));
     }

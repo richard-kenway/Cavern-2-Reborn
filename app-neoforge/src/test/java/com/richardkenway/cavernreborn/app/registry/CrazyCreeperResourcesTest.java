@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CrazyCreeperResourcesTest {
     @Test
-    void crazyCreeperRegistersWithDedicatedEntitySpawnEggRendererAndExplicitLootBoundaries() throws IOException {
+    void crazyCreeperRegistersWithDedicatedEntitySpawnEggRendererAndExplicitLootAndDamageBoundaries() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -87,7 +87,13 @@ class CrazyCreeperResourcesTest {
         assertTrue(entitySource.contains(".add(Attributes.MAX_HEALTH, 1500.0D)"));
         assertTrue(entitySource.contains(".add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)"));
         assertTrue(entitySource.contains(".add(Attributes.MOVEMENT_SPEED, 0.23D)"));
+        assertTrue(entitySource.contains("public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;"));
         assertTrue(entitySource.contains("return EntityType.CREEPER.getDefaultLootTable();"));
+        assertTrue(entitySource.contains("public boolean hurt(DamageSource source, float damage)"));
+        assertTrue(entitySource.contains("source.is(DamageTypeTags.IS_FALL)"));
+        assertTrue(entitySource.contains("damage *= LEGACY_FALL_DAMAGE_MULTIPLIER;"));
+        assertTrue(entitySource.contains("source.is(DamageTypeTags.IS_FIRE)"));
+        assertTrue(entitySource.contains("return super.hurt(source, damage);"));
         assertFalse(entitySource.contains("FOLLOW_RANGE"));
         assertFalse(entitySource.contains("ATTACK_DAMAGE"));
         assertFalse(entitySource.contains("NATURAL_SPAWN_WEIGHT"));
@@ -99,7 +105,6 @@ class CrazyCreeperResourcesTest {
         assertFalse(entitySource.contains("BossEvent"));
         assertFalse(entitySource.contains("ParticleCrazyMob"));
         assertFalse(entitySource.contains("CRAZY_MOB_PARTICLE"));
-        assertFalse(entitySource.contains("hurt(DamageSource source, float damage)"));
         assertFalse(entitySource.contains("aiStep()"));
         assertFalse(entitySource.contains("customServerAiStep()"));
         assertFalse(entitySource.contains("startSeenByPlayer"));

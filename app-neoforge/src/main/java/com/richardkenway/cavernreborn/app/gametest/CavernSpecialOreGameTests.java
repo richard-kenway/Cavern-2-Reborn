@@ -258,6 +258,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CRAZY_CREEPER_SPAWN_EGG_ANCHOR = new BlockPos(6688, 96, 0);
     private static final BlockPos CRAZY_CREEPER_BASELINE_ANCHOR = new BlockPos(6784, 96, 0);
     private static final BlockPos CRAZY_CREEPER_LOOT_ANCHOR = new BlockPos(6880, 96, 0);
+    private static final BlockPos CRAZY_CREEPER_DAMAGE_ANCHOR = new BlockPos(6976, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -5002,15 +5003,14 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             java.util.Arrays.stream(CrazyCreeper.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("hurt")
-                    || name.equals("aiStep")
+                .anyMatch(name -> name.equals("aiStep")
                     || name.equals("customServerAiStep")
                     || name.equals("startSeenByPlayer")
                     || name.equals("stopSeenByPlayer")
                     || name.equals("explodeCreeper")
                     || name.equals("thunderHit")
                     || name.equals("registerGoals")),
-            "Expected crazy creeper baseline to avoid damage, boss, particle, fuse/explosion and custom AI follow-up overrides"
+            "Expected crazy creeper baseline to avoid boss, particle, fuse/explosion and custom AI follow-up overrides"
         );
         helper.assertFalse(
             java.util.Arrays.stream(CrazyCreeper.class.getDeclaredFields())
@@ -5116,15 +5116,14 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             java.util.Arrays.stream(CrazyCreeper.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("hurt")
-                    || name.equals("aiStep")
+                .anyMatch(name -> name.equals("aiStep")
                     || name.equals("customServerAiStep")
                     || name.equals("startSeenByPlayer")
                     || name.equals("stopSeenByPlayer")
                     || name.equals("explodeCreeper")
                     || name.equals("thunderHit")
                     || name.equals("registerGoals")),
-            "Expected crazy creeper loot follow-up to avoid damage, boss, particle, fuse/explosion and custom AI overrides"
+            "Expected crazy creeper loot follow-up to avoid boss, particle, fuse/explosion and custom AI overrides"
         );
         helper.assertFalse(
             java.util.Arrays.stream(CrazyCreeper.class.getDeclaredFields())
@@ -5134,6 +5133,174 @@ public final class CavernSpecialOreGameTests {
                     || name.toLowerCase().contains("explosion")
                     || name.toLowerCase().contains("ignited")),
             "Expected crazy creeper loot follow-up to avoid custom boss, fuse and explosion state fields"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazyCreeperLegacyFallAndFireDamageBehaviorAppliesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_CREEPER_DAMAGE_ANCHOR;
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CrazyCreeper crazyFallCreeper = spawnLivingEntity(helper, ModRegistries.CRAZY_CREEPER.get(), origin);
+        Creeper vanillaFallCreeper = spawnLivingEntity(helper, EntityType.CREEPER, origin.east(4));
+        clearEquipment(crazyFallCreeper);
+        clearEquipment(vanillaFallCreeper);
+        float fallDamage = 10.0F;
+        float crazyFallHealthBefore = crazyFallCreeper.getHealth();
+        float vanillaFallHealthBefore = vanillaFallCreeper.getHealth();
+
+        helper.assertTrue(
+            crazyFallCreeper.hurt(level.damageSources().fall(), fallDamage),
+            "Expected crazy creeper to still accept fall damage hits through the normal server damage path"
+        );
+        helper.assertTrue(
+            vanillaFallCreeper.hurt(level.damageSources().fall(), fallDamage),
+            "Expected vanilla creeper baseline to accept fall damage hits"
+        );
+        helper.assertTrue(
+            Math.abs((crazyFallHealthBefore - crazyFallCreeper.getHealth()) - (fallDamage * CrazyCreeper.LEGACY_FALL_DAMAGE_MULTIPLIER)) < 1.0E-6F,
+            "Expected crazy creeper fall damage to stay pinned to the inherited legacy 0.35 multiplier"
+        );
+        helper.assertTrue(
+            Math.abs((vanillaFallHealthBefore - vanillaFallCreeper.getHealth()) - fallDamage) < 1.0E-6F,
+            "Expected vanilla creeper baseline to keep full fall damage"
+        );
+
+        CrazyCreeper crazyFireCreeper = spawnLivingEntity(helper, ModRegistries.CRAZY_CREEPER.get(), origin.south(8));
+        Creeper vanillaFireCreeper = spawnLivingEntity(helper, EntityType.CREEPER, origin.south(8).east(4));
+        clearEquipment(crazyFireCreeper);
+        clearEquipment(vanillaFireCreeper);
+        float fireDamage = 4.0F;
+        float crazyFireHealthBefore = crazyFireCreeper.getHealth();
+        float vanillaFireHealthBefore = vanillaFireCreeper.getHealth();
+
+        helper.assertFalse(
+            crazyFireCreeper.hurt(level.damageSources().lava(), fireDamage),
+            "Expected crazy creeper to reject fire-tagged damage sources like lava"
+        );
+        helper.assertTrue(
+            vanillaFireCreeper.hurt(level.damageSources().lava(), fireDamage),
+            "Expected vanilla creeper baseline to take lava damage"
+        );
+        helper.assertTrue(
+            Math.abs(crazyFireHealthBefore - crazyFireCreeper.getHealth()) < 1.0E-6F,
+            "Expected crazy creeper health to stay unchanged after fire-tagged damage"
+        );
+        helper.assertTrue(
+            vanillaFireCreeper.getHealth() < vanillaFireHealthBefore,
+            "Expected vanilla creeper baseline to lose health from lava damage"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazyCreeperLegacyDamageBehaviorKeepsGenericDamageVanillaLikeAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_CREEPER_DAMAGE_ANCHOR.south(12);
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceKey<BiomeModifier> crazyCreeperSpawnModifier = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_creeper_spawns")
+        );
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_crazy_creeper"));
+        CrazyCreeperLootEvents lootEvents = new CrazyCreeperLootEvents();
+        List<ItemEntity> drops = new ArrayList<>();
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CrazyCreeper crazyCreeper = spawnLivingEntity(helper, ModRegistries.CRAZY_CREEPER.get(), origin);
+        Creeper vanillaCreeper = spawnLivingEntity(helper, EntityType.CREEPER, origin.east(4));
+        clearEquipment(crazyCreeper);
+        clearEquipment(vanillaCreeper);
+        float genericDamage = 6.0F;
+        float crazyHealthBefore = crazyCreeper.getHealth();
+        float vanillaHealthBefore = vanillaCreeper.getHealth();
+
+        helper.assertTrue(
+            crazyCreeper.hurt(level.damageSources().generic(), genericDamage),
+            "Expected crazy creeper to remain vulnerable to generic non-fire damage"
+        );
+        helper.assertTrue(
+            vanillaCreeper.hurt(level.damageSources().generic(), genericDamage),
+            "Expected vanilla creeper baseline to remain vulnerable to generic non-fire damage"
+        );
+        helper.assertTrue(
+            Math.abs((crazyHealthBefore - crazyCreeper.getHealth()) - genericDamage) < 1.0E-6F,
+            "Expected crazy creeper generic damage intake to stay vanilla-like"
+        );
+        helper.assertTrue(
+            Math.abs((vanillaHealthBefore - vanillaCreeper.getHealth()) - genericDamage) < 1.0E-6F,
+            "Expected vanilla creeper baseline generic damage intake to stay unchanged"
+        );
+        helper.assertTrue(
+            crazyCreeper.getLootTable().equals(EntityType.CREEPER.getDefaultLootTable()),
+            "Expected crazy creeper to keep the vanilla creeper loot table as its baseline"
+        );
+        helper.assertTrue(
+            Math.abs(crazyCreeper.getMaxHealth() - 1024.0D) < 1.0E-6D,
+            "Expected crazy creeper runtime max health to stay clamped to the modern generic.max_health ceiling of 1024.0"
+        );
+        helper.assertTrue(
+            Math.abs(crazyCreeper.getAttributeValue(Attributes.MOVEMENT_SPEED) - 0.23D) < 1.0E-6D,
+            "Expected crazy creeper movement speed to stay pinned to legacy 0.23 while wiring the damage branch"
+        );
+        helper.assertTrue(
+            Math.abs(crazyCreeper.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) - 1.0D) < 1.0E-6D,
+            "Expected crazy creeper knockback resistance to stay pinned to legacy 1.0 while wiring the damage branch"
+        );
+        helper.assertTrue(
+            Math.abs(crazyCreeper.getAttributeValue(Attributes.FOLLOW_RANGE) - vanillaCreeper.getAttributeValue(Attributes.FOLLOW_RANGE)) < 1.0E-6D,
+            "Expected crazy creeper follow range to stay on the vanilla creeper baseline"
+        );
+        helper.assertTrue(
+            CrazyCreeperLootPolicy.ORB_DROP_ROLL_BOUND == 5,
+            "Expected crazy creeper orb drop roll bound to stay pinned to the inherited legacy 1/5 chance"
+        );
+        helper.assertTrue(
+            lootEvents.tryAppendLegacyOrbDrop(crazyCreeper, drops, 0),
+            "Winning orb roll must still append a cavenic orb drop after wiring the damage branch"
+        );
+        helper.assertTrue(drops.size() == 1, "Winning orb roll must still append exactly one cavenic orb drop");
+        helper.assertTrue(
+            drops.getFirst().getItem().is(ModRegistries.CAVENIC_ORB.get()),
+            "Winning orb roll must still append cavernreborn:cavenic_orb"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_CREEPER.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected crazy creeper natural spawn placement to stay unregistered"
+        );
+        helper.assertFalse(
+            biomeModifiers.containsKey(crazyCreeperSpawnModifier),
+            "Expected crazy creeper damage follow-up to keep the biome modifier absent at runtime"
+        );
+        helper.assertFalse(
+            biomes.getTag(spawnTag).isPresent(),
+            "Expected crazy creeper damage follow-up to keep the spawn biome tag absent at runtime"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazyCreeper.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("aiStep")
+                    || name.equals("customServerAiStep")
+                    || name.equals("startSeenByPlayer")
+                    || name.equals("stopSeenByPlayer")
+                    || name.equals("explodeCreeper")
+                    || name.equals("thunderHit")
+                    || name.equals("registerGoals")),
+            "Expected crazy creeper damage follow-up to avoid boss, particle, fuse/explosion and custom AI overrides"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazyCreeper.class.getDeclaredFields())
+                .map(Field::getName)
+                .anyMatch(name -> name.toLowerCase().contains("boss")
+                    || name.toLowerCase().contains("fuse")
+                    || name.toLowerCase().contains("explosion")
+                    || name.toLowerCase().contains("ignited")),
+            "Expected crazy creeper damage follow-up to avoid custom boss, fuse and explosion state fields"
         );
         helper.succeed();
     }
@@ -5536,6 +5703,7 @@ public final class CavernSpecialOreGameTests {
 
         ItemStack bow = player.getMainHandItem();
         CavenicBowItem bowItem = (CavenicBowItem) ModRegistries.CAVENIC_BOW.get();
+        CavenicBowTorchEvents torchEvents = new CavenicBowTorchEvents();
         bowItem.setMode(bow, CavenicBowMode.TORCH);
         helper.assertTrue(
             bowItem.shouldMarkTorchShot(bow, player, 1.0F),
@@ -5543,16 +5711,19 @@ public final class CavernSpecialOreGameTests {
         );
 
         BowReleaseResult torchResult = releaseBowThroughRealUse(helper, player, BowItem.MAX_DRAW_DURATION);
+        AbstractArrow torchArrow = singleSpawnedArrow(helper, torchResult, "TORCH release must spawn one marked vanilla arrow");
 
-        helper.runAfterDelay(1, () -> {
-            helper.assertTrue(torchResult.modeAfter() == CavenicBowMode.TORCH, "TORCH mode must remain stored on the stack");
-            helper.assertTrue(torchResult.arrowCountBefore() - torchResult.arrowCountAfter() == 1, "TORCH release must consume one arrow by normal vanilla rules");
-            helper.assertTrue(torchResult.torchCountBefore() - torchResult.torchCountAfter() == 1, "Marked TORCH shots must consume exactly one torch in survival");
-            helper.assertTrue(level.getBlockState(torchPos).is(Blocks.TORCH), "TORCH mode should place a standing torch on a valid top-face hit");
-            helper.assertTrue(torchResult.bowDamageAfter() - torchResult.bowDamageBefore() == 1, "TORCH mode must keep the vanilla single durability cost");
-            helper.assertTrue(CavenicBowTorchPolicy.EXTRA_DURABILITY_COST == 0, "TORCH mode must not add extra durability cost");
-            helper.succeed();
-        });
+        helper.assertTrue("minecraft:arrow".equals(entityTypeId(torchArrow)), "TORCH release must still fire a vanilla arrow entity");
+        helper.assertTrue(CavenicBowItem.isTorchArrow(torchArrow), "Real-use TORCH release must mark the spawned vanilla arrow");
+        torchEvents.onProjectileImpact(new ProjectileImpactEvent(torchArrow, hitResult(supportPos, Direction.UP)));
+
+        helper.assertTrue(torchResult.modeAfter() == CavenicBowMode.TORCH, "TORCH mode must remain stored on the stack");
+        helper.assertTrue(torchResult.arrowCountBefore() - torchResult.arrowCountAfter() == 1, "TORCH release must consume one arrow by normal vanilla rules");
+        helper.assertTrue(torchResult.torchCountBefore() - torchResult.torchCountAfter() == 1, "Marked TORCH shots must consume exactly one torch in survival");
+        helper.assertTrue(level.getBlockState(torchPos).is(Blocks.TORCH), "TORCH mode should place a standing torch on a valid top-face hit");
+        helper.assertTrue(torchResult.bowDamageAfter() - torchResult.bowDamageBefore() == 1, "TORCH mode must keep the vanilla single durability cost");
+        helper.assertTrue(CavenicBowTorchPolicy.EXTRA_DURABILITY_COST == 0, "TORCH mode must not add extra durability cost");
+        helper.succeed();
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
