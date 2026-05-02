@@ -41,7 +41,7 @@ The risky parts are separate follow-up branches rather than prerequisites for th
 - lightning/charged/swelling behavior
 - legacy crazy-roster natural spawning through the old `Cavenia` provider/config path
 
-`Crazy Spider` remains the next crazy-variant follow-up candidate.
+`Crazy Spider` now has its own bounded baseline documented in `docs/crazy-spider-baseline-mvp.md`, while its combat/blindness/poison, loot, damage, boss, particle and natural-spawn follow-ups remain later work.
 
 ## Runtime Shape
 
@@ -148,7 +148,7 @@ The baseline stayed safe because vanilla `Creeper` already exists and can spawn/
 - Crazy Creeper damage behavior
 - Crazy Creeper custom fuse/explosion behavior
 - Crazy Creeper lightning/charged/swelling behavior
-- Crazy Spider
+- Crazy Spider combat, loot, damage, boss, particle and natural-spawn follow-ups
 - summon variants
 - direct Cavenic mobs
 - non-Crazy mobs

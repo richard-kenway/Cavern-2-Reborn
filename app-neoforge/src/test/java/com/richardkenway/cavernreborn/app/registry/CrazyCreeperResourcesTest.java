@@ -57,11 +57,11 @@ class CrazyCreeperResourcesTest {
         );
 
         assertEquals(
-            List.of("crazy_zombie", "crazy_skeleton", "crazy_creeper"),
+            List.of("crazy_zombie", "crazy_skeleton", "crazy_creeper", "crazy_spider"),
             extractMatches(registriesSource, Pattern.compile("ENTITY_TYPES\\.register\\(\\s*\"(crazy_[a-z_]+)\"", Pattern.MULTILINE))
         );
         assertEquals(
-            List.of("crazy_zombie_spawn_egg", "crazy_skeleton_spawn_egg", "crazy_creeper_spawn_egg"),
+            List.of("crazy_zombie_spawn_egg", "crazy_skeleton_spawn_egg", "crazy_creeper_spawn_egg", "crazy_spider_spawn_egg"),
             extractMatches(registriesSource, Pattern.compile("ITEMS\\.register\\(\\s*\"(crazy_[a-z_]+_spawn_egg)\"", Pattern.MULTILINE))
         );
         assertTrue(registriesSource.contains("ENTITY_TYPES.register(\n        \"crazy_creeper\""));
@@ -79,6 +79,7 @@ class CrazyCreeperResourcesTest {
             "output.accept(CRAZY_ZOMBIE_SPAWN_EGG.get())",
             "output.accept(CRAZY_SKELETON_SPAWN_EGG.get())",
             "output.accept(CRAZY_CREEPER_SPAWN_EGG.get())",
+            "output.accept(CRAZY_SPIDER_SPAWN_EGG.get())",
             "output.accept(ORE_COMPASS.get())"
         ));
 

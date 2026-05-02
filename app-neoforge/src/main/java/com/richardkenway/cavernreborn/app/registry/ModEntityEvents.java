@@ -9,6 +9,7 @@ import com.richardkenway.cavernreborn.app.entity.CavenicWitch;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombie;
 import com.richardkenway.cavernreborn.app.entity.CrazyCreeper;
 import com.richardkenway.cavernreborn.app.entity.CrazySkeleton;
+import com.richardkenway.cavernreborn.app.entity.CrazySpider;
 import com.richardkenway.cavernreborn.app.entity.CrazyZombie;
 
 import net.neoforged.bus.api.SubscribeEvent;
@@ -34,6 +35,7 @@ public final class ModEntityEvents {
         event.put(ModRegistries.CRAZY_ZOMBIE.get(), CrazyZombie.createAttributes().build());
         event.put(ModRegistries.CRAZY_SKELETON.get(), CrazySkeleton.createAttributes().build());
         event.put(ModRegistries.CRAZY_CREEPER.get(), CrazyCreeper.createAttributes().build());
+        event.put(ModRegistries.CRAZY_SPIDER.get(), CrazySpider.createAttributes().build());
     }
 
     @SubscribeEvent

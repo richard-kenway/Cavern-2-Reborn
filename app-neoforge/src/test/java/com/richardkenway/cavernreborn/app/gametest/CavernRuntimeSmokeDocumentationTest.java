@@ -205,7 +205,12 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("legacy green progress boss bar and sky-darkening boss-event branch are now restored explicitly on top of that same vanilla creeper baseline"));
         assertTrue(readme.contains("legacy client-only portal-tinted particle trail is now restored explicitly on top of that same vanilla creeper baseline through the shared `crazy_mob` particle mapping"));
         assertTrue(readme.contains("Crazy Creeper fuse/explosion and lightning/charged/swelling follow-ups remain intentionally deferred"));
-        assertTrue(readme.contains("Crazy Spider remains the next crazy-variant follow-up candidate"));
+        assertTrue(readme.contains("Crazy Spider Baseline MVP"));
+        assertTrue(readme.contains("docs/crazy-spider-baseline-mvp.md"));
+        assertTrue(readme.contains("fourth crazy-variant foundation follow-up"));
+        assertTrue(readme.contains("`crazy_spider`"));
+        assertTrue(readme.contains("vanilla spider loot baseline"));
+        assertTrue(readme.contains("direct blindness/poison combat hooks plus inherited loot, damage, boss and particle branches remain intentionally deferred"));
         assertTrue(readme.contains("vanilla zombie loot baseline"));
     }
 
@@ -317,6 +322,14 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("crazy creeper custom fuse/explosion branch remains follow-up"));
         assertTrue(doc.contains("crazy creeper custom lightning/charged/swelling behavior remains follow-up"));
         assertTrue(doc.contains("actual client visual crazy creeper particle feel remains manual"));
+        assertTrue(doc.contains("crazy spider runtime registry id"));
+        assertTrue(doc.contains("crazy spider attribute registration"));
+        assertTrue(doc.contains("crazy spider hostile runtime spawn"));
+        assertTrue(doc.contains("crazy spider spawn egg resolution"));
+        assertTrue(doc.contains("crazy spider spawn egg entity creation"));
+        assertTrue(doc.contains("crazy spider vanilla spider loot-table baseline"));
+        assertTrue(doc.contains("crazy spider explicit no-natural-spawn baseline boundary"));
+        assertTrue(doc.contains("crazy spider explicit no-custom-combat / blindness / poison baseline boundary"));
         assertTrue(doc.contains("cavenic spider runtime registry id"));
         assertTrue(doc.contains("cavenic spider attribute registration smoke"));
         assertTrue(doc.contains("cavenic spider hostile runtime spawn smoke"));
@@ -494,6 +507,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("actual Crazy Zombie client particle-trail visual feel"));
         assertTrue(doc.contains("actual long-running Crazy Zombie melee-knockback feel beyond the deterministic helper/runtime smoke"));
         assertTrue(doc.contains("actual Crazy Skeleton renderer/model visual feel"));
+        assertTrue(doc.contains("actual Crazy Spider renderer/model visual feel"));
         assertTrue(doc.contains("cavenic bear natural spawn placement registration"));
         assertTrue(doc.contains("cavenic bear CAVERN-only spawn predicate smoke"));
         assertTrue(doc.contains("cavenic bear biome modifier registry smoke"));

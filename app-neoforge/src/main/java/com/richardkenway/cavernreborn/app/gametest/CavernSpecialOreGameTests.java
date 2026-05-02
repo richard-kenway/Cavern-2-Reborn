@@ -33,6 +33,7 @@ import com.richardkenway.cavernreborn.app.entity.CavenicZombieLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CrazyCreeper;
 import com.richardkenway.cavernreborn.app.entity.CrazyCreeperLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CrazySkeleton;
+import com.richardkenway.cavernreborn.app.entity.CrazySpider;
 import com.richardkenway.cavernreborn.app.entity.CrazySkeletonLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CrazyZombie;
 import com.richardkenway.cavernreborn.app.entity.CrazyZombieLootEvents;
@@ -261,6 +262,9 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CRAZY_CREEPER_DAMAGE_ANCHOR = new BlockPos(6976, 96, 0);
     private static final BlockPos CRAZY_CREEPER_BOSS_BAR_ANCHOR = new BlockPos(7072, 96, 0);
     private static final BlockPos CRAZY_CREEPER_PARTICLE_TRAIL_ANCHOR = new BlockPos(7168, 96, 0);
+    private static final BlockPos CRAZY_SPIDER_ANCHOR = new BlockPos(7264, 96, 0);
+    private static final BlockPos CRAZY_SPIDER_SPAWN_EGG_ANCHOR = new BlockPos(7360, 96, 0);
+    private static final BlockPos CRAZY_SPIDER_BASELINE_ANCHOR = new BlockPos(7456, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -5615,6 +5619,131 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySpiderRegistersAtRuntime(GameTestHelper helper) {
+        helper.assertTrue(ModRegistries.CRAZY_SPIDER.get() != null, "Missing crazy spider entity type");
+        helper.assertTrue(ModRegistries.CRAZY_SPIDER_SPAWN_EGG.get() != null, "Missing crazy spider spawn egg");
+
+        assertRegistryId(helper, ModRegistries.CRAZY_SPIDER.get(), "cavernreborn:crazy_spider");
+        assertRegistryId(helper, ModRegistries.CRAZY_SPIDER_SPAWN_EGG.get(), "cavernreborn:crazy_spider_spawn_egg");
+
+        ItemStack spawnEgg = crazySpiderSpawnEgg();
+        helper.assertTrue(!spawnEgg.isEmpty(), "Expected crazy spider spawn egg to be constructible");
+        helper.assertTrue(spawnEgg.getItem() instanceof SpawnEggItem, "Expected crazy spider spawn egg runtime item");
+        helper.assertTrue(
+            SpawnEggItem.byId(ModRegistries.CRAZY_SPIDER.get()) == spawnEgg.getItem(),
+            "Expected crazy spider spawn egg to resolve the crazy spider entity type"
+        );
+        helper.assertTrue(
+            ModRegistries.CRAZY_SPIDER.get().getCategory() == MobCategory.MONSTER,
+            "Expected crazy spider type category to stay MONSTER"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySpiderSpawnsWithExpectedAttributesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_SPIDER_BASELINE_ANCHOR;
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceKey<BiomeModifier> crazySpiderSpawnModifier = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_spider_spawns")
+        );
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_crazy_spider"));
+
+        resetMiningArea(level, origin, 12.0D);
+
+        CrazySpider crazySpider = spawnLivingEntity(helper, ModRegistries.CRAZY_SPIDER.get(), origin);
+        Spider vanillaSpider = spawnLivingEntity(helper, EntityType.SPIDER, origin.east(4));
+
+        helper.assertTrue(crazySpider instanceof Monster, "Expected crazy spider to remain a hostile monster");
+        helper.assertTrue(crazySpider instanceof Spider, "Expected crazy spider to keep vanilla spider behavior");
+        helper.assertTrue(CrazySpider.class.getSuperclass() == Spider.class, "Expected crazy spider baseline to extend vanilla Spider directly");
+        helper.assertTrue(crazySpider.getType().getCategory() == MobCategory.MONSTER, "Expected crazy spider type category to stay MONSTER");
+        helper.assertTrue(crazySpider.isAlive(), "Expected spawned crazy spider to be alive");
+        helper.assertTrue(
+            Math.abs(crazySpider.getMaxHealth() - 1024.0D) < 1.0E-6D,
+            "Expected crazy spider runtime max health to clamp to the modern generic.max_health ceiling of 1024.0"
+        );
+        helper.assertTrue(
+            Math.abs(crazySpider.getAttributeValue(Attributes.MAX_HEALTH) - 1024.0D) < 1.0E-6D,
+            "Expected crazy spider MAX_HEALTH attribute to clamp to the modern generic.max_health ceiling of 1024.0"
+        );
+        helper.assertTrue(
+            Math.abs(crazySpider.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) - 1.0D) < 1.0E-6D,
+            "Expected crazy spider knockback resistance to map to legacy 1.0"
+        );
+        helper.assertTrue(
+            Math.abs(crazySpider.getAttributeValue(Attributes.MOVEMENT_SPEED) - 0.6D) < 1.0E-6D,
+            "Expected crazy spider movement speed to map to legacy 0.6"
+        );
+        helper.assertTrue(
+            Math.abs(crazySpider.getAttributeValue(Attributes.FOLLOW_RANGE) - vanillaSpider.getAttributeValue(Attributes.FOLLOW_RANGE)) < 1.0E-6D,
+            "Expected crazy spider follow range to stay on the vanilla spider baseline"
+        );
+        helper.assertTrue(
+            Math.abs(crazySpider.getAttributeValue(Attributes.ATTACK_DAMAGE) - vanillaSpider.getAttributeValue(Attributes.ATTACK_DAMAGE)) < 1.0E-6D,
+            "Expected crazy spider attack damage to stay on the vanilla spider baseline"
+        );
+        helper.assertTrue(
+            crazySpider.getLootTable().equals(EntityType.SPIDER.getDefaultLootTable()),
+            "Expected crazy spider to keep the vanilla spider loot table as its baseline"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_SPIDER.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected crazy spider spawn placement to stay unregistered"
+        );
+        helper.assertFalse(
+            biomeModifiers.containsKey(crazySpiderSpawnModifier),
+            "Expected crazy spider baseline to keep the biome modifier absent at runtime"
+        );
+        helper.assertFalse(
+            biomes.getTag(spawnTag).isPresent(),
+            "Expected crazy spider baseline to keep the spawn biome tag absent at runtime"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("hurt")
+                    || name.equals("customServerAiStep")
+                    || name.equals("startSeenByPlayer")
+                    || name.equals("stopSeenByPlayer")
+                    || name.equals("aiStep")
+                    || name.equals("doHurtTarget")
+                    || name.equals("registerGoals")),
+            "Expected crazy spider baseline to avoid loot, damage, boss, particle and custom combat follow-up overrides"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazySpider.class.getDeclaredFields())
+                .map(Field::getName)
+                .anyMatch(name -> name.toLowerCase().contains("boss")
+                    || name.toLowerCase().contains("particle")
+                    || name.toLowerCase().contains("poison")
+                    || name.toLowerCase().contains("blind")),
+            "Expected crazy spider baseline to avoid direct boss, particle and combat-effect state"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySpiderSpawnEggCreatesRuntimeEntity(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos supportPos = CRAZY_SPIDER_SPAWN_EGG_ANCHOR;
+
+        resetMiningArea(level, supportPos, 8.0D);
+        level.setBlock(supportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+
+        ItemStack spawnEgg = crazySpiderSpawnEgg();
+        Player player = makeMockPlayer(helper, level, GameType.SURVIVAL, spawnEgg.copy(), supportPos.south(2));
+        Entity spawnedEntity = ModRegistries.CRAZY_SPIDER.get().spawn(level, spawnEgg, player, supportPos.above(), MobSpawnType.SPAWN_EGG, true, true);
+
+        helper.assertTrue(spawnedEntity instanceof CrazySpider, "Expected spawn egg to create a CrazySpider runtime entity");
+        helper.assertTrue(spawnedEntity != null && spawnedEntity.isAlive(), "Expected spawned crazy spider to be alive");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void cavenicMeleeRegistersAtRuntime(GameTestHelper helper) {
         helper.assertTrue(ModRegistries.CAVENIC_SWORD.get() != null, "Missing cavenic sword");
         helper.assertTrue(ModRegistries.CAVENIC_AXE.get() != null, "Missing cavenic axe");
@@ -7554,6 +7683,10 @@ public final class CavernSpecialOreGameTests {
 
     private static ItemStack crazyCreeperSpawnEgg() {
         return new ItemStack(ModRegistries.CRAZY_CREEPER_SPAWN_EGG.get());
+    }
+
+    private static ItemStack crazySpiderSpawnEgg() {
+        return new ItemStack(ModRegistries.CRAZY_SPIDER_SPAWN_EGG.get());
     }
 
     private static void positionTargetAroundMob(LivingEntity target, Mob mob, double xOffset) {

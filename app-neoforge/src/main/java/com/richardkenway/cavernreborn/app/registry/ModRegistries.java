@@ -12,6 +12,7 @@ import com.richardkenway.cavernreborn.app.entity.CavenicWitch;
 import com.richardkenway.cavernreborn.app.entity.CavenicZombie;
 import com.richardkenway.cavernreborn.app.entity.CrazyCreeper;
 import com.richardkenway.cavernreborn.app.entity.CrazySkeleton;
+import com.richardkenway.cavernreborn.app.entity.CrazySpider;
 import com.richardkenway.cavernreborn.app.entity.CrazyZombie;
 import com.richardkenway.cavernreborn.app.block.FissuredStoneBlock;
 import com.richardkenway.cavernreborn.app.item.CavenicAxeItem;
@@ -189,6 +190,15 @@ public final class ModRegistries {
             .clientTrackingRange(8)
             .build(ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_creeper").toString())
     );
+    public static final DeferredHolder<EntityType<?>, EntityType<CrazySpider>> CRAZY_SPIDER = ENTITY_TYPES.register(
+        "crazy_spider",
+        () -> EntityType.Builder.of(CrazySpider::new, MobCategory.MONSTER)
+            .sized(1.4F, 0.9F)
+            .eyeHeight(0.65F)
+            .passengerAttachments(0.765F)
+            .clientTrackingRange(8)
+            .build(ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_spider").toString())
+    );
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> CRAZY_MOB_PARTICLE = PARTICLE_TYPES.register(
         "crazy_mob",
         () -> new SimpleParticleType(false)
@@ -243,6 +253,10 @@ public final class ModRegistries {
     public static final DeferredItem<Item> CRAZY_CREEPER_SPAWN_EGG = ITEMS.register(
         "crazy_creeper_spawn_egg",
         () -> new DeferredSpawnEggItem(() -> CRAZY_CREEPER.get(), 0x909090, 0x2E8B57, new Item.Properties())
+    );
+    public static final DeferredItem<Item> CRAZY_SPIDER_SPAWN_EGG = ITEMS.register(
+        "crazy_spider_spawn_egg",
+        () -> new DeferredSpawnEggItem(() -> CRAZY_SPIDER.get(), 0x909090, 0x811F1F, new Item.Properties())
     );
     public static final DeferredItem<Item> ORE_COMPASS = ITEMS.register(
         "ore_compass",
@@ -383,6 +397,7 @@ public final class ModRegistries {
                 output.accept(CRAZY_ZOMBIE_SPAWN_EGG.get());
                 output.accept(CRAZY_SKELETON_SPAWN_EGG.get());
                 output.accept(CRAZY_CREEPER_SPAWN_EGG.get());
+                output.accept(CRAZY_SPIDER_SPAWN_EGG.get());
                 output.accept(ORE_COMPASS.get());
                 output.accept(HEXCITE_PICKAXE.get());
                 output.accept(HEXCITE_AXE.get());

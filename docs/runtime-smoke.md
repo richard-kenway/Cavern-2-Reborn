@@ -242,6 +242,14 @@ NeoForge GameTest runtime smoke covers:
 - crazy creeper explicit no-natural-spawn baseline boundary
 - crazy creeper custom fuse/explosion branch remains follow-up
 - crazy creeper custom lightning/charged/swelling behavior remains follow-up
+- crazy spider runtime registry id
+- crazy spider attribute registration
+- crazy spider hostile runtime spawn
+- crazy spider spawn egg resolution
+- crazy spider spawn egg entity creation
+- crazy spider vanilla spider loot-table baseline
+- crazy spider explicit no-natural-spawn baseline boundary
+- crazy spider explicit no-custom-combat / blindness / poison baseline boundary
 - cavenic shroom worldgen configured/placed key resolution
 - aquamarine tool runtime registry ids
 - aquamarine tool repairability with `cavernreborn:aquamarine`
@@ -306,6 +314,7 @@ NeoForge GameTest runtime smoke covers:
 - actual Crazy Zombie renderer/model visual feel
 - actual Crazy Skeleton renderer/model visual feel
 - actual Crazy Creeper renderer/model visual feel
+- actual Crazy Spider renderer/model visual feel
 - actual client-visible Crazy Creeper boss-bar feel remains manual
 - actual client visual crazy creeper particle feel remains manual
 - actual client-visible Crazy Skeleton boss-bar feel remains manual

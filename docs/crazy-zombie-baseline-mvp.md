@@ -37,7 +37,7 @@ The other crazy variants were inspected as follow-up candidates for narrower sli
 
 - Crazy Skeleton was initially deferred because it depends on the legacy `EntityAIAttackCavenicBow` path, guaranteed Infinity bow equipment and mixed ranged/melee AI. Its safe baseline is now documented separately in `docs/crazy-skeleton-baseline-mvp.md`.
 - Crazy Creeper now has its baseline documented separately in `docs/crazy-creeper-baseline-mvp.md`, while its direct fuse/explosion, boss, particle, loot and damage branches remain later follow-ups.
-- Crazy Spider remains a follow-up because it carries stronger blindness/poison combat hooks on top of the spider baseline.
+- Crazy Spider now has its own bounded baseline documented in `docs/crazy-spider-baseline-mvp.md`, while its stronger blindness/poison combat hooks remain later follow-up work.
 
 ## Runtime Shape
 

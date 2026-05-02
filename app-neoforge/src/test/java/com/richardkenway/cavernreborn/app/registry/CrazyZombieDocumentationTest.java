@@ -41,8 +41,9 @@ class CrazyZombieDocumentationTest {
         assertTrue(readme.contains("docs/crazy-zombie-natural-spawn-absent-or-deferred.md"));
         assertTrue(readme.contains("Cavenia-only crazy-roster provider/config branch"));
         assertTrue(readme.contains("docs/crazy-skeleton-baseline-mvp.md"));
-        assertTrue(readme.contains("Crazy Creeper now has its own bounded baseline documented separately"));
-        assertTrue(readme.contains("Crazy Spider remains a follow-up candidate"));
+        assertTrue(readme.contains("Crazy Spider Baseline MVP"));
+        assertTrue(readme.contains("docs/crazy-spider-baseline-mvp.md"));
+        assertTrue(readme.contains("Crazy Spider now has its own bounded baseline documented separately"));
     }
 
     @Test
@@ -93,7 +94,8 @@ class CrazyZombieDocumentationTest {
         assertTrue(doc.contains("Crazy Skeleton was initially deferred because it depends on the legacy `EntityAIAttackCavenicBow` path"));
         assertTrue(doc.contains("docs/crazy-skeleton-baseline-mvp.md"));
         assertTrue(doc.contains("Crazy Creeper now has its baseline documented separately in `docs/crazy-creeper-baseline-mvp.md`"));
-        assertTrue(doc.contains("Crazy Spider remains a follow-up because it carries stronger blindness/poison combat hooks"));
+        assertTrue(doc.contains("Crazy Spider now has its own bounded baseline documented in `docs/crazy-spider-baseline-mvp.md`"));
+        assertTrue(doc.contains("stronger blindness/poison combat hooks remain later follow-up work"));
         assertTrue(doc.contains("Cavenia remains out of scope"));
         assertTrue(doc.contains("The magic-book system remains intentionally untouched."));
     }

@@ -36,7 +36,9 @@ class CrazyCreeperDocumentationTest {
         assertTrue(readme.contains("legacy green progress boss bar and sky-darkening boss-event branch are now restored explicitly on top of that same vanilla creeper baseline"));
         assertTrue(readme.contains("legacy client-only portal-tinted particle trail is now restored explicitly on top of that same vanilla creeper baseline through the shared `crazy_mob` particle mapping"));
         assertTrue(readme.contains("Crazy Creeper fuse/explosion and lightning/charged/swelling follow-ups remain intentionally deferred"));
-        assertTrue(readme.contains("Crazy Spider remains the next crazy-variant follow-up candidate"));
+        assertTrue(readme.contains("Crazy Spider Baseline MVP"));
+        assertTrue(readme.contains("docs/crazy-spider-baseline-mvp.md"));
+        assertTrue(readme.contains("Crazy Spider now has its own bounded baseline documented separately"));
     }
 
     @Test
@@ -84,7 +86,7 @@ class CrazyCreeperDocumentationTest {
         assertTrue(doc.contains("The inherited damage branch is now restored explicitly in `docs/crazy-creeper-damage-behavior-mvp.md` while the rest of the baseline stays narrow."));
         assertTrue(doc.contains("The dedicated follow-up documented in `docs/crazy-creeper-boss-bar-mvp.md` now restores the legacy green progress boss-event / sky-darkening branch explicitly while keeping the vanilla `Creeper` base."));
         assertTrue(doc.contains("The dedicated follow-up documented in `docs/crazy-creeper-particle-trail-mvp.md` now restores the legacy client-only `ParticleCrazyMob` trail explicitly while reusing the shared `cavernreborn:crazy_mob` particle mapping."));
-        assertTrue(doc.contains("Crazy Spider"));
+        assertTrue(doc.contains("`Crazy Spider` now has its own bounded baseline documented in `docs/crazy-spider-baseline-mvp.md`"));
         assertTrue(doc.contains("Cavenia"));
     }
 

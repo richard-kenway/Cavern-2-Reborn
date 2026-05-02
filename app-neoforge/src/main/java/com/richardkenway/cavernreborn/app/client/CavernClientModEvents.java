@@ -11,6 +11,7 @@ import com.richardkenway.cavernreborn.app.client.renderer.CavenicWitchRenderer;
 import com.richardkenway.cavernreborn.app.client.renderer.CavenicZombieRenderer;
 import com.richardkenway.cavernreborn.app.client.renderer.CrazyCreeperRenderer;
 import com.richardkenway.cavernreborn.app.client.renderer.CrazySkeletonRenderer;
+import com.richardkenway.cavernreborn.app.client.renderer.CrazySpiderRenderer;
 import com.richardkenway.cavernreborn.app.client.renderer.CrazyZombieRenderer;
 import com.richardkenway.cavernreborn.app.dimension.CavernNeoForgeDimensions;
 import com.richardkenway.cavernreborn.app.registry.ModRegistries;
@@ -53,6 +54,7 @@ public final class CavernClientModEvents {
         event.registerEntityRenderer(ModRegistries.CRAZY_ZOMBIE.get(), CrazyZombieRenderer::new);
         event.registerEntityRenderer(ModRegistries.CRAZY_SKELETON.get(), CrazySkeletonRenderer::new);
         event.registerEntityRenderer(ModRegistries.CRAZY_CREEPER.get(), CrazyCreeperRenderer::new);
+        event.registerEntityRenderer(ModRegistries.CRAZY_SPIDER.get(), CrazySpiderRenderer::new);
     }
 
     @SubscribeEvent
