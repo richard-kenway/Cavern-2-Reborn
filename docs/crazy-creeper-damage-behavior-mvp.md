@@ -2,7 +2,7 @@
 
 This note documents the bounded incoming-damage follow-up for the existing `cavernreborn:crazy_creeper`.
 
-It does not add natural spawning, loot changes, boss-event changes, particles, custom fuse/explosion behavior, lightning/charged/swelling behavior or broader crazy-mob combat systems. It only restores the small inherited legacy damage drift from `EntityCavenicCreeper`.
+It does not add natural spawning, loot changes, particles, custom fuse/explosion behavior, lightning/charged/swelling behavior or broader crazy-mob combat systems. It only restores the small inherited legacy damage drift from `EntityCavenicCreeper`.
 
 ## Legacy References Inspected
 
@@ -55,7 +55,8 @@ It does not add natural spawning, loot changes, boss-event changes, particles, c
 - Natural-spawn deferral remains unchanged.
 - Custom fuse/explosion behavior remains deferred.
 - Lightning/charged/swelling behavior remains deferred.
-- Boss bar / sky-darkening and particle trail remain out of scope.
+- Boss bar / sky-darkening now remains documented separately in `docs/crazy-creeper-boss-bar-mvp.md`.
+- Particle trail remains out of scope.
 - Crazy Spider, Cavenia and magic-book systems remain out of scope.
 
 ## Testing
@@ -70,12 +71,11 @@ It does not add natural spawning, loot changes, boss-event changes, particles, c
   - continued runtime `1024.0` max-health clamp stability
   - continued inherited `1/5` orb-drop wiring stability
   - continued natural-spawn deferral through absent placement/biome-modifier/biome-tag wiring
-  - continued absence of boss, particle, fuse/explosion and lightning overrides
+  - continued absence of particle, fuse/explosion and lightning overrides beyond the separately restored boss branch
 
 ## Still Out Of Scope
 
 - Crazy Creeper natural spawning
-- Crazy Creeper boss bar / sky-darkening
 - Crazy Creeper particle trail
 - Crazy Creeper custom fuse/explosion behavior
 - Crazy Creeper lightning/charged/swelling behavior

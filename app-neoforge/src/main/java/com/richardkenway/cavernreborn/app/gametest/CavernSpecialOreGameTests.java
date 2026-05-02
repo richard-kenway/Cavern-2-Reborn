@@ -259,6 +259,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CRAZY_CREEPER_BASELINE_ANCHOR = new BlockPos(6784, 96, 0);
     private static final BlockPos CRAZY_CREEPER_LOOT_ANCHOR = new BlockPos(6880, 96, 0);
     private static final BlockPos CRAZY_CREEPER_DAMAGE_ANCHOR = new BlockPos(6976, 96, 0);
+    private static final BlockPos CRAZY_CREEPER_BOSS_BAR_ANCHOR = new BlockPos(7072, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -5000,26 +5001,34 @@ public final class CavernSpecialOreGameTests {
             biomes.getTag(spawnTag).isPresent(),
             "Expected crazy creeper baseline to keep the spawn biome tag absent at runtime"
         );
+        helper.assertTrue(
+            crazyCreeper.getLegacyCrazyBossEventForTests() != null,
+            "Expected crazy creeper baseline follow-up chain to keep the restored boss event accessible on the runtime entity"
+        );
         helper.assertFalse(
             java.util.Arrays.stream(CrazyCreeper.class.getDeclaredMethods())
                 .map(Method::getName)
                 .anyMatch(name -> name.equals("aiStep")
-                    || name.equals("customServerAiStep")
-                    || name.equals("startSeenByPlayer")
-                    || name.equals("stopSeenByPlayer")
                     || name.equals("explodeCreeper")
                     || name.equals("thunderHit")
                     || name.equals("registerGoals")),
-            "Expected crazy creeper baseline to avoid boss, particle, fuse/explosion and custom AI follow-up overrides"
+            "Expected crazy creeper baseline to keep particle, fuse/explosion and custom AI follow-up overrides absent"
+        );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazyCreeper.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("customServerAiStep")
+                    || name.equals("startSeenByPlayer")
+                    || name.equals("stopSeenByPlayer")),
+            "Expected crazy creeper baseline follow-up chain to keep the tracked-player boss-event hooks on the entity class"
         );
         helper.assertFalse(
             java.util.Arrays.stream(CrazyCreeper.class.getDeclaredFields())
                 .map(Field::getName)
-                .anyMatch(name -> name.toLowerCase().contains("boss")
-                    || name.toLowerCase().contains("fuse")
+                .anyMatch(name -> name.toLowerCase().contains("fuse")
                     || name.toLowerCase().contains("explosion")
                     || name.toLowerCase().contains("ignited")),
-            "Expected crazy creeper baseline to avoid custom boss, fuse and explosion state fields"
+            "Expected crazy creeper baseline follow-up chain to avoid custom fuse and explosion state fields"
         );
         helper.succeed();
     }
@@ -5113,26 +5122,34 @@ public final class CavernSpecialOreGameTests {
             biomes.getTag(spawnTag).isPresent(),
             "Expected crazy creeper loot follow-up to keep the spawn biome tag absent at runtime"
         );
+        helper.assertTrue(
+            crazyCreeper.getLegacyCrazyBossEventForTests() != null,
+            "Expected crazy creeper loot follow-up to keep the restored boss event accessible on the runtime entity"
+        );
         helper.assertFalse(
             java.util.Arrays.stream(CrazyCreeper.class.getDeclaredMethods())
                 .map(Method::getName)
                 .anyMatch(name -> name.equals("aiStep")
-                    || name.equals("customServerAiStep")
-                    || name.equals("startSeenByPlayer")
-                    || name.equals("stopSeenByPlayer")
                     || name.equals("explodeCreeper")
                     || name.equals("thunderHit")
                     || name.equals("registerGoals")),
-            "Expected crazy creeper loot follow-up to avoid boss, particle, fuse/explosion and custom AI overrides"
+            "Expected crazy creeper loot follow-up to avoid particle, fuse/explosion and custom AI overrides"
+        );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazyCreeper.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("customServerAiStep")
+                    || name.equals("startSeenByPlayer")
+                    || name.equals("stopSeenByPlayer")),
+            "Expected crazy creeper loot follow-up to keep the tracked-player boss-event hooks intact"
         );
         helper.assertFalse(
             java.util.Arrays.stream(CrazyCreeper.class.getDeclaredFields())
                 .map(Field::getName)
-                .anyMatch(name -> name.toLowerCase().contains("boss")
-                    || name.toLowerCase().contains("fuse")
+                .anyMatch(name -> name.toLowerCase().contains("fuse")
                     || name.toLowerCase().contains("explosion")
                     || name.toLowerCase().contains("ignited")),
-            "Expected crazy creeper loot follow-up to avoid custom boss, fuse and explosion state fields"
+            "Expected crazy creeper loot follow-up to avoid custom fuse and explosion state fields"
         );
         helper.succeed();
     }
@@ -5281,26 +5298,227 @@ public final class CavernSpecialOreGameTests {
             biomes.getTag(spawnTag).isPresent(),
             "Expected crazy creeper damage follow-up to keep the spawn biome tag absent at runtime"
         );
+        helper.assertTrue(
+            crazyCreeper.getLegacyCrazyBossEventForTests() != null,
+            "Expected crazy creeper damage follow-up to keep the restored boss event accessible on the runtime entity"
+        );
         helper.assertFalse(
             java.util.Arrays.stream(CrazyCreeper.class.getDeclaredMethods())
                 .map(Method::getName)
                 .anyMatch(name -> name.equals("aiStep")
-                    || name.equals("customServerAiStep")
-                    || name.equals("startSeenByPlayer")
-                    || name.equals("stopSeenByPlayer")
                     || name.equals("explodeCreeper")
                     || name.equals("thunderHit")
                     || name.equals("registerGoals")),
-            "Expected crazy creeper damage follow-up to avoid boss, particle, fuse/explosion and custom AI overrides"
+            "Expected crazy creeper damage follow-up to avoid particle, fuse/explosion and custom AI overrides"
+        );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazyCreeper.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("customServerAiStep")
+                    || name.equals("startSeenByPlayer")
+                    || name.equals("stopSeenByPlayer")),
+            "Expected crazy creeper damage follow-up to keep the tracked-player boss-event hooks intact"
         );
         helper.assertFalse(
             java.util.Arrays.stream(CrazyCreeper.class.getDeclaredFields())
                 .map(Field::getName)
-                .anyMatch(name -> name.toLowerCase().contains("boss")
-                    || name.toLowerCase().contains("fuse")
+                .anyMatch(name -> name.toLowerCase().contains("fuse")
                     || name.toLowerCase().contains("explosion")
                     || name.toLowerCase().contains("ignited")),
-            "Expected crazy creeper damage follow-up to avoid custom boss, fuse and explosion state fields"
+            "Expected crazy creeper damage follow-up to avoid custom fuse and explosion state fields"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazyCreeperLegacyBossBarWiresAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_CREEPER_BOSS_BAR_ANCHOR;
+        BlockPos playerPos = origin.south(2);
+        BlockPos wallPos = origin.south(1);
+        BlockPos absolutePlayerPos = helper.absolutePos(playerPos);
+        BlockPos absoluteWallPos = helper.absolutePos(wallPos);
+
+        resetMiningArea(level, origin, 16.0D);
+        prepareCombatPlatform(level, origin);
+        prepareCombatPlatform(level, playerPos);
+
+        CrazyCreeper creeper = spawnLivingEntity(helper, ModRegistries.CRAZY_CREEPER.get(), origin);
+        clearEquipment(creeper);
+        creeper.updateLegacyBossEvent();
+
+        ServerBossEvent bossEvent = creeper.getLegacyCrazyBossEventForTests();
+        helper.assertTrue(bossEvent != null, "Expected crazy creeper boss follow-up to expose a ServerBossEvent");
+        helper.assertTrue(bossEvent.getColor() == BossEvent.BossBarColor.GREEN, "Expected crazy creeper boss bar color to map to legacy green");
+        helper.assertTrue(
+            bossEvent.getOverlay() == BossEvent.BossBarOverlay.PROGRESS,
+            "Expected crazy creeper boss bar overlay to map to the legacy progress style"
+        );
+        helper.assertTrue(
+            Math.abs(bossEvent.getProgress() - 1.0F) < 1.0E-6F,
+            "Expected fresh crazy creeper boss progress to start at full health"
+        );
+
+        ServerPlayer trackedPlayer = helper.makeMockServerPlayerInLevel();
+        trackedPlayer.teleportTo(level, absolutePlayerPos.getX() + 0.5D, absolutePlayerPos.getY() + 1.0D, absolutePlayerPos.getZ() + 0.5D, EnumSet.noneOf(RelativeMovement.class), 0.0F, 0.0F);
+        creeper.startSeenByPlayer(trackedPlayer);
+        helper.assertTrue(
+            bossEvent.getPlayers().contains(trackedPlayer),
+            "Expected startSeenByPlayer to register the tracked player on the crazy creeper boss event"
+        );
+
+        creeper.updateLegacyBossEvent();
+        helper.assertTrue(
+            creeper.shouldShowLegacyBossBarTo(trackedPlayer),
+            "Expected a nearby tracked player with clear line of sight to satisfy the legacy crazy creeper boss-bar visibility rule"
+        );
+        helper.assertTrue(
+            creeper.shouldDarkenLegacyBossSkyFor(trackedPlayer),
+            "Expected the legacy Crazy Creeper sky-darkening helper to stay active for a nearby visible tracked player"
+        );
+        helper.assertTrue(bossEvent.isVisible(), "Expected the crazy creeper boss event to stay visible for a nearby tracked player");
+        helper.assertTrue(bossEvent.shouldDarkenScreen(), "Expected the legacy Crazy Creeper boss event to keep darken-screen enabled");
+
+        float damage = 64.0F;
+        helper.assertTrue(
+            creeper.hurt(level.damageSources().generic(), damage),
+            "Expected boss-event coverage to leave generic Crazy Creeper damage intake working"
+        );
+        creeper.updateLegacyBossEvent();
+        helper.assertTrue(
+            Math.abs(bossEvent.getProgress() - (creeper.getHealth() / creeper.getMaxHealth())) < 1.0E-6F,
+            "Expected crazy creeper boss progress to track the current health-to-max-health ratio"
+        );
+
+        creeper.setCustomName(Component.literal("Legacy Green Boss"));
+        helper.assertTrue(
+            "Legacy Green Boss".equals(bossEvent.getName().getString()),
+            "Expected the crazy creeper boss-event name to follow setCustomName"
+        );
+
+        placeVisibilityWall(level, absoluteWallPos);
+        creeper.updateLegacyBossEvent();
+        helper.assertFalse(
+            creeper.shouldShowLegacyBossBarTo(trackedPlayer),
+            "Expected the legacy crazy creeper boss-bar helper to fail once a solid wall blocks line of sight"
+        );
+        helper.assertTrue(
+            creeper.shouldDarkenLegacyBossSkyFor(trackedPlayer),
+            "Expected the legacy Crazy Creeper sky-darkening helper to stay active when line of sight is blocked"
+        );
+        helper.assertFalse(
+            bossEvent.isVisible(),
+            "Expected the crazy creeper boss event to hide itself when the tracked player is no longer visible"
+        );
+        helper.assertTrue(
+            bossEvent.shouldDarkenScreen(),
+            "Expected the legacy Crazy Creeper boss event to keep darken-screen true under the inspected blocked-visibility rule"
+        );
+
+        creeper.stopSeenByPlayer(trackedPlayer);
+        helper.assertFalse(
+            bossEvent.getPlayers().contains(trackedPlayer),
+            "Expected stopSeenByPlayer to remove the tracked player from the crazy creeper boss event"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazyCreeperLegacyBossBarKeepsExistingSlicesStableAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_CREEPER_BOSS_BAR_ANCHOR.north(12);
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceKey<BiomeModifier> crazyCreeperSpawnModifier = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_creeper_spawns")
+        );
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_crazy_creeper"));
+        CrazyCreeperLootEvents lootEvents = new CrazyCreeperLootEvents();
+        List<ItemEntity> drops = new ArrayList<>();
+
+        resetMiningArea(level, origin, 16.0D);
+        prepareCombatPlatform(level, origin);
+
+        CrazyCreeper creeper = spawnLivingEntity(helper, ModRegistries.CRAZY_CREEPER.get(), origin);
+        clearEquipment(creeper);
+        creeper.updateLegacyBossEvent();
+
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazyCreeper.class.getDeclaredFields()).anyMatch(field -> field.getType() == ServerBossEvent.class),
+            "Expected crazy creeper boss-bar follow-up to keep the ServerBossEvent field on the entity class"
+        );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazyCreeper.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("customServerAiStep") || name.equals("startSeenByPlayer") || name.equals("stopSeenByPlayer")),
+            "Expected crazy creeper boss-bar follow-up to keep the tracked-player boss-event hooks on the entity class"
+        );
+        helper.assertTrue(
+            creeper.getLegacyCrazyBossEventForTests().getColor() == BossEvent.BossBarColor.GREEN
+                && creeper.getLegacyCrazyBossEventForTests().getOverlay() == BossEvent.BossBarOverlay.PROGRESS,
+            "Expected crazy creeper boss-bar follow-up to keep the legacy green progress boss-event styling"
+        );
+        helper.assertTrue(
+            creeper.getLootTable().equals(EntityType.CREEPER.getDefaultLootTable()),
+            "Expected crazy creeper boss-bar follow-up to keep the vanilla creeper loot-table baseline"
+        );
+        helper.assertTrue(
+            CrazyCreeperLootPolicy.ORB_DROP_ROLL_BOUND == 5,
+            "Expected crazy creeper boss-bar follow-up to keep the inherited 1/5 orb-drop roll bound"
+        );
+        helper.assertTrue(
+            lootEvents.tryAppendLegacyOrbDrop(creeper, drops, 0),
+            "Expected crazy creeper boss-bar follow-up to keep the winning orb-drop branch available"
+        );
+        helper.assertTrue(
+            drops.size() == 1 && drops.getFirst().getItem().is(ModRegistries.CAVENIC_ORB.get()),
+            "Expected crazy creeper boss-bar follow-up to keep appending exactly one cavenic orb on the winning roll"
+        );
+        helper.assertTrue(
+            Math.abs(creeper.getMaxHealth() - 1024.0D) < 1.0E-6D,
+            "Expected crazy creeper boss-bar follow-up to keep the modern 1024.0 runtime max-health clamp"
+        );
+        helper.assertFalse(
+            creeper.hurt(level.damageSources().lava(), 4.0F),
+            "Expected crazy creeper boss-bar follow-up to keep fire-tagged damage rejection intact"
+        );
+        helper.assertTrue(
+            creeper.hurt(level.damageSources().fall(), 10.0F),
+            "Expected crazy creeper boss-bar follow-up to keep fall damage routed through the legacy multiplier hook"
+        );
+        helper.assertTrue(
+            Math.abs(creeper.getHealth() - (creeper.getMaxHealth() - (10.0F * CrazyCreeper.LEGACY_FALL_DAMAGE_MULTIPLIER))) < 1.0E-6F,
+            "Expected crazy creeper boss-bar follow-up to keep the legacy 0.35 fall multiplier intact"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_CREEPER.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected crazy creeper boss-bar follow-up to keep spawn placement unregistered"
+        );
+        helper.assertFalse(
+            biomeModifiers.containsKey(crazyCreeperSpawnModifier),
+            "Expected crazy creeper boss-bar follow-up to keep the biome modifier absent at runtime"
+        );
+        helper.assertFalse(
+            biomes.getTag(spawnTag).isPresent(),
+            "Expected crazy creeper boss-bar follow-up to keep the spawn biome tag absent at runtime"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazyCreeper.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("aiStep")
+                    || name.equals("explodeCreeper")
+                    || name.equals("thunderHit")
+                    || name.equals("registerGoals")),
+            "Expected crazy creeper boss-bar follow-up to keep particle, fuse/explosion and custom AI overrides absent"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazyCreeper.class.getDeclaredFields())
+                .map(Field::getName)
+                .anyMatch(name -> name.toLowerCase().contains("fuse")
+                    || name.toLowerCase().contains("explosion")
+                    || name.toLowerCase().contains("ignited")),
+            "Expected crazy creeper boss-bar follow-up to avoid custom fuse and explosion state fields"
         );
         helper.succeed();
     }

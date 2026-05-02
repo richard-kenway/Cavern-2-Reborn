@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CrazyCreeperResourcesTest {
     @Test
-    void crazyCreeperRegistersWithDedicatedEntitySpawnEggRendererAndExplicitLootAndDamageBoundaries() throws IOException {
+    void crazyCreeperRegistersWithDedicatedEntitySpawnEggRendererAndExplicitLootDamageAndBossBoundaries() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -88,12 +88,35 @@ class CrazyCreeperResourcesTest {
         assertTrue(entitySource.contains(".add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)"));
         assertTrue(entitySource.contains(".add(Attributes.MOVEMENT_SPEED, 0.23D)"));
         assertTrue(entitySource.contains("public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;"));
+        assertTrue(entitySource.contains("public static final double LEGACY_BOSS_BAR_VISIBILITY_DISTANCE = 20.0D;"));
+        assertTrue(entitySource.contains("public static final double LEGACY_BOSS_BAR_DARKEN_SKY_DISTANCE = 30.0D;"));
         assertTrue(entitySource.contains("return EntityType.CREEPER.getDefaultLootTable();"));
+        assertTrue(entitySource.contains("private final ServerBossEvent legacyBossEvent = new ServerBossEvent("));
+        assertTrue(entitySource.contains("BossEvent.BossBarColor.GREEN"));
+        assertTrue(entitySource.contains("BossEvent.BossBarOverlay.PROGRESS"));
+        assertTrue(entitySource.contains("public void readAdditionalSaveData(CompoundTag compound)"));
+        assertTrue(entitySource.contains("public void setCustomName(@Nullable Component name)"));
+        assertTrue(entitySource.contains("this.legacyBossEvent.setName(this.getDisplayName());"));
         assertTrue(entitySource.contains("public boolean hurt(DamageSource source, float damage)"));
         assertTrue(entitySource.contains("source.is(DamageTypeTags.IS_FALL)"));
         assertTrue(entitySource.contains("damage *= LEGACY_FALL_DAMAGE_MULTIPLIER;"));
         assertTrue(entitySource.contains("source.is(DamageTypeTags.IS_FIRE)"));
         assertTrue(entitySource.contains("return super.hurt(source, damage);"));
+        assertTrue(entitySource.contains("protected void customServerAiStep()"));
+        assertTrue(entitySource.contains("public void startSeenByPlayer(ServerPlayer player)"));
+        assertTrue(entitySource.contains("this.legacyBossEvent.addPlayer(player);"));
+        assertTrue(entitySource.contains("public void stopSeenByPlayer(ServerPlayer player)"));
+        assertTrue(entitySource.contains("this.legacyBossEvent.removePlayer(player);"));
+        assertTrue(entitySource.contains("public ServerBossEvent getLegacyCrazyBossEventForTests()"));
+        assertTrue(entitySource.contains("public boolean shouldShowLegacyBossBarTo(ServerPlayer player)"));
+        assertTrue(entitySource.contains("return this.hasLineOfSight(player) && this.distanceTo(player) < LEGACY_BOSS_BAR_VISIBILITY_DISTANCE;"));
+        assertTrue(entitySource.contains("public boolean shouldDarkenLegacyBossSkyFor(ServerPlayer player)"));
+        assertTrue(entitySource.contains("return !canSee || distance < LEGACY_BOSS_BAR_DARKEN_SKY_DISTANCE;"));
+        assertTrue(entitySource.contains("public void updateLegacyBossEvent()"));
+        assertTrue(entitySource.contains("for (ServerPlayer player : this.legacyBossEvent.getPlayers())"));
+        assertTrue(entitySource.contains("this.legacyBossEvent.setDarkenScreen(!canSee || distance < LEGACY_BOSS_BAR_DARKEN_SKY_DISTANCE);"));
+        assertTrue(entitySource.contains("this.legacyBossEvent.setVisible(canSee);"));
+        assertTrue(entitySource.contains("this.legacyBossEvent.setProgress(this.getHealth() / this.getMaxHealth());"));
         assertFalse(entitySource.contains("FOLLOW_RANGE"));
         assertFalse(entitySource.contains("ATTACK_DAMAGE"));
         assertFalse(entitySource.contains("NATURAL_SPAWN_WEIGHT"));
@@ -101,14 +124,9 @@ class CrazyCreeperResourcesTest {
         assertFalse(entitySource.contains("NATURAL_SPAWN_MAX_COUNT"));
         assertFalse(entitySource.contains("canNaturallySpawnInDimension"));
         assertFalse(entitySource.contains("checkCrazyCreeperSpawnRules"));
-        assertFalse(entitySource.contains("ServerBossEvent"));
-        assertFalse(entitySource.contains("BossEvent"));
         assertFalse(entitySource.contains("ParticleCrazyMob"));
         assertFalse(entitySource.contains("CRAZY_MOB_PARTICLE"));
         assertFalse(entitySource.contains("aiStep()"));
-        assertFalse(entitySource.contains("customServerAiStep()"));
-        assertFalse(entitySource.contains("startSeenByPlayer"));
-        assertFalse(entitySource.contains("stopSeenByPlayer"));
         assertFalse(entitySource.contains("explodeCreeper"));
         assertFalse(entitySource.contains("Explosion"));
         assertFalse(entitySource.contains("fuseTime"));
@@ -135,6 +153,7 @@ class CrazyCreeperResourcesTest {
         assertFalse(dropEventSource.toLowerCase().contains("economy"));
         assertFalse(dropEventSource.toLowerCase().contains("progression"));
         assertFalse(dropEventSource.contains("BossEvent"));
+        assertFalse(dropEventSource.contains("ServerBossEvent"));
         assertFalse(dropEventSource.contains("ParticleCrazyMob"));
         assertFalse(dropEventSource.contains("Explosion"));
         assertFalse(dropEventSource.toLowerCase().contains("charged"));

@@ -11,25 +11,28 @@ import org.junit.jupiter.api.Test;
 class CrazyCreeperDocumentationTest {
     private static final Path README = resolveProjectFile("README.md");
     private static final Path BASELINE_DOC = resolveProjectFile("docs", "crazy-creeper-baseline-mvp.md");
+    private static final Path BOSS_DOC = resolveProjectFile("docs", "crazy-creeper-boss-bar-mvp.md");
     private static final Path DAMAGE_DOC = resolveProjectFile("docs", "crazy-creeper-damage-behavior-mvp.md");
     private static final Path LOOT_DOC = resolveProjectFile("docs", "crazy-creeper-loot-mvp.md");
     private static final Path RUNTIME_SMOKE = resolveProjectFile("docs", "runtime-smoke.md");
 
     @Test
-    void readmeMentionsCrazyCreeperBaselineLootAndDamageDocsAndFuseBoundary() throws IOException {
+    void readmeMentionsCrazyCreeperBaselineLootDamageAndBossDocsAndFuseBoundary() throws IOException {
         String readme = Files.readString(README);
 
         assertTrue(readme.contains("Crazy Creeper Baseline MVP"));
         assertTrue(readme.contains("docs/crazy-creeper-baseline-mvp.md"));
         assertTrue(readme.contains("docs/crazy-creeper-loot-mvp.md"));
         assertTrue(readme.contains("docs/crazy-creeper-damage-behavior-mvp.md"));
+        assertTrue(readme.contains("docs/crazy-creeper-boss-bar-mvp.md"));
         assertTrue(readme.contains("third crazy-variant foundation follow-up"));
         assertTrue(readme.contains("`crazy_creeper`"));
         assertTrue(readme.contains("vanilla creeper loot baseline"));
         assertTrue(readme.contains("legacy `1500.0` max-health request explicitly clamped by the modern `generic.max_health` runtime ceiling of `1024.0`"));
         assertTrue(readme.contains("inherited legacy `1/5` `cavenic_orb` drop is now restored explicitly on top of that same vanilla creeper loot baseline"));
         assertTrue(readme.contains("inherited legacy fall-damage reduction and fire-damage immunity behavior are now restored explicitly on top of that same vanilla creeper baseline"));
-        assertTrue(readme.contains("Crazy Creeper fuse/explosion, boss and particle follow-ups remain intentionally deferred"));
+        assertTrue(readme.contains("legacy green progress boss bar and sky-darkening boss-event branch are now restored explicitly on top of that same vanilla creeper baseline"));
+        assertTrue(readme.contains("Crazy Creeper fuse/explosion and particle follow-ups remain intentionally deferred"));
         assertTrue(readme.contains("Crazy Spider remains the next crazy-variant follow-up candidate"));
     }
 
@@ -76,7 +79,8 @@ class CrazyCreeperDocumentationTest {
         assertTrue(doc.contains("damage behavior boundary"));
         assertTrue(doc.contains("The inherited loot/orb branch is now restored explicitly in `docs/crazy-creeper-loot-mvp.md` while the rest of the baseline stays narrow."));
         assertTrue(doc.contains("The inherited damage branch is now restored explicitly in `docs/crazy-creeper-damage-behavior-mvp.md` while the rest of the baseline stays narrow."));
-        assertTrue(doc.contains("boss/particle boundary"));
+        assertTrue(doc.contains("The dedicated follow-up documented in `docs/crazy-creeper-boss-bar-mvp.md` now restores the legacy green progress boss-event / sky-darkening branch explicitly while keeping the vanilla `Creeper` base."));
+        assertTrue(doc.contains("particle boundary"));
         assertTrue(doc.contains("Crazy Spider"));
         assertTrue(doc.contains("Cavenia"));
     }
@@ -104,7 +108,7 @@ class CrazyCreeperDocumentationTest {
         assertTrue(doc.contains("Reborn `CrazyCreeper` still extends vanilla `Creeper`, not Reborn `CavenicCreeper`."));
         assertTrue(doc.contains("Natural spawning remains deferred."));
         assertTrue(doc.contains("Damage behavior remains unchanged in this loot slice."));
-        assertTrue(doc.contains("Boss bar / sky-darkening remains unchanged in this loot slice."));
+        assertTrue(doc.contains("Boss bar / sky-darkening now remains documented separately in `docs/crazy-creeper-boss-bar-mvp.md`."));
         assertTrue(doc.contains("Particle trail remains unchanged in this loot slice."));
         assertTrue(doc.contains("Custom fuse/explosion behavior remains unchanged in this loot slice."));
         assertTrue(doc.contains("Lightning / charged / swelling behavior remains unchanged in this loot slice."));
@@ -129,13 +133,51 @@ class CrazyCreeperDocumentationTest {
         assertTrue(doc.contains("Loot/orb behavior remains unchanged."));
         assertTrue(doc.contains("Custom fuse/explosion behavior remains deferred."));
         assertTrue(doc.contains("Lightning/charged/swelling behavior remains deferred."));
-        assertTrue(doc.contains("Boss bar / sky-darkening and particle trail remain out of scope."));
+        assertTrue(doc.contains("Boss bar / sky-darkening now remains documented separately in `docs/crazy-creeper-boss-bar-mvp.md`."));
+        assertTrue(doc.contains("Particle trail remains out of scope."));
         assertTrue(doc.contains("Natural-spawn deferral remains unchanged."));
         assertTrue(doc.contains("vanilla creeper loot baseline remains unchanged"));
     }
 
     @Test
-    void runtimeSmokeDocMentionsCrazyCreeperRegistryAttributeSpawnEggLootDamageAndDeferredExplosionBoundary() throws IOException {
+    void crazyCreeperBossDocStatesLegacyBossEventMappingBoundariesAndTests() throws IOException {
+        String doc = Files.readString(BOSS_DOC);
+
+        assertTrue(doc.contains("`cavern.entity.monster.EntityCrazyCreeper`"));
+        assertTrue(doc.contains("`cavern.entity.monster.EntityCavenicCreeper`"));
+        assertTrue(doc.contains("`ParticleCrazyMob`"));
+        assertTrue(doc.contains("does not inherit the boss event from `EntityCavenicCreeper`"));
+        assertTrue(doc.contains("`BossInfo.Color.GREEN`"));
+        assertTrue(doc.contains("`BossInfo.Overlay.PROGRESS`"));
+        assertTrue(doc.contains("`bossInfo.setPercent(getHealth() / getMaxHealth())`"));
+        assertTrue(doc.contains("`bossInfo.setDarkenSky(!canSee || distance < 30.0D)`"));
+        assertTrue(doc.contains("`bossInfo.setVisible(canSee)`"));
+        assertTrue(doc.contains("`canEntityBeSeen(player)`"));
+        assertTrue(doc.contains("`20.0D`"));
+        assertTrue(doc.contains("`30.0D`"));
+        assertTrue(doc.contains("`ServerBossEvent`"));
+        assertTrue(doc.contains("`BossEvent.BossBarColor.GREEN`"));
+        assertTrue(doc.contains("`BossEvent.BossBarOverlay.PROGRESS`"));
+        assertTrue(doc.contains("`customServerAiStep()`"));
+        assertTrue(doc.contains("`startSeenByPlayer(ServerPlayer player)`"));
+        assertTrue(doc.contains("`stopSeenByPlayer(ServerPlayer player)`"));
+        assertTrue(doc.contains("`setCustomName(@Nullable Component name)`"));
+        assertTrue(doc.contains("`readAdditionalSaveData(CompoundTag compound)`"));
+        assertTrue(doc.contains("`getLegacyCrazyBossEventForTests()`"));
+        assertTrue(doc.contains("`shouldShowLegacyBossBarTo(ServerPlayer player)`"));
+        assertTrue(doc.contains("`shouldDarkenLegacyBossSkyFor(ServerPlayer player)`"));
+        assertTrue(doc.contains("`updateLegacyBossEvent()`"));
+        assertTrue(doc.contains("single global boss event"));
+        assertTrue(doc.contains("Particles remain a separate client-visual follow-up."));
+        assertTrue(doc.contains("Loot remains unchanged."));
+        assertTrue(doc.contains("Damage remains unchanged."));
+        assertTrue(doc.contains("Natural spawning remains deferred."));
+        assertTrue(doc.contains("Fuse/explosion behavior remains deferred."));
+        assertTrue(doc.contains("Lightning/charged/swelling behavior remains deferred."));
+    }
+
+    @Test
+    void runtimeSmokeDocMentionsCrazyCreeperRegistryAttributeSpawnEggLootDamageBossAndDeferredExplosionBoundary() throws IOException {
         String runtimeSmoke = Files.readString(RUNTIME_SMOKE);
 
         assertTrue(runtimeSmoke.contains("crazy creeper runtime registry id"));
@@ -149,9 +191,16 @@ class CrazyCreeperDocumentationTest {
         assertTrue(runtimeSmoke.contains("crazy creeper legacy fall-damage reduction smoke"));
         assertTrue(runtimeSmoke.contains("crazy creeper legacy fire-damage immunity smoke"));
         assertTrue(runtimeSmoke.contains("crazy creeper generic-damage baseline smoke"));
+        assertTrue(runtimeSmoke.contains("crazy creeper boss-event wiring smoke"));
+        assertTrue(runtimeSmoke.contains("crazy creeper boss-bar color/overlay smoke"));
+        assertTrue(runtimeSmoke.contains("crazy creeper boss-percent update smoke"));
+        assertTrue(runtimeSmoke.contains("crazy creeper tracked-player add/remove smoke"));
+        assertTrue(runtimeSmoke.contains("crazy creeper sky-darkening smoke"));
         assertTrue(runtimeSmoke.contains("crazy creeper explicit no-natural-spawn baseline boundary"));
         assertTrue(runtimeSmoke.contains("crazy creeper custom fuse/explosion branch remains follow-up"));
         assertTrue(runtimeSmoke.contains("crazy creeper custom lightning/charged/swelling behavior remains follow-up"));
+        assertTrue(runtimeSmoke.contains("actual client-visible Crazy Creeper boss-bar feel remains manual"));
+        assertTrue(runtimeSmoke.contains("crazy creeper particle trail remains out of scope"));
     }
 
     private static Path resolveProjectFile(String first, String... more) {

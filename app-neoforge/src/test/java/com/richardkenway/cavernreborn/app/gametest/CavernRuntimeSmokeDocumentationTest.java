@@ -195,12 +195,14 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/crazy-creeper-baseline-mvp.md"));
         assertTrue(readme.contains("docs/crazy-creeper-loot-mvp.md"));
         assertTrue(readme.contains("docs/crazy-creeper-damage-behavior-mvp.md"));
+        assertTrue(readme.contains("docs/crazy-creeper-boss-bar-mvp.md"));
         assertTrue(readme.contains("third crazy-variant foundation follow-up"));
         assertTrue(readme.contains("`crazy_creeper`"));
         assertTrue(readme.contains("vanilla creeper loot baseline"));
         assertTrue(readme.contains("inherited legacy `1/5` `cavenic_orb` drop is now restored explicitly on top of that same vanilla creeper loot baseline"));
         assertTrue(readme.contains("inherited legacy fall-damage reduction and fire-damage immunity behavior are now restored explicitly on top of that same vanilla creeper baseline"));
-        assertTrue(readme.contains("Crazy Creeper fuse/explosion, boss and particle follow-ups remain intentionally deferred"));
+        assertTrue(readme.contains("legacy green progress boss bar and sky-darkening boss-event branch are now restored explicitly on top of that same vanilla creeper baseline"));
+        assertTrue(readme.contains("Crazy Creeper fuse/explosion and particle follow-ups remain intentionally deferred"));
         assertTrue(readme.contains("Crazy Spider remains the next crazy-variant follow-up candidate"));
         assertTrue(readme.contains("vanilla zombie loot baseline"));
     }
@@ -297,6 +299,14 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("crazy creeper vanilla creeper loot-table baseline"));
         assertTrue(doc.contains("crazy creeper legacy orb-drop event wiring smoke"));
         assertTrue(doc.contains("crazy creeper legacy orb-drop deterministic winning/losing roll smoke"));
+        assertTrue(doc.contains("crazy creeper legacy fall-damage reduction smoke"));
+        assertTrue(doc.contains("crazy creeper legacy fire-damage immunity smoke"));
+        assertTrue(doc.contains("crazy creeper generic-damage baseline smoke"));
+        assertTrue(doc.contains("crazy creeper boss-event wiring smoke"));
+        assertTrue(doc.contains("crazy creeper boss-bar color/overlay smoke"));
+        assertTrue(doc.contains("crazy creeper boss-percent update smoke"));
+        assertTrue(doc.contains("crazy creeper tracked-player add/remove smoke"));
+        assertTrue(doc.contains("crazy creeper sky-darkening smoke"));
         assertTrue(doc.contains("crazy creeper explicit no-natural-spawn baseline boundary"));
         assertTrue(doc.contains("crazy creeper custom fuse/explosion branch remains follow-up"));
         assertTrue(doc.contains("crazy creeper custom lightning/charged/swelling behavior remains follow-up"));
@@ -470,6 +480,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("crazy skeleton continued vanilla attack-damage baseline, explicit `1024.0` max-health clamp and guaranteed `Cavenic Bow` + `Infinity` equipment stability smoke"));
         assertTrue(doc.contains("crazy skeleton reflection smoke for no particle or custom ranged-AI follow-up overrides beyond the explicit damage, loot, equipment and boss hooks"));
         assertTrue(doc.contains("crazy skeleton explicit custom ranged AI / `EntityAIAttackCavenicBow` deferred boundary"));
+        assertTrue(doc.contains("actual client-visible Crazy Creeper boss-bar feel remains manual"));
+        assertTrue(doc.contains("crazy creeper particle trail remains out of scope"));
         assertTrue(doc.contains("actual client-visible Crazy Skeleton boss-bar feel remains manual"));
         assertTrue(doc.contains("actual Crazy Zombie client boss-bar visual feel"));
         assertTrue(doc.contains("actual Crazy Zombie client particle-trail visual feel"));

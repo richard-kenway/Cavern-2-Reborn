@@ -40,7 +40,7 @@ This note documents the bounded inherited Crazy Creeper loot follow-up on top of
 - Natural spawning remains deferred.
 - Damage behavior remains unchanged in this loot slice.
 - Damage behavior now remains documented separately in `docs/crazy-creeper-damage-behavior-mvp.md`.
-- Boss bar / sky-darkening remains unchanged in this loot slice.
+- Boss bar / sky-darkening now remains documented separately in `docs/crazy-creeper-boss-bar-mvp.md`.
 - Particle trail remains unchanged in this loot slice.
 - Custom fuse/explosion behavior remains unchanged in this loot slice.
 - Lightning / charged / swelling behavior remains unchanged in this loot slice.
@@ -65,13 +65,12 @@ This note documents the bounded inherited Crazy Creeper loot follow-up on top of
   - expected `0.5D` drop offset
   - continued max-health clamp and baseline attribute stability
   - continued no-natural-spawn boundary
-  - continued no-boss / no-particle / no-fuse overrides, with damage behavior documented separately
+  - continued no-particle / no-fuse overrides, with damage and boss behavior documented separately
 
 ## Out Of Scope
 
 - Crazy Creeper natural spawning
 - Crazy Creeper damage behavior
-- Crazy Creeper boss bar / sky-darkening
 - Crazy Creeper particle trail
 - Crazy Creeper custom fuse/explosion behavior
 - Crazy Creeper lightning/charged/swelling behavior

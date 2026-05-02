@@ -230,6 +230,11 @@ NeoForge GameTest runtime smoke covers:
 - crazy creeper legacy fall-damage reduction smoke
 - crazy creeper legacy fire-damage immunity smoke
 - crazy creeper generic-damage baseline smoke
+- crazy creeper boss-event wiring smoke
+- crazy creeper boss-bar color/overlay smoke
+- crazy creeper boss-percent update smoke
+- crazy creeper tracked-player add/remove smoke
+- crazy creeper sky-darkening smoke
 - crazy creeper explicit no-natural-spawn baseline boundary
 - crazy creeper custom fuse/explosion branch remains follow-up
 - crazy creeper custom lightning/charged/swelling behavior remains follow-up
@@ -297,6 +302,8 @@ NeoForge GameTest runtime smoke covers:
 - actual Crazy Zombie renderer/model visual feel
 - actual Crazy Skeleton renderer/model visual feel
 - actual Crazy Creeper renderer/model visual feel
+- actual client-visible Crazy Creeper boss-bar feel remains manual
+- crazy creeper particle trail remains out of scope
 - actual client-visible Crazy Skeleton boss-bar feel remains manual
 - actual Crazy Skeleton client particle-trail visual feel
 - Crazy Skeleton particle-trail follow-up visual feel remains manual
