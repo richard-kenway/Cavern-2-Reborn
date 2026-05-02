@@ -248,8 +248,11 @@ NeoForge GameTest runtime smoke covers:
 - crazy spider spawn egg resolution
 - crazy spider spawn egg entity creation
 - crazy spider vanilla spider loot-table baseline
+- crazy spider legacy orb-drop event wiring smoke
+- crazy spider legacy orb-drop deterministic winning/losing roll smoke
 - crazy spider explicit no-natural-spawn baseline boundary
 - crazy spider explicit no-custom-combat / blindness / poison baseline boundary
+- actual long-run crazy spider orb drop-rate balance is not covered by server GameTests
 - cavenic shroom worldgen configured/placed key resolution
 - aquamarine tool runtime registry ids
 - aquamarine tool repairability with `cavernreborn:aquamarine`

@@ -80,7 +80,7 @@ The risky parts are separate follow-up branches rather than prerequisites for th
 
 - The bounded baseline reuses the vanilla spider loot table as its base drop source.
 - Legacy `EntityCrazySpider` inherits the `1/8` `cavenic_orb` drop from `EntityCavenicSpider`.
-- This baseline does not restore that inherited orb branch yet.
+- The dedicated follow-up documented in `docs/crazy-spider-loot-mvp.md` now restores that inherited orb branch explicitly while keeping the vanilla spider loot table as the baseline drop source.
 - Reborn does not add a custom Crazy Spider loot table JSON.
 
 ## Natural Spawning
@@ -122,7 +122,7 @@ Those hooks stay deferred because they are the main risky Crazy Spider identity 
 ## Other Deferred Follow-Ups
 
 - inherited fall/fire damage behavior from `EntityCavenicSpider`
-- inherited `cavenic_orb` drop behavior from `EntityCavenicSpider`
+- The inherited loot/orb branch is now restored explicitly in `docs/crazy-spider-loot-mvp.md` while the rest of the baseline stays narrow.
 - direct red progress boss-event / sky-darkening behavior
 - direct client-only `ParticleCrazyMob` trail
 - `isNonBoss()`
@@ -141,6 +141,8 @@ Those hooks stay deferred because they are the main risky Crazy Spider identity 
   - crazy spider spawn egg resolution
   - crazy spider spawn egg entity creation
   - crazy spider vanilla spider loot-table baseline
+  - crazy spider legacy orb-drop event wiring
+  - crazy spider legacy orb-drop deterministic winning and losing rolls
   - crazy spider explicit no-natural-spawn baseline boundary
   - crazy spider explicit no-custom-combat / blindness / poison baseline boundary
 
@@ -148,7 +150,6 @@ Those hooks stay deferred because they are the main risky Crazy Spider identity 
 
 - Crazy Spider natural spawning
 - Crazy Spider custom loot
-- Crazy Spider `cavenic_orb` drops
 - Crazy Spider damage behavior
 - Crazy Spider boss bar / sky-darkening
 - Crazy Spider particle trail

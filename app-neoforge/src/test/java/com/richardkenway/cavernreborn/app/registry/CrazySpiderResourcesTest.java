@@ -21,15 +21,24 @@ import com.google.gson.JsonParser;
 
 class CrazySpiderResourcesTest {
     @Test
-    void crazySpiderRegistersWithDedicatedEntitySpawnEggRendererAndDeferredCombatFollowUps() throws IOException {
+    void crazySpiderRegistersWithDedicatedEntitySpawnEggRendererAndExplicitLootButDeferredCombatFollowUps() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
         String entitySource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "CrazySpider.java"
         );
+        String dropEventSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "CrazySpiderLootEvents.java"
+        );
+        String dropPolicySource = readProjectFile(
+            "core", "src", "main", "java", "com", "richardkenway", "cavernreborn", "core", "loot", "CrazySpiderLootPolicy.java"
+        );
         String cavenicSpiderSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "CavenicSpider.java"
+        );
+        String modSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "CavernReborn.java"
         );
         String entityEventSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModEntityEvents.java"
@@ -106,6 +115,25 @@ class CrazySpiderResourcesTest {
         assertTrue(cavenicSpiderSource.contains("public boolean doHurtTarget(Entity target)"));
         assertTrue(cavenicSpiderSource.contains("tryApplyLegacyBlindnessOnHit"));
         assertTrue(cavenicSpiderSource.contains("return EntityType.SPIDER.getDefaultLootTable();"));
+        assertTrue(dropEventSource.contains("LivingDropsEvent"));
+        assertTrue(dropEventSource.contains("event.getEntity() instanceof CrazySpider spider"));
+        assertTrue(dropEventSource.contains("CrazySpiderLootPolicy.ORB_DROP_ROLL_BOUND"));
+        assertTrue(dropEventSource.contains("CrazySpiderLootPolicy.shouldDropOrb(orbRoll)"));
+        assertTrue(dropEventSource.contains("new ItemStack(ModRegistries.CAVENIC_ORB.get())"));
+        assertTrue(dropEventSource.contains("spider.getY() + 0.5D"));
+        assertTrue(dropEventSource.contains("orbDrop.setDefaultPickUpDelay();"));
+        assertFalse(dropEventSource.toLowerCase().contains("economy"));
+        assertFalse(dropEventSource.toLowerCase().contains("progression"));
+        assertFalse(dropEventSource.contains("BossEvent"));
+        assertFalse(dropEventSource.contains("ServerBossEvent"));
+        assertFalse(dropEventSource.contains("ParticleCrazyMob"));
+        assertFalse(dropEventSource.contains("MobEffects.BLINDNESS"));
+        assertFalse(dropEventSource.contains("MobEffects.POISON"));
+        assertFalse(dropEventSource.contains("doHurtTarget("));
+        assertFalse(dropEventSource.contains("registerGoals("));
+        assertTrue(dropPolicySource.contains("public static final int ORB_DROP_ROLL_BOUND = 8;"));
+        assertTrue(dropPolicySource.contains("return roll >= 0 && roll < ORB_DROP_ROLL_BOUND && roll == 0;"));
+        assertTrue(modSource.contains("NeoForge.EVENT_BUS.register(new CrazySpiderLootEvents());"));
 
         assertTrue(entityEventSource.contains("event.put(ModRegistries.CRAZY_SPIDER.get(), CrazySpider.createAttributes().build())"));
         assertFalse(entityEventSource.contains("ModRegistries.CRAZY_SPIDER.get(),\n            SpawnPlacementTypes"));
@@ -128,12 +156,6 @@ class CrazySpiderResourcesTest {
         );
         assertMissingProjectFile(
             "app-neoforge", "src", "main", "resources", "data", "cavernreborn", "loot_tables", "entities", "crazy_spider.json"
-        );
-        assertMissingProjectFile(
-            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "CrazySpiderLootEvents.java"
-        );
-        assertMissingProjectFile(
-            "core", "src", "main", "java", "com", "richardkenway", "cavernreborn", "core", "loot", "CrazySpiderLootPolicy.java"
         );
     }
 

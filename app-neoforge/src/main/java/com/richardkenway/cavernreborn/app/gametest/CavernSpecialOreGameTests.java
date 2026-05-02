@@ -34,6 +34,7 @@ import com.richardkenway.cavernreborn.app.entity.CrazyCreeper;
 import com.richardkenway.cavernreborn.app.entity.CrazyCreeperLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CrazySkeleton;
 import com.richardkenway.cavernreborn.app.entity.CrazySpider;
+import com.richardkenway.cavernreborn.app.entity.CrazySpiderLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CrazySkeletonLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CrazyZombie;
 import com.richardkenway.cavernreborn.app.entity.CrazyZombieLootEvents;
@@ -66,6 +67,7 @@ import com.richardkenway.cavernreborn.core.loot.CavenicWitchLootPolicy;
 import com.richardkenway.cavernreborn.core.loot.CavenicZombieLootPolicy;
 import com.richardkenway.cavernreborn.core.loot.CrazyCreeperLootPolicy;
 import com.richardkenway.cavernreborn.core.loot.CrazySkeletonLootPolicy;
+import com.richardkenway.cavernreborn.core.loot.CrazySpiderLootPolicy;
 import com.richardkenway.cavernreborn.core.loot.CrazyZombieLootPolicy;
 import com.richardkenway.cavernreborn.core.mining.AquamarineAquaToolDecision;
 import com.richardkenway.cavernreborn.core.mining.AquamarineAquaToolPolicy;
@@ -265,6 +267,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CRAZY_SPIDER_ANCHOR = new BlockPos(7264, 96, 0);
     private static final BlockPos CRAZY_SPIDER_SPAWN_EGG_ANCHOR = new BlockPos(7360, 96, 0);
     private static final BlockPos CRAZY_SPIDER_BASELINE_ANCHOR = new BlockPos(7456, 96, 0);
+    private static final BlockPos CRAZY_SPIDER_LOOT_ANCHOR = new BlockPos(7552, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -5740,6 +5743,106 @@ public final class CavernSpecialOreGameTests {
 
         helper.assertTrue(spawnedEntity instanceof CrazySpider, "Expected spawn egg to create a CrazySpider runtime entity");
         helper.assertTrue(spawnedEntity != null && spawnedEntity.isAlive(), "Expected spawned crazy spider to be alive");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySpiderLegacyOrbDropWiresAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_SPIDER_LOOT_ANCHOR;
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceKey<BiomeModifier> crazySpiderSpawnModifier = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_spider_spawns")
+        );
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_crazy_spider"));
+        CrazySpiderLootEvents lootEvents = new CrazySpiderLootEvents();
+        List<ItemEntity> drops = new ArrayList<>();
+
+        resetMiningArea(level, origin, 8.0D);
+        CrazySpider crazySpider = spawnLivingEntity(helper, ModRegistries.CRAZY_SPIDER.get(), origin);
+        Spider vanillaSpider = spawnLivingEntity(helper, EntityType.SPIDER, origin.east(4));
+
+        helper.assertTrue(
+            crazySpider.getLootTable().equals(EntityType.SPIDER.getDefaultLootTable()),
+            "Expected crazy spider to keep the vanilla spider loot table as its baseline"
+        );
+        helper.assertTrue(
+            CrazySpiderLootPolicy.ORB_DROP_ROLL_BOUND == 8,
+            "Expected crazy spider orb drop roll bound to stay pinned to the inherited legacy 1/8 chance"
+        );
+        helper.assertTrue(
+            Math.abs(crazySpider.getMaxHealth() - 1024.0D) < 1.0E-6D,
+            "Expected crazy spider runtime max health to stay clamped to the modern generic.max_health ceiling of 1024.0"
+        );
+        helper.assertTrue(
+            Math.abs(crazySpider.getAttributeValue(Attributes.MOVEMENT_SPEED) - 0.6D) < 1.0E-6D,
+            "Expected crazy spider movement speed to stay pinned to legacy 0.6 while wiring the orb branch"
+        );
+        helper.assertTrue(
+            Math.abs(crazySpider.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) - 1.0D) < 1.0E-6D,
+            "Expected crazy spider knockback resistance to stay pinned to legacy 1.0 while wiring the orb branch"
+        );
+        helper.assertTrue(
+            Math.abs(crazySpider.getAttributeValue(Attributes.FOLLOW_RANGE) - vanillaSpider.getAttributeValue(Attributes.FOLLOW_RANGE)) < 1.0E-6D,
+            "Expected crazy spider follow range to stay on the vanilla spider baseline"
+        );
+        helper.assertTrue(
+            Math.abs(crazySpider.getAttributeValue(Attributes.ATTACK_DAMAGE) - vanillaSpider.getAttributeValue(Attributes.ATTACK_DAMAGE)) < 1.0E-6D,
+            "Expected crazy spider attack damage to stay on the vanilla spider baseline"
+        );
+        helper.assertFalse(
+            lootEvents.tryAppendLegacyOrbDrop(crazySpider, drops, 1),
+            "Non-winning orb roll must not append a cavenic orb drop"
+        );
+        helper.assertTrue(drops.isEmpty(), "Non-winning orb roll must leave the drop list unchanged");
+        helper.assertTrue(
+            lootEvents.tryAppendLegacyOrbDrop(crazySpider, drops, 0),
+            "Winning orb roll must append a cavenic orb drop"
+        );
+        helper.assertTrue(drops.size() == 1, "Winning orb roll must append exactly one cavenic orb drop");
+        helper.assertTrue(
+            drops.getFirst().getItem().is(ModRegistries.CAVENIC_ORB.get()),
+            "Winning orb roll must append cavernreborn:cavenic_orb"
+        );
+        helper.assertTrue(
+            Math.abs(drops.getFirst().getY() - (crazySpider.getY() + 0.5D)) < 1.0E-6D,
+            "Expected crazy spider orb drop Y offset to stay aligned with the inherited legacy 0.5 offset"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_SPIDER.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected crazy spider natural spawn placement to stay unregistered"
+        );
+        helper.assertFalse(
+            biomeModifiers.containsKey(crazySpiderSpawnModifier),
+            "Expected crazy spider loot follow-up to keep the biome modifier absent at runtime"
+        );
+        helper.assertFalse(
+            biomes.getTag(spawnTag).isPresent(),
+            "Expected crazy spider loot follow-up to keep the spawn biome tag absent at runtime"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("hurt")
+                    || name.equals("customServerAiStep")
+                    || name.equals("startSeenByPlayer")
+                    || name.equals("stopSeenByPlayer")
+                    || name.equals("aiStep")
+                    || name.equals("doHurtTarget")
+                    || name.equals("registerGoals")),
+            "Expected crazy spider loot follow-up to avoid direct damage, boss, particle and custom combat overrides"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazySpider.class.getDeclaredFields())
+                .map(Field::getName)
+                .anyMatch(name -> name.toLowerCase().contains("boss")
+                    || name.toLowerCase().contains("particle")
+                    || name.toLowerCase().contains("poison")
+                    || name.toLowerCase().contains("blind")),
+            "Expected crazy spider loot follow-up to avoid direct boss, particle and combat-effect state"
+        );
         helper.succeed();
     }
 
