@@ -268,6 +268,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CRAZY_SPIDER_SPAWN_EGG_ANCHOR = new BlockPos(7360, 96, 0);
     private static final BlockPos CRAZY_SPIDER_BASELINE_ANCHOR = new BlockPos(7456, 96, 0);
     private static final BlockPos CRAZY_SPIDER_LOOT_ANCHOR = new BlockPos(7552, 96, 0);
+    private static final BlockPos CRAZY_SPIDER_DAMAGE_ANCHOR = new BlockPos(7648, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -5708,8 +5709,7 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("hurt")
-                    || name.equals("customServerAiStep")
+                .anyMatch(name -> name.equals("customServerAiStep")
                     || name.equals("startSeenByPlayer")
                     || name.equals("stopSeenByPlayer")
                     || name.equals("aiStep")
@@ -5825,8 +5825,7 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("hurt")
-                    || name.equals("customServerAiStep")
+                .anyMatch(name -> name.equals("customServerAiStep")
                     || name.equals("startSeenByPlayer")
                     || name.equals("stopSeenByPlayer")
                     || name.equals("aiStep")
@@ -5842,6 +5841,176 @@ public final class CavernSpecialOreGameTests {
                     || name.toLowerCase().contains("poison")
                     || name.toLowerCase().contains("blind")),
             "Expected crazy spider loot follow-up to avoid direct boss, particle and combat-effect state"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySpiderLegacyFallAndFireDamageBehaviorAppliesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_SPIDER_DAMAGE_ANCHOR;
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CrazySpider crazyFallSpider = spawnLivingEntity(helper, ModRegistries.CRAZY_SPIDER.get(), origin);
+        Spider vanillaFallSpider = spawnLivingEntity(helper, EntityType.SPIDER, origin.east(4));
+        clearEquipment(crazyFallSpider);
+        clearEquipment(vanillaFallSpider);
+        float fallDamage = 10.0F;
+        float crazyFallHealthBefore = crazyFallSpider.getHealth();
+        float vanillaFallHealthBefore = vanillaFallSpider.getHealth();
+
+        helper.assertTrue(
+            crazyFallSpider.hurt(level.damageSources().fall(), fallDamage),
+            "Expected crazy spider to still accept fall damage hits through the normal server damage path"
+        );
+        helper.assertTrue(
+            vanillaFallSpider.hurt(level.damageSources().fall(), fallDamage),
+            "Expected vanilla spider baseline to accept fall damage hits"
+        );
+        helper.assertTrue(
+            Math.abs((crazyFallHealthBefore - crazyFallSpider.getHealth()) - (fallDamage * CrazySpider.LEGACY_FALL_DAMAGE_MULTIPLIER)) < 1.0E-6F,
+            "Expected crazy spider fall damage to stay pinned to the inherited legacy 0.35 multiplier"
+        );
+        helper.assertTrue(
+            Math.abs((vanillaFallHealthBefore - vanillaFallSpider.getHealth()) - fallDamage) < 1.0E-6F,
+            "Expected vanilla spider baseline to keep full fall damage"
+        );
+
+        CrazySpider crazyFireSpider = spawnLivingEntity(helper, ModRegistries.CRAZY_SPIDER.get(), origin.south(8));
+        Spider vanillaFireSpider = spawnLivingEntity(helper, EntityType.SPIDER, origin.south(8).east(4));
+        clearEquipment(crazyFireSpider);
+        clearEquipment(vanillaFireSpider);
+        float fireDamage = 4.0F;
+        float crazyFireHealthBefore = crazyFireSpider.getHealth();
+        float vanillaFireHealthBefore = vanillaFireSpider.getHealth();
+
+        helper.assertFalse(
+            crazyFireSpider.hurt(level.damageSources().lava(), fireDamage),
+            "Expected crazy spider to reject fire-tagged damage sources like lava"
+        );
+        helper.assertTrue(
+            vanillaFireSpider.hurt(level.damageSources().lava(), fireDamage),
+            "Expected vanilla spider baseline to take lava damage"
+        );
+        helper.assertTrue(
+            Math.abs(crazyFireHealthBefore - crazyFireSpider.getHealth()) < 1.0E-6F,
+            "Expected crazy spider health to stay unchanged after fire-tagged damage"
+        );
+        helper.assertTrue(
+            vanillaFireSpider.getHealth() < vanillaFireHealthBefore,
+            "Expected vanilla spider baseline to lose health from lava damage"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySpiderLegacyDamageBehaviorKeepsGenericDamageVanillaLikeAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_SPIDER_DAMAGE_ANCHOR.south(12);
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceKey<BiomeModifier> crazySpiderSpawnModifier = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_spider_spawns")
+        );
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_crazy_spider"));
+        CrazySpiderLootEvents lootEvents = new CrazySpiderLootEvents();
+        List<ItemEntity> drops = new ArrayList<>();
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CrazySpider crazySpider = spawnLivingEntity(helper, ModRegistries.CRAZY_SPIDER.get(), origin);
+        Spider vanillaSpider = spawnLivingEntity(helper, EntityType.SPIDER, origin.east(4));
+        clearEquipment(crazySpider);
+        clearEquipment(vanillaSpider);
+        float genericDamage = 6.0F;
+        float crazyHealthBefore = crazySpider.getHealth();
+        float vanillaHealthBefore = vanillaSpider.getHealth();
+
+        helper.assertTrue(
+            crazySpider.hurt(level.damageSources().generic(), genericDamage),
+            "Expected crazy spider to remain vulnerable to generic non-fire damage"
+        );
+        helper.assertTrue(
+            vanillaSpider.hurt(level.damageSources().generic(), genericDamage),
+            "Expected vanilla spider baseline to remain vulnerable to generic non-fire damage"
+        );
+        helper.assertTrue(
+            Math.abs((crazyHealthBefore - crazySpider.getHealth()) - genericDamage) < 1.0E-6F,
+            "Expected crazy spider generic damage intake to stay vanilla-like"
+        );
+        helper.assertTrue(
+            Math.abs((vanillaHealthBefore - vanillaSpider.getHealth()) - genericDamage) < 1.0E-6F,
+            "Expected vanilla spider baseline generic damage intake to stay unchanged"
+        );
+        helper.assertTrue(
+            crazySpider.getLootTable().equals(EntityType.SPIDER.getDefaultLootTable()),
+            "Expected crazy spider to keep the vanilla spider loot table as its baseline"
+        );
+        helper.assertTrue(
+            Math.abs(crazySpider.getMaxHealth() - 1024.0D) < 1.0E-6D,
+            "Expected crazy spider runtime max health to stay clamped to the modern generic.max_health ceiling of 1024.0"
+        );
+        helper.assertTrue(
+            Math.abs(crazySpider.getAttributeValue(Attributes.MOVEMENT_SPEED) - 0.6D) < 1.0E-6D,
+            "Expected crazy spider movement speed to stay pinned to legacy 0.6 while wiring the damage branch"
+        );
+        helper.assertTrue(
+            Math.abs(crazySpider.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) - 1.0D) < 1.0E-6D,
+            "Expected crazy spider knockback resistance to stay pinned to legacy 1.0 while wiring the damage branch"
+        );
+        helper.assertTrue(
+            Math.abs(crazySpider.getAttributeValue(Attributes.FOLLOW_RANGE) - vanillaSpider.getAttributeValue(Attributes.FOLLOW_RANGE)) < 1.0E-6D,
+            "Expected crazy spider follow range to stay on the vanilla spider baseline"
+        );
+        helper.assertTrue(
+            Math.abs(crazySpider.getAttributeValue(Attributes.ATTACK_DAMAGE) - vanillaSpider.getAttributeValue(Attributes.ATTACK_DAMAGE)) < 1.0E-6D,
+            "Expected crazy spider attack damage to stay on the vanilla spider baseline"
+        );
+        helper.assertTrue(
+            CrazySpiderLootPolicy.ORB_DROP_ROLL_BOUND == 8,
+            "Expected crazy spider damage follow-up to keep the inherited 1/8 orb-drop roll bound"
+        );
+        helper.assertTrue(
+            lootEvents.tryAppendLegacyOrbDrop(crazySpider, drops, 0),
+            "Expected crazy spider damage follow-up to keep the winning orb-drop branch available"
+        );
+        helper.assertTrue(
+            drops.size() == 1 && drops.getFirst().getItem().is(ModRegistries.CAVENIC_ORB.get()),
+            "Expected crazy spider damage follow-up to keep appending exactly one cavenic orb on the winning roll"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_SPIDER.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected crazy spider natural spawn placement to stay unregistered"
+        );
+        helper.assertFalse(
+            biomeModifiers.containsKey(crazySpiderSpawnModifier),
+            "Expected crazy spider damage follow-up to keep the biome modifier absent at runtime"
+        );
+        helper.assertFalse(
+            biomes.getTag(spawnTag).isPresent(),
+            "Expected crazy spider damage follow-up to keep the spawn biome tag absent at runtime"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("customServerAiStep")
+                    || name.equals("startSeenByPlayer")
+                    || name.equals("stopSeenByPlayer")
+                    || name.equals("aiStep")
+                    || name.equals("doHurtTarget")
+                    || name.equals("registerGoals")),
+            "Expected crazy spider damage follow-up to avoid boss, particle and custom combat overrides"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazySpider.class.getDeclaredFields())
+                .map(Field::getName)
+                .anyMatch(name -> name.toLowerCase().contains("boss")
+                    || name.toLowerCase().contains("particle")
+                    || name.toLowerCase().contains("poison")
+                    || name.toLowerCase().contains("blind")),
+            "Expected crazy spider damage follow-up to avoid direct boss, particle and combat-effect state"
         );
         helper.succeed();
     }

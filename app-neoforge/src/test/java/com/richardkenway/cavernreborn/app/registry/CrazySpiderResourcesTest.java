@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CrazySpiderResourcesTest {
     @Test
-    void crazySpiderRegistersWithDedicatedEntitySpawnEggRendererAndExplicitLootButDeferredCombatFollowUps() throws IOException {
+    void crazySpiderRegistersWithDedicatedEntitySpawnEggRendererAndExplicitLootAndDamageButDeferredCombatFollowUps() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -97,8 +97,12 @@ class CrazySpiderResourcesTest {
         assertFalse(entitySource.contains("canNaturallySpawnInDimension"));
         assertFalse(entitySource.contains("checkCrazySpiderSpawnRules"));
         assertFalse(entitySource.contains("LivingDropsEvent"));
-        assertFalse(entitySource.contains("LEGACY_FALL_DAMAGE_MULTIPLIER"));
-        assertFalse(entitySource.contains("DamageTypeTags"));
+        assertTrue(entitySource.contains("public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;"));
+        assertTrue(entitySource.contains("public boolean hurt(DamageSource source, float damage)"));
+        assertTrue(entitySource.contains("source.is(DamageTypeTags.IS_FALL)"));
+        assertTrue(entitySource.contains("damage *= LEGACY_FALL_DAMAGE_MULTIPLIER;"));
+        assertTrue(entitySource.contains("source.is(DamageTypeTags.IS_FIRE)"));
+        assertTrue(entitySource.contains("return super.hurt(source, damage);"));
         assertFalse(entitySource.contains("ServerBossEvent"));
         assertFalse(entitySource.contains("BossEvent"));
         assertFalse(entitySource.contains("ParticleCrazyMob"));
@@ -126,6 +130,7 @@ class CrazySpiderResourcesTest {
         assertFalse(dropEventSource.toLowerCase().contains("progression"));
         assertFalse(dropEventSource.contains("BossEvent"));
         assertFalse(dropEventSource.contains("ServerBossEvent"));
+        assertFalse(dropEventSource.contains("DamageTypeTags"));
         assertFalse(dropEventSource.contains("ParticleCrazyMob"));
         assertFalse(dropEventSource.contains("MobEffects.BLINDNESS"));
         assertFalse(dropEventSource.contains("MobEffects.POISON"));
