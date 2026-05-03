@@ -82,6 +82,7 @@ The risky parts are separate follow-up branches rather than prerequisites for th
 - Legacy `EntityCrazySpider` inherits the `1/8` `cavenic_orb` drop from `EntityCavenicSpider`.
 - The dedicated follow-up documented in `docs/crazy-spider-loot-mvp.md` now restores that inherited orb branch explicitly while keeping the vanilla spider loot table as the baseline drop source.
 - The inherited damage branch is now restored explicitly in `docs/crazy-spider-damage-behavior-mvp.md` while the rest of the baseline stays narrow.
+- The inherited boss-event / sky-darkening branch is now restored explicitly in `docs/crazy-spider-boss-bar-mvp.md` while the rest of the baseline stays narrow.
 - Reborn does not add a custom Crazy Spider loot table JSON.
 
 ## Natural Spawning
@@ -124,7 +125,6 @@ Those hooks stay deferred because they are the main risky Crazy Spider identity 
 
 - The inherited loot/orb branch is now restored explicitly in `docs/crazy-spider-loot-mvp.md` while the rest of the baseline stays narrow.
 - The inherited damage branch is now restored explicitly in `docs/crazy-spider-damage-behavior-mvp.md` while the rest of the baseline stays narrow.
-- direct red progress boss-event / sky-darkening behavior
 - direct client-only `ParticleCrazyMob` trail
 - `isNonBoss()`
 - `canBeRidden(...)`
@@ -147,6 +147,11 @@ Those hooks stay deferred because they are the main risky Crazy Spider identity 
   - crazy spider legacy fall-damage reduction smoke
   - crazy spider legacy fire-damage immunity smoke
   - crazy spider generic-damage baseline smoke
+  - crazy spider boss-event wiring smoke
+  - crazy spider boss-bar color/overlay smoke
+  - crazy spider boss-percent update smoke
+  - crazy spider tracked-player add/remove smoke
+  - crazy spider sky-darkening smoke
   - crazy spider explicit no-natural-spawn baseline boundary
   - crazy spider explicit no-custom-combat / blindness / poison baseline boundary
 
@@ -154,7 +159,6 @@ Those hooks stay deferred because they are the main risky Crazy Spider identity 
 
 - Crazy Spider natural spawning
 - Crazy Spider custom loot
-- Crazy Spider boss bar / sky-darkening
 - Crazy Spider particle trail
 - Crazy Spider custom combat / blindness / poison behavior
 - Crazy Spider custom AI

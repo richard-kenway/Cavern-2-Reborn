@@ -55,7 +55,8 @@ It does not add natural spawning, loot changes, boss-event changes, particle cha
 - Crazy Spider still keeps the inherited `1/8` orb-drop wiring through `CrazySpiderLootEvents` and `CrazySpiderLootPolicy`.
 - Natural-spawn deferral remains unchanged.
 - Custom combat, blindness and poison behavior remains deferred.
-- Boss bar, sky-darkening and particle trail remain out of scope.
+- Boss bar and sky-darkening now remain documented separately in `docs/crazy-spider-boss-bar-mvp.md`.
+- Particle trail remains out of scope.
 - Cavenia and magic-book systems remain out of scope.
 
 ## Testing

@@ -11,25 +11,28 @@ import org.junit.jupiter.api.Test;
 class CrazySpiderDocumentationTest {
     private static final Path README = resolveProjectFile("README.md");
     private static final Path BASELINE_DOC = resolveProjectFile("docs", "crazy-spider-baseline-mvp.md");
+    private static final Path BOSS_DOC = resolveProjectFile("docs", "crazy-spider-boss-bar-mvp.md");
     private static final Path DAMAGE_DOC = resolveProjectFile("docs", "crazy-spider-damage-behavior-mvp.md");
     private static final Path LOOT_DOC = resolveProjectFile("docs", "crazy-spider-loot-mvp.md");
     private static final Path RUNTIME_SMOKE = resolveProjectFile("docs", "runtime-smoke.md");
 
     @Test
-    void readmeMentionsCrazySpiderBaselineLootAndDamageDocPathsAndDeferredCombatBoundaries() throws IOException {
+    void readmeMentionsCrazySpiderBaselineLootDamageBossDocPathsAndDeferredCombatBoundaries() throws IOException {
         String readme = Files.readString(README);
 
         assertTrue(readme.contains("Crazy Spider Baseline MVP"));
         assertTrue(readme.contains("docs/crazy-spider-baseline-mvp.md"));
         assertTrue(readme.contains("docs/crazy-spider-loot-mvp.md"));
         assertTrue(readme.contains("docs/crazy-spider-damage-behavior-mvp.md"));
+        assertTrue(readme.contains("docs/crazy-spider-boss-bar-mvp.md"));
         assertTrue(readme.contains("fourth crazy-variant foundation follow-up"));
         assertTrue(readme.contains("`crazy_spider`"));
         assertTrue(readme.contains("vanilla spider loot baseline"));
         assertTrue(readme.contains("legacy `1500.0` max-health request explicitly clamped by the modern `generic.max_health` runtime ceiling of `1024.0`"));
         assertTrue(readme.contains("inherited legacy `1/8` `cavenic_orb` drop is now restored explicitly on top of that same vanilla spider loot baseline"));
         assertTrue(readme.contains("inherited legacy fall-damage reduction and fire-damage immunity behavior are now restored explicitly on top of that same vanilla spider baseline"));
-        assertTrue(readme.contains("direct blindness/poison combat hooks plus inherited boss and particle branches remain intentionally deferred"));
+        assertTrue(readme.contains("legacy red progress boss bar and sky-darkening boss-event branch are now restored explicitly on top of that same vanilla spider baseline"));
+        assertTrue(readme.contains("direct blindness/poison combat hooks plus inherited particle branch remain intentionally deferred"));
     }
 
     @Test
@@ -79,7 +82,7 @@ class CrazySpiderDocumentationTest {
         assertTrue(doc.contains("blindness-on-hit"));
         assertTrue(doc.contains("poison-on-hit"));
         assertTrue(doc.contains("potion effects"));
-        assertTrue(doc.contains("boss-event / sky-darkening behavior"));
+        assertTrue(doc.contains("The inherited boss-event / sky-darkening branch is now restored explicitly in `docs/crazy-spider-boss-bar-mvp.md` while the rest of the baseline stays narrow."));
         assertTrue(doc.contains("client-only `ParticleCrazyMob` trail"));
         assertTrue(doc.contains("`onStruckByLightning(...)`"));
         assertTrue(doc.contains("`canBeRidden(...)`"));
@@ -111,7 +114,7 @@ class CrazySpiderDocumentationTest {
         assertTrue(doc.contains("Reborn `CrazySpider` still extends vanilla `Spider`, not Reborn `CavenicSpider`."));
         assertTrue(doc.contains("Natural spawning remains deferred."));
         assertTrue(doc.contains("Damage behavior now remains documented separately in `docs/crazy-spider-damage-behavior-mvp.md`."));
-        assertTrue(doc.contains("Boss bar / sky-darkening remains unchanged in this loot slice."));
+        assertTrue(doc.contains("Boss bar / sky-darkening now remains documented separately in `docs/crazy-spider-boss-bar-mvp.md`."));
         assertTrue(doc.contains("Particle trail remains unchanged in this loot slice."));
         assertTrue(doc.contains("Custom combat, blindness and poison behavior remains unchanged in this loot slice."));
     }
@@ -134,13 +137,44 @@ class CrazySpiderDocumentationTest {
         assertTrue(doc.contains("Generic non-fire, non-fall damage remains vanilla-like."));
         assertTrue(doc.contains("Loot/orb behavior remains unchanged."));
         assertTrue(doc.contains("Custom combat, blindness and poison behavior remains deferred."));
-        assertTrue(doc.contains("Boss bar, sky-darkening and particle trail remain out of scope."));
+        assertTrue(doc.contains("Boss bar and sky-darkening now remain documented separately in `docs/crazy-spider-boss-bar-mvp.md`."));
+        assertTrue(doc.contains("Particle trail remains out of scope."));
         assertTrue(doc.contains("Natural-spawn deferral remains unchanged."));
         assertTrue(doc.contains("vanilla spider loot baseline remains unchanged"));
     }
 
     @Test
-    void runtimeSmokeDocMentionsCrazySpiderRegistrySpawnEggLootDamageAndDeferredCombatBoundary() throws IOException {
+    void crazySpiderBossDocStatesRedBossMappingAndPreservedBoundaries() throws IOException {
+        String doc = Files.readString(BOSS_DOC);
+
+        assertTrue(doc.contains("`cavern.entity.monster.EntityCrazySpider`"));
+        assertTrue(doc.contains("`cavern.entity.monster.EntityCavenicSpider`"));
+        assertTrue(doc.contains("`cavern.client.particle.ParticleCrazyMob`"));
+        assertTrue(doc.contains("declares its own `BossInfoServer` directly"));
+        assertTrue(doc.contains("`BossInfo.Color.RED`"));
+        assertTrue(doc.contains("`BossInfo.Overlay.PROGRESS`"));
+        assertTrue(doc.contains("`EntityCrazySpider#isNonBoss()` returns `false`"));
+        assertTrue(doc.contains("`bossInfo.setPercent(getHealth() / getMaxHealth())`"));
+        assertTrue(doc.contains("within `20.0D`"));
+        assertTrue(doc.contains("`bossInfo.setDarkenSky(!canSee || distance < 30.0D)`"));
+        assertTrue(doc.contains("line of sight"));
+        assertTrue(doc.contains("Reborn keeps `CrazySpider extends Spider`."));
+        assertTrue(doc.contains("`BossEvent.BossBarColor.RED`"));
+        assertTrue(doc.contains("`BossEvent.BossBarOverlay.PROGRESS`"));
+        assertTrue(doc.contains("`customServerAiStep()`"));
+        assertTrue(doc.contains("`startSeenByPlayer(ServerPlayer player)`"));
+        assertTrue(doc.contains("`stopSeenByPlayer(ServerPlayer player)`"));
+        assertTrue(doc.contains("`setCustomName(@Nullable Component name)`"));
+        assertTrue(doc.contains("`readAdditionalSaveData(CompoundTag compound)`"));
+        assertTrue(doc.contains("Particles remain a separate client-visual follow-up."));
+        assertTrue(doc.contains("Loot remains unchanged."));
+        assertTrue(doc.contains("Damage remains unchanged."));
+        assertTrue(doc.contains("Custom combat, blindness and poison behavior remains deferred."));
+        assertTrue(doc.contains("single global boss event"));
+    }
+
+    @Test
+    void runtimeSmokeDocMentionsCrazySpiderRegistrySpawnEggLootDamageBossAndDeferredCombatBoundary() throws IOException {
         String runtimeSmoke = Files.readString(RUNTIME_SMOKE);
 
         assertTrue(runtimeSmoke.contains("crazy spider runtime registry id"));
@@ -154,10 +188,18 @@ class CrazySpiderDocumentationTest {
         assertTrue(runtimeSmoke.contains("crazy spider legacy fall-damage reduction smoke"));
         assertTrue(runtimeSmoke.contains("crazy spider legacy fire-damage immunity smoke"));
         assertTrue(runtimeSmoke.contains("crazy spider generic-damage baseline smoke"));
+        assertTrue(runtimeSmoke.contains("crazy spider boss-event wiring smoke"));
+        assertTrue(runtimeSmoke.contains("crazy spider boss-bar color/overlay smoke"));
+        assertTrue(runtimeSmoke.contains("crazy spider boss-percent update smoke"));
+        assertTrue(runtimeSmoke.contains("crazy spider tracked-player add/remove smoke"));
+        assertTrue(runtimeSmoke.contains("crazy spider sky-darkening smoke"));
         assertTrue(runtimeSmoke.contains("crazy spider explicit no-natural-spawn baseline boundary"));
         assertTrue(runtimeSmoke.contains("crazy spider explicit no-custom-combat / blindness / poison baseline boundary"));
         assertTrue(runtimeSmoke.contains("actual long-run crazy spider orb drop-rate balance is not covered by server GameTests"));
         assertTrue(runtimeSmoke.contains("actual long-running Crazy Spider fire/lava gameplay feel remains manual"));
+        assertTrue(runtimeSmoke.contains("actual client visual crazy spider boss-bar feel remains manual"));
+        assertTrue(runtimeSmoke.contains("particle trail remains out of scope"));
+        assertTrue(runtimeSmoke.contains("actual custom combat / blindness / poison behavior remains manual/follow-up"));
         assertTrue(runtimeSmoke.contains("actual Crazy Spider renderer/model visual feel"));
     }
 

@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CrazySpiderResourcesTest {
     @Test
-    void crazySpiderRegistersWithDedicatedEntitySpawnEggRendererAndExplicitLootAndDamageButDeferredCombatFollowUps() throws IOException {
+    void crazySpiderRegistersWithDedicatedEntitySpawnEggRendererAndExplicitLootDamageAndBossButDeferredCombatFollowUps() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -103,8 +103,23 @@ class CrazySpiderResourcesTest {
         assertTrue(entitySource.contains("damage *= LEGACY_FALL_DAMAGE_MULTIPLIER;"));
         assertTrue(entitySource.contains("source.is(DamageTypeTags.IS_FIRE)"));
         assertTrue(entitySource.contains("return super.hurt(source, damage);"));
-        assertFalse(entitySource.contains("ServerBossEvent"));
-        assertFalse(entitySource.contains("BossEvent"));
+        assertTrue(entitySource.contains("public static final double LEGACY_BOSS_BAR_VISIBILITY_DISTANCE = 20.0D;"));
+        assertTrue(entitySource.contains("public static final double LEGACY_BOSS_BAR_DARKEN_SKY_DISTANCE = 30.0D;"));
+        assertTrue(entitySource.contains("private final ServerBossEvent legacyBossEvent = new ServerBossEvent("));
+        assertTrue(entitySource.contains("BossEvent.BossBarColor.RED"));
+        assertTrue(entitySource.contains("BossEvent.BossBarOverlay.PROGRESS"));
+        assertTrue(entitySource.contains("public void readAdditionalSaveData(CompoundTag compound)"));
+        assertTrue(entitySource.contains("public void setCustomName(@Nullable Component name)"));
+        assertTrue(entitySource.contains("protected void customServerAiStep()"));
+        assertTrue(entitySource.contains("public void startSeenByPlayer(ServerPlayer player)"));
+        assertTrue(entitySource.contains("public void stopSeenByPlayer(ServerPlayer player)"));
+        assertTrue(entitySource.contains("public ServerBossEvent getLegacyCrazyBossEventForTests()"));
+        assertTrue(entitySource.contains("public boolean shouldShowLegacyBossBarTo(ServerPlayer player)"));
+        assertTrue(entitySource.contains("public boolean shouldDarkenLegacyBossSkyFor(ServerPlayer player)"));
+        assertTrue(entitySource.contains("public void updateLegacyBossEvent()"));
+        assertTrue(entitySource.contains("this.legacyBossEvent.setDarkenScreen(!canSee || distance < LEGACY_BOSS_BAR_DARKEN_SKY_DISTANCE);"));
+        assertTrue(entitySource.contains("this.legacyBossEvent.setVisible(canSee);"));
+        assertTrue(entitySource.contains("this.legacyBossEvent.setProgress(this.getHealth() / this.getMaxHealth());"));
         assertFalse(entitySource.contains("ParticleCrazyMob"));
         assertFalse(entitySource.contains("CRAZY_MOB_PARTICLE"));
         assertFalse(entitySource.contains("MobEffects.BLINDNESS"));
@@ -128,8 +143,6 @@ class CrazySpiderResourcesTest {
         assertTrue(dropEventSource.contains("orbDrop.setDefaultPickUpDelay();"));
         assertFalse(dropEventSource.toLowerCase().contains("economy"));
         assertFalse(dropEventSource.toLowerCase().contains("progression"));
-        assertFalse(dropEventSource.contains("BossEvent"));
-        assertFalse(dropEventSource.contains("ServerBossEvent"));
         assertFalse(dropEventSource.contains("DamageTypeTags"));
         assertFalse(dropEventSource.contains("ParticleCrazyMob"));
         assertFalse(dropEventSource.contains("MobEffects.BLINDNESS"));

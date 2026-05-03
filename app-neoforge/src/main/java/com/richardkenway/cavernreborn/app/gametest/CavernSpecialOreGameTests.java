@@ -269,6 +269,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CRAZY_SPIDER_BASELINE_ANCHOR = new BlockPos(7456, 96, 0);
     private static final BlockPos CRAZY_SPIDER_LOOT_ANCHOR = new BlockPos(7552, 96, 0);
     private static final BlockPos CRAZY_SPIDER_DAMAGE_ANCHOR = new BlockPos(7648, 96, 0);
+    private static final BlockPos CRAZY_SPIDER_BOSS_BAR_ANCHOR = new BlockPos(7744, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -5709,22 +5710,18 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("customServerAiStep")
-                    || name.equals("startSeenByPlayer")
-                    || name.equals("stopSeenByPlayer")
-                    || name.equals("aiStep")
+                .anyMatch(name -> name.equals("aiStep")
                     || name.equals("doHurtTarget")
                     || name.equals("registerGoals")),
-            "Expected crazy spider baseline to avoid loot, damage, boss, particle and custom combat follow-up overrides"
+            "Expected crazy spider baseline follow-up chain to avoid particle and custom combat overrides"
         );
         helper.assertFalse(
             java.util.Arrays.stream(CrazySpider.class.getDeclaredFields())
                 .map(Field::getName)
-                .anyMatch(name -> name.toLowerCase().contains("boss")
-                    || name.toLowerCase().contains("particle")
+                .anyMatch(name -> name.toLowerCase().contains("particle")
                     || name.toLowerCase().contains("poison")
                     || name.toLowerCase().contains("blind")),
-            "Expected crazy spider baseline to avoid direct boss, particle and combat-effect state"
+            "Expected crazy spider baseline follow-up chain to avoid particle and combat-effect state"
         );
         helper.succeed();
     }
@@ -5825,22 +5822,18 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("customServerAiStep")
-                    || name.equals("startSeenByPlayer")
-                    || name.equals("stopSeenByPlayer")
-                    || name.equals("aiStep")
+                .anyMatch(name -> name.equals("aiStep")
                     || name.equals("doHurtTarget")
                     || name.equals("registerGoals")),
-            "Expected crazy spider loot follow-up to avoid direct damage, boss, particle and custom combat overrides"
+            "Expected crazy spider loot follow-up to avoid direct particle and custom combat overrides"
         );
         helper.assertFalse(
             java.util.Arrays.stream(CrazySpider.class.getDeclaredFields())
                 .map(Field::getName)
-                .anyMatch(name -> name.toLowerCase().contains("boss")
-                    || name.toLowerCase().contains("particle")
+                .anyMatch(name -> name.toLowerCase().contains("particle")
                     || name.toLowerCase().contains("poison")
                     || name.toLowerCase().contains("blind")),
-            "Expected crazy spider loot follow-up to avoid direct boss, particle and combat-effect state"
+            "Expected crazy spider loot follow-up to avoid direct particle and combat-effect state"
         );
         helper.succeed();
     }
@@ -5995,22 +5988,208 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("customServerAiStep")
-                    || name.equals("startSeenByPlayer")
-                    || name.equals("stopSeenByPlayer")
-                    || name.equals("aiStep")
+                .anyMatch(name -> name.equals("aiStep")
                     || name.equals("doHurtTarget")
                     || name.equals("registerGoals")),
-            "Expected crazy spider damage follow-up to avoid boss, particle and custom combat overrides"
+            "Expected crazy spider damage follow-up to avoid particle and custom combat overrides"
         );
         helper.assertFalse(
             java.util.Arrays.stream(CrazySpider.class.getDeclaredFields())
                 .map(Field::getName)
-                .anyMatch(name -> name.toLowerCase().contains("boss")
-                    || name.toLowerCase().contains("particle")
+                .anyMatch(name -> name.toLowerCase().contains("particle")
                     || name.toLowerCase().contains("poison")
                     || name.toLowerCase().contains("blind")),
-            "Expected crazy spider damage follow-up to avoid direct boss, particle and combat-effect state"
+            "Expected crazy spider damage follow-up to avoid direct particle and combat-effect state"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySpiderLegacyBossBarWiresAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_SPIDER_BOSS_BAR_ANCHOR;
+        BlockPos playerPos = origin.south(2);
+        BlockPos wallPos = origin.south(1);
+        BlockPos absolutePlayerPos = helper.absolutePos(playerPos);
+        BlockPos absoluteWallPos = helper.absolutePos(wallPos);
+
+        resetMiningArea(level, origin, 16.0D);
+        prepareCombatPlatform(level, origin);
+        prepareCombatPlatform(level, playerPos);
+
+        CrazySpider spider = spawnLivingEntity(helper, ModRegistries.CRAZY_SPIDER.get(), origin);
+        clearEquipment(spider);
+        spider.updateLegacyBossEvent();
+
+        ServerBossEvent bossEvent = spider.getLegacyCrazyBossEventForTests();
+        helper.assertTrue(bossEvent != null, "Expected crazy spider boss follow-up to expose a ServerBossEvent");
+        helper.assertTrue(bossEvent.getColor() == BossEvent.BossBarColor.RED, "Expected crazy spider boss bar color to map to legacy red");
+        helper.assertTrue(
+            bossEvent.getOverlay() == BossEvent.BossBarOverlay.PROGRESS,
+            "Expected crazy spider boss bar overlay to map to the legacy progress style"
+        );
+        helper.assertTrue(
+            Math.abs(bossEvent.getProgress() - 1.0F) < 1.0E-6F,
+            "Expected fresh crazy spider boss progress to start at full health"
+        );
+
+        ServerPlayer trackedPlayer = helper.makeMockServerPlayerInLevel();
+        trackedPlayer.teleportTo(level, absolutePlayerPos.getX() + 0.5D, absolutePlayerPos.getY() + 1.0D, absolutePlayerPos.getZ() + 0.5D, EnumSet.noneOf(RelativeMovement.class), 0.0F, 0.0F);
+        spider.startSeenByPlayer(trackedPlayer);
+        helper.assertTrue(
+            bossEvent.getPlayers().contains(trackedPlayer),
+            "Expected startSeenByPlayer to register the tracked player on the crazy spider boss event"
+        );
+
+        spider.updateLegacyBossEvent();
+        helper.assertTrue(
+            spider.shouldShowLegacyBossBarTo(trackedPlayer),
+            "Expected a nearby tracked player with clear line of sight to satisfy the legacy crazy spider boss-bar visibility rule"
+        );
+        helper.assertTrue(
+            spider.shouldDarkenLegacyBossSkyFor(trackedPlayer),
+            "Expected the legacy Crazy Spider sky-darkening helper to stay active for a nearby visible tracked player"
+        );
+        helper.assertTrue(bossEvent.isVisible(), "Expected the crazy spider boss event to stay visible for a nearby tracked player");
+        helper.assertTrue(bossEvent.shouldDarkenScreen(), "Expected the legacy Crazy Spider boss event to keep darken-screen enabled");
+
+        float damage = 64.0F;
+        helper.assertTrue(
+            spider.hurt(level.damageSources().generic(), damage),
+            "Expected boss-event coverage to leave generic Crazy Spider damage intake working"
+        );
+        spider.updateLegacyBossEvent();
+        helper.assertTrue(
+            Math.abs(bossEvent.getProgress() - (spider.getHealth() / spider.getMaxHealth())) < 1.0E-6F,
+            "Expected crazy spider boss progress to track the current health-to-max-health ratio"
+        );
+
+        spider.setCustomName(Component.literal("Legacy Red Boss"));
+        helper.assertTrue(
+            "Legacy Red Boss".equals(bossEvent.getName().getString()),
+            "Expected the crazy spider boss-event name to follow setCustomName"
+        );
+
+        placeVisibilityWall(level, absoluteWallPos);
+        spider.updateLegacyBossEvent();
+        helper.assertFalse(
+            spider.shouldShowLegacyBossBarTo(trackedPlayer),
+            "Expected the legacy crazy spider boss-bar helper to fail once a solid wall blocks line of sight"
+        );
+        helper.assertTrue(
+            spider.shouldDarkenLegacyBossSkyFor(trackedPlayer),
+            "Expected the legacy Crazy Spider sky-darkening helper to stay active when line of sight is blocked"
+        );
+        helper.assertFalse(
+            bossEvent.isVisible(),
+            "Expected the crazy spider boss event to hide itself when the tracked player is no longer visible"
+        );
+        helper.assertTrue(
+            bossEvent.shouldDarkenScreen(),
+            "Expected the legacy Crazy Spider boss event to keep darken-screen true under the inspected blocked-visibility rule"
+        );
+
+        spider.stopSeenByPlayer(trackedPlayer);
+        helper.assertFalse(
+            bossEvent.getPlayers().contains(trackedPlayer),
+            "Expected stopSeenByPlayer to remove the tracked player from the crazy spider boss event"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySpiderLegacyBossBarKeepsExistingSlicesStableAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_SPIDER_BOSS_BAR_ANCHOR.north(12);
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceKey<BiomeModifier> crazySpiderSpawnModifier = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_spider_spawns")
+        );
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_crazy_spider"));
+        CrazySpiderLootEvents lootEvents = new CrazySpiderLootEvents();
+        List<ItemEntity> drops = new ArrayList<>();
+
+        resetMiningArea(level, origin, 16.0D);
+        prepareCombatPlatform(level, origin);
+
+        CrazySpider spider = spawnLivingEntity(helper, ModRegistries.CRAZY_SPIDER.get(), origin);
+        clearEquipment(spider);
+        spider.updateLegacyBossEvent();
+
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazySpider.class.getDeclaredFields()).anyMatch(field -> field.getType() == ServerBossEvent.class),
+            "Expected crazy spider boss-bar follow-up to keep the ServerBossEvent field on the entity class"
+        );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("customServerAiStep") || name.equals("startSeenByPlayer") || name.equals("stopSeenByPlayer")),
+            "Expected crazy spider boss-bar follow-up to keep the tracked-player boss-event hooks on the entity class"
+        );
+        helper.assertTrue(
+            spider.getLegacyCrazyBossEventForTests().getColor() == BossEvent.BossBarColor.RED
+                && spider.getLegacyCrazyBossEventForTests().getOverlay() == BossEvent.BossBarOverlay.PROGRESS,
+            "Expected crazy spider boss-bar follow-up to keep the legacy red progress boss-event styling"
+        );
+        helper.assertTrue(
+            spider.getLootTable().equals(EntityType.SPIDER.getDefaultLootTable()),
+            "Expected crazy spider boss-bar follow-up to keep the vanilla spider loot-table baseline"
+        );
+        helper.assertTrue(
+            CrazySpiderLootPolicy.ORB_DROP_ROLL_BOUND == 8,
+            "Expected crazy spider boss-bar follow-up to keep the inherited 1/8 orb-drop roll bound"
+        );
+        helper.assertTrue(
+            lootEvents.tryAppendLegacyOrbDrop(spider, drops, 0),
+            "Expected crazy spider boss-bar follow-up to keep the winning orb-drop branch available"
+        );
+        helper.assertTrue(
+            drops.size() == 1 && drops.getFirst().getItem().is(ModRegistries.CAVENIC_ORB.get()),
+            "Expected crazy spider boss-bar follow-up to keep appending exactly one cavenic orb on the winning roll"
+        );
+        helper.assertTrue(
+            Math.abs(spider.getMaxHealth() - 1024.0D) < 1.0E-6D,
+            "Expected crazy spider boss-bar follow-up to keep the modern 1024.0 runtime max-health clamp"
+        );
+        helper.assertFalse(
+            spider.hurt(level.damageSources().lava(), 4.0F),
+            "Expected crazy spider boss-bar follow-up to keep fire-tagged damage rejection intact"
+        );
+        helper.assertTrue(
+            Math.abs(spider.getAttributeValue(Attributes.MOVEMENT_SPEED) - 0.6D) < 1.0E-6D,
+            "Expected crazy spider boss-bar follow-up to keep the legacy 0.6 movement-speed mapping"
+        );
+        helper.assertTrue(
+            Math.abs(spider.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) - 1.0D) < 1.0E-6D,
+            "Expected crazy spider boss-bar follow-up to keep the legacy 1.0 knockback-resistance mapping"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_SPIDER.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected crazy spider boss-bar follow-up to keep natural spawn placement unregistered"
+        );
+        helper.assertFalse(
+            biomeModifiers.containsKey(crazySpiderSpawnModifier),
+            "Expected crazy spider boss-bar follow-up to keep the biome modifier absent at runtime"
+        );
+        helper.assertFalse(
+            biomes.getTag(spawnTag).isPresent(),
+            "Expected crazy spider boss-bar follow-up to keep the spawn biome tag absent at runtime"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("aiStep") || name.equals("doHurtTarget") || name.equals("registerGoals")),
+            "Expected crazy spider boss-bar follow-up to avoid particle, custom combat and custom AI overrides"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazySpider.class.getDeclaredFields())
+                .map(Field::getName)
+                .anyMatch(name -> name.toLowerCase().contains("particle")
+                    || name.toLowerCase().contains("poison")
+                    || name.toLowerCase().contains("blind")),
+            "Expected crazy spider boss-bar follow-up to avoid direct particle and combat-effect state"
         );
         helper.succeed();
     }
