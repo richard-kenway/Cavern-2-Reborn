@@ -124,11 +124,12 @@ That bounded follow-up still does not restore:
 - The inherited loot/orb branch is now restored explicitly in `docs/crazy-creeper-loot-mvp.md` while the rest of the baseline stays narrow.
 - The dedicated follow-up documented in `docs/crazy-creeper-boss-bar-mvp.md` now restores the legacy green progress boss-event / sky-darkening branch explicitly while keeping the vanilla `Creeper` base.
 - The dedicated follow-up documented in `docs/crazy-creeper-particle-trail-mvp.md` now restores the legacy client-only `ParticleCrazyMob` trail explicitly while reusing the shared `cavernreborn:crazy_mob` particle mapping.
-- This baseline still does not restore any custom lightning/charged/swelling follow-up.
+- This baseline still does not restore any custom Crazy Creeper lightning/charged/swelling override.
+- The inspected inherited-vanilla branch now remains documented separately in `docs/crazy-creeper-lightning-charged-swelling-boundary.md`.
 
 ## Testing
 
-- Resource tests cover registry source, spawn egg placement, renderer registration source, texture/model/lang resources, the explicit vanilla `Creeper` base, the explicit vanilla creeper loot-table baseline, the explicit no-natural-spawn boundary, the restored legacy `Fuse = 150` / `ExplosionRadius = 30` values and the continued absence of custom lightning/charged/swelling follow-up code beyond the explicitly restored loot, damage, boss, particle and fuse branches.
+- Resource tests cover registry source, spawn egg placement, renderer registration source, texture/model/lang resources, the explicit vanilla `Creeper` base, the explicit vanilla creeper loot-table baseline, the explicit no-natural-spawn boundary, the restored legacy `Fuse = 150` / `ExplosionRadius = 30` values and the pinned inherited-vanilla lightning/charged/swelling boundary beyond the explicitly restored loot, damage, boss, particle and fuse branches.
 - Documentation tests cover the legacy references inspected, the crazy-roster context, the attribute mapping, renderer/texture provenance, spawn egg decision, the Cavenia-tied natural-spawn deferral and the remaining lightning/swelling boundary.
 - NeoForge GameTest runtime smoke covers:
   - crazy creeper runtime registry id
@@ -141,7 +142,7 @@ That bounded follow-up still does not restore:
   - separate legacy particle-trail smoke documented in `docs/crazy-creeper-particle-trail-mvp.md`
   - separate legacy boss-event / sky-darkening smoke documented in `docs/crazy-creeper-boss-bar-mvp.md`
   - crazy creeper legacy fuse-time and explosion-radius smoke documented in `docs/crazy-creeper-fuse-explosion-mvp.md`
-  - crazy creeper custom lightning/charged/swelling behavior remains follow-up
+  - crazy creeper inherited-vanilla lightning/charged/swelling boundary smoke
 
 ## Out Of Scope
 

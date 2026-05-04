@@ -5887,6 +5887,85 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazyCreeperLightningChargedSwellingBoundaryStaysVanillaInheritedAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_CREEPER_PARTICLE_TRAIL_ANCHOR.south(36);
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceKey<BiomeModifier> crazyCreeperSpawnModifier = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_creeper_spawns")
+        );
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_crazy_creeper"));
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CrazyCreeper crazyCreeper = spawnLivingEntity(helper, ModRegistries.CRAZY_CREEPER.get(), origin);
+        CompoundTag crazyData = crazyCreeper.saveWithoutId(new CompoundTag());
+
+        helper.assertTrue(
+            crazyData.getShort("Fuse") == CrazyCreeper.LEGACY_FUSE_TIME,
+            "Expected crazy creeper lightning/charged/swelling boundary smoke to keep Fuse pinned to the legacy 150-tick value"
+        );
+        helper.assertTrue(
+            crazyData.getByte("ExplosionRadius") == CrazyCreeper.LEGACY_EXPLOSION_RADIUS,
+            "Expected crazy creeper lightning/charged/swelling boundary smoke to keep ExplosionRadius pinned to the legacy radius 30"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazyCreeper.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("thunderHit")
+                    || name.equals("explodeCreeper")
+                    || name.equals("ignite")
+                    || name.equals("setSwellDir")
+                    || name.equals("getSwellDir")),
+            "Expected crazy creeper lightning/charged/swelling boundary smoke to keep lightning, charged and swelling hooks inherited from vanilla Creeper"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazyCreeper.class.getDeclaredFields())
+                .map(Field::getName)
+                .anyMatch(name -> name.equals("DATA_IS_POWERED")
+                    || name.equals("DATA_SWELL_DIR")
+                    || name.equals("DATA_IS_IGNITED")
+                    || name.equals("maxSwell")
+                    || name.equals("swell")
+                    || name.equals("oldSwell")),
+            "Expected crazy creeper lightning/charged/swelling boundary smoke to avoid local powered or swelling state fields"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_CREEPER.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected crazy creeper lightning/charged/swelling boundary smoke to keep spawn placement unregistered"
+        );
+        helper.assertFalse(
+            biomeModifiers.containsKey(crazyCreeperSpawnModifier),
+            "Expected crazy creeper lightning/charged/swelling boundary smoke to keep the biome modifier absent at runtime"
+        );
+        helper.assertFalse(
+            biomes.getTag(spawnTag).isPresent(),
+            "Expected crazy creeper lightning/charged/swelling boundary smoke to keep the spawn biome tag absent at runtime"
+        );
+        helper.assertTrue(
+            CrazyCreeperLootPolicy.ORB_DROP_ROLL_BOUND == 5,
+            "Expected crazy creeper lightning/charged/swelling boundary smoke to keep the inherited 1/5 orb-drop roll bound"
+        );
+        helper.assertFalse(
+            crazyCreeper.hurt(level.damageSources().lava(), 4.0F),
+            "Expected crazy creeper lightning/charged/swelling boundary smoke to keep fire-tagged damage rejection intact"
+        );
+        helper.assertTrue(
+            crazyCreeper.getLegacyCrazyBossEventForTests().getColor() == BossEvent.BossBarColor.GREEN
+                && crazyCreeper.getLegacyCrazyBossEventForTests().getOverlay() == BossEvent.BossBarOverlay.PROGRESS,
+            "Expected crazy creeper lightning/charged/swelling boundary smoke to keep the legacy green progress boss-event styling"
+        );
+        helper.assertTrue(
+            BuiltInRegistries.PARTICLE_TYPE.getKey(ModRegistries.CRAZY_MOB_PARTICLE.get())
+                .equals(ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_mob")),
+            "Expected crazy creeper lightning/charged/swelling boundary smoke to keep the shared crazy_mob particle registry id"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void crazySpiderRegistersAtRuntime(GameTestHelper helper) {
         helper.assertTrue(ModRegistries.CRAZY_SPIDER.get() != null, "Missing crazy spider entity type");
         helper.assertTrue(ModRegistries.CRAZY_SPIDER_SPAWN_EGG.get() != null, "Missing crazy spider spawn egg");

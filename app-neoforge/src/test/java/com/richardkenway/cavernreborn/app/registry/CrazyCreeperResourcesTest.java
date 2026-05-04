@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CrazyCreeperResourcesTest {
     @Test
-    void crazyCreeperRegistersWithDedicatedEntitySpawnEggRendererAndExplicitLootDamageBossParticleAndFuseFollowUps() throws IOException {
+    void crazyCreeperRegistersWithDedicatedEntitySpawnEggRendererAndExplicitLootDamageBossParticleFuseAndLightningBoundaryFollowUps() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -158,7 +158,13 @@ class CrazyCreeperResourcesTest {
         assertFalse(entitySource.contains("ExplosionInteraction"));
         assertFalse(entitySource.contains("thunderHit"));
         assertFalse(entitySource.contains("DATA_IS_POWERED"));
+        assertFalse(entitySource.contains("DATA_SWELL_DIR"));
         assertFalse(entitySource.contains("DATA_IS_IGNITED"));
+        assertFalse(entitySource.contains("isPowered()"));
+        assertFalse(entitySource.contains("getSwellDir("));
+        assertFalse(entitySource.contains("setSwellDir("));
+        assertFalse(entitySource.contains("ignite("));
+        assertFalse(entitySource.contains("maxSwell"));
         assertFalse(entitySource.contains("registerGoals("));
         assertFalse(entitySource.toLowerCase().contains("cavenia"));
         assertFalse(entitySource.toLowerCase().contains("magic_book"));

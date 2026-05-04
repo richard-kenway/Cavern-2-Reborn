@@ -32,6 +32,7 @@ It restores only the source-confirmed fixed creeper values from legacy `EntityCr
 - I found no direct `powered`, `charged`, `ignite`, `explode`, `createExplosion`, `mobGriefing` or Forge explosion-event override on `EntityCrazyCreeper`.
 - The legacy class therefore keeps vanilla creeper charged/lightning behavior and only changes the fixed fuse/radius values.
 - The existing orb-drop, incoming-damage, boss-event and particle-trail branches are separate.
+- The dedicated boundary note for that inherited branch now lives in `docs/crazy-creeper-lightning-charged-swelling-boundary.md`.
 
 ## Reborn Mapping
 
@@ -62,6 +63,7 @@ It restores only the source-confirmed fixed creeper values from legacy `EntityCr
 - Reborn does not add local powered-state fields or a custom charged multiplier.
 - Reborn does not add a custom explosion-event path, custom fire flag or custom block-damage path.
 - The restored values therefore compose with the inherited modern vanilla creeper explosion path, which still owns charged-state handling and mob-griefing interaction.
+- The inspected inherited-vanilla lightning/charged/swelling contract is now documented separately in `docs/crazy-creeper-lightning-charged-swelling-boundary.md`.
 - Actual destructive explosion gameplay feel remains a manual smoke concern rather than a GameTest terrain-destruction assertion.
 
 ## Why This Mapping Is Safe
