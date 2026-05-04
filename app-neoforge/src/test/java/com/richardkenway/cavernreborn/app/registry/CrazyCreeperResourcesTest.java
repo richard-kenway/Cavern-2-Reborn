@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CrazyCreeperResourcesTest {
     @Test
-    void crazyCreeperRegistersWithDedicatedEntitySpawnEggRendererAndExplicitLootDamageBossAndParticleFollowUps() throws IOException {
+    void crazyCreeperRegistersWithDedicatedEntitySpawnEggRendererAndExplicitLootDamageBossParticleAndFuseFollowUps() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -92,6 +92,8 @@ class CrazyCreeperResourcesTest {
         assertTrue(entitySource.contains(".add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)"));
         assertTrue(entitySource.contains(".add(Attributes.MOVEMENT_SPEED, 0.23D)"));
         assertTrue(entitySource.contains("public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;"));
+        assertTrue(entitySource.contains("public static final short LEGACY_FUSE_TIME = 150;"));
+        assertTrue(entitySource.contains("public static final byte LEGACY_EXPLOSION_RADIUS = 30;"));
         assertTrue(entitySource.contains("public static final int LEGACY_PARTICLE_COUNT_PER_TICK = 3;"));
         assertTrue(entitySource.contains("public static final double LEGACY_PARTICLE_HORIZONTAL_OFFSET = 0.25D;"));
         assertTrue(entitySource.contains("public static final double LEGACY_PARTICLE_BASE_Y_OFFSET = 0.65D;"));
@@ -109,6 +111,9 @@ class CrazyCreeperResourcesTest {
         assertTrue(entitySource.contains("this.random.nextFloat() * 1.0F * particleXDirection"));
         assertTrue(entitySource.contains("(this.random.nextFloat() - LEGACY_PARTICLE_VERTICAL_MOTION_OFFSET) * LEGACY_PARTICLE_VERTICAL_MOTION_SCALE"));
         assertTrue(entitySource.contains("this.level().addParticle(ModRegistries.CRAZY_MOB_PARTICLE.get(), particleX, particleY, particleZ, motionX, motionY, motionZ);"));
+        assertTrue(entitySource.contains("public void addAdditionalSaveData(CompoundTag tag)"));
+        assertTrue(entitySource.contains("tag.putShort(\"Fuse\", LEGACY_FUSE_TIME);"));
+        assertTrue(entitySource.contains("tag.putByte(\"ExplosionRadius\", LEGACY_EXPLOSION_RADIUS);"));
         assertTrue(entitySource.contains("private final ServerBossEvent legacyBossEvent = new ServerBossEvent("));
         assertTrue(entitySource.contains("BossEvent.BossBarColor.GREEN"));
         assertTrue(entitySource.contains("BossEvent.BossBarOverlay.PROGRESS"));
@@ -135,6 +140,11 @@ class CrazyCreeperResourcesTest {
         assertTrue(entitySource.contains("this.legacyBossEvent.setDarkenScreen(!canSee || distance < LEGACY_BOSS_BAR_DARKEN_SKY_DISTANCE);"));
         assertTrue(entitySource.contains("this.legacyBossEvent.setVisible(canSee);"));
         assertTrue(entitySource.contains("this.legacyBossEvent.setProgress(this.getHealth() / this.getMaxHealth());"));
+        assertTrue(entitySource.contains("private void applyLegacyFuseAndExplosionValues()"));
+        assertTrue(entitySource.contains("CompoundTag legacyFuseAndExplosionData = new CompoundTag();"));
+        assertTrue(entitySource.contains("legacyFuseAndExplosionData.putShort(\"Fuse\", LEGACY_FUSE_TIME);"));
+        assertTrue(entitySource.contains("legacyFuseAndExplosionData.putByte(\"ExplosionRadius\", LEGACY_EXPLOSION_RADIUS);"));
+        assertTrue(entitySource.contains("super.readAdditionalSaveData(legacyFuseAndExplosionData);"));
         assertFalse(entitySource.contains("FOLLOW_RANGE"));
         assertFalse(entitySource.contains("ATTACK_DAMAGE"));
         assertFalse(entitySource.contains("NATURAL_SPAWN_WEIGHT"));
@@ -144,15 +154,11 @@ class CrazyCreeperResourcesTest {
         assertFalse(entitySource.contains("checkCrazyCreeperSpawnRules"));
         assertFalse(entitySource.contains("ParticleCrazyMob"));
         assertFalse(entitySource.contains("explodeCreeper"));
-        assertFalse(entitySource.contains("Explosion"));
-        assertFalse(entitySource.contains("fuseTime"));
-        assertFalse(entitySource.contains("timeSinceIgnited"));
-        assertFalse(entitySource.contains("lastActiveTime"));
-        assertFalse(entitySource.contains("explosionRadius"));
+        assertFalse(entitySource.contains("level().explode("));
+        assertFalse(entitySource.contains("ExplosionInteraction"));
         assertFalse(entitySource.contains("thunderHit"));
-        assertFalse(entitySource.contains("powered"));
-        assertFalse(entitySource.contains("charged"));
-        assertFalse(entitySource.contains("lightning"));
+        assertFalse(entitySource.contains("DATA_IS_POWERED"));
+        assertFalse(entitySource.contains("DATA_IS_IGNITED"));
         assertFalse(entitySource.contains("registerGoals("));
         assertFalse(entitySource.toLowerCase().contains("cavenia"));
         assertFalse(entitySource.toLowerCase().contains("magic_book"));

@@ -31,9 +31,8 @@ The inspected direct crazy roster in legacy Cavern 2 is:
 - a safe modern vanilla `Creeper` base in 1.21.1
 - direct baseline attributes and XP reward on the class itself
 
-The risky parts are separate follow-up branches rather than prerequisites for the entity to exist:
+The risky parts were separate follow-up branches rather than prerequisites for the entity to exist:
 
-- direct fuse/explosion changes
 - inherited `cavenic_orb` drop behavior from `EntityCavenicCreeper`
 - inherited fall/fire damage behavior from `EntityCavenicCreeper`
 - direct green boss-bar / sky-darkening behavior
@@ -49,7 +48,10 @@ The risky parts are separate follow-up branches rather than prerequisites for th
 - The spawn egg id is `cavernreborn:crazy_creeper_spawn_egg`.
 - Reborn `CrazyCreeper` extends vanilla `Creeper`.
 - Legacy `EntityCrazyCreeper` extends `EntityCavenicCreeper`, but this baseline does not extend the current Reborn `CavenicCreeper` baseline because that would silently inherit staged Reborn loot, damage, natural-spawn and fuse/explosion slices before each Crazy Creeper follow-up is inspected honestly.
-- Reborn keeps vanilla creeper AI, vanilla fuse timing, vanilla explosion radius, vanilla swelling behavior, vanilla charged behavior and vanilla lightning behavior for now.
+- Reborn now restores the direct legacy fixed creeper values while still keeping the vanilla creeper AI/state path:
+  - `Fuse = 150`
+  - `ExplosionRadius = 30`
+- Charged behavior, lightning behavior and swelling state handling still stay on the inherited vanilla creeper path.
 
 ## Attributes
 
@@ -102,14 +104,13 @@ Legacy `EntityCrazyCreeper` includes a direct explosion identity:
 - `applyCustomValues()` sets `explosionRadius = 30`
 - legacy base `EntityCavenicCreeper` also changes the default creeper explosion path and carries its own smaller `Fuse = 15` and `ExplosionRadius = 5` values
 
-This baseline does not restore any of that. Reborn does not restore:
+The dedicated follow-up documented in `docs/crazy-creeper-fuse-explosion-mvp.md` now restores the fixed legacy `Fuse = 150` and `ExplosionRadius = 30` values explicitly while keeping the inherited modern vanilla creeper explosion path.
 
-- custom fuse/explosion behavior
+That bounded follow-up still does not restore:
+
 - custom swelling behavior
 - custom griefing behavior
 - custom explosion-event logic
-
-The baseline stayed safe because vanilla `Creeper` already exists and can spawn/function without those legacy Crazy Creeper-specific explosion branches.
 
 ## Lightning / Charged / Boss / Particle / Damage Boundaries
 
@@ -123,12 +124,12 @@ The baseline stayed safe because vanilla `Creeper` already exists and can spawn/
 - The inherited loot/orb branch is now restored explicitly in `docs/crazy-creeper-loot-mvp.md` while the rest of the baseline stays narrow.
 - The dedicated follow-up documented in `docs/crazy-creeper-boss-bar-mvp.md` now restores the legacy green progress boss-event / sky-darkening branch explicitly while keeping the vanilla `Creeper` base.
 - The dedicated follow-up documented in `docs/crazy-creeper-particle-trail-mvp.md` now restores the legacy client-only `ParticleCrazyMob` trail explicitly while reusing the shared `cavernreborn:crazy_mob` particle mapping.
-- This baseline still does not restore any lightning/charged/swelling follow-up.
+- This baseline still does not restore any custom lightning/charged/swelling follow-up.
 
 ## Testing
 
-- Resource tests cover registry source, spawn egg placement, renderer registration source, texture/model/lang resources, the explicit vanilla `Creeper` base, the explicit vanilla creeper loot-table baseline, the explicit no-natural-spawn boundary, and the continued absence of custom fuse/explosion and lightning/charged/swelling follow-up code beyond the explicitly restored loot, damage, boss and particle branches.
-- Documentation tests cover the legacy references inspected, the crazy-roster context, the attribute mapping, renderer/texture provenance, spawn egg decision, the Cavenia-tied natural-spawn deferral and the deferred explosion/lightning boundaries.
+- Resource tests cover registry source, spawn egg placement, renderer registration source, texture/model/lang resources, the explicit vanilla `Creeper` base, the explicit vanilla creeper loot-table baseline, the explicit no-natural-spawn boundary, the restored legacy `Fuse = 150` / `ExplosionRadius = 30` values and the continued absence of custom lightning/charged/swelling follow-up code beyond the explicitly restored loot, damage, boss, particle and fuse branches.
+- Documentation tests cover the legacy references inspected, the crazy-roster context, the attribute mapping, renderer/texture provenance, spawn egg decision, the Cavenia-tied natural-spawn deferral and the remaining lightning/swelling boundary.
 - NeoForge GameTest runtime smoke covers:
   - crazy creeper runtime registry id
   - crazy creeper attribute registration
@@ -139,7 +140,7 @@ The baseline stayed safe because vanilla `Creeper` already exists and can spawn/
   - crazy creeper explicit no-natural-spawn baseline boundary
   - separate legacy particle-trail smoke documented in `docs/crazy-creeper-particle-trail-mvp.md`
   - separate legacy boss-event / sky-darkening smoke documented in `docs/crazy-creeper-boss-bar-mvp.md`
-  - crazy creeper custom fuse/explosion branch remains follow-up
+  - crazy creeper legacy fuse-time and explosion-radius smoke documented in `docs/crazy-creeper-fuse-explosion-mvp.md`
   - crazy creeper custom lightning/charged/swelling behavior remains follow-up
 
 ## Out Of Scope
@@ -147,7 +148,6 @@ The baseline stayed safe because vanilla `Creeper` already exists and can spawn/
 - Crazy Creeper natural spawning
 - Crazy Creeper custom loot
 - Crazy Creeper damage behavior
-- Crazy Creeper custom fuse/explosion behavior
 - Crazy Creeper lightning/charged/swelling behavior
 - Crazy Spider combat, loot, damage, boss, particle and natural-spawn follow-ups
 - summon variants

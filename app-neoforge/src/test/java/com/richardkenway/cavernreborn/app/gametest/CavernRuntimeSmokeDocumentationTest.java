@@ -197,6 +197,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/crazy-creeper-damage-behavior-mvp.md"));
         assertTrue(readme.contains("docs/crazy-creeper-boss-bar-mvp.md"));
         assertTrue(readme.contains("docs/crazy-creeper-particle-trail-mvp.md"));
+        assertTrue(readme.contains("docs/crazy-creeper-fuse-explosion-mvp.md"));
         assertTrue(readme.contains("third crazy-variant foundation follow-up"));
         assertTrue(readme.contains("`crazy_creeper`"));
         assertTrue(readme.contains("vanilla creeper loot baseline"));
@@ -204,7 +205,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("inherited legacy fall-damage reduction and fire-damage immunity behavior are now restored explicitly on top of that same vanilla creeper baseline"));
         assertTrue(readme.contains("legacy green progress boss bar and sky-darkening boss-event branch are now restored explicitly on top of that same vanilla creeper baseline"));
         assertTrue(readme.contains("legacy client-only portal-tinted particle trail is now restored explicitly on top of that same vanilla creeper baseline through the shared `crazy_mob` particle mapping"));
-        assertTrue(readme.contains("Crazy Creeper fuse/explosion and lightning/charged/swelling follow-ups remain intentionally deferred"));
+        assertTrue(readme.contains("fixed legacy `Fuse = 150` / `ExplosionRadius = 30` values are now restored explicitly through the modern creeper save-data path"));
+        assertTrue(readme.contains("custom lightning/charged/swelling follow-ups remain intentionally deferred"));
         assertTrue(readme.contains("Crazy Spider Baseline MVP"));
         assertTrue(readme.contains("docs/crazy-spider-baseline-mvp.md"));
         assertTrue(readme.contains("docs/crazy-spider-loot-mvp.md"));
@@ -330,10 +332,13 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("crazy creeper particle provider registration source smoke"));
         assertTrue(doc.contains("crazy creeper particle description resource smoke"));
         assertTrue(doc.contains("crazy creeper client-only particle spawn-source smoke"));
+        assertTrue(doc.contains("crazy creeper legacy fuse-time smoke"));
+        assertTrue(doc.contains("crazy creeper legacy explosion-radius smoke"));
+        assertTrue(doc.contains("crazy creeper fuse/explosion save-data round-trip smoke"));
         assertTrue(doc.contains("crazy creeper explicit no-natural-spawn baseline boundary"));
-        assertTrue(doc.contains("crazy creeper custom fuse/explosion branch remains follow-up"));
         assertTrue(doc.contains("crazy creeper custom lightning/charged/swelling behavior remains follow-up"));
         assertTrue(doc.contains("actual client visual crazy creeper particle feel remains manual"));
+        assertTrue(doc.contains("actual Crazy Creeper destructive explosion gameplay feel remains manual"));
         assertTrue(doc.contains("crazy spider runtime registry id"));
         assertTrue(doc.contains("crazy spider attribute registration"));
         assertTrue(doc.contains("crazy spider hostile runtime spawn"));

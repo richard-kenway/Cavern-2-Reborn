@@ -21,6 +21,8 @@ import net.minecraft.world.level.storage.loot.LootTable;
 
 public final class CrazyCreeper extends Creeper {
     public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;
+    public static final short LEGACY_FUSE_TIME = 150;
+    public static final byte LEGACY_EXPLOSION_RADIUS = 30;
     public static final int LEGACY_PARTICLE_COUNT_PER_TICK = 3;
     public static final double LEGACY_PARTICLE_HORIZONTAL_OFFSET = 0.25D;
     public static final double LEGACY_PARTICLE_BASE_Y_OFFSET = 0.65D;
@@ -38,6 +40,7 @@ public final class CrazyCreeper extends Creeper {
     public CrazyCreeper(EntityType<? extends Creeper> entityType, Level level) {
         super(entityType, level);
         this.xpReward = 50;
+        this.applyLegacyFuseAndExplosionValues();
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -70,6 +73,13 @@ public final class CrazyCreeper extends Creeper {
                 this.level().addParticle(ModRegistries.CRAZY_MOB_PARTICLE.get(), particleX, particleY, particleZ, motionX, motionY, motionZ);
             }
         }
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        tag.putShort("Fuse", LEGACY_FUSE_TIME);
+        tag.putByte("ExplosionRadius", LEGACY_EXPLOSION_RADIUS);
     }
 
     @Override
@@ -148,5 +158,12 @@ public final class CrazyCreeper extends Creeper {
         this.legacyBossEvent.setDarkenScreen(!canSee || distance < LEGACY_BOSS_BAR_DARKEN_SKY_DISTANCE);
         this.legacyBossEvent.setVisible(canSee);
         this.legacyBossEvent.setProgress(this.getHealth() / this.getMaxHealth());
+    }
+
+    private void applyLegacyFuseAndExplosionValues() {
+        CompoundTag legacyFuseAndExplosionData = new CompoundTag();
+        legacyFuseAndExplosionData.putShort("Fuse", LEGACY_FUSE_TIME);
+        legacyFuseAndExplosionData.putByte("ExplosionRadius", LEGACY_EXPLOSION_RADIUS);
+        super.readAdditionalSaveData(legacyFuseAndExplosionData);
     }
 }

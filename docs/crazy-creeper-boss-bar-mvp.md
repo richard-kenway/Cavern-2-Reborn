@@ -2,7 +2,7 @@
 
 This note documents the bounded boss-event follow-up for the existing `cavernreborn:crazy_creeper`.
 
-It restores only the legacy Crazy Creeper boss bar / sky-darkening branch. It does not add particles, natural spawning, loot changes, incoming-damage changes, custom fuse/explosion behavior, lightning/charged/swelling behavior, custom packets or broader crazy-mob systems.
+It restores only the legacy Crazy Creeper boss bar / sky-darkening branch. It does not add particles, natural spawning, loot changes, incoming-damage changes, custom lightning/charged/swelling behavior, custom packets or broader crazy-mob systems.
 
 ## Legacy References Inspected
 
@@ -94,7 +94,7 @@ It restores only the legacy Crazy Creeper boss bar / sky-darkening branch. It do
 - Damage remains unchanged.
 - Natural spawning remains deferred.
 - Particles now remain documented separately in `docs/crazy-creeper-particle-trail-mvp.md`.
-- Fuse/explosion behavior remains deferred.
+- Fuse/explosion behavior now remains documented separately in `docs/crazy-creeper-fuse-explosion-mvp.md`.
 - Lightning/charged/swelling behavior remains deferred.
 - no custom packets were added
 - no Cavenia content was added
@@ -113,7 +113,7 @@ More specifically:
   - percent updates from `health / maxHealth`
   - the exact `20.0D` visibility threshold
   - the exact `30.0D` darken-sky threshold
-  - continued absence of particle, fuse/explosion and lightning/charged follow-up code on the boss-event branch
+  - continued absence of particle and custom lightning/charged follow-up code on the boss-event branch
 - Documentation tests pin:
   - the exact legacy boss-event references
   - the single global boss-event ambiguity note
@@ -130,7 +130,6 @@ More specifically:
 ## Still Out Of Scope
 
 - Crazy Creeper particle trail
-- Crazy Creeper custom fuse/explosion behavior
 - Crazy Creeper lightning/charged/swelling behavior
 - Crazy Creeper natural spawning
 - Crazy Spider

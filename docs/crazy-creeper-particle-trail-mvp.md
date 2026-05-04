@@ -2,7 +2,7 @@
 
 This note documents the bounded client-visual particle follow-up for the existing `cavernreborn:crazy_creeper`.
 
-It restores only the legacy Crazy Creeper particle trail. It does not change natural spawning, loot, incoming damage, boss bar / sky-darkening, custom fuse/explosion behavior, lightning/charged/swelling behavior, packets or broader crazy-mob rendering systems.
+It restores only the legacy Crazy Creeper particle trail. It does not change natural spawning, loot, incoming damage, boss bar / sky-darkening, custom lightning/charged/swelling behavior, packets or broader crazy-mob rendering systems.
 
 ## Legacy References Inspected
 
@@ -82,7 +82,7 @@ It restores only the legacy Crazy Creeper particle trail. It does not change nat
 - Damage remains unchanged.
 - Loot remains unchanged.
 - Natural spawning remains deferred.
-- Fuse/explosion behavior remains deferred.
+- Fuse/explosion behavior now remains documented separately in `docs/crazy-creeper-fuse-explosion-mvp.md`.
 - Lightning/charged/swelling behavior remains deferred.
 - no custom packets were added
 - no Cavenia content was added
@@ -96,7 +96,7 @@ It restores only the legacy Crazy Creeper particle trail. It does not change nat
   - the exact `3` particles-per-tick count
   - the preserved position and motion formulas
   - the `assets/cavernreborn/particles/crazy_mob.json` description
-  - continued absence of natural-spawn resources, packet code, custom fuse/explosion code and lightning/charged/swelling code
+  - continued absence of natural-spawn resources, packet code and custom lightning/charged/swelling code
 - Documentation tests pin the exact legacy formulas, the shared `ParticleCrazyMob` finding, the no-dedicated-texture finding, the reused `cavernreborn:crazy_mob` id and the unchanged server-side slices.
 - NeoForge GameTest runtime smoke covers:
   - crazy creeper particle type registry id smoke
@@ -109,7 +109,6 @@ It restores only the legacy Crazy Creeper particle trail. It does not change nat
 ## Still Out Of Scope
 
 - Crazy Creeper natural spawning
-- Crazy Creeper custom fuse/explosion behavior
 - Crazy Creeper lightning/charged/swelling behavior
 - Crazy Spider
 - Cavenia

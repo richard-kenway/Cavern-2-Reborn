@@ -5145,13 +5145,11 @@ public final class CavernSpecialOreGameTests {
                     || name.equals("stopSeenByPlayer")),
             "Expected crazy creeper baseline follow-up chain to keep the particle and tracked-player boss-event hooks on the entity class"
         );
-        helper.assertFalse(
+        helper.assertTrue(
             java.util.Arrays.stream(CrazyCreeper.class.getDeclaredFields())
                 .map(Field::getName)
-                .anyMatch(name -> name.toLowerCase().contains("fuse")
-                    || name.toLowerCase().contains("explosion")
-                    || name.toLowerCase().contains("ignited")),
-            "Expected crazy creeper baseline follow-up chain to avoid custom fuse and explosion state fields"
+                .anyMatch(name -> name.equals("LEGACY_FUSE_TIME") || name.equals("LEGACY_EXPLOSION_RADIUS")),
+            "Expected crazy creeper baseline follow-up chain to expose the legacy fuse and explosion constants on the entity class"
         );
         helper.succeed();
     }
@@ -5266,13 +5264,11 @@ public final class CavernSpecialOreGameTests {
                     || name.equals("stopSeenByPlayer")),
             "Expected crazy creeper loot follow-up to keep the particle and tracked-player boss-event hooks intact"
         );
-        helper.assertFalse(
+        helper.assertTrue(
             java.util.Arrays.stream(CrazyCreeper.class.getDeclaredFields())
                 .map(Field::getName)
-                .anyMatch(name -> name.toLowerCase().contains("fuse")
-                    || name.toLowerCase().contains("explosion")
-                    || name.toLowerCase().contains("ignited")),
-            "Expected crazy creeper loot follow-up to avoid custom fuse and explosion state fields"
+                .anyMatch(name -> name.equals("LEGACY_FUSE_TIME") || name.equals("LEGACY_EXPLOSION_RADIUS")),
+            "Expected crazy creeper loot follow-up to keep the legacy fuse and explosion constants exposed on the entity class"
         );
         helper.succeed();
     }
@@ -5442,13 +5438,11 @@ public final class CavernSpecialOreGameTests {
                     || name.equals("stopSeenByPlayer")),
             "Expected crazy creeper damage follow-up to keep the particle and tracked-player boss-event hooks intact"
         );
-        helper.assertFalse(
+        helper.assertTrue(
             java.util.Arrays.stream(CrazyCreeper.class.getDeclaredFields())
                 .map(Field::getName)
-                .anyMatch(name -> name.toLowerCase().contains("fuse")
-                    || name.toLowerCase().contains("explosion")
-                    || name.toLowerCase().contains("ignited")),
-            "Expected crazy creeper damage follow-up to avoid custom fuse and explosion state fields"
+                .anyMatch(name -> name.equals("LEGACY_FUSE_TIME") || name.equals("LEGACY_EXPLOSION_RADIUS")),
+            "Expected crazy creeper damage follow-up to keep the legacy fuse and explosion constants exposed on the entity class"
         );
         helper.succeed();
     }
@@ -5634,13 +5628,11 @@ public final class CavernSpecialOreGameTests {
                     || name.equals("registerGoals")),
             "Expected crazy creeper boss-bar follow-up to keep fuse/explosion and custom AI overrides absent"
         );
-        helper.assertFalse(
+        helper.assertTrue(
             java.util.Arrays.stream(CrazyCreeper.class.getDeclaredFields())
                 .map(Field::getName)
-                .anyMatch(name -> name.toLowerCase().contains("fuse")
-                    || name.toLowerCase().contains("explosion")
-                    || name.toLowerCase().contains("ignited")),
-            "Expected crazy creeper boss-bar follow-up to avoid custom fuse and explosion state fields"
+                .anyMatch(name -> name.equals("LEGACY_FUSE_TIME") || name.equals("LEGACY_EXPLOSION_RADIUS")),
+            "Expected crazy creeper boss-bar follow-up to keep the legacy fuse and explosion constants exposed on the entity class"
         );
         helper.succeed();
     }
@@ -5725,13 +5717,171 @@ public final class CavernSpecialOreGameTests {
                 .anyMatch(name -> name.equals("explodeCreeper") || name.equals("thunderHit") || name.equals("registerGoals")),
             "Expected crazy creeper particle follow-up to keep fuse/explosion, lightning and custom AI overrides absent"
         );
-        helper.assertFalse(
+        helper.assertTrue(
             java.util.Arrays.stream(CrazyCreeper.class.getDeclaredFields())
                 .map(Field::getName)
-                .anyMatch(name -> name.toLowerCase().contains("fuse")
-                    || name.toLowerCase().contains("explosion")
-                    || name.toLowerCase().contains("ignited")),
-            "Expected crazy creeper particle follow-up to avoid custom fuse and explosion state fields"
+                .anyMatch(name -> name.equals("LEGACY_FUSE_TIME") || name.equals("LEGACY_EXPLOSION_RADIUS")),
+            "Expected crazy creeper particle follow-up to keep the legacy fuse and explosion constants exposed on the entity class"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazyCreeperLegacyFuseExplosionWiresAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_CREEPER_PARTICLE_TRAIL_ANCHOR.south(12);
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CrazyCreeper crazyCreeper = spawnLivingEntity(helper, ModRegistries.CRAZY_CREEPER.get(), origin);
+        Creeper vanillaCreeper = spawnLivingEntity(helper, EntityType.CREEPER, origin.east(4));
+        CavenicCreeper cavenicCreeper = spawnLivingEntity(helper, ModRegistries.CAVENIC_CREEPER.get(), origin.west(4));
+
+        CompoundTag crazyData = crazyCreeper.saveWithoutId(new CompoundTag());
+        CompoundTag vanillaData = vanillaCreeper.saveWithoutId(new CompoundTag());
+        CompoundTag cavenicData = cavenicCreeper.saveWithoutId(new CompoundTag());
+
+        helper.assertTrue(
+            crazyData.getShort("Fuse") == CrazyCreeper.LEGACY_FUSE_TIME,
+            "Expected crazy creeper saved Fuse value to stay pinned to the legacy 150-tick fuse"
+        );
+        helper.assertTrue(
+            crazyData.getByte("ExplosionRadius") == CrazyCreeper.LEGACY_EXPLOSION_RADIUS,
+            "Expected crazy creeper saved ExplosionRadius value to stay pinned to the legacy radius 30"
+        );
+        helper.assertTrue(
+            vanillaData.getShort("Fuse") != crazyData.getShort("Fuse"),
+            "Expected vanilla creeper baseline to keep a different fuse length than the legacy crazy creeper"
+        );
+        helper.assertTrue(
+            vanillaData.getByte("ExplosionRadius") != crazyData.getByte("ExplosionRadius"),
+            "Expected vanilla creeper baseline to keep a different explosion radius than the legacy crazy creeper"
+        );
+        helper.assertTrue(
+            cavenicData.getShort("Fuse") == CavenicCreeper.LEGACY_FUSE_TIME,
+            "Expected Cavenic Creeper to keep its own legacy fuse value while wiring Crazy Creeper"
+        );
+        helper.assertTrue(
+            cavenicData.getByte("ExplosionRadius") == CavenicCreeper.LEGACY_EXPLOSION_RADIUS,
+            "Expected Cavenic Creeper to keep its own legacy explosion radius while wiring Crazy Creeper"
+        );
+
+        CrazyCreeper roundTripCreeper = new CrazyCreeper(ModRegistries.CRAZY_CREEPER.get(), level);
+        roundTripCreeper.load(crazyData.copy());
+        CompoundTag roundTripData = roundTripCreeper.saveWithoutId(new CompoundTag());
+
+        helper.assertTrue(
+            roundTripData.getShort("Fuse") == CrazyCreeper.LEGACY_FUSE_TIME,
+            "Expected crazy creeper Fuse to survive a save/load style round trip"
+        );
+        helper.assertTrue(
+            roundTripData.getByte("ExplosionRadius") == CrazyCreeper.LEGACY_EXPLOSION_RADIUS,
+            "Expected crazy creeper ExplosionRadius to survive a save/load style round trip"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazyCreeperLegacyFuseExplosionKeepsExistingSlicesStableAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_CREEPER_PARTICLE_TRAIL_ANCHOR.south(24);
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceKey<BiomeModifier> crazyCreeperSpawnModifier = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_creeper_spawns")
+        );
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_crazy_creeper"));
+        CrazyCreeperLootEvents lootEvents = new CrazyCreeperLootEvents();
+        List<ItemEntity> drops = new ArrayList<>();
+
+        resetMiningArea(level, origin, 16.0D);
+        prepareCombatPlatform(level, origin);
+
+        CrazyCreeper crazyCreeper = spawnLivingEntity(helper, ModRegistries.CRAZY_CREEPER.get(), origin);
+        CavenicCreeper cavenicCreeper = spawnLivingEntity(helper, ModRegistries.CAVENIC_CREEPER.get(), origin.west(4));
+        clearEquipment(crazyCreeper);
+        clearEquipment(cavenicCreeper);
+        CompoundTag crazyData = crazyCreeper.saveWithoutId(new CompoundTag());
+        CompoundTag cavenicData = cavenicCreeper.saveWithoutId(new CompoundTag());
+
+        helper.assertTrue(
+            crazyData.getShort("Fuse") == CrazyCreeper.LEGACY_FUSE_TIME
+                && crazyData.getByte("ExplosionRadius") == CrazyCreeper.LEGACY_EXPLOSION_RADIUS,
+            "Expected crazy creeper fuse/explosion follow-up to keep the legacy Fuse and ExplosionRadius values pinned in saved data"
+        );
+        helper.assertTrue(
+            cavenicData.getShort("Fuse") == CavenicCreeper.LEGACY_FUSE_TIME
+                && cavenicData.getByte("ExplosionRadius") == CavenicCreeper.LEGACY_EXPLOSION_RADIUS,
+            "Expected crazy creeper fuse/explosion follow-up to avoid changing Reborn Cavenic Creeper"
+        );
+        helper.assertTrue(
+            crazyCreeper.getLootTable().equals(EntityType.CREEPER.getDefaultLootTable()),
+            "Expected crazy creeper fuse/explosion follow-up to keep the vanilla creeper loot-table baseline"
+        );
+        helper.assertTrue(
+            CrazyCreeperLootPolicy.ORB_DROP_ROLL_BOUND == 5,
+            "Expected crazy creeper fuse/explosion follow-up to keep the inherited 1/5 orb-drop roll bound"
+        );
+        helper.assertTrue(
+            lootEvents.tryAppendLegacyOrbDrop(crazyCreeper, drops, 0),
+            "Expected crazy creeper fuse/explosion follow-up to keep the winning orb-drop branch available"
+        );
+        helper.assertTrue(
+            drops.size() == 1 && drops.getFirst().getItem().is(ModRegistries.CAVENIC_ORB.get()),
+            "Expected crazy creeper fuse/explosion follow-up to keep appending exactly one cavenic orb on the winning roll"
+        );
+        helper.assertFalse(
+            crazyCreeper.hurt(level.damageSources().lava(), 4.0F),
+            "Expected crazy creeper fuse/explosion follow-up to keep fire-tagged damage rejection intact"
+        );
+        helper.assertTrue(
+            Math.abs(crazyCreeper.getMaxHealth() - 1024.0D) < 1.0E-6D,
+            "Expected crazy creeper fuse/explosion follow-up to keep the modern 1024.0 runtime max-health clamp"
+        );
+        helper.assertTrue(
+            Math.abs(crazyCreeper.getAttributeValue(Attributes.MOVEMENT_SPEED) - 0.23D) < 1.0E-6D,
+            "Expected crazy creeper fuse/explosion follow-up to keep legacy 0.23 movement speed intact"
+        );
+        helper.assertTrue(
+            Math.abs(crazyCreeper.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) - 1.0D) < 1.0E-6D,
+            "Expected crazy creeper fuse/explosion follow-up to keep legacy 1.0 knockback resistance intact"
+        );
+        helper.assertTrue(
+            crazyCreeper.getLegacyCrazyBossEventForTests().getColor() == BossEvent.BossBarColor.GREEN
+                && crazyCreeper.getLegacyCrazyBossEventForTests().getOverlay() == BossEvent.BossBarOverlay.PROGRESS,
+            "Expected crazy creeper fuse/explosion follow-up to keep the legacy green progress boss-event styling"
+        );
+        helper.assertTrue(
+            BuiltInRegistries.PARTICLE_TYPE.getKey(ModRegistries.CRAZY_MOB_PARTICLE.get())
+                .equals(ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_mob")),
+            "Expected crazy creeper fuse/explosion follow-up to keep the shared crazy_mob particle registry id"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_CREEPER.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected crazy creeper fuse/explosion follow-up to keep spawn placement unregistered"
+        );
+        helper.assertFalse(
+            biomeModifiers.containsKey(crazyCreeperSpawnModifier),
+            "Expected crazy creeper fuse/explosion follow-up to keep the biome modifier absent at runtime"
+        );
+        helper.assertFalse(
+            biomes.getTag(spawnTag).isPresent(),
+            "Expected crazy creeper fuse/explosion follow-up to keep the spawn biome tag absent at runtime"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazyCreeper.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("explodeCreeper")
+                    || name.equals("thunderHit")
+                    || name.equals("registerGoals")),
+            "Expected crazy creeper fuse/explosion follow-up to keep custom explosion, lightning and AI overrides absent"
+        );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazyCreeper.class.getDeclaredFields())
+                .map(Field::getName)
+                .anyMatch(name -> name.equals("LEGACY_FUSE_TIME") || name.equals("LEGACY_EXPLOSION_RADIUS")),
+            "Expected crazy creeper fuse/explosion follow-up to keep the legacy fuse and explosion constants exposed on the entity class"
         );
         helper.succeed();
     }

@@ -25,7 +25,8 @@ It does not add natural spawning, loot changes, particles, custom fuse/explosion
 - No extra direct incoming-damage immunity is declared on `EntityCrazyCreeper`.
 - Generic non-fire, non-fall damage remains vanilla-like.
 - The inherited `1/5` orb-drop branch is separate and remains documented in `docs/crazy-creeper-loot-mvp.md`.
-- The risky fuse/explosion and lightning/charged/swelling branches are separate and remain deferred.
+- The fixed fuse/explosion values are separate and now remain documented in `docs/crazy-creeper-fuse-explosion-mvp.md`.
+- The lightning/charged/swelling branch remains deferred.
 
 ## Reborn Mapping
 
@@ -53,7 +54,7 @@ It does not add natural spawning, loot changes, particles, custom fuse/explosion
 - Crazy Creeper still keeps the legacy `1500.0D` source literal in its attribute builder while the runtime effective max health remains clamped to `1024.0`.
 - Crazy Creeper still keeps the inherited `1/5` orb-drop wiring through `CrazyCreeperLootEvents` and `CrazyCreeperLootPolicy`.
 - Natural-spawn deferral remains unchanged.
-- Custom fuse/explosion behavior remains deferred.
+- Fuse/explosion behavior now remains documented separately in `docs/crazy-creeper-fuse-explosion-mvp.md`.
 - Lightning/charged/swelling behavior remains deferred.
 - Boss bar / sky-darkening now remains documented separately in `docs/crazy-creeper-boss-bar-mvp.md`.
 - Particle trail now remains documented separately in `docs/crazy-creeper-particle-trail-mvp.md`.
@@ -61,7 +62,7 @@ It does not add natural spawning, loot changes, particles, custom fuse/explosion
 
 ## Testing
 
-- Resource tests pin the entity-local damage hook, the exact fall/fire tag usage, the preserved `1500.0D` source literal, the preserved vanilla creeper loot-table baseline, the preserved `CrazyCreeperLootEvents` / `CrazyCreeperLootPolicy` wiring and the continued absence of natural-spawn, fuse/explosion and lightning follow-up code beyond the separately restored boss and particle branches.
+- Resource tests pin the entity-local damage hook, the exact fall/fire tag usage, the preserved `1500.0D` source literal, the preserved vanilla creeper loot-table baseline, the preserved `CrazyCreeperLootEvents` / `CrazyCreeperLootPolicy` wiring, the preserved fixed `Fuse = 150` / `ExplosionRadius = 30` mapping and the continued absence of natural-spawn and custom lightning follow-up code beyond the separately restored boss and particle branches.
 - Documentation tests pin the legacy source references, the inherited `0.35F` fall multiplier, the explicit copy-not-inherit mapping and the unchanged loot/natural-spawn/fuse boundaries.
 - NeoForge GameTest runtime smoke covers:
   - crazy creeper legacy fall-damage reduction smoke
@@ -71,12 +72,11 @@ It does not add natural spawning, loot changes, particles, custom fuse/explosion
   - continued runtime `1024.0` max-health clamp stability
   - continued inherited `1/5` orb-drop wiring stability
   - continued natural-spawn deferral through absent placement/biome-modifier/biome-tag wiring
-  - continued absence of fuse/explosion and lightning overrides beyond the separately restored boss and particle branches
+  - continued absence of custom lightning/charged/swelling overrides beyond the separately restored boss and particle branches
 
 ## Still Out Of Scope
 
 - Crazy Creeper natural spawning
-- Crazy Creeper custom fuse/explosion behavior
 - Crazy Creeper lightning/charged/swelling behavior
 - Crazy Spider
 - Cavenia

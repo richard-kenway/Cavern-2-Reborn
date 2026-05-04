@@ -24,7 +24,7 @@ This note documents the bounded inherited Crazy Creeper loot follow-up on top of
 - No progression, dimension, economy or Cavenia check is part of the inherited orb branch.
 - No boss state affects the inherited orb branch.
 - No fuse state, charged state or lightning state affects the inherited orb branch.
-- The risky Crazy Creeper fuse/explosion behavior is separate from this inherited loot branch and remains deferred.
+- The fixed Crazy Creeper fuse/explosion values are separate from this inherited loot branch and now remain documented in `docs/crazy-creeper-fuse-explosion-mvp.md`.
 
 ## Reborn Mapping
 
@@ -42,7 +42,7 @@ This note documents the bounded inherited Crazy Creeper loot follow-up on top of
 - Damage behavior now remains documented separately in `docs/crazy-creeper-damage-behavior-mvp.md`.
 - Boss bar / sky-darkening now remains documented separately in `docs/crazy-creeper-boss-bar-mvp.md`.
 - Particle trail now remains documented separately in `docs/crazy-creeper-particle-trail-mvp.md`.
-- Custom fuse/explosion behavior remains unchanged in this loot slice.
+- Fuse/explosion behavior now remains documented separately in `docs/crazy-creeper-fuse-explosion-mvp.md`.
 - Lightning / charged / swelling behavior remains unchanged in this loot slice.
 - Cavenia remains out of scope.
 - Magic-book systems remain out of scope.
@@ -71,7 +71,6 @@ This note documents the bounded inherited Crazy Creeper loot follow-up on top of
 
 - Crazy Creeper natural spawning
 - Crazy Creeper damage behavior
-- Crazy Creeper custom fuse/explosion behavior
 - Crazy Creeper lightning/charged/swelling behavior
 - Crazy Spider
 - summon variants
