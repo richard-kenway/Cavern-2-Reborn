@@ -80,7 +80,7 @@ That keeps this slice honest:
 
 Only the source-confirmed equipment branch is copied explicitly.
 
-## Why Custom Ranged AI Remains Deferred
+## Why Equipment And Ranged AI Stay Separate
 
 The legacy goal is not just a held-item assignment.
 It changes:
@@ -92,7 +92,7 @@ It changes:
 - how often the held `ItemBowCavenic` fires
 
 That makes it a separate combat-identity slice, not a safe baseline equipment detail.
-`EntityAIAttackCavenicBow` remains deferred and is documented separately in `docs/crazy-skeleton-ranged-ai-boundary.md`.
+The dedicated follow-up documented in `docs/crazy-skeleton-ranged-ai-mvp.md` now restores the local Crazy Skeleton combat-goal branch.
 
 ## Cavenic Bow Behavior Remains Unchanged
 
@@ -111,7 +111,7 @@ The bow is only equipped onto Crazy Skeleton.
 
 ## Testing
 
-- Resource tests pin the new equipment hook, the `CAVENIC_BOW` reference, the `Infinity` enchantment lookup and the preserved absence of any `EntityAIAttackCavenicBow` port.
+- Resource tests pin the new equipment hook, the `CAVENIC_BOW` reference, the `Infinity` enchantment lookup and the fact that the ranged-goal follow-up stays a separate local `CrazySkeleton` branch.
 - Runtime GameTest smoke verifies:
   - Crazy Skeleton spawns with `cavernreborn:cavenic_bow`
   - `Infinity I` is present at runtime

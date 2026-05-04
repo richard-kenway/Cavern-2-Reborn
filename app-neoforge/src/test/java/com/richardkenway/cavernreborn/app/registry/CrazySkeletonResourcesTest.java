@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CrazySkeletonResourcesTest {
     @Test
-    void crazySkeletonRegistersWithDedicatedEntitySpawnEggRendererAndBossDamageLootEquipmentFollowUpsWhileKeepingRangedAiDeferred() throws IOException {
+    void crazySkeletonRegistersWithDedicatedEntitySpawnEggRendererAndBossDamageLootEquipmentParticleAndRangedAiFollowUps() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -96,6 +96,17 @@ class CrazySkeletonResourcesTest {
         assertTrue(entitySource.contains(".add(Attributes.FOLLOW_RANGE, 22.0D)"));
         assertTrue(entitySource.contains("public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;"));
         assertTrue(entitySource.contains("public static final float LEGACY_MAINHAND_DROP_CHANCE = 1.0F;"));
+        assertTrue(entitySource.contains("public static final double LEGACY_RANGED_MOVEMENT_SPEED = 0.99D;"));
+        assertTrue(entitySource.contains("public static final float LEGACY_RANGED_MAX_ATTACK_DISTANCE = 6.0F;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_RANGED_ATTACK_SPEED = 1;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_RANGED_START_ATTACK_COOLDOWN = 20;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_RANGED_RESET_ATTACK_COOLDOWN = 50;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_RANGED_MIN_SEE_TIME_TO_STRAFE = 15;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_RANGED_STRAFING_TOGGLE_INTERVAL = 5;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_RANGED_LOST_SIGHT_STOP_THRESHOLD = -20;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_RANGED_MAX_CONTINUOUS_ATTACK_TIME = 200;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_RANGED_DRAW_DURATION_TICKS = 5;"));
+        assertTrue(entitySource.contains("public static final double LEGACY_MELEE_MOVEMENT_SPEED = 1.35D;"));
         assertTrue(entitySource.contains("public static final int LEGACY_PARTICLE_COUNT_PER_TICK = 3;"));
         assertTrue(entitySource.contains("public static final double LEGACY_PARTICLE_HORIZONTAL_OFFSET = 0.25D;"));
         assertTrue(entitySource.contains("public static final double LEGACY_PARTICLE_BASE_Y_OFFSET = 0.65D;"));
@@ -114,6 +125,31 @@ class CrazySkeletonResourcesTest {
         assertTrue(entitySource.contains("protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty)"));
         assertTrue(entitySource.contains("super.populateDefaultEquipmentSlots(random, difficulty);"));
         assertTrue(entitySource.contains("this.setItemSlot(EquipmentSlot.MAINHAND, createLegacyCrazySkeletonBow(this.registryAccess()));"));
+        assertTrue(entitySource.contains("protected void registerGoals()"));
+        assertTrue(entitySource.contains("public void reassessWeaponGoal()"));
+        assertTrue(entitySource.contains("this.goalSelector.removeAllGoals(this::isVanillaOrLegacyCrazySkeletonCombatGoal);"));
+        assertTrue(entitySource.contains("this.goalSelector.addGoal(4, this.legacyRangedAttackGoal);"));
+        assertTrue(entitySource.contains("this.goalSelector.addGoal(4, this.legacyMeleeAttackGoal);"));
+        assertTrue(entitySource.contains("goal instanceof RangedBowAttackGoal"));
+        assertTrue(entitySource.contains("goal instanceof LegacyCrazySkeletonCavenicBowAttackGoal"));
+        assertTrue(entitySource.contains("goal instanceof MeleeAttackGoal"));
+        assertTrue(entitySource.contains("mainHandItem.getItem() instanceof BowItem"));
+        assertTrue(entitySource.contains("class LegacyCrazySkeletonMeleeAttackGoal extends MeleeAttackGoal"));
+        assertTrue(entitySource.contains("super(CrazySkeleton.this, LEGACY_MELEE_MOVEMENT_SPEED, false);"));
+        assertTrue(entitySource.contains("CrazySkeleton.this.setAggressive(true);"));
+        assertTrue(entitySource.contains("CrazySkeleton.this.setAggressive(false);"));
+        assertTrue(entitySource.contains("class LegacyCrazySkeletonCavenicBowAttackGoal extends Goal"));
+        assertTrue(entitySource.contains("this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));"));
+        assertTrue(entitySource.contains("return CrazySkeleton.this.getTarget() != null && this.isBowInMainhand();"));
+        assertTrue(entitySource.contains("return (this.canUse() || !CrazySkeleton.this.getNavigation().isDone()) && this.isBowInMainhand();"));
+        assertTrue(entitySource.contains("this.attackCooldown = LEGACY_RANGED_START_ATTACK_COOLDOWN;"));
+        assertTrue(entitySource.contains("CrazySkeleton.this.getNavigation().moveTo(target, LEGACY_RANGED_MOVEMENT_SPEED);"));
+        assertTrue(entitySource.contains("this.strafingTime >= LEGACY_RANGED_STRAFING_TOGGLE_INTERVAL"));
+        assertTrue(entitySource.contains("CrazySkeleton.this.getMoveControl().strafe(this.strafingBackwards ? -0.5F : 0.5F, this.strafingClockwise ? 0.5F : -0.5F);"));
+        assertTrue(entitySource.contains("CrazySkeleton.this.performRangedAttack(target, BowItem.getPowerForTime(LEGACY_RANGED_DRAW_DURATION_TICKS));"));
+        assertTrue(entitySource.contains("CrazySkeleton.this.startUsingItem(net.minecraft.world.InteractionHand.MAIN_HAND);"));
+        assertTrue(entitySource.contains("mainHandItem.getItem() instanceof CavenicBowItem"));
+        assertTrue(entitySource.contains("return Math.max(LEGACY_RANGED_ATTACK_SPEED / 2, 1);"));
         assertTrue(entitySource.contains("public void aiStep()"));
         assertTrue(entitySource.contains("if (this.level().isClientSide()) {"));
         assertTrue(entitySource.contains("for (int i = 0; i < LEGACY_PARTICLE_COUNT_PER_TICK; ++i) {"));
@@ -130,6 +166,13 @@ class CrazySkeletonResourcesTest {
         assertTrue(entitySource.contains("damage *= LEGACY_FALL_DAMAGE_MULTIPLIER;"));
         assertTrue(entitySource.contains("source.is(DamageTypeTags.IS_FIRE)"));
         assertTrue(entitySource.contains("return super.hurt(source, damage);"));
+        assertTrue(entitySource.contains("public void performRangedAttack(LivingEntity target, float distanceFactor)"));
+        assertTrue(entitySource.contains("if (!(mainHandItem.getItem() instanceof BowItem bowItem)) {"));
+        assertTrue(entitySource.contains("ItemStack projectileStack = this.getProjectile(mainHandItem);"));
+        assertTrue(entitySource.contains("projectileStack = new ItemStack(Items.ARROW);"));
+        assertTrue(entitySource.contains("arrow = bowItem.customArrow(arrow, projectileStack, mainHandItem);"));
+        assertTrue(entitySource.contains("arrow.setOwner(this);"));
+        assertTrue(entitySource.contains("this.level().addFreshEntity(arrow);"));
         assertTrue(entitySource.contains("protected void customServerAiStep()"));
         assertTrue(entitySource.contains("public void startSeenByPlayer(ServerPlayer player)"));
         assertTrue(entitySource.contains("public void stopSeenByPlayer(ServerPlayer player)"));
@@ -149,9 +192,6 @@ class CrazySkeletonResourcesTest {
         assertFalse(entitySource.contains("ParticleCrazyMob"));
         assertFalse(entitySource.contains("doHurtTarget("));
         assertFalse(entitySource.contains("EntityAIAttackCavenicBow"));
-        assertFalse(entitySource.contains("registerGoals()"));
-        assertFalse(entitySource.contains("reassessWeaponGoal"));
-        assertFalse(entitySource.contains("performRangedAttack"));
         assertFalse(entitySource.toLowerCase().contains("cavenia"));
         assertFalse(entitySource.contains("magic_book"));
         assertFalse(bowSource.contains("CrazySkeleton"));
@@ -197,6 +237,9 @@ class CrazySkeletonResourcesTest {
         );
         assertMissingProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "ai", "EntityAIAttackCavenicBow.java"
+        );
+        assertMissingProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "ai", "CrazySkeletonCavenicBowAttackGoal.java"
         );
     }
 

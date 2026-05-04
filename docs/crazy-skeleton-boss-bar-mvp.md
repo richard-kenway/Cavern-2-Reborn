@@ -91,7 +91,7 @@ It restores only the legacy Crazy Skeleton boss bar / sky-darkening branch. It d
 - Loot remains unchanged.
 - Damage remains unchanged.
 - natural spawning remains deferred
-- custom ranged AI remains deferred
+- The restored local Crazy Skeleton ranged/melee goal branch is documented separately in `docs/crazy-skeleton-ranged-ai-mvp.md`.
 - particles now remain documented separately in `docs/crazy-skeleton-particle-trail-mvp.md`
 - no custom packets were added
 - no Cavenia content was added
@@ -101,7 +101,6 @@ More specifically:
 - guaranteed `Cavenic Bow` + `Infinity` equipment remains documented in `docs/crazy-skeleton-cavenic-bow-equipment-mvp.md`
 - loot remains documented in `docs/crazy-skeleton-loot-mvp.md`
 - damage remains documented in `docs/crazy-skeleton-damage-behavior-mvp.md`
-- custom ranged AI remains documented in `docs/crazy-skeleton-ranged-ai-boundary.md`
 
 ## Testing
 

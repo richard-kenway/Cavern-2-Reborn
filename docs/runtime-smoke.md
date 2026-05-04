@@ -217,8 +217,10 @@ NeoForge GameTest runtime smoke covers:
 - crazy skeleton client-only particle spawn-source smoke
 - crazy skeleton explicit no-natural-spawn baseline boundary
 - crazy skeleton continued vanilla attack-damage baseline, explicit `1024.0` max-health clamp and guaranteed `Cavenic Bow` + `Infinity` equipment stability smoke
-- crazy skeleton reflection smoke for no particle or custom ranged-AI follow-up overrides beyond the explicit damage, loot, equipment and boss hooks
-- crazy skeleton explicit custom ranged AI / `EntityAIAttackCavenicBow` deferred boundary
+- crazy skeleton legacy cavenic bow ranged-goal wiring smoke
+- crazy skeleton legacy ranged-goal constants smoke
+- crazy skeleton local melee fallback switch smoke
+- crazy skeleton vanilla and cavenic skeleton no-global-ai-change smoke
 - crazy creeper runtime registry id
 - crazy creeper attribute registration
 - crazy creeper hostile runtime spawn
@@ -363,8 +365,8 @@ NeoForge GameTest runtime smoke covers:
 - Crazy Skeleton natural spawning, because the inspected legacy path still belongs to the old Cavenia-only crazy-roster provider/config branch rather than the current `CAVERN` biome-spawn pattern
 - Crazy Skeleton custom loot beyond the restored inherited `cavenic_orb` branch
 - actual long-running Crazy Skeleton fire/lava gameplay feel
-- actual Crazy Skeleton ranged combat feel remains manual / follow-up because the equipment-only slice intentionally does not port `EntityAIAttackCavenicBow`
-- Crazy Skeleton custom ranged Cavenic Bow behavior remains a separate follow-up boundary even though the guaranteed `Cavenic Bow` + `Infinity` equipment identity is now restored
+- actual long-running Crazy Skeleton ranged combat feel remains manual
+- natural spawning remains deferred through Cavenia boundary
 - actual long-run Cavenic Bear drop-rate balance, although the current source inspection found no direct custom bear loot branch beyond the vanilla polar bear baseline
 - actual long-running Cavenic Bear fire/lava gameplay feel
 - actual long-running Cavenic Bear melee/pathfinding feel

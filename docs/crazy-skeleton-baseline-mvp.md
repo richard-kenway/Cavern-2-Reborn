@@ -51,7 +51,7 @@ The risky parts are separate follow-up branches rather than prerequisites for th
 - Legacy `EntityCrazySkeleton` extends `EntityCavenicSkeleton`, but this baseline does not extend the current Reborn `CavenicSkeleton` baseline because that would silently inherit staged Reborn orb-drop, damage-behavior and natural-spawn slices before each Crazy Skeleton follow-up is inspected honestly.
 - The original baseline kept vanilla skeleton AI, vanilla skeleton ranged behavior and vanilla equipment rules.
 - The dedicated follow-up documented in `docs/crazy-skeleton-cavenic-bow-equipment-mvp.md` now restores the guaranteed legacy `Cavenic Bow` + `Infinity` mainhand identity and the legacy `1.0F` mainhand drop chance without changing the vanilla `Skeleton` base.
-- The custom ranged AI identity is still deferred and documented in `docs/crazy-skeleton-ranged-ai-boundary.md`.
+- The dedicated follow-up documented in `docs/crazy-skeleton-ranged-ai-mvp.md` now restores the local Crazy Skeleton ranged/melee combat-goal branch while keeping `CrazySkeleton` on the vanilla `Skeleton` base.
 - The dedicated follow-up documented in `docs/crazy-skeleton-damage-behavior-mvp.md` now restores the inherited legacy fall-damage reduction and fire-damage immunity behavior explicitly while keeping the vanilla `Skeleton` base.
 - The dedicated follow-up documented in `docs/crazy-skeleton-boss-bar-mvp.md` now restores the legacy white progress boss-event / sky-darkening branch explicitly while keeping the vanilla `Skeleton` base.
 - The dedicated follow-up documented in `docs/crazy-skeleton-particle-trail-mvp.md` now restores the legacy client-only `ParticleCrazyMob` trail explicitly while keeping the vanilla `Skeleton` base.

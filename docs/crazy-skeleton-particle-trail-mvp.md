@@ -78,7 +78,7 @@ It restores only the legacy Crazy Skeleton particle trail. It does not change na
 - equipment remains unchanged and is documented in `docs/crazy-skeleton-cavenic-bow-equipment-mvp.md`
 - damage remains unchanged and is documented in `docs/crazy-skeleton-damage-behavior-mvp.md`
 - loot remains unchanged and is documented in `docs/crazy-skeleton-loot-mvp.md`
-- custom ranged AI remains deferred and is documented in `docs/crazy-skeleton-ranged-ai-boundary.md`
+- The restored local Crazy Skeleton ranged/melee goal branch is documented separately in `docs/crazy-skeleton-ranged-ai-mvp.md`.
 - natural spawning remains deferred
 - Reborn keeps `CrazySkeleton extends Skeleton`
 - no custom packets were added

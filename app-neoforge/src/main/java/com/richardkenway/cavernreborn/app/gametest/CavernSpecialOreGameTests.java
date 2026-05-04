@@ -4216,14 +4216,13 @@ public final class CavernSpecialOreGameTests {
                     || name.equals("stopSeenByPlayer")),
             "Expected crazy skeleton baseline to keep the tracked-player boss-event hooks on the entity class"
         );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("registerGoals") || name.equals("reassessWeaponGoal")),
+            "Expected crazy skeleton baseline to keep the local legacy ranged-goal wiring on the entity class"
+        );
         helper.assertFalse(
-            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
-                .map(Method::getName)
-                .anyMatch(name -> name.equals("registerGoals")
-                    || name.equals("reassessWeaponGoal")
-                    || name.equals("performRangedAttack")
-                    || name.equals("doHurtTarget")),
-            "Expected crazy skeleton baseline to avoid adding custom ranged-AI or knockback follow-up overrides beyond the explicit particle, damage and boss hooks"
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("doHurtTarget")),
+            "Expected crazy skeleton baseline to avoid a direct melee-combat override beyond the restored ranged-goal branch"
         );
         helper.succeed();
     }
@@ -4271,11 +4270,9 @@ public final class CavernSpecialOreGameTests {
             Math.abs(getEquipmentDropChance(crazySkeleton, EquipmentSlot.MAINHAND) - CrazySkeleton.LEGACY_MAINHAND_DROP_CHANCE) < 1.0E-6F,
             "Expected crazy skeleton mainhand drop chance to stay pinned to the legacy 1.0F value"
         );
-        helper.assertFalse(
-            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
-                .map(Method::getName)
-                .anyMatch(name -> name.equals("registerGoals") || name.equals("reassessWeaponGoal") || name.equals("performRangedAttack")),
-            "Expected crazy skeleton equipment follow-up to avoid adding custom ranged-AI overrides"
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("registerGoals") || name.equals("reassessWeaponGoal")),
+            "Expected crazy skeleton equipment follow-up to keep the local legacy ranged-goal wiring"
         );
         helper.succeed();
     }
@@ -4340,14 +4337,130 @@ public final class CavernSpecialOreGameTests {
                     || name.equals("stopSeenByPlayer")),
             "Expected crazy skeleton equipment follow-up to keep the tracked-player boss-event hooks intact"
         );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("registerGoals") || name.equals("reassessWeaponGoal")),
+            "Expected crazy skeleton equipment follow-up to keep the local legacy ranged-goal wiring intact"
+        );
         helper.assertFalse(
-            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
-                .map(Method::getName)
-                .anyMatch(name -> name.equals("registerGoals")
-                    || name.equals("reassessWeaponGoal")
-                    || name.equals("performRangedAttack")
-                    || name.equals("doHurtTarget")),
-            "Expected crazy skeleton equipment follow-up to keep custom ranged-AI and knockback follow-up overrides absent beyond the explicit particle, damage and boss hooks"
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("doHurtTarget")),
+            "Expected crazy skeleton equipment follow-up to avoid a broader melee-combat override beyond the explicit local goal wiring"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySkeletonLegacyCavenicBowRangedGoalWiresAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_SKELETON_EQUIPMENT_ANCHOR.south(24);
+        HolderLookup.RegistryLookup<Enchantment> enchantments = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CrazySkeleton crazySkeleton = spawnLivingEntity(helper, ModRegistries.CRAZY_SKELETON.get(), origin);
+        Skeleton vanillaSkeleton = spawnLivingEntity(helper, EntityType.SKELETON, origin.east(8));
+        Zombie target = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.east(12));
+
+        invokePopulateDefaultEquipmentSlots(crazySkeleton, RandomSource.create(4321L), level.getCurrentDifficultyAt(origin));
+        invokePopulateDefaultEquipmentSlots(vanillaSkeleton, RandomSource.create(4321L), level.getCurrentDifficultyAt(origin.east(8)));
+        crazySkeleton.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.ARROW));
+
+        WrappedGoal rangedGoal = findGoalBySimpleName(crazySkeleton.goalSelector.getAvailableGoals(), "LegacyCrazySkeletonCavenicBowAttackGoal")
+            .orElseThrow(() -> new AssertionError("Missing legacy crazy skeleton ranged goal"));
+
+        helper.assertTrue(crazySkeleton.getMainHandItem().is(ModRegistries.CAVENIC_BOW.get()), "Expected crazy skeleton ranged-goal slice to keep the guaranteed Cavenic Bow");
+        helper.assertTrue(
+            EnchantmentHelper.getItemEnchantmentLevel(enchantments.getOrThrow(Enchantments.INFINITY), crazySkeleton.getMainHandItem()) == 1,
+            "Expected crazy skeleton ranged-goal slice to keep the Infinity I bow enchantment"
+        );
+        helper.assertTrue(CrazySkeleton.LEGACY_RANGED_MOVEMENT_SPEED == 0.99D, "Expected crazy skeleton ranged-goal movement speed to stay pinned to legacy 0.99D");
+        helper.assertTrue(CrazySkeleton.LEGACY_RANGED_MAX_ATTACK_DISTANCE == 6.0F, "Expected crazy skeleton ranged-goal range to stay pinned to legacy 6.0F");
+        helper.assertTrue(CrazySkeleton.LEGACY_RANGED_ATTACK_SPEED == 1, "Expected crazy skeleton ranged-goal attack-speed value to stay pinned to legacy 1");
+        helper.assertTrue(CrazySkeleton.LEGACY_RANGED_START_ATTACK_COOLDOWN == 20, "Expected crazy skeleton ranged-goal start cooldown to stay pinned to legacy 20 ticks");
+        helper.assertTrue(CrazySkeleton.LEGACY_RANGED_RESET_ATTACK_COOLDOWN == 50, "Expected crazy skeleton ranged-goal reset cooldown to stay pinned to legacy 50 ticks");
+        helper.assertTrue(CrazySkeleton.LEGACY_RANGED_MIN_SEE_TIME_TO_STRAFE == 15, "Expected crazy skeleton ranged-goal sight threshold to stay pinned to legacy 15 ticks");
+        helper.assertTrue(CrazySkeleton.LEGACY_RANGED_STRAFING_TOGGLE_INTERVAL == 5, "Expected crazy skeleton ranged-goal strafe-toggle interval to stay pinned to legacy 5 ticks");
+        helper.assertTrue(CrazySkeleton.LEGACY_RANGED_LOST_SIGHT_STOP_THRESHOLD == -20, "Expected crazy skeleton ranged-goal lost-sight threshold to stay pinned to legacy -20 ticks");
+        helper.assertTrue(CrazySkeleton.LEGACY_RANGED_MAX_CONTINUOUS_ATTACK_TIME == 200, "Expected crazy skeleton ranged-goal attack-time cap to stay pinned to legacy 200 ticks");
+        helper.assertTrue(CrazySkeleton.LEGACY_RANGED_DRAW_DURATION_TICKS == 5, "Expected crazy skeleton ranged-goal draw duration to stay pinned to legacy 5 ticks");
+        helper.assertTrue(CrazySkeleton.LEGACY_MELEE_MOVEMENT_SPEED == 1.35D, "Expected crazy skeleton melee fallback speed to stay pinned to legacy 1.35D");
+        helper.assertTrue(findGoalBySimpleName(crazySkeleton.goalSelector.getAvailableGoals(), "RangedBowAttackGoal").isEmpty(), "Expected crazy skeleton to replace the vanilla bow goal locally");
+        helper.assertTrue(findGoalBySimpleName(crazySkeleton.goalSelector.getAvailableGoals(), "LegacyCrazySkeletonMeleeAttackGoal").isEmpty(), "Expected bow-equipped crazy skeleton to keep only the local ranged goal active");
+        helper.assertTrue(countGoals(crazySkeleton.goalSelector.getAvailableGoals(), MeleeAttackGoal.class) == 0L, "Expected bow-equipped crazy skeleton to keep the melee fallback inactive");
+        helper.assertTrue(findGoalBySimpleName(vanillaSkeleton.goalSelector.getAvailableGoals(), "RangedBowAttackGoal").isPresent(), "Expected vanilla skeleton comparison spawn to keep the vanilla bow goal");
+        helper.assertTrue(findGoalBySimpleName(vanillaSkeleton.goalSelector.getAvailableGoals(), "LegacyCrazySkeletonCavenicBowAttackGoal").isEmpty(), "Expected vanilla skeleton comparison spawn to avoid the crazy skeleton ranged goal");
+
+        crazySkeleton.setTarget(target);
+        helper.assertTrue(rangedGoal.canUse(), "Expected crazy skeleton ranged goal to become usable once a target is present");
+
+        rangedGoal.start();
+        helper.assertTrue(crazySkeleton.isAggressive(), "Expected crazy skeleton ranged goal startup to toggle the vanilla aggressive flag");
+        crazySkeleton.performRangedAttack(target, BowItem.getPowerForTime(CrazySkeleton.LEGACY_RANGED_DRAW_DURATION_TICKS));
+        rangedGoal.stop();
+        crazySkeleton.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+        helper.assertTrue(findGoalBySimpleName(crazySkeleton.goalSelector.getAvailableGoals(), "LegacyCrazySkeletonMeleeAttackGoal").isPresent(), "Expected crazy skeleton to switch to the legacy melee fallback when the bow is removed");
+        helper.assertTrue(findGoalBySimpleName(crazySkeleton.goalSelector.getAvailableGoals(), "LegacyCrazySkeletonCavenicBowAttackGoal").isEmpty(), "Expected crazy skeleton to remove the ranged goal when no bow is held");
+        helper.assertTrue(countGoals(crazySkeleton.goalSelector.getAvailableGoals(), MeleeAttackGoal.class) == 1L, "Expected crazy skeleton to keep exactly one melee fallback goal after losing the bow");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySkeletonLegacyCavenicBowRangedGoalKeepsExistingSlicesStableAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_SKELETON_EQUIPMENT_ANCHOR.south(36);
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceKey<BiomeModifier> crazySkeletonSpawnModifier = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_skeleton_spawns")
+        );
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_crazy_skeleton"));
+        HolderLookup.RegistryLookup<Enchantment> enchantments = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CrazySkeleton crazySkeleton = spawnLivingEntity(helper, ModRegistries.CRAZY_SKELETON.get(), origin);
+        CavenicSkeleton cavenicSkeleton = spawnLivingEntity(helper, ModRegistries.CAVENIC_SKELETON.get(), origin.east(8));
+        Skeleton vanillaSkeleton = spawnLivingEntity(helper, EntityType.SKELETON, origin.east(16));
+
+        invokePopulateDefaultEquipmentSlots(crazySkeleton, RandomSource.create(7654L), level.getCurrentDifficultyAt(origin));
+        cavenicSkeleton.setItemSlot(EquipmentSlot.MAINHAND, CrazySkeleton.createLegacyCrazySkeletonBow(level.registryAccess()));
+        vanillaSkeleton.setItemSlot(EquipmentSlot.MAINHAND, CrazySkeleton.createLegacyCrazySkeletonBow(level.registryAccess()));
+
+        helper.assertTrue(Math.abs(crazySkeleton.getMaxHealth() - 1024.0D) < 1.0E-6D, "Expected crazy skeleton ranged-goal slice to keep the modern 1024.0 max-health clamp stable");
+        helper.assertTrue(Math.abs(crazySkeleton.getAttributeBaseValue(Attributes.FOLLOW_RANGE) - 22.0D) < 1.0E-6D, "Expected crazy skeleton ranged-goal slice to keep the legacy 22.0 follow range");
+        helper.assertTrue(Math.abs(crazySkeleton.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) - 1.0D) < 1.0E-6D, "Expected crazy skeleton ranged-goal slice to keep legacy 1.0 knockback resistance");
+        helper.assertTrue(Math.abs(crazySkeleton.getAttributeValue(Attributes.MOVEMENT_SPEED) - 0.25D) < 1.0E-6D, "Expected crazy skeleton ranged-goal slice to keep legacy 0.25 movement speed");
+        helper.assertTrue(crazySkeleton.getLootTable().equals(EntityType.SKELETON.getDefaultLootTable()), "Expected crazy skeleton ranged-goal slice to keep the vanilla skeleton loot-table baseline");
+        helper.assertTrue(
+            EnchantmentHelper.getItemEnchantmentLevel(enchantments.getOrThrow(Enchantments.INFINITY), crazySkeleton.getMainHandItem()) == 1,
+            "Expected crazy skeleton ranged-goal slice to keep the Infinity I bow enchantment stable"
+        );
+        helper.assertTrue(
+            Math.abs(getEquipmentDropChance(crazySkeleton, EquipmentSlot.MAINHAND) - CrazySkeleton.LEGACY_MAINHAND_DROP_CHANCE) < 1.0E-6F,
+            "Expected crazy skeleton ranged-goal slice to keep the legacy 1.0F mainhand drop chance stable"
+        );
+        helper.assertTrue(findGoalBySimpleName(crazySkeleton.goalSelector.getAvailableGoals(), "LegacyCrazySkeletonCavenicBowAttackGoal").isPresent(), "Expected crazy skeleton ranged-goal slice to keep the local ranged goal active");
+        helper.assertTrue(findGoalBySimpleName(crazySkeleton.goalSelector.getAvailableGoals(), "RangedBowAttackGoal").isEmpty(), "Expected crazy skeleton ranged-goal slice to avoid the vanilla bow goal");
+        helper.assertTrue(findGoalBySimpleName(cavenicSkeleton.goalSelector.getAvailableGoals(), "LegacyCrazySkeletonCavenicBowAttackGoal").isEmpty(), "Expected cavenic skeleton to avoid the crazy skeleton ranged goal");
+        helper.assertTrue(findGoalBySimpleName(vanillaSkeleton.goalSelector.getAvailableGoals(), "LegacyCrazySkeletonCavenicBowAttackGoal").isEmpty(), "Expected vanilla skeleton to avoid the crazy skeleton ranged goal");
+        helper.assertTrue(findGoalBySimpleName(cavenicSkeleton.goalSelector.getAvailableGoals(), "RangedBowAttackGoal").isPresent(), "Expected cavenic skeleton to keep the vanilla bow goal path");
+        helper.assertTrue(findGoalBySimpleName(vanillaSkeleton.goalSelector.getAvailableGoals(), "RangedBowAttackGoal").isPresent(), "Expected vanilla skeleton to keep the vanilla bow goal path");
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_SKELETON.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected crazy skeleton ranged-goal slice to keep spawn placement unregistered"
+        );
+        helper.assertFalse(biomeModifiers.containsKey(crazySkeletonSpawnModifier), "Expected crazy skeleton ranged-goal slice to keep the biome modifier absent at runtime");
+        helper.assertFalse(biomes.getTag(spawnTag).isPresent(), "Expected crazy skeleton ranged-goal slice to keep the spawn biome tag absent at runtime");
+        helper.assertTrue(crazySkeleton.getLegacyCrazyBossEventForTests() != null, "Expected crazy skeleton ranged-goal slice to keep the restored boss event accessible");
+        helper.assertTrue(CrazySkeletonLootPolicy.ORB_DROP_ROLL_BOUND == 5, "Expected crazy skeleton ranged-goal slice to keep the inherited legacy 1/5 orb-drop policy stable");
+        helper.assertTrue(ModRegistries.CRAZY_MOB_PARTICLE.get() != null, "Expected crazy skeleton ranged-goal slice to keep the shared crazy_mob particle registered");
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("hurt")),
+            "Expected crazy skeleton ranged-goal slice to keep the inherited damage hook on the entity class"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("doHurtTarget")),
+            "Expected crazy skeleton ranged-goal slice to avoid a direct melee-combat override"
         );
         helper.succeed();
     }
@@ -4443,14 +4556,13 @@ public final class CavernSpecialOreGameTests {
                     || name.equals("stopSeenByPlayer")),
             "Expected crazy skeleton loot follow-up to keep the tracked-player boss-event hooks intact"
         );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("registerGoals") || name.equals("reassessWeaponGoal")),
+            "Expected crazy skeleton loot follow-up to keep the local legacy ranged-goal wiring intact"
+        );
         helper.assertFalse(
-            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
-                .map(Method::getName)
-                .anyMatch(name -> name.equals("registerGoals")
-                    || name.equals("reassessWeaponGoal")
-                    || name.equals("performRangedAttack")
-                    || name.equals("doHurtTarget")),
-            "Expected crazy skeleton loot follow-up to avoid custom ranged-AI overrides beyond the explicit particle, damage and boss hooks"
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("doHurtTarget")),
+            "Expected crazy skeleton loot follow-up to avoid a broader melee-combat override beyond the explicit local goal wiring"
         );
         helper.succeed();
     }
@@ -4612,14 +4724,13 @@ public final class CavernSpecialOreGameTests {
                     || name.equals("stopSeenByPlayer")),
             "Expected crazy skeleton damage follow-up to keep the tracked-player boss-event hooks intact"
         );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("registerGoals") || name.equals("reassessWeaponGoal")),
+            "Expected crazy skeleton damage follow-up to keep the local legacy ranged-goal wiring intact"
+        );
         helper.assertFalse(
-            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
-                .map(Method::getName)
-                .anyMatch(name -> name.equals("registerGoals")
-                    || name.equals("reassessWeaponGoal")
-                    || name.equals("performRangedAttack")
-                    || name.equals("doHurtTarget")),
-            "Expected crazy skeleton damage follow-up to keep custom ranged-AI overrides absent beyond the explicit particle hook"
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("doHurtTarget")),
+            "Expected crazy skeleton damage follow-up to avoid a broader melee-combat override beyond the explicit local goal wiring"
         );
         helper.succeed();
     }
@@ -4811,14 +4922,13 @@ public final class CavernSpecialOreGameTests {
             biomes.getTag(spawnTag).isPresent(),
             "Expected crazy skeleton boss-bar follow-up to keep the spawn biome tag absent at runtime"
         );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("registerGoals") || name.equals("reassessWeaponGoal")),
+            "Expected crazy skeleton boss-bar follow-up to keep the local legacy ranged-goal wiring intact"
+        );
         helper.assertFalse(
-            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
-                .map(Method::getName)
-                .anyMatch(name -> name.equals("registerGoals")
-                    || name.equals("reassessWeaponGoal")
-                    || name.equals("performRangedAttack")
-                    || name.equals("doHurtTarget")),
-            "Expected crazy skeleton boss-bar follow-up to keep custom ranged-AI overrides absent beyond the explicit particle hook"
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("doHurtTarget")),
+            "Expected crazy skeleton boss-bar follow-up to avoid a broader melee-combat override beyond the explicit local goal wiring"
         );
         helper.succeed();
     }
@@ -4923,14 +5033,13 @@ public final class CavernSpecialOreGameTests {
             biomes.getTag(spawnTag).isPresent(),
             "Expected crazy skeleton particle-trail follow-up to keep the spawn biome tag absent at runtime"
         );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("registerGoals") || name.equals("reassessWeaponGoal")),
+            "Expected crazy skeleton particle-trail follow-up to keep the local legacy ranged-goal wiring intact"
+        );
         helper.assertFalse(
-            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods())
-                .map(Method::getName)
-                .anyMatch(name -> name.equals("registerGoals")
-                    || name.equals("reassessWeaponGoal")
-                    || name.equals("performRangedAttack")
-                    || name.equals("doHurtTarget")),
-            "Expected crazy skeleton particle-trail follow-up to keep custom ranged-AI overrides absent beyond the explicit particle, damage, loot, equipment and boss hooks"
+            java.util.Arrays.stream(CrazySkeleton.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("doHurtTarget")),
+            "Expected crazy skeleton particle-trail follow-up to avoid a broader melee-combat override beyond the explicit local goal wiring"
         );
         helper.succeed();
     }

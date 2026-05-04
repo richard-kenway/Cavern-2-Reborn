@@ -26,7 +26,7 @@ It does not add natural spawning, equipment changes, ranged-AI changes, damage b
 - No direct Crazy Skeleton loot-table override was found in legacy.
 - No direct Crazy Skeleton non-orb custom drop branch was found.
 - The guaranteed `Cavenic Bow` + `Infinity` equipment path is separate and remains documented in `docs/crazy-skeleton-cavenic-bow-equipment-mvp.md`.
-- The custom ranged identity remains documented separately in `docs/crazy-skeleton-ranged-ai-boundary.md`.
+- The restored local Crazy Skeleton ranged/melee goal branch is documented separately in `docs/crazy-skeleton-ranged-ai-mvp.md`.
 
 ## Reborn Mapping
 

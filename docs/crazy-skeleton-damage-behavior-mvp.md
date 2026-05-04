@@ -26,7 +26,7 @@ It does not add natural spawning, equipment changes, loot changes beyond the sep
 - Generic non-fire, non-fall damage remains vanilla-like.
 - The guaranteed `Cavenic Bow` + `Infinity` equipment path is separate and remains documented in `docs/crazy-skeleton-cavenic-bow-equipment-mvp.md`.
 - The inherited `1/5` orb-drop branch is separate and remains documented in `docs/crazy-skeleton-loot-mvp.md`.
-- The custom ranged AI / `EntityAIAttackCavenicBow` branch is separate and remains documented in `docs/crazy-skeleton-ranged-ai-boundary.md`.
+- The restored local Crazy Skeleton ranged/melee goal branch is documented separately in `docs/crazy-skeleton-ranged-ai-mvp.md`.
 
 ## Reborn Mapping
 
