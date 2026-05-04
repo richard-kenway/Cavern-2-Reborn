@@ -211,14 +211,15 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/crazy-spider-damage-behavior-mvp.md"));
         assertTrue(readme.contains("docs/crazy-spider-boss-bar-mvp.md"));
         assertTrue(readme.contains("docs/crazy-spider-particle-trail-mvp.md"));
+        assertTrue(readme.contains("docs/crazy-spider-combat-effects-mvp.md"));
         assertTrue(readme.contains("fourth crazy-variant foundation follow-up"));
         assertTrue(readme.contains("`crazy_spider`"));
         assertTrue(readme.contains("vanilla spider loot baseline"));
         assertTrue(readme.contains("inherited legacy `1/8` `cavenic_orb` drop is now restored explicitly on top of that same vanilla spider loot baseline"));
         assertTrue(readme.contains("inherited legacy fall-damage reduction and fire-damage immunity behavior are now restored explicitly on top of that same vanilla spider baseline"));
+        assertTrue(readme.contains("legacy successful-hit blindness/poison combat branch is now restored explicitly on top of that same vanilla spider baseline"));
         assertTrue(readme.contains("legacy red progress boss bar and sky-darkening boss-event branch are now restored explicitly on top of that same vanilla spider baseline"));
         assertTrue(readme.contains("legacy client-only portal-tinted particle trail is now restored explicitly on top of that same vanilla spider baseline through the shared `crazy_mob` particle mapping"));
-        assertTrue(readme.contains("direct blindness/poison combat hooks remain intentionally deferred"));
         assertTrue(readme.contains("vanilla zombie loot baseline"));
     }
 
@@ -346,8 +347,11 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("crazy spider boss-percent update smoke"));
         assertTrue(doc.contains("crazy spider tracked-player add/remove smoke"));
         assertTrue(doc.contains("crazy spider sky-darkening smoke"));
+        assertTrue(doc.contains("crazy spider successful-hit blindness/poison runtime smoke"));
+        assertTrue(doc.contains("crazy spider exact difficulty-duration mapping smoke"));
+        assertTrue(doc.contains("crazy spider existing-effect skip smoke"));
+        assertTrue(doc.contains("vanilla spider no-blindness/no-poison comparison smoke"));
         assertTrue(doc.contains("crazy spider explicit no-natural-spawn baseline boundary"));
-        assertTrue(doc.contains("crazy spider explicit no-custom-combat / blindness / poison baseline boundary"));
         assertTrue(doc.contains("actual long-run crazy spider orb drop-rate balance is not covered by server GameTests"));
         assertTrue(doc.contains("actual long-running Crazy Spider fire/lava gameplay feel remains manual"));
         assertTrue(doc.contains("actual client visual crazy spider boss-bar feel remains manual"));
@@ -533,7 +537,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("crazy spider client-only particle spawn-source smoke"));
         assertTrue(doc.contains("actual Crazy Spider client particle-trail visual feel"));
         assertTrue(doc.contains("Crazy Spider particle-trail follow-up visual feel remains manual"));
-        assertTrue(doc.contains("actual long-running Crazy Spider combat/blindness/poison feel"));
+        assertTrue(doc.contains("actual long-running Crazy Spider combat/pathfinding feel remains manual"));
         assertTrue(doc.contains("actual Crazy Skeleton renderer/model visual feel"));
         assertTrue(doc.contains("actual Crazy Spider renderer/model visual feel"));
         assertTrue(doc.contains("cavenic bear natural spawn placement registration"));

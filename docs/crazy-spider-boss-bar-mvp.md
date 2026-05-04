@@ -86,7 +86,7 @@ It restores only the legacy Crazy Spider boss bar / sky-darkening branch. It doe
 
 - Legacy `EntityCrazySpider` extends `EntityCavenicSpider`.
 - Reborn `CrazySpider` intentionally extends vanilla `Spider`, not Reborn `CavenicSpider`.
-- That baseline decision stays in place so Crazy Spider does not silently inherit staged Reborn natural-spawn, orb-drop, damage, particle or blindness/poison combat behavior that still needs separate inspection.
+- That baseline decision stays in place so Crazy Spider does not silently inherit staged Reborn natural-spawn, orb-drop, damage, particle or combat-effect behavior that still needs separate inspection.
 - Reborn therefore copies only the confirmed boss-event branch explicitly onto `CrazySpider`.
 
 ## What Stays Unchanged
@@ -95,7 +95,7 @@ It restores only the legacy Crazy Spider boss bar / sky-darkening branch. It doe
 - Damage remains unchanged.
 - Natural spawning remains deferred.
 - Particles now remain documented separately in `docs/crazy-spider-particle-trail-mvp.md`.
-- Custom combat, blindness and poison behavior remains deferred.
+- Custom combat, blindness and poison behavior now remains documented separately in `docs/crazy-spider-combat-effects-mvp.md`.
 - Custom AI remains deferred.
 - no custom packets were added
 - no Cavenia content was added
@@ -114,12 +114,12 @@ More specifically:
   - percent updates from `health / maxHealth`
   - the exact `20.0D` visibility threshold
   - the exact `30.0D` darken-sky threshold
-  - continued absence of custom combat and custom AI follow-up code beyond the explicit particle hook on the boss-event branch
+  - continued absence of custom AI follow-up code on the boss-event branch
 - Documentation tests pin:
   - the exact legacy boss-event references
   - the single global boss-event ambiguity note
   - the explicit copy-not-inherit mapping
-  - the separate particle-trail and custom-combat follow-up boundaries
+  - the separate particle-trail and combat-effect follow-up boundaries
 - NeoForge GameTest runtime smoke covers:
   - crazy spider boss-event wiring smoke
   - crazy spider boss-bar color/overlay smoke
@@ -131,7 +131,6 @@ More specifically:
 ## Still Out Of Scope
 
 - Crazy Spider particle trail
-- Crazy Spider custom combat / blindness / poison behavior
 - Crazy Spider custom AI
 - Crazy Spider natural spawning
 - summon variants

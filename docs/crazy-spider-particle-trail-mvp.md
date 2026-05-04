@@ -81,7 +81,7 @@ It restores only the legacy Crazy Spider particle trail. It does not change natu
 - Loot remains unchanged.
 - Loot is documented in `docs/crazy-spider-loot-mvp.md`.
 - Natural spawning remains deferred.
-- Custom combat, blindness and poison behavior remains deferred.
+- Custom combat, blindness and poison behavior now remains documented separately in `docs/crazy-spider-combat-effects-mvp.md`.
 - Custom AI remains deferred.
 - no custom packets were added
 - no Cavenia content was added
@@ -95,7 +95,7 @@ It restores only the legacy Crazy Spider particle trail. It does not change natu
   - the exact `3` particles-per-tick count
   - the preserved position and motion formulas
   - the `assets/cavernreborn/particles/crazy_mob.json` description
-  - continued absence of natural-spawn resources, packet code and blindness/poison combat hooks
+  - continued absence of natural-spawn resources, packet code and broad custom-AI hooks
 - Documentation tests pin the exact legacy formulas, the shared `ParticleCrazyMob` finding, the no-dedicated-texture finding, the reused `cavernreborn:crazy_mob` id and the unchanged server-side slices.
 - NeoForge GameTest runtime smoke covers:
   - crazy spider particle type registry id smoke
@@ -108,7 +108,6 @@ It restores only the legacy Crazy Spider particle trail. It does not change natu
 ## Still Out Of Scope
 
 - Crazy Spider natural spawning
-- Crazy Spider custom combat / blindness / poison behavior
 - Crazy Spider custom AI
 - Cavenia
 - magic-book or spell systems

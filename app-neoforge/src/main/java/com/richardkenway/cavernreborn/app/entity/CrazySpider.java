@@ -12,7 +12,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.Difficulty;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Spider;
@@ -21,6 +26,14 @@ import net.minecraft.world.level.storage.loot.LootTable;
 
 public final class CrazySpider extends Spider {
     public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;
+    public static final int LEGACY_BLINDNESS_DURATION_DEFAULT_TICKS = 100;
+    public static final int LEGACY_BLINDNESS_DURATION_NORMAL_TICKS = 200;
+    public static final int LEGACY_BLINDNESS_DURATION_HARD_TICKS = 400;
+    public static final int LEGACY_BLINDNESS_AMPLIFIER = 0;
+    public static final int LEGACY_POISON_DURATION_DEFAULT_TICKS = 60;
+    public static final int LEGACY_POISON_DURATION_NORMAL_TICKS = 100;
+    public static final int LEGACY_POISON_DURATION_HARD_TICKS = 160;
+    public static final int LEGACY_POISON_AMPLIFIER = 0;
     public static final int LEGACY_PARTICLE_COUNT_PER_TICK = 3;
     public static final double LEGACY_PARTICLE_HORIZONTAL_OFFSET = 0.25D;
     public static final double LEGACY_PARTICLE_BASE_Y_OFFSET = 0.65D;
@@ -50,6 +63,17 @@ public final class CrazySpider extends Spider {
     @Override
     protected ResourceKey<LootTable> getDefaultLootTable() {
         return EntityType.SPIDER.getDefaultLootTable();
+    }
+
+    @Override
+    public boolean doHurtTarget(Entity target) {
+        boolean attackSucceeded = super.doHurtTarget(target);
+
+        if (target instanceof LivingEntity livingTarget) {
+            tryApplyLegacyCombatEffects(livingTarget, attackSucceeded);
+        }
+
+        return attackSucceeded;
     }
 
     @Override
@@ -98,6 +122,60 @@ public final class CrazySpider extends Spider {
         }
 
         return super.hurt(source, damage);
+    }
+
+    public boolean tryApplyLegacyCombatEffects(LivingEntity target, boolean attackSucceeded) {
+        if (!attackSucceeded) {
+            return false;
+        }
+
+        boolean appliedBlindness = tryApplyLegacyBlindnessOnHit(target);
+        boolean appliedPoison = tryApplyLegacyPoisonOnHit(target);
+        return appliedBlindness || appliedPoison;
+    }
+
+    public boolean tryApplyLegacyBlindnessOnHit(LivingEntity target) {
+        if (target.hasEffect(MobEffects.BLINDNESS)) {
+            return false;
+        }
+
+        int durationTicks = getLegacyBlindnessDurationTicks(this.level().getDifficulty());
+        if (durationTicks <= 0) {
+            return false;
+        }
+
+        target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, durationTicks, LEGACY_BLINDNESS_AMPLIFIER));
+        return true;
+    }
+
+    public boolean tryApplyLegacyPoisonOnHit(LivingEntity target) {
+        if (target.hasEffect(MobEffects.POISON)) {
+            return false;
+        }
+
+        int durationTicks = getLegacyPoisonDurationTicks(this.level().getDifficulty());
+        if (durationTicks <= 0) {
+            return false;
+        }
+
+        target.addEffect(new MobEffectInstance(MobEffects.POISON, durationTicks, LEGACY_POISON_AMPLIFIER));
+        return true;
+    }
+
+    public static int getLegacyBlindnessDurationTicks(Difficulty difficulty) {
+        return switch (difficulty) {
+            case NORMAL -> LEGACY_BLINDNESS_DURATION_NORMAL_TICKS;
+            case HARD -> LEGACY_BLINDNESS_DURATION_HARD_TICKS;
+            default -> LEGACY_BLINDNESS_DURATION_DEFAULT_TICKS;
+        };
+    }
+
+    public static int getLegacyPoisonDurationTicks(Difficulty difficulty) {
+        return switch (difficulty) {
+            case NORMAL -> LEGACY_POISON_DURATION_NORMAL_TICKS;
+            case HARD -> LEGACY_POISON_DURATION_HARD_TICKS;
+            default -> LEGACY_POISON_DURATION_DEFAULT_TICKS;
+        };
     }
 
     @Override

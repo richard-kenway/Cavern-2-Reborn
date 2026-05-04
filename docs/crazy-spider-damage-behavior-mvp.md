@@ -26,7 +26,7 @@ It does not add natural spawning, loot changes, boss-event changes, particle cha
 - No extra direct incoming-damage immunity is declared on `EntityCrazySpider`.
 - Generic non-fire, non-fall damage remains vanilla-like.
 - The inherited `1/8` orb-drop branch is separate and remains documented in `docs/crazy-spider-loot-mvp.md`.
-- The direct blindness/poison combat branch is separate and remains deferred.
+- The direct blindness/poison combat branch is separate and is now documented independently in `docs/crazy-spider-combat-effects-mvp.md`.
 
 ## Reborn Mapping
 
@@ -39,7 +39,7 @@ It does not add natural spawning, loot changes, boss-event changes, particle cha
 
 - Legacy `EntityCrazySpider` inherits the damage behavior from `EntityCavenicSpider`.
 - Reborn `CrazySpider` intentionally extends vanilla `Spider`, not Reborn `CavenicSpider`.
-- That baseline decision stays in place so Crazy Spider does not silently inherit staged Reborn orb-drop wiring, blindness/poison combat behavior, natural-spawn rules or later boss/particle follow-ups before each slice is inspected honestly.
+- That baseline decision stays in place so Crazy Spider does not silently inherit staged Reborn orb-drop wiring, combat-effect behavior, natural-spawn rules or later boss/particle follow-ups before each slice is inspected honestly.
 - Reborn therefore copies only the confirmed incoming-damage behavior explicitly onto `CrazySpider`.
 
 ## Exact Reborn Behavior
@@ -54,15 +54,15 @@ It does not add natural spawning, loot changes, boss-event changes, particle cha
 - Crazy Spider still keeps the legacy `1500.0D` source literal in its attribute builder while the runtime effective max health remains clamped to `1024.0`.
 - Crazy Spider still keeps the inherited `1/8` orb-drop wiring through `CrazySpiderLootEvents` and `CrazySpiderLootPolicy`.
 - Natural-spawn deferral remains unchanged.
-- Custom combat, blindness and poison behavior remains deferred.
+- Custom combat, blindness and poison behavior now remains documented separately in `docs/crazy-spider-combat-effects-mvp.md`.
 - Boss bar and sky-darkening now remain documented separately in `docs/crazy-spider-boss-bar-mvp.md`.
 - Particle trail now remains documented separately in `docs/crazy-spider-particle-trail-mvp.md`.
 - Cavenia and magic-book systems remain out of scope.
 
 ## Testing
 
-- Resource tests pin the entity-local damage hook, the exact fall/fire tag usage, the preserved `1500.0D` source literal, the preserved vanilla spider loot-table baseline, the preserved `CrazySpiderLootEvents` / `CrazySpiderLootPolicy` wiring and the continued absence of natural-spawn, boss, particle and custom combat follow-up code.
-- Documentation tests pin the legacy source references, the inherited `0.35F` fall multiplier, the explicit copy-not-inherit mapping and the unchanged loot/natural-spawn/combat boundaries.
+- Resource tests pin the entity-local damage hook, the exact fall/fire tag usage, the preserved `1500.0D` source literal, the preserved vanilla spider loot-table baseline, the preserved `CrazySpiderLootEvents` / `CrazySpiderLootPolicy` wiring and the continued absence of natural-spawn and boss/particle changes inside the damage slice.
+- Documentation tests pin the legacy source references, the inherited `0.35F` fall multiplier, the explicit copy-not-inherit mapping and the unchanged loot/natural-spawn/combat-effect boundaries.
 - NeoForge GameTest runtime smoke covers:
   - crazy spider legacy fall-damage reduction smoke
   - crazy spider legacy fire-damage immunity smoke
@@ -71,14 +71,11 @@ It does not add natural spawning, loot changes, boss-event changes, particle cha
   - continued runtime `1024.0` max-health clamp stability
   - continued inherited `1/8` orb-drop wiring stability
   - continued natural-spawn deferral through absent placement/biome-modifier/biome-tag wiring
-  - continued absence of boss, blindness/poison combat and custom AI overrides beyond the explicit particle hook
+  - continued separate boss, particle and combat-effect coverage
 
 ## Still Out Of Scope
 
 - Crazy Spider natural spawning
-- Crazy Spider boss bar / sky-darkening
-- Crazy Spider particle trail
-- Crazy Spider custom combat / blindness / poison behavior
 - Crazy Spider custom AI
 - summon variants
 - direct Cavenic mobs

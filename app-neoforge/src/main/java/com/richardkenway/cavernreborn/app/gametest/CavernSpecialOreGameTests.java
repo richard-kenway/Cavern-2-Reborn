@@ -104,6 +104,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.SpawnPlacementTypes;
@@ -271,6 +272,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CRAZY_SPIDER_DAMAGE_ANCHOR = new BlockPos(7648, 96, 0);
     private static final BlockPos CRAZY_SPIDER_BOSS_BAR_ANCHOR = new BlockPos(7744, 96, 0);
     private static final BlockPos CRAZY_SPIDER_PARTICLE_TRAIL_ANCHOR = new BlockPos(7840, 96, 0);
+    private static final BlockPos CRAZY_SPIDER_COMBAT_ANCHOR = new BlockPos(7936, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -5711,16 +5713,8 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("doHurtTarget")
-                    || name.equals("registerGoals")),
-            "Expected crazy spider baseline follow-up chain to avoid custom combat and custom AI overrides beyond the explicit particle hook"
-        );
-        helper.assertFalse(
-            java.util.Arrays.stream(CrazySpider.class.getDeclaredFields())
-                .map(Field::getName)
-                .anyMatch(name -> name.toLowerCase().contains("poison")
-                    || name.toLowerCase().contains("blind")),
-            "Expected crazy spider baseline follow-up chain to avoid direct combat-effect state"
+                .anyMatch(name -> name.equals("registerGoals")),
+            "Expected crazy spider baseline follow-up chain to keep broad custom AI overrides absent"
         );
         helper.succeed();
     }
@@ -5821,16 +5815,8 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("doHurtTarget")
-                    || name.equals("registerGoals")),
-            "Expected crazy spider loot follow-up to avoid direct custom combat and custom AI overrides beyond the explicit particle hook"
-        );
-        helper.assertFalse(
-            java.util.Arrays.stream(CrazySpider.class.getDeclaredFields())
-                .map(Field::getName)
-                .anyMatch(name -> name.toLowerCase().contains("poison")
-                    || name.toLowerCase().contains("blind")),
-            "Expected crazy spider loot follow-up to avoid direct combat-effect state"
+                .anyMatch(name -> name.equals("registerGoals")),
+            "Expected crazy spider loot follow-up to keep broad custom AI overrides absent"
         );
         helper.succeed();
     }
@@ -5985,16 +5971,8 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("doHurtTarget")
-                    || name.equals("registerGoals")),
-            "Expected crazy spider damage follow-up to avoid direct custom combat and custom AI overrides beyond the explicit particle hook"
-        );
-        helper.assertFalse(
-            java.util.Arrays.stream(CrazySpider.class.getDeclaredFields())
-                .map(Field::getName)
-                .anyMatch(name -> name.toLowerCase().contains("poison")
-                    || name.toLowerCase().contains("blind")),
-            "Expected crazy spider damage follow-up to avoid direct combat-effect state"
+                .anyMatch(name -> name.equals("registerGoals")),
+            "Expected crazy spider damage follow-up to keep broad custom AI overrides absent"
         );
         helper.succeed();
     }
@@ -6175,15 +6153,8 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("doHurtTarget") || name.equals("registerGoals")),
-            "Expected crazy spider boss-bar follow-up to avoid custom combat and custom AI overrides beyond the explicit particle hook"
-        );
-        helper.assertFalse(
-            java.util.Arrays.stream(CrazySpider.class.getDeclaredFields())
-                .map(Field::getName)
-                .anyMatch(name -> name.toLowerCase().contains("poison")
-                    || name.toLowerCase().contains("blind")),
-            "Expected crazy spider boss-bar follow-up to avoid direct combat-effect state"
+                .anyMatch(name -> name.equals("registerGoals")),
+            "Expected crazy spider boss-bar follow-up to keep broad custom AI overrides absent"
         );
         helper.succeed();
     }
@@ -6266,15 +6237,248 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("doHurtTarget") || name.equals("registerGoals")),
-            "Expected crazy spider particle follow-up to keep custom combat and custom AI overrides absent beyond the explicit particle hook"
+                .anyMatch(name -> name.equals("registerGoals")),
+            "Expected crazy spider particle follow-up to keep broad custom AI overrides absent"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySpiderLegacyBlindnessAndPoisonApplyOnSuccessfulHitAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_SPIDER_COMBAT_ANCHOR;
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CrazySpider crazySpider = spawnLivingEntity(helper, ModRegistries.CRAZY_SPIDER.get(), origin);
+        Cow crazyTarget = spawnLivingEntity(helper, EntityType.COW, origin.east(2));
+        clearEquipment(crazySpider);
+        clearEquipment(crazyTarget);
+        float crazyTargetHealthBefore = crazyTarget.getHealth();
+
+        helper.assertTrue(
+            crazySpider.doHurtTarget(crazyTarget),
+            "Expected crazy spider melee attack to succeed before applying the legacy blindness and poison effects"
+        );
+        helper.assertTrue(
+            crazyTarget.getHealth() < crazyTargetHealthBefore,
+            "Expected successful crazy spider melee hit to still deal vanilla-like melee damage"
+        );
+        helper.assertTrue(
+            crazyTarget.hasEffect(MobEffects.BLINDNESS),
+            "Expected successful crazy spider melee hit to apply blindness"
+        );
+        helper.assertTrue(
+            crazyTarget.hasEffect(MobEffects.POISON),
+            "Expected successful crazy spider melee hit to apply poison"
+        );
+        int expectedBlindnessDuration = CrazySpider.getLegacyBlindnessDurationTicks(level.getDifficulty());
+        int actualBlindnessDuration = crazyTarget.getEffect(MobEffects.BLINDNESS).getDuration();
+        helper.assertTrue(
+            actualBlindnessDuration <= expectedBlindnessDuration && actualBlindnessDuration >= expectedBlindnessDuration - 1,
+            "Expected crazy spider blindness duration to stay pinned to the legacy difficulty-scaled mapping"
+        );
+        int expectedPoisonDuration = CrazySpider.getLegacyPoisonDurationTicks(level.getDifficulty());
+        int actualPoisonDuration = crazyTarget.getEffect(MobEffects.POISON).getDuration();
+        helper.assertTrue(
+            actualPoisonDuration <= expectedPoisonDuration && actualPoisonDuration >= expectedPoisonDuration - 1,
+            "Expected crazy spider poison duration to stay pinned to the legacy difficulty-scaled mapping"
+        );
+        helper.assertTrue(
+            crazyTarget.getEffect(MobEffects.BLINDNESS).getAmplifier() == CrazySpider.LEGACY_BLINDNESS_AMPLIFIER,
+            "Expected crazy spider blindness amplifier to stay pinned to the legacy zero-amplifier mapping"
+        );
+        helper.assertTrue(
+            crazyTarget.getEffect(MobEffects.POISON).getAmplifier() == CrazySpider.LEGACY_POISON_AMPLIFIER,
+            "Expected crazy spider poison amplifier to stay pinned to the legacy zero-amplifier mapping"
+        );
+
+        Spider vanillaSpider = spawnLivingEntity(helper, EntityType.SPIDER, origin.south(8));
+        Cow vanillaTarget = spawnLivingEntity(helper, EntityType.COW, origin.south(8).east(2));
+        clearEquipment(vanillaSpider);
+        clearEquipment(vanillaTarget);
+
+        helper.assertTrue(
+            vanillaSpider.doHurtTarget(vanillaTarget),
+            "Expected vanilla spider melee baseline to still succeed under the same deterministic runtime setup"
         );
         helper.assertFalse(
-            java.util.Arrays.stream(CrazySpider.class.getDeclaredFields())
-                .map(Field::getName)
-                .anyMatch(name -> name.toLowerCase().contains("poison")
-                    || name.toLowerCase().contains("blind")),
-            "Expected crazy spider particle follow-up to avoid direct combat-effect state"
+            vanillaTarget.hasEffect(MobEffects.BLINDNESS),
+            "Expected vanilla spider melee baseline to keep not applying blindness"
+        );
+        helper.assertFalse(
+            vanillaTarget.hasEffect(MobEffects.POISON),
+            "Expected vanilla spider melee baseline to keep not applying poison"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySpiderLegacyCombatEffectsRespectExistingEffectsAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_SPIDER_COMBAT_ANCHOR.south(12);
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CrazySpider crazySpider = spawnLivingEntity(helper, ModRegistries.CRAZY_SPIDER.get(), origin);
+        Cow target = spawnLivingEntity(helper, EntityType.COW, origin.east(2));
+        clearEquipment(crazySpider);
+        clearEquipment(target);
+        int existingBlindnessDuration = 37;
+        int existingBlindnessAmplifier = 2;
+        int existingPoisonDuration = 53;
+        int existingPoisonAmplifier = 1;
+
+        helper.assertTrue(
+            target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, existingBlindnessDuration, existingBlindnessAmplifier)),
+            "Expected crazy spider combat test setup to apply a pre-existing blindness effect"
+        );
+        helper.assertTrue(
+            target.addEffect(new MobEffectInstance(MobEffects.POISON, existingPoisonDuration, existingPoisonAmplifier)),
+            "Expected crazy spider combat test setup to apply a pre-existing poison effect"
+        );
+        helper.assertTrue(
+            crazySpider.doHurtTarget(target),
+            "Expected crazy spider melee attack to succeed while checking the legacy existing-effect guards"
+        );
+        helper.assertTrue(target.hasEffect(MobEffects.BLINDNESS), "Expected pre-existing blindness to remain active after the hit");
+        helper.assertTrue(target.hasEffect(MobEffects.POISON), "Expected pre-existing poison to remain active after the hit");
+        helper.assertTrue(
+            target.getEffect(MobEffects.BLINDNESS).getDuration() <= existingBlindnessDuration
+                && target.getEffect(MobEffects.BLINDNESS).getDuration() >= existingBlindnessDuration - 1,
+            "Expected crazy spider melee hit to keep the existing blindness duration instead of refreshing it"
+        );
+        helper.assertTrue(
+            target.getEffect(MobEffects.POISON).getDuration() <= existingPoisonDuration
+                && target.getEffect(MobEffects.POISON).getDuration() >= existingPoisonDuration - 1,
+            "Expected crazy spider melee hit to keep the existing poison duration instead of refreshing it"
+        );
+        helper.assertTrue(
+            target.getEffect(MobEffects.BLINDNESS).getAmplifier() == existingBlindnessAmplifier,
+            "Expected crazy spider melee hit to keep the existing blindness amplifier instead of overwriting it"
+        );
+        helper.assertTrue(
+            target.getEffect(MobEffects.POISON).getAmplifier() == existingPoisonAmplifier,
+            "Expected crazy spider melee hit to keep the existing poison amplifier instead of overwriting it"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySpiderLegacyCombatEffectsKeepExistingSlicesStableAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_SPIDER_COMBAT_ANCHOR.south(24);
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceKey<BiomeModifier> crazySpiderSpawnModifier = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_spider_spawns")
+        );
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_crazy_spider"));
+        CrazySpiderLootEvents lootEvents = new CrazySpiderLootEvents();
+        List<ItemEntity> drops = new ArrayList<>();
+
+        resetMiningArea(level, origin, 16.0D);
+        prepareCombatPlatform(level, origin);
+
+        CrazySpider spider = spawnLivingEntity(helper, ModRegistries.CRAZY_SPIDER.get(), origin);
+        Spider vanillaSpider = spawnLivingEntity(helper, EntityType.SPIDER, origin.east(4));
+        clearEquipment(spider);
+        clearEquipment(vanillaSpider);
+        spider.aiStep();
+        spider.updateLegacyBossEvent();
+
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("doHurtTarget")),
+            "Expected crazy spider combat follow-up to keep the entity-local melee hook on the entity class"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("registerGoals")),
+            "Expected crazy spider combat follow-up to keep broad custom AI overrides absent"
+        );
+        helper.assertTrue(
+            CrazySpider.getLegacyBlindnessDurationTicks(Difficulty.PEACEFUL) == CrazySpider.LEGACY_BLINDNESS_DURATION_DEFAULT_TICKS
+                && CrazySpider.getLegacyBlindnessDurationTicks(Difficulty.EASY) == CrazySpider.LEGACY_BLINDNESS_DURATION_DEFAULT_TICKS
+                && CrazySpider.getLegacyBlindnessDurationTicks(Difficulty.NORMAL) == CrazySpider.LEGACY_BLINDNESS_DURATION_NORMAL_TICKS
+                && CrazySpider.getLegacyBlindnessDurationTicks(Difficulty.HARD) == CrazySpider.LEGACY_BLINDNESS_DURATION_HARD_TICKS,
+            "Expected crazy spider blindness durations to stay pinned to the legacy 5s/10s/20s difficulty mapping"
+        );
+        helper.assertTrue(
+            CrazySpider.getLegacyPoisonDurationTicks(Difficulty.PEACEFUL) == CrazySpider.LEGACY_POISON_DURATION_DEFAULT_TICKS
+                && CrazySpider.getLegacyPoisonDurationTicks(Difficulty.EASY) == CrazySpider.LEGACY_POISON_DURATION_DEFAULT_TICKS
+                && CrazySpider.getLegacyPoisonDurationTicks(Difficulty.NORMAL) == CrazySpider.LEGACY_POISON_DURATION_NORMAL_TICKS
+                && CrazySpider.getLegacyPoisonDurationTicks(Difficulty.HARD) == CrazySpider.LEGACY_POISON_DURATION_HARD_TICKS,
+            "Expected crazy spider poison durations to stay pinned to the legacy 3s/5s/8s difficulty mapping"
+        );
+        helper.assertTrue(
+            Math.abs(spider.getAttributeValue(Attributes.ATTACK_DAMAGE) - vanillaSpider.getAttributeValue(Attributes.ATTACK_DAMAGE)) < 1.0E-6D,
+            "Expected crazy spider combat follow-up to keep attack damage on the vanilla spider baseline"
+        );
+        helper.assertTrue(
+            Math.abs(spider.getAttributeValue(Attributes.MOVEMENT_SPEED) - 0.6D) < 1.0E-6D,
+            "Expected crazy spider combat follow-up to keep the legacy 0.6 movement-speed mapping"
+        );
+        helper.assertTrue(
+            Math.abs(spider.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) - 1.0D) < 1.0E-6D,
+            "Expected crazy spider combat follow-up to keep the legacy 1.0 knockback-resistance mapping"
+        );
+        helper.assertTrue(
+            Math.abs(spider.getAttributeValue(Attributes.FOLLOW_RANGE) - vanillaSpider.getAttributeValue(Attributes.FOLLOW_RANGE)) < 1.0E-6D,
+            "Expected crazy spider combat follow-up to keep follow range on the vanilla spider baseline"
+        );
+        helper.assertTrue(
+            Math.abs(spider.getMaxHealth() - 1024.0D) < 1.0E-6D,
+            "Expected crazy spider combat follow-up to keep the modern 1024.0 runtime max-health clamp"
+        );
+        helper.assertTrue(
+            spider.getLootTable().equals(EntityType.SPIDER.getDefaultLootTable()),
+            "Expected crazy spider combat follow-up to keep the vanilla spider loot-table baseline"
+        );
+        helper.assertTrue(
+            CrazySpiderLootPolicy.ORB_DROP_ROLL_BOUND == 8,
+            "Expected crazy spider combat follow-up to keep the inherited 1/8 orb-drop roll bound"
+        );
+        helper.assertTrue(
+            lootEvents.tryAppendLegacyOrbDrop(spider, drops, 0),
+            "Expected crazy spider combat follow-up to keep the winning orb-drop branch available"
+        );
+        helper.assertTrue(
+            drops.size() == 1 && drops.getFirst().getItem().is(ModRegistries.CAVENIC_ORB.get()),
+            "Expected crazy spider combat follow-up to keep appending exactly one cavenic orb on the winning roll"
+        );
+        helper.assertFalse(
+            spider.hurt(level.damageSources().lava(), 4.0F),
+            "Expected crazy spider combat follow-up to keep fire-tagged damage rejection intact"
+        );
+        helper.assertTrue(
+            spider.getLegacyCrazyBossEventForTests().getColor() == BossEvent.BossBarColor.RED
+                && spider.getLegacyCrazyBossEventForTests().getOverlay() == BossEvent.BossBarOverlay.PROGRESS,
+            "Expected crazy spider combat follow-up to keep the legacy red progress boss-event styling"
+        );
+        helper.assertTrue(
+            ModRegistries.CRAZY_MOB_PARTICLE.get() != null
+                && "cavernreborn:crazy_mob".equals(BuiltInRegistries.PARTICLE_TYPE.getKey(ModRegistries.CRAZY_MOB_PARTICLE.get()).toString()),
+            "Expected crazy spider combat follow-up to keep the shared crazy_mob particle registry id"
+        );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("aiStep")),
+            "Expected crazy spider combat follow-up to keep the explicit client particle hook on the entity class"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_SPIDER.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected crazy spider combat follow-up to keep spawn placement unregistered"
+        );
+        helper.assertFalse(
+            biomeModifiers.containsKey(crazySpiderSpawnModifier),
+            "Expected crazy spider combat follow-up to keep the biome modifier absent at runtime"
+        );
+        helper.assertFalse(
+            biomes.getTag(spawnTag).isPresent(),
+            "Expected crazy spider combat follow-up to keep the spawn biome tag absent at runtime"
         );
         helper.succeed();
     }

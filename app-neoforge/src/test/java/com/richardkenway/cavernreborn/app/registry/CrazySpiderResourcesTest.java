@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 class CrazySpiderResourcesTest {
     @Test
-    void crazySpiderRegistersWithDedicatedEntitySpawnEggRendererAndExplicitLootDamageBossAndParticleButDeferredCombatFollowUps() throws IOException {
+    void crazySpiderRegistersWithDedicatedEntitySpawnEggRendererAndExplicitLootDamageBossParticleAndCombatWiring() throws IOException {
         String registriesSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "registry", "ModRegistries.java"
         );
@@ -101,6 +101,35 @@ class CrazySpiderResourcesTest {
         assertFalse(entitySource.contains("checkCrazySpiderSpawnRules"));
         assertFalse(entitySource.contains("LivingDropsEvent"));
         assertTrue(entitySource.contains("public static final float LEGACY_FALL_DAMAGE_MULTIPLIER = 0.35F;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_BLINDNESS_DURATION_DEFAULT_TICKS = 100;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_BLINDNESS_DURATION_NORMAL_TICKS = 200;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_BLINDNESS_DURATION_HARD_TICKS = 400;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_BLINDNESS_AMPLIFIER = 0;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_POISON_DURATION_DEFAULT_TICKS = 60;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_POISON_DURATION_NORMAL_TICKS = 100;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_POISON_DURATION_HARD_TICKS = 160;"));
+        assertTrue(entitySource.contains("public static final int LEGACY_POISON_AMPLIFIER = 0;"));
+        assertTrue(entitySource.contains("public boolean doHurtTarget(Entity target)"));
+        assertTrue(entitySource.contains("boolean attackSucceeded = super.doHurtTarget(target);"));
+        assertTrue(entitySource.contains("target instanceof LivingEntity livingTarget"));
+        assertTrue(entitySource.contains("tryApplyLegacyCombatEffects(livingTarget, attackSucceeded)"));
+        assertTrue(entitySource.contains("public boolean tryApplyLegacyCombatEffects(LivingEntity target, boolean attackSucceeded)"));
+        assertTrue(entitySource.contains("boolean appliedBlindness = tryApplyLegacyBlindnessOnHit(target);"));
+        assertTrue(entitySource.contains("boolean appliedPoison = tryApplyLegacyPoisonOnHit(target);"));
+        assertTrue(entitySource.contains("public boolean tryApplyLegacyBlindnessOnHit(LivingEntity target)"));
+        assertTrue(entitySource.contains("target.hasEffect(MobEffects.BLINDNESS)"));
+        assertTrue(entitySource.contains("target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, durationTicks, LEGACY_BLINDNESS_AMPLIFIER))"));
+        assertTrue(entitySource.contains("public boolean tryApplyLegacyPoisonOnHit(LivingEntity target)"));
+        assertTrue(entitySource.contains("target.hasEffect(MobEffects.POISON)"));
+        assertTrue(entitySource.contains("target.addEffect(new MobEffectInstance(MobEffects.POISON, durationTicks, LEGACY_POISON_AMPLIFIER))"));
+        assertTrue(entitySource.contains("public static int getLegacyBlindnessDurationTicks(Difficulty difficulty)"));
+        assertTrue(entitySource.contains("case NORMAL -> LEGACY_BLINDNESS_DURATION_NORMAL_TICKS;"));
+        assertTrue(entitySource.contains("case HARD -> LEGACY_BLINDNESS_DURATION_HARD_TICKS;"));
+        assertTrue(entitySource.contains("default -> LEGACY_BLINDNESS_DURATION_DEFAULT_TICKS;"));
+        assertTrue(entitySource.contains("public static int getLegacyPoisonDurationTicks(Difficulty difficulty)"));
+        assertTrue(entitySource.contains("case NORMAL -> LEGACY_POISON_DURATION_NORMAL_TICKS;"));
+        assertTrue(entitySource.contains("case HARD -> LEGACY_POISON_DURATION_HARD_TICKS;"));
+        assertTrue(entitySource.contains("default -> LEGACY_POISON_DURATION_DEFAULT_TICKS;"));
         assertTrue(entitySource.contains("public static final int LEGACY_PARTICLE_COUNT_PER_TICK = 3;"));
         assertTrue(entitySource.contains("public static final double LEGACY_PARTICLE_HORIZONTAL_OFFSET = 0.25D;"));
         assertTrue(entitySource.contains("public static final double LEGACY_PARTICLE_BASE_Y_OFFSET = 0.65D;"));
@@ -138,10 +167,9 @@ class CrazySpiderResourcesTest {
         assertTrue(entitySource.contains("this.legacyBossEvent.setVisible(canSee);"));
         assertTrue(entitySource.contains("this.legacyBossEvent.setProgress(this.getHealth() / this.getMaxHealth());"));
         assertFalse(entitySource.contains("ParticleCrazyMob"));
-        assertFalse(entitySource.contains("MobEffects.BLINDNESS"));
-        assertFalse(entitySource.contains("MobEffects.POISON"));
-        assertFalse(entitySource.contains("MobEffectInstance"));
-        assertFalse(entitySource.contains("doHurtTarget("));
+        assertTrue(entitySource.contains("MobEffects.BLINDNESS"));
+        assertTrue(entitySource.contains("MobEffects.POISON"));
+        assertTrue(entitySource.contains("MobEffectInstance"));
         assertFalse(entitySource.contains("registerGoals("));
         assertFalse(entitySource.toLowerCase().contains("cavenia"));
         assertFalse(entitySource.toLowerCase().contains("magic_book"));

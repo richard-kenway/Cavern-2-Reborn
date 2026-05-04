@@ -24,7 +24,7 @@ This note documents the bounded inherited Crazy Spider loot follow-up on top of 
 - No progression, dimension, economy or Cavenia check is part of the inherited orb branch.
 - No boss state affects the inherited orb branch.
 - No combat state, blindness state or poison state affects the inherited orb branch.
-- The risky Crazy Spider combat identity is separate from this inherited loot branch and remains deferred.
+- The risky Crazy Spider combat identity is separate from this inherited loot branch and is now documented independently in `docs/crazy-spider-combat-effects-mvp.md`.
 
 ## Reborn Mapping
 
@@ -42,6 +42,7 @@ This note documents the bounded inherited Crazy Spider loot follow-up on top of 
 - Boss bar / sky-darkening now remains documented separately in `docs/crazy-spider-boss-bar-mvp.md`.
 - Particle trail now remains documented separately in `docs/crazy-spider-particle-trail-mvp.md`.
 - Custom combat, blindness and poison behavior remains unchanged in this loot slice.
+- Combat/effect behavior now remains documented separately in `docs/crazy-spider-combat-effects-mvp.md`.
 - Custom AI remains unchanged in this loot slice.
 - Cavenia remains out of scope.
 - Magic-book systems remain out of scope.
@@ -56,7 +57,7 @@ This note documents the bounded inherited Crazy Spider loot follow-up on top of 
   - event registration in `CavernReborn`
   - continued vanilla spider loot-table baseline
   - continued absence of natural-spawn resources
-  - continued absence of direct damage, boss, particle and custom combat follow-up code
+  - continued absence of direct boss, particle and custom-AI changes in the loot event path
 - NeoForge GameTest runtime smoke covers:
   - crazy spider vanilla spider loot-table baseline
   - crazy spider legacy orb-drop event wiring
@@ -64,15 +65,11 @@ This note documents the bounded inherited Crazy Spider loot follow-up on top of 
   - expected `0.5D` drop offset
   - continued max-health clamp and baseline attribute stability
   - continued no-natural-spawn boundary
-  - continued no-custom-combat / blindness / poison baseline boundary
+  - continued separate combat/effect follow-up coverage
 
 ## Out Of Scope
 
 - Crazy Spider natural spawning
-- Crazy Spider damage behavior
-- Crazy Spider boss bar / sky-darkening
-- Crazy Spider particle trail
-- Crazy Spider custom combat / blindness / poison behavior
 - Crazy Spider custom AI
 - summon variants
 - direct Cavenic mobs

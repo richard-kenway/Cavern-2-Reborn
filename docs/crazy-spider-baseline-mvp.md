@@ -84,6 +84,7 @@ The risky parts are separate follow-up branches rather than prerequisites for th
 - The inherited damage branch is now restored explicitly in `docs/crazy-spider-damage-behavior-mvp.md` while the rest of the baseline stays narrow.
 - The inherited boss-event / sky-darkening branch is now restored explicitly in `docs/crazy-spider-boss-bar-mvp.md` while the rest of the baseline stays narrow.
 - The dedicated follow-up documented in `docs/crazy-spider-particle-trail-mvp.md` now restores the legacy client-only `ParticleCrazyMob` trail explicitly while reusing the shared `cavernreborn:crazy_mob` particle mapping.
+- The dedicated follow-up documented in `docs/crazy-spider-combat-effects-mvp.md` now restores the legacy successful-hit blindness/poison branch explicitly while keeping the rest of the baseline narrow.
 - Reborn does not add a custom Crazy Spider loot table JSON.
 
 ## Natural Spawning
@@ -112,15 +113,11 @@ Legacy `EntityCrazySpider` carries a separate combat identity on top of the spid
 - the inherited branch skips poison when the target is already poisoned
 - the inherited branch converts the returned power into `sec * 20` tick durations
 
-This baseline does not restore:
+The dedicated follow-up documented in `docs/crazy-spider-combat-effects-mvp.md` now restores that successful-hit blindness/poison branch explicitly while keeping the rest of the baseline narrow.
 
-- blindness-on-hit
-- poison-on-hit
-- potion effects
-- custom melee behavior
+This baseline still does not restore:
+
 - custom AI/targeting/pathing rewrites
-
-Those hooks stay deferred because they are the main risky Crazy Spider identity and they can be restored later without blocking the safe vanilla `Spider` baseline.
 
 ## Other Deferred Follow-Ups
 
@@ -134,8 +131,8 @@ Those hooks stay deferred because they are the main risky Crazy Spider identity 
 
 ## Testing
 
-- Resource tests cover registry source, spawn egg placement, renderer registration source, texture/model/lang resources, the explicit vanilla `Spider` base, the explicit vanilla spider loot-table baseline, the explicit no-natural-spawn boundary and the continued absence of custom loot, damage, boss, particle and combat-effect follow-up code.
-- Documentation tests cover the legacy references inspected, the crazy-roster context, the attribute mapping, renderer/texture provenance, spawn egg decision, the Cavenia-tied natural-spawn deferral and the deferred combat/blindness/poison boundary.
+- Resource tests cover registry source, spawn egg placement, renderer registration source, texture/model/lang resources, the explicit vanilla `Spider` base, the explicit vanilla spider loot-table baseline, the explicit no-natural-spawn boundary and the continued absence of broad custom-AI follow-up code.
+- Documentation tests cover the legacy references inspected, the crazy-roster context, the attribute mapping, renderer/texture provenance, spawn egg decision, the Cavenia-tied natural-spawn deferral and the now-restored combat/blindness/poison follow-up boundary.
 - NeoForge GameTest runtime smoke covers:
   - crazy spider runtime registry id
   - crazy spider attribute registration
@@ -158,14 +155,14 @@ Those hooks stay deferred because they are the main risky Crazy Spider identity 
   - crazy spider particle description resource smoke
   - crazy spider client-only particle spawn-source smoke
   - crazy spider explicit no-natural-spawn baseline boundary
-  - crazy spider explicit no-custom-combat / blindness / poison baseline boundary
+  - crazy spider successful-hit blindness/poison runtime smoke
+  - crazy spider exact difficulty-duration mapping smoke
+  - crazy spider existing-effect skip smoke
+  - vanilla spider no-blindness/no-poison comparison smoke
 
 ## Out Of Scope
 
 - Crazy Spider natural spawning
-- Crazy Spider custom loot
-- Crazy Spider particle trail
-- Crazy Spider custom combat / blindness / poison behavior
 - Crazy Spider custom AI
 - summon variants
 - direct Cavenic mobs
