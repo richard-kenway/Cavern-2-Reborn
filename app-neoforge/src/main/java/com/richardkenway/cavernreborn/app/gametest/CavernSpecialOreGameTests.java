@@ -273,6 +273,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CRAZY_SPIDER_BOSS_BAR_ANCHOR = new BlockPos(7744, 96, 0);
     private static final BlockPos CRAZY_SPIDER_PARTICLE_TRAIL_ANCHOR = new BlockPos(7840, 96, 0);
     private static final BlockPos CRAZY_SPIDER_COMBAT_ANCHOR = new BlockPos(7936, 96, 0);
+    private static final BlockPos CRAZY_MOB_CAVENIA_ROSTER_BOUNDARY_ANCHOR = new BlockPos(8032, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -6480,6 +6481,81 @@ public final class CavernSpecialOreGameTests {
             biomes.getTag(spawnTag).isPresent(),
             "Expected crazy spider combat follow-up to keep the spawn biome tag absent at runtime"
         );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazyMobsNaturalSpawningStaysDeferredToCaveniaRosterAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_MOB_CAVENIA_ROSTER_BOUNDARY_ANCHOR;
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        List<EntityType<? extends Mob>> crazyTypes = List.of(
+            ModRegistries.CRAZY_ZOMBIE.get(),
+            ModRegistries.CRAZY_SKELETON.get(),
+            ModRegistries.CRAZY_CREEPER.get(),
+            ModRegistries.CRAZY_SPIDER.get()
+        );
+        List<String> crazyIds = List.of(
+            "cavernreborn:crazy_zombie",
+            "cavernreborn:crazy_skeleton",
+            "cavernreborn:crazy_creeper",
+            "cavernreborn:crazy_spider"
+        );
+        List<String> spawnModifierIds = List.of(
+            "crazy_zombie_spawns",
+            "crazy_skeleton_spawns",
+            "crazy_creeper_spawns",
+            "crazy_spider_spawns"
+        );
+        List<String> spawnTagIds = List.of(
+            "spawns_crazy_zombie",
+            "spawns_crazy_skeleton",
+            "spawns_crazy_creeper",
+            "spawns_crazy_spider"
+        );
+        List<BlockPos> spawnPositions = List.of(origin, origin.east(4), origin.east(8), origin.east(12));
+
+        resetMiningArea(level, origin, 24.0D);
+
+        for (int i = 0; i < crazyTypes.size(); i++) {
+            EntityType<? extends Mob> crazyType = crazyTypes.get(i);
+            ResourceKey<BiomeModifier> spawnModifier = ResourceKey.create(
+                NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+                ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, spawnModifierIds.get(i))
+            );
+            TagKey<Biome> spawnTag = TagKey.create(
+                Registries.BIOME,
+                ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, spawnTagIds.get(i))
+            );
+
+            helper.assertTrue(crazyType != null, "Expected crazy entity type to stay registered: " + crazyIds.get(i));
+            assertRegistryId(helper, crazyType, crazyIds.get(i));
+            helper.assertTrue(
+                crazyType.getCategory() == MobCategory.MONSTER,
+                "Expected crazy entity category to stay MONSTER: " + crazyIds.get(i)
+            );
+            Mob crazyMob = spawnLivingEntity(helper, crazyType, spawnPositions.get(i));
+            clearEquipment(crazyMob);
+            helper.assertTrue(crazyMob.isAlive(), "Expected crazy entity to stay spawnable for boundary smoke: " + crazyIds.get(i));
+            helper.assertTrue(
+                SpawnPlacements.getPlacementType(crazyType) == SpawnPlacementTypes.NO_RESTRICTIONS,
+                "Expected crazy natural-spawn boundary to keep spawn placement unregistered: " + crazyIds.get(i)
+            );
+            helper.assertTrue(
+                SpawnPlacements.getHeightmapType(crazyType) == Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                "Expected crazy natural-spawn boundary to keep the default heightmap type: " + crazyIds.get(i)
+            );
+            helper.assertFalse(
+                biomeModifiers.containsKey(spawnModifier),
+                "Expected crazy natural-spawn boundary to keep the normal biome modifier absent: " + spawnModifierIds.get(i)
+            );
+            helper.assertFalse(
+                biomes.getTag(spawnTag).isPresent(),
+                "Expected crazy natural-spawn boundary to keep the normal spawn biome tag absent: " + spawnTagIds.get(i)
+            );
+        }
+
         helper.succeed();
     }
 

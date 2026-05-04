@@ -41,6 +41,7 @@ This note documents the inspected legacy natural-spawn path for `cavernreborn:cr
   - weighted switching across the whole crazy roster
 - Reborn does not currently have `Cavenia`, the old Cavenia world-provider override, or the full crazy-roster population system.
 - Because of that, adding a `CAVERN` biome modifier or a direct `crazy_zombie` spawn placement would invent behavior that the legacy source does not support.
+- The consolidated four-mob contract is now documented in `docs/cavenia-crazy-roster-natural-spawn-boundary.md`.
 
 ## Current Reborn Boundary
 
@@ -51,6 +52,7 @@ This note documents the inspected legacy natural-spawn path for `cavernreborn:cr
   - `data/cavernreborn/tags/worldgen/biome/spawns_crazy_zombie.json`
 - Reborn does not add a fake `CAVERN` biome modifier or normal monster spawn rule.
 - Reborn does not add a fake `CAVERN`-only spawn rule, because the inspected legacy source does not use one for Crazy Zombie.
+- Reborn keeps the shared crazy-roster natural-spawn boundary consolidated in `docs/cavenia-crazy-roster-natural-spawn-boundary.md`.
 - The separate inherited loot follow-up is documented in `docs/crazy-zombie-loot-mvp.md`.
 - This natural-spawn deferral does not change the separate inherited damage follow-up documented in `docs/crazy-zombie-damage-behavior-mvp.md`.
 - The separate knockback-on-hit follow-up is documented in `docs/crazy-zombie-knockback-on-hit-mvp.md`.

@@ -94,6 +94,7 @@ The other crazy variants were inspected as follow-up candidates for narrower sli
 - Reborn therefore does not add a fake `CAVERN` biome modifier or normal monster spawn rule for Crazy Zombie.
 - Reborn therefore does not add a fake `CAVERN`-only spawn rule for Crazy Zombie.
 - The exact deferred natural-spawn boundary is documented in `docs/crazy-zombie-natural-spawn-absent-or-deferred.md`.
+- The shared four-mob Cavenia crazy-roster contract is documented in `docs/cavenia-crazy-roster-natural-spawn-boundary.md`.
 
 ## Intentionally Deferred Crazy-Zombie Behavior
 

@@ -212,6 +212,9 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/crazy-spider-boss-bar-mvp.md"));
         assertTrue(readme.contains("docs/crazy-spider-particle-trail-mvp.md"));
         assertTrue(readme.contains("docs/crazy-spider-combat-effects-mvp.md"));
+        assertTrue(readme.contains("Cavenia Crazy Roster Natural Spawn Boundary MVP"));
+        assertTrue(readme.contains("docs/cavenia-crazy-roster-natural-spawn-boundary.md"));
+        assertTrue(readme.contains("old Cavenia-only `crazySpawnChance` plus nearby non-boss `ICavenicMob` exclusion branch"));
         assertTrue(readme.contains("fourth crazy-variant foundation follow-up"));
         assertTrue(readme.contains("`crazy_spider`"));
         assertTrue(readme.contains("vanilla spider loot baseline"));
@@ -351,6 +354,10 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("crazy spider exact difficulty-duration mapping smoke"));
         assertTrue(doc.contains("crazy spider existing-effect skip smoke"));
         assertTrue(doc.contains("vanilla spider no-blindness/no-poison comparison smoke"));
+        assertTrue(doc.contains("consolidated crazy-mob natural-spawn deferral smoke through the inspected Cavenia-only roster/provider path"));
+        assertTrue(doc.contains("crazy zombie, crazy skeleton, crazy creeper and crazy spider spawn placement unregistered smoke"));
+        assertTrue(doc.contains("crazy zombie, crazy skeleton, crazy creeper and crazy spider no-normal-`CAVERN` biome-modifier smoke"));
+        assertTrue(doc.contains("crazy zombie, crazy skeleton, crazy creeper and crazy spider no-normal-`CAVERN` spawn-biome-tag smoke"));
         assertTrue(doc.contains("crazy spider explicit no-natural-spawn baseline boundary"));
         assertTrue(doc.contains("actual long-run crazy spider orb drop-rate balance is not covered by server GameTests"));
         assertTrue(doc.contains("actual long-running Crazy Spider fire/lava gameplay feel remains manual"));
@@ -542,6 +549,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("actual Crazy Spider renderer/model visual feel"));
         assertTrue(doc.contains("cavenic bear natural spawn placement registration"));
         assertTrue(doc.contains("cavenic bear CAVERN-only spawn predicate smoke"));
+        assertTrue(doc.contains("docs/cavenia-crazy-roster-natural-spawn-boundary.md"));
         assertTrue(doc.contains("cavenic bear biome modifier registry smoke"));
         assertTrue(doc.contains("cavenic bear biome tag resolution"));
         assertTrue(doc.contains("cavenic bear legacy fall-damage reduction smoke"));

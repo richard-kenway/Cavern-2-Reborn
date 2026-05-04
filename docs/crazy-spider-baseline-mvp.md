@@ -94,6 +94,7 @@ The risky parts are separate follow-up branches rather than prerequisites for th
 - Legacy `EntityCrazySpider#getMaxSpawnedInChunk()` returns `1`.
 - Like the other crazy variants, that crazy roster is only selected from the old `WorldProviderCavenia#createSpawnCreature(...)` branch instead of the normal `CAVERN` hostile-biome path.
 - Reborn therefore does not add a fake `CAVERN` spawn placement or biome modifier for Crazy Spider.
+- The shared four-mob Cavenia crazy-roster contract is documented in `docs/cavenia-crazy-roster-natural-spawn-boundary.md`.
 
 ## Combat / Blindness / Poison Boundary
 
