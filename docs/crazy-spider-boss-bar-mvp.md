@@ -94,7 +94,7 @@ It restores only the legacy Crazy Spider boss bar / sky-darkening branch. It doe
 - Loot remains unchanged.
 - Damage remains unchanged.
 - Natural spawning remains deferred.
-- Particles remain a separate client-visual follow-up.
+- Particles now remain documented separately in `docs/crazy-spider-particle-trail-mvp.md`.
 - Custom combat, blindness and poison behavior remains deferred.
 - Custom AI remains deferred.
 - no custom packets were added
@@ -114,7 +114,7 @@ More specifically:
   - percent updates from `health / maxHealth`
   - the exact `20.0D` visibility threshold
   - the exact `30.0D` darken-sky threshold
-  - continued absence of particle, custom combat and custom AI follow-up code on the boss-event branch
+  - continued absence of custom combat and custom AI follow-up code beyond the explicit particle hook on the boss-event branch
 - Documentation tests pin:
   - the exact legacy boss-event references
   - the single global boss-event ambiguity note

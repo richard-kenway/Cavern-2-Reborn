@@ -83,6 +83,7 @@ The risky parts are separate follow-up branches rather than prerequisites for th
 - The dedicated follow-up documented in `docs/crazy-spider-loot-mvp.md` now restores that inherited orb branch explicitly while keeping the vanilla spider loot table as the baseline drop source.
 - The inherited damage branch is now restored explicitly in `docs/crazy-spider-damage-behavior-mvp.md` while the rest of the baseline stays narrow.
 - The inherited boss-event / sky-darkening branch is now restored explicitly in `docs/crazy-spider-boss-bar-mvp.md` while the rest of the baseline stays narrow.
+- The dedicated follow-up documented in `docs/crazy-spider-particle-trail-mvp.md` now restores the legacy client-only `ParticleCrazyMob` trail explicitly while reusing the shared `cavernreborn:crazy_mob` particle mapping.
 - Reborn does not add a custom Crazy Spider loot table JSON.
 
 ## Natural Spawning
@@ -125,7 +126,7 @@ Those hooks stay deferred because they are the main risky Crazy Spider identity 
 
 - The inherited loot/orb branch is now restored explicitly in `docs/crazy-spider-loot-mvp.md` while the rest of the baseline stays narrow.
 - The inherited damage branch is now restored explicitly in `docs/crazy-spider-damage-behavior-mvp.md` while the rest of the baseline stays narrow.
-- direct client-only `ParticleCrazyMob` trail
+- The dedicated follow-up documented in `docs/crazy-spider-particle-trail-mvp.md` now restores the legacy client-only `ParticleCrazyMob` trail explicitly while reusing the shared `cavernreborn:crazy_mob` particle mapping.
 - `isNonBoss()`
 - `canBeRidden(...)`
 - `onStruckByLightning(...)`
@@ -152,6 +153,10 @@ Those hooks stay deferred because they are the main risky Crazy Spider identity 
   - crazy spider boss-percent update smoke
   - crazy spider tracked-player add/remove smoke
   - crazy spider sky-darkening smoke
+  - crazy spider particle type registry id smoke
+  - crazy spider particle provider registration source smoke
+  - crazy spider particle description resource smoke
+  - crazy spider client-only particle spawn-source smoke
   - crazy spider explicit no-natural-spawn baseline boundary
   - crazy spider explicit no-custom-combat / blindness / poison baseline boundary
 

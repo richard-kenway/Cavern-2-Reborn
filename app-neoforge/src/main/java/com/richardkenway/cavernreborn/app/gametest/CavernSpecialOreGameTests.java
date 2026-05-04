@@ -270,6 +270,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CRAZY_SPIDER_LOOT_ANCHOR = new BlockPos(7552, 96, 0);
     private static final BlockPos CRAZY_SPIDER_DAMAGE_ANCHOR = new BlockPos(7648, 96, 0);
     private static final BlockPos CRAZY_SPIDER_BOSS_BAR_ANCHOR = new BlockPos(7744, 96, 0);
+    private static final BlockPos CRAZY_SPIDER_PARTICLE_TRAIL_ANCHOR = new BlockPos(7840, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -5710,18 +5711,16 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("aiStep")
-                    || name.equals("doHurtTarget")
+                .anyMatch(name -> name.equals("doHurtTarget")
                     || name.equals("registerGoals")),
-            "Expected crazy spider baseline follow-up chain to avoid particle and custom combat overrides"
+            "Expected crazy spider baseline follow-up chain to avoid custom combat and custom AI overrides beyond the explicit particle hook"
         );
         helper.assertFalse(
             java.util.Arrays.stream(CrazySpider.class.getDeclaredFields())
                 .map(Field::getName)
-                .anyMatch(name -> name.toLowerCase().contains("particle")
-                    || name.toLowerCase().contains("poison")
+                .anyMatch(name -> name.toLowerCase().contains("poison")
                     || name.toLowerCase().contains("blind")),
-            "Expected crazy spider baseline follow-up chain to avoid particle and combat-effect state"
+            "Expected crazy spider baseline follow-up chain to avoid direct combat-effect state"
         );
         helper.succeed();
     }
@@ -5822,18 +5821,16 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("aiStep")
-                    || name.equals("doHurtTarget")
+                .anyMatch(name -> name.equals("doHurtTarget")
                     || name.equals("registerGoals")),
-            "Expected crazy spider loot follow-up to avoid direct particle and custom combat overrides"
+            "Expected crazy spider loot follow-up to avoid direct custom combat and custom AI overrides beyond the explicit particle hook"
         );
         helper.assertFalse(
             java.util.Arrays.stream(CrazySpider.class.getDeclaredFields())
                 .map(Field::getName)
-                .anyMatch(name -> name.toLowerCase().contains("particle")
-                    || name.toLowerCase().contains("poison")
+                .anyMatch(name -> name.toLowerCase().contains("poison")
                     || name.toLowerCase().contains("blind")),
-            "Expected crazy spider loot follow-up to avoid direct particle and combat-effect state"
+            "Expected crazy spider loot follow-up to avoid direct combat-effect state"
         );
         helper.succeed();
     }
@@ -5988,18 +5985,16 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("aiStep")
-                    || name.equals("doHurtTarget")
+                .anyMatch(name -> name.equals("doHurtTarget")
                     || name.equals("registerGoals")),
-            "Expected crazy spider damage follow-up to avoid particle and custom combat overrides"
+            "Expected crazy spider damage follow-up to avoid direct custom combat and custom AI overrides beyond the explicit particle hook"
         );
         helper.assertFalse(
             java.util.Arrays.stream(CrazySpider.class.getDeclaredFields())
                 .map(Field::getName)
-                .anyMatch(name -> name.toLowerCase().contains("particle")
-                    || name.toLowerCase().contains("poison")
+                .anyMatch(name -> name.toLowerCase().contains("poison")
                     || name.toLowerCase().contains("blind")),
-            "Expected crazy spider damage follow-up to avoid direct particle and combat-effect state"
+            "Expected crazy spider damage follow-up to avoid direct combat-effect state"
         );
         helper.succeed();
     }
@@ -6180,16 +6175,106 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods())
                 .map(Method::getName)
-                .anyMatch(name -> name.equals("aiStep") || name.equals("doHurtTarget") || name.equals("registerGoals")),
-            "Expected crazy spider boss-bar follow-up to avoid particle, custom combat and custom AI overrides"
+                .anyMatch(name -> name.equals("doHurtTarget") || name.equals("registerGoals")),
+            "Expected crazy spider boss-bar follow-up to avoid custom combat and custom AI overrides beyond the explicit particle hook"
         );
         helper.assertFalse(
             java.util.Arrays.stream(CrazySpider.class.getDeclaredFields())
                 .map(Field::getName)
-                .anyMatch(name -> name.toLowerCase().contains("particle")
-                    || name.toLowerCase().contains("poison")
+                .anyMatch(name -> name.toLowerCase().contains("poison")
                     || name.toLowerCase().contains("blind")),
-            "Expected crazy spider boss-bar follow-up to avoid direct particle and combat-effect state"
+            "Expected crazy spider boss-bar follow-up to avoid direct combat-effect state"
+        );
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void crazySpiderParticleTrailRegistrationKeepsExistingSlicesStableAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_SPIDER_PARTICLE_TRAIL_ANCHOR;
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        ResourceKey<BiomeModifier> crazySpiderSpawnModifier = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "crazy_spider_spawns")
+        );
+        TagKey<Biome> spawnTag = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "spawns_crazy_spider"));
+        CrazySpiderLootEvents lootEvents = new CrazySpiderLootEvents();
+        List<ItemEntity> drops = new ArrayList<>();
+
+        resetMiningArea(level, origin, 16.0D);
+        prepareCombatPlatform(level, origin);
+
+        CrazySpider spider = spawnLivingEntity(helper, ModRegistries.CRAZY_SPIDER.get(), origin);
+        clearEquipment(spider);
+        spider.aiStep();
+
+        helper.assertTrue(
+            ModRegistries.CRAZY_MOB_PARTICLE.get() != null,
+            "Expected crazy spider particle follow-up to keep the shared crazy_mob particle type registered"
+        );
+        helper.assertTrue(
+            "cavernreborn:crazy_mob".equals(BuiltInRegistries.PARTICLE_TYPE.getKey(ModRegistries.CRAZY_MOB_PARTICLE.get()).toString()),
+            "Expected crazy spider particle follow-up to keep the shared crazy_mob particle registry id"
+        );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.equals("aiStep")),
+            "Expected crazy spider particle follow-up to keep a bounded aiStep hook on the entity class"
+        );
+        helper.assertTrue(
+            java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("customServerAiStep") || name.equals("startSeenByPlayer") || name.equals("stopSeenByPlayer")),
+            "Expected crazy spider particle follow-up to keep the boss-event hooks intact"
+        );
+        helper.assertTrue(
+            spider.getLegacyCrazyBossEventForTests() != null,
+            "Expected crazy spider particle follow-up to keep the restored boss event accessible on the runtime entity"
+        );
+        helper.assertTrue(
+            CrazySpiderLootPolicy.ORB_DROP_ROLL_BOUND == 8,
+            "Expected crazy spider particle follow-up to keep the inherited 1/8 orb-drop roll bound"
+        );
+        helper.assertTrue(
+            lootEvents.tryAppendLegacyOrbDrop(spider, drops, 0),
+            "Expected crazy spider particle follow-up to keep the winning orb-drop branch available"
+        );
+        helper.assertTrue(
+            drops.size() == 1 && drops.getFirst().getItem().is(ModRegistries.CAVENIC_ORB.get()),
+            "Expected crazy spider particle follow-up to keep appending exactly one cavenic orb on the winning roll"
+        );
+        helper.assertFalse(
+            spider.hurt(level.damageSources().lava(), 4.0F),
+            "Expected crazy spider particle follow-up to keep fire-tagged damage rejection intact"
+        );
+        helper.assertTrue(
+            Math.abs(spider.getMaxHealth() - 1024.0D) < 1.0E-6D,
+            "Expected crazy spider particle follow-up to keep the modern 1024.0 runtime max-health clamp"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_SPIDER.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected crazy spider particle follow-up to keep spawn placement unregistered"
+        );
+        helper.assertFalse(
+            biomeModifiers.containsKey(crazySpiderSpawnModifier),
+            "Expected crazy spider particle follow-up to keep the biome modifier absent at runtime"
+        );
+        helper.assertFalse(
+            biomes.getTag(spawnTag).isPresent(),
+            "Expected crazy spider particle follow-up to keep the spawn biome tag absent at runtime"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazySpider.class.getDeclaredMethods())
+                .map(Method::getName)
+                .anyMatch(name -> name.equals("doHurtTarget") || name.equals("registerGoals")),
+            "Expected crazy spider particle follow-up to keep custom combat and custom AI overrides absent beyond the explicit particle hook"
+        );
+        helper.assertFalse(
+            java.util.Arrays.stream(CrazySpider.class.getDeclaredFields())
+                .map(Field::getName)
+                .anyMatch(name -> name.toLowerCase().contains("poison")
+                    || name.toLowerCase().contains("blind")),
+            "Expected crazy spider particle follow-up to avoid direct combat-effect state"
         );
         helper.succeed();
     }

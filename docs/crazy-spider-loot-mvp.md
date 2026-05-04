@@ -40,7 +40,7 @@ This note documents the bounded inherited Crazy Spider loot follow-up on top of 
 - Natural spawning remains deferred.
 - Damage behavior now remains documented separately in `docs/crazy-spider-damage-behavior-mvp.md`.
 - Boss bar / sky-darkening now remains documented separately in `docs/crazy-spider-boss-bar-mvp.md`.
-- Particle trail remains unchanged in this loot slice.
+- Particle trail now remains documented separately in `docs/crazy-spider-particle-trail-mvp.md`.
 - Custom combat, blindness and poison behavior remains unchanged in this loot slice.
 - Custom AI remains unchanged in this loot slice.
 - Cavenia remains out of scope.

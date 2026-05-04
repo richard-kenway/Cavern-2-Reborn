@@ -56,7 +56,7 @@ It does not add natural spawning, loot changes, boss-event changes, particle cha
 - Natural-spawn deferral remains unchanged.
 - Custom combat, blindness and poison behavior remains deferred.
 - Boss bar and sky-darkening now remain documented separately in `docs/crazy-spider-boss-bar-mvp.md`.
-- Particle trail remains out of scope.
+- Particle trail now remains documented separately in `docs/crazy-spider-particle-trail-mvp.md`.
 - Cavenia and magic-book systems remain out of scope.
 
 ## Testing
@@ -71,7 +71,7 @@ It does not add natural spawning, loot changes, boss-event changes, particle cha
   - continued runtime `1024.0` max-health clamp stability
   - continued inherited `1/8` orb-drop wiring stability
   - continued natural-spawn deferral through absent placement/biome-modifier/biome-tag wiring
-  - continued absence of boss, particle and blindness/poison combat overrides
+  - continued absence of boss, blindness/poison combat and custom AI overrides beyond the explicit particle hook
 
 ## Still Out Of Scope
 

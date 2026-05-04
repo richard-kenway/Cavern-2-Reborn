@@ -210,13 +210,15 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/crazy-spider-loot-mvp.md"));
         assertTrue(readme.contains("docs/crazy-spider-damage-behavior-mvp.md"));
         assertTrue(readme.contains("docs/crazy-spider-boss-bar-mvp.md"));
+        assertTrue(readme.contains("docs/crazy-spider-particle-trail-mvp.md"));
         assertTrue(readme.contains("fourth crazy-variant foundation follow-up"));
         assertTrue(readme.contains("`crazy_spider`"));
         assertTrue(readme.contains("vanilla spider loot baseline"));
         assertTrue(readme.contains("inherited legacy `1/8` `cavenic_orb` drop is now restored explicitly on top of that same vanilla spider loot baseline"));
         assertTrue(readme.contains("inherited legacy fall-damage reduction and fire-damage immunity behavior are now restored explicitly on top of that same vanilla spider baseline"));
         assertTrue(readme.contains("legacy red progress boss bar and sky-darkening boss-event branch are now restored explicitly on top of that same vanilla spider baseline"));
-        assertTrue(readme.contains("direct blindness/poison combat hooks plus inherited particle branch remain intentionally deferred"));
+        assertTrue(readme.contains("legacy client-only portal-tinted particle trail is now restored explicitly on top of that same vanilla spider baseline through the shared `crazy_mob` particle mapping"));
+        assertTrue(readme.contains("direct blindness/poison combat hooks remain intentionally deferred"));
         assertTrue(readme.contains("vanilla zombie loot baseline"));
     }
 
@@ -525,7 +527,12 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("actual Crazy Zombie client boss-bar visual feel"));
         assertTrue(doc.contains("actual Crazy Zombie client particle-trail visual feel"));
         assertTrue(doc.contains("actual long-running Crazy Zombie melee-knockback feel beyond the deterministic helper/runtime smoke"));
-        assertTrue(doc.contains("particle trail remains out of scope"));
+        assertTrue(doc.contains("crazy spider particle type registry id smoke"));
+        assertTrue(doc.contains("crazy spider particle provider registration source smoke"));
+        assertTrue(doc.contains("crazy spider particle description resource smoke"));
+        assertTrue(doc.contains("crazy spider client-only particle spawn-source smoke"));
+        assertTrue(doc.contains("actual Crazy Spider client particle-trail visual feel"));
+        assertTrue(doc.contains("Crazy Spider particle-trail follow-up visual feel remains manual"));
         assertTrue(doc.contains("actual long-running Crazy Spider combat/blindness/poison feel"));
         assertTrue(doc.contains("actual Crazy Skeleton renderer/model visual feel"));
         assertTrue(doc.contains("actual Crazy Spider renderer/model visual feel"));
