@@ -39,6 +39,7 @@ import com.richardkenway.cavernreborn.app.entity.CrazySkeletonLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CrazyZombie;
 import com.richardkenway.cavernreborn.app.entity.CrazyZombieLootEvents;
 import com.richardkenway.cavernreborn.app.item.CavenicBowTorchEvents;
+import com.richardkenway.cavernreborn.app.item.CavenicBowRapidEvents;
 import com.richardkenway.cavernreborn.app.item.CavenicBowItem;
 import com.richardkenway.cavernreborn.app.item.OreCompassItem;
 import com.richardkenway.cavernreborn.app.mining.CavernMiningAssistEvents;
@@ -7314,6 +7315,142 @@ public final class CavernSpecialOreGameTests {
             helper.assertTrue(rapidResult.modeAfter() == CavenicBowMode.RAPID, "RAPID mode must remain stored after real release");
             helper.succeed();
         });
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBowRapidLowArmorHurtResistanceResetAppliesAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_BOW_RAPID_ANCHOR.east(64);
+        ResourceLocation rapidArrowId = ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "rapid_arrow");
+        CavenicBowItem bowItem = (CavenicBowItem) ModRegistries.CAVENIC_BOW.get();
+        CavenicBowRapidEvents rapidEvents = new CavenicBowRapidEvents();
+
+        resetMiningArea(level, origin, 10.0D);
+
+        Player rapidPlayer = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), origin);
+        rapidPlayer.getInventory().add(new ItemStack(Items.ARROW, 2));
+        ItemStack rapidBow = rapidPlayer.getMainHandItem();
+        bowItem.setMode(rapidBow, CavenicBowMode.RAPID);
+
+        BowReleaseResult rapidResult = releaseBowThroughRealUse(helper, rapidPlayer, 6);
+
+        helper.runAfterDelay(1, () -> {
+            AbstractArrow rapidArrow = singleSpawnedArrow(helper, rapidResult, "Expected RAPID release to spawn one vanilla arrow for low-armor cooldown smoke");
+            Cow lowArmorTarget = spawnLivingEntity(helper, EntityType.COW, origin.east(6));
+            Cow armoredTarget = spawnLivingEntity(helper, EntityType.COW, origin.south(6));
+            armoredTarget.getAttribute(Attributes.ARMOR).setBaseValue(CavenicBowRapidEvents.LEGACY_RAPID_LOW_ARMOR_THRESHOLD);
+
+            float lowArmorHealthBefore = lowArmorTarget.getHealth();
+            float armoredHealthBefore = armoredTarget.getHealth();
+            lowArmorTarget.invulnerableTime = 12;
+            armoredTarget.invulnerableTime = 12;
+
+            helper.assertTrue("minecraft:arrow".equals(entityTypeId(rapidArrow)), "RAPID low-armor smoke must keep the vanilla arrow entity");
+            helper.assertTrue(CavenicBowItem.isRapidArrow(rapidArrow), "RAPID low-armor smoke must mark the released arrow");
+            helper.assertFalse(CavenicBowItem.isTorchArrow(rapidArrow), "RAPID low-armor smoke must not reuse the Torch marker");
+            helper.assertTrue(BuiltInRegistries.ENTITY_TYPE.getOptional(rapidArrowId).isEmpty(), "Expected runtime entity registry to keep cavernreborn:rapid_arrow absent");
+            helper.assertTrue(lowArmorTarget.getArmorValue() < CavenicBowRapidEvents.LEGACY_RAPID_LOW_ARMOR_THRESHOLD, "Expected cow target to stay below the legacy Rapid armor threshold");
+            helper.assertTrue(armoredTarget.getArmorValue() >= CavenicBowRapidEvents.LEGACY_RAPID_LOW_ARMOR_THRESHOLD, "Expected armored target to reach the legacy Rapid armor threshold");
+            helper.assertTrue(
+                rapidEvents.tryResetRapidArrowLowArmorInvulnerability(lowArmorTarget, rapidArrow),
+                "Expected RAPID low-armor helper to reset invulnerability after a marked arrow hit"
+            );
+            helper.assertTrue(lowArmorTarget.invulnerableTime == 0, "Expected RAPID low-armor helper to clear invulnerability frames");
+            helper.assertTrue(lowArmorTarget.getHealth() == lowArmorHealthBefore, "Rapid cooldown reset helper must not change target health directly");
+            helper.assertFalse(
+                rapidEvents.tryResetRapidArrowLowArmorInvulnerability(armoredTarget, rapidArrow),
+                "Expected RAPID low-armor helper to skip fully armored targets"
+            );
+            helper.assertTrue(armoredTarget.invulnerableTime == 12, "Expected armored target invulnerability frames to remain unchanged");
+            helper.assertTrue(armoredTarget.getHealth() == armoredHealthBefore, "Rapid cooldown reset helper must not change armored target health");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBowRapidLowArmorHurtResistanceResetKeepsOtherModesStableAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_BOW_RAPID_ANCHOR.east(96);
+        BlockPos snipeOrigin = origin.west(24);
+        BlockPos torchOrigin = origin.east(24);
+        BlockPos torchSupportPos = torchOrigin.east(10);
+        BlockPos torchTargetPos = torchSupportPos.above();
+        ResourceLocation rapidArrowId = ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "rapid_arrow");
+        ResourceLocation torchArrowId = ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "torch_arrow");
+        CavenicBowItem bowItem = (CavenicBowItem) ModRegistries.CAVENIC_BOW.get();
+        CavenicBowRapidEvents rapidEvents = new CavenicBowRapidEvents();
+        CavenicBowTorchEvents torchEvents = new CavenicBowTorchEvents();
+
+        resetMiningArea(level, origin, 40.0D);
+        level.setBlock(torchSupportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+
+        Player rapidPlayer = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), origin);
+        rapidPlayer.getInventory().add(new ItemStack(Items.ARROW, 2));
+        ItemStack rapidBow = rapidPlayer.getMainHandItem();
+        bowItem.setMode(rapidBow, CavenicBowMode.RAPID);
+
+        Player snipePlayer = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), snipeOrigin);
+        snipePlayer.getInventory().add(new ItemStack(Items.ARROW, 2));
+        ItemStack snipeBow = snipePlayer.getMainHandItem();
+        bowItem.setMode(snipeBow, CavenicBowMode.SNIPE);
+
+        Player torchPlayer = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), torchOrigin);
+        torchPlayer.getInventory().add(new ItemStack(Items.ARROW, 2));
+        torchPlayer.getInventory().add(new ItemStack(Items.TORCH, 2));
+        ItemStack torchBow = torchPlayer.getMainHandItem();
+        bowItem.setMode(torchBow, CavenicBowMode.TORCH);
+
+        CrazySkeleton crazySkeleton = spawnLivingEntity(helper, ModRegistries.CRAZY_SKELETON.get(), origin.north(24));
+        crazySkeleton.setItemSlot(EquipmentSlot.MAINHAND, CrazySkeleton.createLegacyCrazySkeletonBow(level.registryAccess()));
+        crazySkeleton.reassessWeaponGoal();
+
+        AbstractArrow rapidArrow = createRuntimeArrow(level, rapidPlayer, rapidBow);
+        AbstractArrow snipeArrow = createRuntimeArrow(level, snipePlayer, snipeBow);
+        AbstractArrow torchArrow = createRuntimeArrow(level, torchPlayer, torchBow);
+        AbstractArrow vanillaArrow = createRuntimeArrow(level, rapidPlayer, new ItemStack(Items.BOW));
+        Cow lowArmorTarget = spawnLivingEntity(helper, EntityType.COW, origin.east(6));
+
+        CavenicBowItem.markRapidArrow(rapidArrow);
+        CavenicBowItem.markTorchArrow(torchArrow);
+
+        helper.assertTrue("minecraft:arrow".equals(entityTypeId(rapidArrow)), "RAPID cross-mode smoke must keep the vanilla arrow entity");
+        helper.assertTrue("minecraft:arrow".equals(entityTypeId(snipeArrow)), "SNIPE cross-mode smoke must keep the vanilla arrow entity");
+        helper.assertTrue("minecraft:arrow".equals(entityTypeId(torchArrow)), "TORCH cross-mode smoke must keep the vanilla arrow entity");
+        helper.assertTrue("minecraft:arrow".equals(entityTypeId(vanillaArrow)), "Vanilla bow cross-mode smoke must keep the vanilla arrow entity");
+        helper.assertTrue(CavenicBowItem.isRapidArrow(rapidArrow), "RAPID cross-mode smoke must mark the arrow");
+        helper.assertFalse(CavenicBowItem.isRapidArrow(snipeArrow), "SNIPE cross-mode smoke must not reuse the Rapid marker");
+        helper.assertFalse(CavenicBowItem.isRapidArrow(torchArrow), "TORCH cross-mode smoke must not reuse the Rapid marker");
+        helper.assertFalse(CavenicBowItem.isRapidArrow(vanillaArrow), "Vanilla bow arrows must not inherit the Rapid marker");
+        helper.assertTrue(CavenicBowItem.isTorchArrow(torchArrow), "TORCH cross-mode smoke must keep the Torch marker");
+        helper.assertFalse(CavenicBowItem.isTorchArrow(rapidArrow), "RAPID cross-mode smoke must not reuse the Torch marker");
+
+        lowArmorTarget.invulnerableTime = 12;
+        helper.assertFalse(
+            rapidEvents.tryResetRapidArrowLowArmorInvulnerability(lowArmorTarget, snipeArrow),
+            "SNIPE arrows must not trigger the Rapid low-armor cooldown reset"
+        );
+        helper.assertTrue(lowArmorTarget.invulnerableTime == 12, "SNIPE arrows must leave low-armor invulnerability frames unchanged");
+
+        lowArmorTarget.invulnerableTime = 12;
+        helper.assertFalse(
+            rapidEvents.tryResetRapidArrowLowArmorInvulnerability(lowArmorTarget, torchArrow),
+            "TORCH arrows must not trigger the Rapid low-armor cooldown reset"
+        );
+        helper.assertTrue(lowArmorTarget.invulnerableTime == 12, "TORCH arrows must leave low-armor invulnerability frames unchanged");
+
+        lowArmorTarget.invulnerableTime = 12;
+        helper.assertFalse(
+            rapidEvents.tryResetRapidArrowLowArmorInvulnerability(lowArmorTarget, vanillaArrow),
+            "Vanilla arrows must not trigger the Rapid low-armor cooldown reset"
+        );
+        helper.assertTrue(lowArmorTarget.invulnerableTime == 12, "Vanilla arrows must leave low-armor invulnerability frames unchanged");
+
+        torchEvents.onProjectileImpact(new ProjectileImpactEvent(torchArrow, hitResult(torchSupportPos)));
+        helper.assertTrue(level.getBlockState(torchTargetPos).is(Blocks.TORCH), "TORCH cross-mode smoke must keep marked-arrow placement intact");
+        helper.assertTrue(BuiltInRegistries.ENTITY_TYPE.getOptional(rapidArrowId).isEmpty(), "Expected runtime entity registry to keep cavernreborn:rapid_arrow absent");
+        helper.assertTrue(BuiltInRegistries.ENTITY_TYPE.getOptional(torchArrowId).isEmpty(), "Expected runtime entity registry to keep cavernreborn:torch_arrow absent");
+        helper.assertTrue(findGoalBySimpleName(crazySkeleton.goalSelector.getAvailableGoals(), "LegacyCrazySkeletonCavenicBowAttackGoal").isPresent(), "Rapid low-armor follow-up must keep the crazy skeleton local ranged goal wired");
+        helper.succeed();
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)

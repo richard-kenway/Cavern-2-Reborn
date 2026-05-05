@@ -17,6 +17,7 @@ import com.richardkenway.cavernreborn.app.entity.CrazySkeletonLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CrazySpiderLootEvents;
 import com.richardkenway.cavernreborn.app.entity.CrazyZombieLootEvents;
 import com.richardkenway.cavernreborn.app.item.CavenicBowTorchEvents;
+import com.richardkenway.cavernreborn.app.item.CavenicBowRapidEvents;
 import com.richardkenway.cavernreborn.app.mining.CavernAquamarineToolEvents;
 import com.richardkenway.cavernreborn.app.mining.CavernMiningAssistEvents;
 import com.richardkenway.cavernreborn.app.progression.CavernMiningProgressionEvents;
@@ -46,6 +47,7 @@ public final class CavernReborn {
         ModRegistries.register(modEventBus);
         cavernStateBootstrap = new CavernStateBootstrap();
         NeoForge.EVENT_BUS.register(new CavernPortalFrameActivationEvents());
+        NeoForge.EVENT_BUS.register(new CavenicBowRapidEvents());
         NeoForge.EVENT_BUS.register(new CavenicBowTorchEvents());
         NeoForge.EVENT_BUS.register(new CavenicCreeperLootEvents());
         NeoForge.EVENT_BUS.register(new CavenicSkeletonLootEvents());

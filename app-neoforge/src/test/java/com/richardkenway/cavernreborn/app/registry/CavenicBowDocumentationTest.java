@@ -14,6 +14,7 @@ class CavenicBowDocumentationTest {
     private static final Path CAVENIC_BOW_MODE_STATE = resolveProjectFile("docs", "cavenic-bow-mode-state-mvp.md");
     private static final Path CAVENIC_BOW_SNIPE = resolveProjectFile("docs", "cavenic-bow-snipe-mode-mvp.md");
     private static final Path CAVENIC_BOW_RAPID = resolveProjectFile("docs", "cavenic-bow-rapid-mode-mvp.md");
+    private static final Path CAVENIC_BOW_RAPID_HURT_RESISTANCE = resolveProjectFile("docs", "cavenic-bow-rapid-low-armor-hurt-resistance-mvp.md");
     private static final Path CAVENIC_BOW_TORCH = resolveProjectFile("docs", "cavenic-bow-torch-mode-mvp.md");
     private static final Path CAVENIC_BOW_RELEASE = resolveProjectFile("docs", "cavenic-bow-release-semantics-mvp.md");
     private static final Path ENTITY_CAVENIC_ARROW_BOUNDARY = resolveProjectFile("docs", "entity-cavenic-arrow-projectile-boundary.md");
@@ -28,12 +29,14 @@ class CavenicBowDocumentationTest {
         assertTrue(readme.contains("Cavenic Bow Mode State & Cycling MVP"));
         assertTrue(readme.contains("Cavenic Bow Snipe Mode MVP"));
         assertTrue(readme.contains("Cavenic Bow Rapid Mode MVP"));
+        assertTrue(readme.contains("Cavenic Bow Rapid Low-Armor Hurt-Resistance MVP"));
         assertTrue(readme.contains("Cavenic Bow Torch Mode MVP"));
         assertTrue(readme.contains("Cavenic Bow Release Semantics Regression MVP"));
         assertTrue(readme.contains("docs/cavenic-bow-baseline-mvp.md"));
         assertTrue(readme.contains("docs/cavenic-bow-mode-state-mvp.md"));
         assertTrue(readme.contains("docs/cavenic-bow-snipe-mode-mvp.md"));
         assertTrue(readme.contains("docs/cavenic-bow-rapid-mode-mvp.md"));
+        assertTrue(readme.contains("docs/cavenic-bow-rapid-low-armor-hurt-resistance-mvp.md"));
         assertTrue(readme.contains("docs/cavenic-bow-torch-mode-mvp.md"));
         assertTrue(readme.contains("docs/cavenic-bow-release-semantics-mvp.md"));
         assertTrue(readme.contains("docs/entity-cavenic-arrow-projectile-boundary.md"));
@@ -43,6 +46,7 @@ class CavenicBowDocumentationTest {
         assertTrue(readme.contains("sneak-use mode cycling"));
         assertTrue(readme.contains("bounded full-charge Snipe boost on vanilla arrows"));
         assertTrue(readme.contains("bounded Rapid power ramp on vanilla arrows"));
+        assertTrue(readme.contains("restored legacy low-armor Rapid hurt-resistance reset on marked vanilla arrows"));
         assertTrue(readme.contains("bounded Torch marker-and-placement behavior on vanilla arrows"));
         assertTrue(readme.contains("real release-path regression coverage"));
         assertTrue(readme.contains("custom projectile entities"));
@@ -123,11 +127,31 @@ class CavenicBowDocumentationTest {
         assertTrue(doc.contains("adjusted shot power is capped at `1.0F`"));
         assertTrue(doc.contains("extra bow durability cost remains `0`"));
         assertTrue(doc.contains("docs/cavenic-bow-torch-mode-mvp.md"));
+        assertTrue(doc.contains("docs/cavenic-bow-rapid-low-armor-hurt-resistance-mvp.md"));
         assertTrue(doc.contains("docs/cavenic-bow-release-semantics-mvp.md"));
         assertTrue(doc.contains("The fired projectile remains the normal vanilla arrow type"));
         assertTrue(doc.contains("does not yet port `EntityRapidArrow`"));
         assertTrue(doc.contains("TORCH mode shooting behavior"));
         assertTrue(doc.contains("custom projectile entity registration"));
+    }
+
+    @Test
+    void cavenicBowRapidLowArmorHurtResistanceDocStatesLegacyBehaviorModernMappingAndBoundary() throws IOException {
+        String doc = Files.readString(CAVENIC_BOW_RAPID_HURT_RESISTANCE);
+
+        assertTrue(doc.contains("`cavern.entity.projectile.EntityRapidArrow`"));
+        assertTrue(doc.contains("`cavern.item.ItemBowCavenic`"));
+        assertTrue(doc.contains("`EntityRapidArrow#arrowHit(EntityLivingBase living)`"));
+        assertTrue(doc.contains("`living.getTotalArmorValue() < 20`"));
+        assertTrue(doc.contains("`living.hurtResistantTime = 0`"));
+        assertTrue(doc.contains("`cavernreborn:cavenic_bow_rapid`"));
+        assertTrue(doc.contains("`LivingDamageEvent.Post`"));
+        assertTrue(doc.contains("`target.invulnerableTime = 0`"));
+        assertTrue(doc.contains("`getArmorValue() < 20`"));
+        assertTrue(doc.contains("still stays `minecraft:arrow`"));
+        assertTrue(doc.contains("no `EntityRapidArrow`"));
+        assertTrue(doc.contains("no `cavernreborn:rapid_arrow`"));
+        assertTrue(doc.contains("Crazy Skeleton stays on its current vanilla-compatible projectile bridge"));
     }
 
     @Test
@@ -166,6 +190,7 @@ class CavenicBowDocumentationTest {
         assertTrue(doc.contains("creative/no-arrow behavior"));
         assertTrue(doc.contains("Infinity behavior"));
         assertTrue(doc.contains("Torch consumption stays separate from arrow consumption"));
+        assertTrue(doc.contains("docs/cavenic-bow-rapid-low-armor-hurt-resistance-mvp.md"));
         assertTrue(doc.contains("wall torch orientation"));
         assertTrue(doc.contains("`EntityRapidArrow`"));
         assertTrue(doc.contains("`EntityTorchArrow`"));
@@ -193,6 +218,8 @@ class CavenicBowDocumentationTest {
         assertTrue(runtimeSmoke.contains("cavenic bow RAPID higher-velocity vanilla-arrow smoke"));
         assertTrue(runtimeSmoke.contains("cavenic bow RAPID no-extra-durability smoke"));
         assertTrue(runtimeSmoke.contains("cavenic bow RAPID still spawning a vanilla arrow entity"));
+        assertTrue(runtimeSmoke.contains("cavenic bow RAPID low-armor hurt-resistance reset smoke"));
+        assertTrue(runtimeSmoke.contains("cavenic bow RAPID armored-target no-reset smoke"));
         assertTrue(runtimeSmoke.contains("cavenic bow full-charge SNIPE projectile boost smoke"));
         assertTrue(runtimeSmoke.contains("cavenic bow full-charge SNIPE extra-durability smoke"));
         assertTrue(runtimeSmoke.contains("cavenic bow full-charge SNIPE still spawning a vanilla arrow entity"));
@@ -241,6 +268,7 @@ class CavenicBowDocumentationTest {
         assertTrue(doc.contains("`arrowHit(EntityLivingBase living)`"));
         assertTrue(doc.contains("`living.getTotalArmorValue() < 20`"));
         assertTrue(doc.contains("`living.hurtResistantTime = 0`"));
+        assertTrue(doc.contains("docs/cavenic-bow-rapid-low-armor-hurt-resistance-mvp.md"));
         assertTrue(doc.contains("`setTorchItem(ItemStack stack)`"));
         assertTrue(doc.contains("`onHit(RayTraceResult rayTrace)`"));
         assertTrue(doc.contains("temporarily swap the player main hand"));
@@ -250,6 +278,7 @@ class CavenicBowDocumentationTest {
         assertTrue(doc.contains("no dedicated `RenderRapidArrow` registration"));
         assertTrue(doc.contains("no dedicated `RenderTorchArrow` registration"));
         assertTrue(doc.contains("Reborn `RAPID` intentionally keeps the vanilla-compatible arrow path."));
+        assertTrue(doc.contains("Reborn `RAPID` now restores:"));
         assertTrue(doc.contains("Reborn `TORCH` intentionally keeps the vanilla-compatible arrow path."));
         assertTrue(doc.contains("cavernreborn:rapid_arrow"));
         assertTrue(doc.contains("cavernreborn:torch_arrow"));

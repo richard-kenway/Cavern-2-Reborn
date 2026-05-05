@@ -36,6 +36,7 @@ public final class CavenicBowItem extends BowItem {
     private static final String MODE_KEY_PREFIX = "item.cavernreborn.cavenic_bow.mode.";
     private static final String MODE_LINE_KEY = "item.cavernreborn.cavenic_bow.mode";
     private static final String MODE_CHANGED_KEY = "item.cavernreborn.cavenic_bow.mode_changed";
+    public static final String RAPID_ARROW_MARKER = "cavernreborn:cavenic_bow_rapid";
     public static final String TORCH_ARROW_MARKER = "cavernreborn:cavenic_bow_torch";
     private static final ThreadLocal<ShotContext> CURRENT_SHOT_CONTEXT = new ThreadLocal<>();
 
@@ -111,6 +112,18 @@ public final class CavenicBowItem extends BowItem {
         return shotPower > 0.0F && CavenicBowTorchPolicy.shouldMarkShot(getMode(stack), player.isCreative(), hasTorchAmmo(player));
     }
 
+    public boolean shouldMarkRapidShot(ItemStack stack, float shotPower) {
+        return shotPower > 0.0F && getMode(stack) == CavenicBowMode.RAPID;
+    }
+
+    public static void markRapidArrow(AbstractArrow arrow) {
+        arrow.addTag(RAPID_ARROW_MARKER);
+    }
+
+    public static boolean isRapidArrow(AbstractArrow arrow) {
+        return arrow.getTags().contains(RAPID_ARROW_MARKER);
+    }
+
     public static void markTorchArrow(AbstractArrow arrow) {
         arrow.addTag(TORCH_ARROW_MARKER);
     }
@@ -163,8 +176,9 @@ public final class CavenicBowItem extends BowItem {
             if (markTorchShot && !consumeTorchAmmo(player)) {
                 markTorchShot = false;
             }
+            boolean markRapidShot = shouldMarkRapidShot(stack, shotPower);
 
-            ShotContext shotContext = new ShotContext(shotPower, markTorchShot, livingEntity);
+            ShotContext shotContext = new ShotContext(shotPower, markRapidShot, markTorchShot, livingEntity);
             CURRENT_SHOT_CONTEXT.set(shotContext);
             try {
                 shoot(
@@ -208,6 +222,9 @@ public final class CavenicBowItem extends BowItem {
         if (shotContext != null) {
             if (shotContext.shooter() != null) {
                 customizedArrow.setOwner(shotContext.shooter());
+            }
+            if (shotContext.markRapidShot()) {
+                markRapidArrow(customizedArrow);
             }
             if (shotContext.markTorchShot()) {
                 markTorchArrow(customizedArrow);
@@ -257,6 +274,6 @@ public final class CavenicBowItem extends BowItem {
         return ItemStack.EMPTY;
     }
 
-    private record ShotContext(float power, boolean markTorchShot, LivingEntity shooter) {
+    private record ShotContext(float power, boolean markRapidShot, boolean markTorchShot, LivingEntity shooter) {
     }
 }

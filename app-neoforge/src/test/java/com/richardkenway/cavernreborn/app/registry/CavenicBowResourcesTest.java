@@ -33,6 +33,9 @@ class CavenicBowResourcesTest {
         String torchEventSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "item", "CavenicBowTorchEvents.java"
         );
+        String rapidEventSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "item", "CavenicBowRapidEvents.java"
+        );
         String clientSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "client", "CavernClientModEvents.java"
         );
@@ -74,7 +77,10 @@ class CavenicBowResourcesTest {
         assertTrue(bowSource.contains("public int resolveAdditionalDurabilityCost(ItemStack stack, float power)"));
         assertTrue(bowSource.contains("public boolean hasTorchAmmo(Player player)"));
         assertTrue(bowSource.contains("public boolean consumeTorchAmmo(Player player)"));
+        assertTrue(bowSource.contains("public boolean shouldMarkRapidShot(ItemStack stack, float shotPower)"));
         assertTrue(bowSource.contains("public boolean shouldMarkTorchShot(ItemStack stack, Player player, float shotPower)"));
+        assertTrue(bowSource.contains("public static void markRapidArrow(AbstractArrow arrow)"));
+        assertTrue(bowSource.contains("public static boolean isRapidArrow(AbstractArrow arrow)"));
         assertTrue(bowSource.contains("public static void markTorchArrow(AbstractArrow arrow)"));
         assertTrue(bowSource.contains("public static boolean isTorchArrow(AbstractArrow arrow)"));
         assertTrue(bowSource.contains("DataComponents.CUSTOM_DATA"));
@@ -86,6 +92,7 @@ class CavenicBowResourcesTest {
         assertTrue(bowSource.contains("CavenicBowRapidPolicy"));
         assertTrue(bowSource.contains("CavenicBowSnipePolicy"));
         assertTrue(bowSource.contains("CavenicBowTorchPolicy"));
+        assertTrue(bowSource.contains("RAPID_ARROW_MARKER"));
         assertTrue(bowSource.contains("TORCH_ARROW_MARKER"));
         assertTrue(bowSource.contains("ItemStack projectile = player.getProjectile(stack);"));
         assertTrue(bowSource.contains("List<ItemStack> drawnProjectiles = draw(stack, projectile, livingEntity);"));
@@ -94,7 +101,10 @@ class CavenicBowResourcesTest {
         assertTrue(bowSource.contains("CURRENT_SHOT_CONTEXT"));
         assertTrue(bowSource.contains("repairCandidate.is(ModRegistries.CAVENIC_ORB.get())"));
         assertTrue(bowSource.contains("ModToolTiers.CAVENIC.getEnchantmentValue()"));
+        assertTrue(bowSource.contains("boolean markRapidShot = shouldMarkRapidShot(stack, shotPower);"));
         assertTrue(bowSource.contains("boolean markTorchShot = shouldMarkTorchShot(stack, player, shotPower);"));
+        assertTrue(bowSource.contains("if (shotContext.markRapidShot())"));
+        assertTrue(bowSource.contains("markRapidArrow(customizedArrow);"));
         assertTrue(bowSource.contains("if (markTorchShot && !consumeTorchAmmo(player))"));
         assertTrue(bowSource.contains("if (shotContext.markTorchShot())"));
         assertTrue(bowSource.contains("markTorchArrow(customizedArrow);"));
@@ -122,7 +132,16 @@ class CavenicBowResourcesTest {
         assertTrue(torchEventSource.contains("arrow.discard();"));
         assertTrue(torchEventSource.contains("event.setCanceled(true);"));
         assertFalse(torchEventSource.contains("oppositeState"), "Torch placement must not fallback-attach to an unrelated opposite support");
+        assertTrue(rapidEventSource.contains("public static final int LEGACY_RAPID_LOW_ARMOR_THRESHOLD = 20"));
+        assertTrue(rapidEventSource.contains("public void onLivingDamagePost(LivingDamageEvent.Post event)"));
+        assertTrue(rapidEventSource.contains("public boolean tryResetRapidArrowLowArmorInvulnerability(LivingEntity target, AbstractArrow arrow)"));
+        assertTrue(rapidEventSource.contains("CavenicBowItem.isRapidArrow(arrow)"));
+        assertTrue(rapidEventSource.contains("target.getArmorValue() >= LEGACY_RAPID_LOW_ARMOR_THRESHOLD"));
+        assertTrue(rapidEventSource.contains("target.invulnerableTime = 0;"));
+        assertFalse(rapidEventSource.contains("EntityRapidArrow"));
+        assertFalse(rapidEventSource.contains("rapid_arrow"));
         assertTrue(modSource.contains("NeoForge.EVENT_BUS.register(new CavenicBowTorchEvents())"));
+        assertTrue(modSource.contains("NeoForge.EVENT_BUS.register(new CavenicBowRapidEvents())"));
         assertFalse(bowSource.contains("EntityRapidArrow"));
         assertFalse(bowSource.contains("EntityTorchArrow"));
         assertFalse(bowSource.contains("EntityCavenicArrow"));
@@ -147,6 +166,9 @@ class CavenicBowResourcesTest {
         );
         assertMissingProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "projectile", "TorchArrow.java"
+        );
+        assertMissingProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "projectile", "CavenicArrow.java"
         );
     }
 

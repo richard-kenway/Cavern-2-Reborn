@@ -56,6 +56,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/cavenic-bow-snipe-mode-mvp.md"));
         assertTrue(readme.contains("Cavenic Bow Rapid Mode MVP"));
         assertTrue(readme.contains("docs/cavenic-bow-rapid-mode-mvp.md"));
+        assertTrue(readme.contains("Cavenic Bow Rapid Low-Armor Hurt-Resistance MVP"));
+        assertTrue(readme.contains("docs/cavenic-bow-rapid-low-armor-hurt-resistance-mvp.md"));
         assertTrue(readme.contains("Cavenic Bow Torch Mode MVP"));
         assertTrue(readme.contains("docs/cavenic-bow-torch-mode-mvp.md"));
         assertTrue(readme.contains("docs/entity-cavenic-arrow-projectile-boundary.md"));
@@ -260,6 +262,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("cavenic bow RAPID higher-velocity vanilla-arrow smoke"));
         assertTrue(doc.contains("cavenic bow RAPID no-extra-durability smoke"));
         assertTrue(doc.contains("cavenic bow RAPID still spawning a vanilla arrow entity"));
+        assertTrue(doc.contains("cavenic bow RAPID low-armor hurt-resistance reset smoke"));
+        assertTrue(doc.contains("cavenic bow RAPID armored-target no-reset smoke"));
         assertTrue(doc.contains("cavenic bow RAPID not inheriting the SNIPE damage multiplier"));
         assertTrue(doc.contains("cavenic bow full-charge SNIPE projectile boost smoke"));
         assertTrue(doc.contains("cavenic bow full-charge SNIPE extra-durability smoke"));

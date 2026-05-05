@@ -6,12 +6,14 @@ It keeps the projectile path vanilla and changes only `RAPID` mode behavior.
 
 The later bounded Torch-only follow-up is documented separately in `docs/cavenic-bow-torch-mode-mvp.md`.
 The later release-path stabilization follow-up is documented separately in `docs/cavenic-bow-release-semantics-mvp.md`.
+The later low-armor hurt-resistance follow-up is documented separately in `docs/cavenic-bow-rapid-low-armor-hurt-resistance-mvp.md`.
 
 ## What This Increment Adds
 
 - a pure `CavenicBowRapidPolicy` with pinned constants and safe raw-power handling
 - a bounded Rapid shot-power ramp on top of the current bow release path
 - runtime tests proving that RAPID still uses vanilla arrow entities and does not add extra durability cost
+- a later follow-up restoring the legacy low-armor hurt-resistance reset without adding `EntityRapidArrow`
 
 ## Legacy References Inspected
 
@@ -43,6 +45,7 @@ Reborn keeps this slice intentionally bounded:
 - Rapid does not change ammo consumption or infinity rules
 
 The fired projectile remains the normal vanilla arrow type that the active ammo stack would already create.
+The separate low-armor hurt-resistance reset is now documented in `docs/cavenic-bow-rapid-low-armor-hurt-resistance-mvp.md`.
 
 ## Intentional Deviation From Legacy
 
@@ -72,6 +75,7 @@ The separate `EntityRapidArrow` parity gap is now documented in `docs/entity-rap
 
 - `EntityRapidArrow`
 - `EntityTorchArrow`
+- `docs/cavenic-bow-rapid-low-armor-hurt-resistance-mvp.md`
 - `docs/entity-rapid-torch-arrow-projectile-boundary.md`
 - custom projectile entity registration
 - rapid multi-shot behavior

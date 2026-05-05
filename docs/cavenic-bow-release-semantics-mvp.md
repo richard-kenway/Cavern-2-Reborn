@@ -37,6 +37,7 @@ It does not add a new gameplay feature. It pins the current bow behavior against
 - Infinity does not create free arrows from an empty inventory in this version. Infinity still requires real arrow access, but keeps the consumed normal-arrow stack intact once a valid shot is fired.
 - Torch consumption stays separate from arrow consumption and separate from Infinity. Infinity never creates free torches.
 - `RAPID` keeps the bounded faster power ramp but still stays on the vanilla arrow entity path.
+- the separate low-armor Rapid hurt-resistance reset is documented in `docs/cavenic-bow-rapid-low-armor-hurt-resistance-mvp.md` and does not widen the projectile entity path
 - `SNIPE` keeps the bounded full-charge velocity and damage boost plus the extra durability surcharge only when the Snipe boost actually applies.
 - `TORCH` keeps the vanilla arrow entity path, uses a marker plus server-side impact handling and now keeps direct wall-torch orientation without opposite-wall fallback.
 - The remaining legacy `EntityCavenicArrow` projectile gap is documented separately in `docs/entity-cavenic-arrow-projectile-boundary.md`.

@@ -92,7 +92,9 @@ This slice inspects the legacy `EntityRapidArrow` and `EntityTorchArrow` paths a
 ## Current Reborn Mapping
 
 - Reborn `RAPID` intentionally keeps the vanilla-compatible arrow path.
-- Reborn `RAPID` currently restores only the bounded power ramp and velocity identity.
+- Reborn `RAPID` now restores:
+  - the bounded power ramp and velocity identity
+  - the low-armor hurt-resistance reset through the separate follow-up documented in `docs/cavenic-bow-rapid-low-armor-hurt-resistance-mvp.md`
 - Reborn `TORCH` intentionally keeps the vanilla-compatible arrow path.
 - Reborn `TORCH` currently restores torch placement through:
   - a marked vanilla arrow
@@ -121,12 +123,14 @@ This slice inspects the legacy `EntityRapidArrow` and `EntityTorchArrow` paths a
   - correct horizontal orientation
   - grief-safe no-placement failures
 - The remaining Torch gap is that legacy delegated to arbitrary `BlockTorch` item use, while the accepted Reborn slice currently pins plain vanilla torch placement.
-- The remaining Rapid gap is that legacy reset hurt resistance for lightly armored targets, while the accepted Reborn slice currently pins a vanilla-compatible arrow entity with no extra post-hit entity mutation.
-- Those are real but narrow gaps. They do not justify adding new projectile entity registrations and client/runtime surface area in this bounded slice.
+- The old Rapid hurt-resistance gap is now restored separately without adding `EntityRapidArrow`.
+- The remaining meaningful Torch gap is still that legacy delegated to arbitrary `BlockTorch` item use while Reborn intentionally keeps the already accepted bounded plain-torch placement path.
+- Those remaining gaps are narrow. They do not justify adding new projectile entity registrations and client/runtime surface area in this bounded slice.
 
 ## Relationship To Existing Slices
 
 - `docs/cavenic-bow-rapid-mode-mvp.md` keeps `RAPID` on vanilla arrows and now explicitly defers `EntityRapidArrow`.
+- `docs/cavenic-bow-rapid-low-armor-hurt-resistance-mvp.md` documents the restored legacy Rapid low-armor cooldown reset without widening the projectile entity path.
 - `docs/cavenic-bow-torch-mode-mvp.md` keeps `TORCH` on marked vanilla arrows and now explicitly defers `EntityTorchArrow`.
 - `docs/cavenic-bow-release-semantics-mvp.md` keeps the real release path on vanilla-compatible arrows and now points to this boundary for the remaining Rapid/Torch projectile gap.
 - `docs/entity-cavenic-arrow-projectile-boundary.md` covers the separate skeleton-side `EntityCavenicArrow` gap.
@@ -134,9 +138,6 @@ This slice inspects the legacy `EntityRapidArrow` and `EntityTorchArrow` paths a
 
 ## What Full Projectile Parity Would Still Require
 
-- Decide whether the legacy Rapid hurt-resistance reset is worth restoring as:
-  - a real `RapidArrow` entity, or
-  - a narrower hit-effect hook that still preserves current Reborn guarantees
 - Decide whether Torch parity needs:
   - a real `TorchArrow` entity, or
   - a broader generic torch-item delegation path beyond plain `minecraft:torch`
@@ -162,6 +163,7 @@ This slice inspects the legacy `EntityRapidArrow` and `EntityTorchArrow` paths a
   - no `cavernreborn:rapid_arrow` entity type at runtime
   - no `cavernreborn:torch_arrow` entity type at runtime
   - `RAPID` still spawning a vanilla-compatible arrow entity
+  - `RAPID` still restoring the low-armor cooldown reset without `rapid_arrow`
   - `TORCH` still spawning a marked vanilla-compatible arrow entity
   - Torch placement still flowing through `CavenicBowTorchEvents`
   - Crazy Skeleton ranged AI still keeping the current local vanilla-compatible projectile bridge
