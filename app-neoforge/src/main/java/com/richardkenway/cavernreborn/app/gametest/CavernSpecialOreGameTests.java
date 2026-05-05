@@ -4494,6 +4494,58 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void rapidTorchArrowProjectileBoundaryKeepsCurrentBowPathsStableAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_BOW_TORCH_ANCHOR.south(48);
+        BlockPos torchSupportPos = origin.east(8);
+        BlockPos torchTargetPos = torchSupportPos.above();
+        ResourceLocation rapidArrowId = ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "rapid_arrow");
+        ResourceLocation torchArrowId = ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "torch_arrow");
+        CavenicBowItem bowItem = (CavenicBowItem) ModRegistries.CAVENIC_BOW.get();
+        CavenicBowTorchEvents torchEvents = new CavenicBowTorchEvents();
+
+        resetMiningArea(level, origin, 16.0D);
+        level.setBlock(torchSupportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+
+        Player rapidPlayer = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), origin);
+        ItemStack rapidBow = rapidPlayer.getMainHandItem();
+        bowItem.setMode(rapidBow, CavenicBowMode.RAPID);
+        rapidPlayer.getInventory().add(new ItemStack(Items.ARROW, 2));
+
+        Player torchPlayer = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), origin.north(6));
+        ItemStack torchBow = torchPlayer.getMainHandItem();
+        bowItem.setMode(torchBow, CavenicBowMode.TORCH);
+        torchPlayer.getInventory().add(new ItemStack(Items.ARROW, 2));
+        torchPlayer.getInventory().add(new ItemStack(Items.TORCH, 2));
+
+        CrazySkeleton crazySkeleton = spawnLivingEntity(helper, ModRegistries.CRAZY_SKELETON.get(), origin.south(6));
+        crazySkeleton.setItemSlot(EquipmentSlot.MAINHAND, CrazySkeleton.createLegacyCrazySkeletonBow(level.registryAccess()));
+        crazySkeleton.reassessWeaponGoal();
+
+        helper.assertTrue(BuiltInRegistries.ENTITY_TYPE.getOptional(rapidArrowId).isEmpty(), "Expected runtime entity registry to keep cavernreborn:rapid_arrow absent");
+        helper.assertTrue(BuiltInRegistries.ENTITY_TYPE.getOptional(torchArrowId).isEmpty(), "Expected runtime entity registry to keep cavernreborn:torch_arrow absent");
+        helper.assertTrue(findGoalBySimpleName(crazySkeleton.goalSelector.getAvailableGoals(), "LegacyCrazySkeletonCavenicBowAttackGoal").isPresent(), "Expected rapid/torch projectile boundary smoke to keep the crazy skeleton local ranged goal wired");
+
+        BowReleaseResult rapidResult = releaseBowThroughRealUse(helper, rapidPlayer, 6);
+        BowReleaseResult torchResult = releaseBowThroughRealUse(helper, torchPlayer, BowItem.MAX_DRAW_DURATION);
+
+        helper.runAfterDelay(1, () -> {
+            AbstractArrow rapidArrow = singleSpawnedArrow(helper, rapidResult, "RAPID boundary smoke must still spawn one vanilla-compatible arrow");
+            AbstractArrow torchArrow = singleSpawnedArrow(helper, torchResult, "TORCH boundary smoke must still spawn one marked vanilla-compatible arrow");
+
+            helper.assertTrue("minecraft:arrow".equals(entityTypeId(rapidArrow)), "RAPID boundary smoke must keep the vanilla arrow entity");
+            helper.assertTrue("minecraft:arrow".equals(entityTypeId(torchArrow)), "TORCH boundary smoke must keep the vanilla arrow entity");
+            helper.assertFalse(CavenicBowItem.isTorchArrow(rapidArrow), "RAPID boundary smoke must not torch-mark the arrow");
+            helper.assertTrue(CavenicBowItem.isTorchArrow(torchArrow), "TORCH boundary smoke must still mark the arrow");
+            torchEvents.onProjectileImpact(new ProjectileImpactEvent(torchArrow, hitResult(torchSupportPos)));
+            helper.assertTrue(level.getBlockState(torchTargetPos).is(Blocks.TORCH), "TORCH boundary smoke must keep placement on the marked vanilla-arrow path");
+            helper.assertTrue(BuiltInRegistries.ENTITY_TYPE.getOptional(rapidArrowId).isEmpty(), "Expected runtime entity registry to keep cavernreborn:rapid_arrow absent after the RAPID shot");
+            helper.assertTrue(BuiltInRegistries.ENTITY_TYPE.getOptional(torchArrowId).isEmpty(), "Expected runtime entity registry to keep cavernreborn:torch_arrow absent after the TORCH shot");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void crazySkeletonLegacyOrbDropWiresAtRuntime(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos origin = CRAZY_SKELETON_EQUIPMENT_ANCHOR.south(16);

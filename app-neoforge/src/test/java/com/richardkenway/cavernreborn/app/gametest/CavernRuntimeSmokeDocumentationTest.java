@@ -59,6 +59,9 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("Cavenic Bow Torch Mode MVP"));
         assertTrue(readme.contains("docs/cavenic-bow-torch-mode-mvp.md"));
         assertTrue(readme.contains("docs/entity-cavenic-arrow-projectile-boundary.md"));
+        assertTrue(readme.contains("docs/entity-rapid-torch-arrow-projectile-boundary.md"));
+        assertTrue(readme.contains("EntityRapidArrow"));
+        assertTrue(readme.contains("EntityTorchArrow"));
         assertTrue(readme.contains("Cavenic Zombie Baseline MVP"));
         assertTrue(readme.contains("docs/cavenic-zombie-baseline-mvp.md"));
         assertTrue(readme.contains("Cavenic Zombie Natural Spawn MVP"));

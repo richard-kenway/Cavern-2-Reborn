@@ -57,6 +57,8 @@ This Reborn MVP intentionally softens that behavior:
 
 The current values are a bounded modern stand-in that is easier to test and less likely to replace the broader equipment balance.
 
+The separate `EntityRapidArrow` / `EntityTorchArrow` projectile gap is now documented in `docs/entity-rapid-torch-arrow-projectile-boundary.md`.
+
 ## Runtime Wiring
 
 - `NORMAL` still uses vanilla bow behavior.

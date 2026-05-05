@@ -17,6 +17,7 @@ class CavenicBowDocumentationTest {
     private static final Path CAVENIC_BOW_TORCH = resolveProjectFile("docs", "cavenic-bow-torch-mode-mvp.md");
     private static final Path CAVENIC_BOW_RELEASE = resolveProjectFile("docs", "cavenic-bow-release-semantics-mvp.md");
     private static final Path ENTITY_CAVENIC_ARROW_BOUNDARY = resolveProjectFile("docs", "entity-cavenic-arrow-projectile-boundary.md");
+    private static final Path ENTITY_RAPID_TORCH_ARROW_BOUNDARY = resolveProjectFile("docs", "entity-rapid-torch-arrow-projectile-boundary.md");
     private static final Path RUNTIME_SMOKE = resolveProjectFile("docs", "runtime-smoke.md");
 
     @Test
@@ -36,6 +37,7 @@ class CavenicBowDocumentationTest {
         assertTrue(readme.contains("docs/cavenic-bow-torch-mode-mvp.md"));
         assertTrue(readme.contains("docs/cavenic-bow-release-semantics-mvp.md"));
         assertTrue(readme.contains("docs/entity-cavenic-arrow-projectile-boundary.md"));
+        assertTrue(readme.contains("docs/entity-rapid-torch-arrow-projectile-boundary.md"));
         assertTrue(readme.contains("cavenic_bow"));
         assertTrue(readme.contains("stack-local mode state"));
         assertTrue(readme.contains("sneak-use mode cycling"));
@@ -44,6 +46,8 @@ class CavenicBowDocumentationTest {
         assertTrue(readme.contains("bounded Torch marker-and-placement behavior on vanilla arrows"));
         assertTrue(readme.contains("real release-path regression coverage"));
         assertTrue(readme.contains("custom projectile entities"));
+        assertTrue(readme.contains("EntityRapidArrow"));
+        assertTrue(readme.contains("EntityTorchArrow"));
     }
 
     @Test
@@ -98,6 +102,7 @@ class CavenicBowDocumentationTest {
         assertTrue(doc.contains("docs/cavenic-bow-rapid-mode-mvp.md"));
         assertTrue(doc.contains("docs/cavenic-bow-torch-mode-mvp.md"));
         assertTrue(doc.contains("docs/cavenic-bow-release-semantics-mvp.md"));
+        assertTrue(doc.contains("docs/entity-rapid-torch-arrow-projectile-boundary.md"));
         assertTrue(doc.contains("The fired projectile remains the normal vanilla arrow type"));
         assertTrue(doc.contains("RAPID mode shooting behavior"));
         assertTrue(doc.contains("TORCH mode shooting behavior"));
@@ -142,6 +147,7 @@ class CavenicBowDocumentationTest {
         assertTrue(doc.contains("horizontal `minecraft:wall_torch`"));
         assertTrue(doc.contains("never replaces liquids"));
         assertTrue(doc.contains("does not yet port `EntityTorchArrow`"));
+        assertTrue(doc.contains("docs/entity-rapid-torch-arrow-projectile-boundary.md"));
         assertTrue(doc.contains("RAPID and SNIPE remain unchanged"));
         assertTrue(doc.contains("docs/cavenic-bow-release-semantics-mvp.md"));
         assertTrue(doc.contains("custom projectile entity registration"));
@@ -164,6 +170,7 @@ class CavenicBowDocumentationTest {
         assertTrue(doc.contains("`EntityRapidArrow`"));
         assertTrue(doc.contains("`EntityTorchArrow`"));
         assertTrue(doc.contains("docs/entity-cavenic-arrow-projectile-boundary.md"));
+        assertTrue(doc.contains("docs/entity-rapid-torch-arrow-projectile-boundary.md"));
         assertTrue(doc.contains("`EntityCavenicArrow`"));
         assertTrue(doc.contains("custom projectile entities remain out of scope"));
     }
@@ -198,6 +205,7 @@ class CavenicBowDocumentationTest {
         assertTrue(runtimeSmoke.contains("cavenic bow RAPID not inheriting the SNIPE damage multiplier"));
         assertTrue(runtimeSmoke.contains("cavenic bow TORCH not inheriting RAPID or SNIPE behavior"));
         assertTrue(runtimeSmoke.contains("entity cavenic arrow projectile boundary smoke"));
+        assertTrue(runtimeSmoke.contains("rapid/torch arrow projectile boundary smoke"));
         assertTrue(runtimeSmoke.contains("cavenic bow recipe manager resolution"));
         assertTrue(runtimeSmoke.contains("custom projectile behavior"));
     }
@@ -220,6 +228,32 @@ class CavenicBowDocumentationTest {
         assertTrue(doc.contains("Reborn `RAPID`, `SNIPE` and `TORCH` slices explicitly pin vanilla-arrow runtime identity"));
         assertTrue(doc.contains("does not register or spawn `cavernreborn:cavenic_arrow`"));
         assertTrue(doc.contains("thin tipped-arrow shell"));
+    }
+
+    @Test
+    void entityRapidTorchArrowBoundaryDocStatesLegacyProjectileFindingsAndNoPortDecision() throws IOException {
+        String doc = Files.readString(ENTITY_RAPID_TORCH_ARROW_BOUNDARY);
+
+        assertTrue(doc.contains("`cavern.entity.projectile.EntityRapidArrow`"));
+        assertTrue(doc.contains("`cavern.entity.projectile.EntityTorchArrow`"));
+        assertTrue(doc.contains("`cavern.item.ItemBowCavenic`"));
+        assertTrue(doc.contains("extends `EntityTippedArrow`"));
+        assertTrue(doc.contains("`arrowHit(EntityLivingBase living)`"));
+        assertTrue(doc.contains("`living.getTotalArmorValue() < 20`"));
+        assertTrue(doc.contains("`living.hurtResistantTime = 0`"));
+        assertTrue(doc.contains("`setTorchItem(ItemStack stack)`"));
+        assertTrue(doc.contains("`onHit(RayTraceResult rayTrace)`"));
+        assertTrue(doc.contains("temporarily swap the player main hand"));
+        assertTrue(doc.contains("`onItemUse(...)`"));
+        assertTrue(doc.contains("no dedicated `rapid_arrow` registration"));
+        assertTrue(doc.contains("no dedicated `torch_arrow` registration"));
+        assertTrue(doc.contains("no dedicated `RenderRapidArrow` registration"));
+        assertTrue(doc.contains("no dedicated `RenderTorchArrow` registration"));
+        assertTrue(doc.contains("Reborn `RAPID` intentionally keeps the vanilla-compatible arrow path."));
+        assertTrue(doc.contains("Reborn `TORCH` intentionally keeps the vanilla-compatible arrow path."));
+        assertTrue(doc.contains("cavernreborn:rapid_arrow"));
+        assertTrue(doc.contains("cavernreborn:torch_arrow"));
+        assertTrue(doc.contains("Crazy Skeleton ranged AI still keeping the current local vanilla-compatible projectile bridge"));
     }
 
     private static Path resolveProjectFile(String first, String... more) {

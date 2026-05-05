@@ -70,6 +70,7 @@ Legacy Torch mode depended on `EntityTorchArrow` and older item-use-on-hit plumb
 This Reborn MVP intentionally softens that port:
 
 - it does not yet port `EntityTorchArrow`
+- it now documents that separate projectile gap in `docs/entity-rapid-torch-arrow-projectile-boundary.md`
 - it does not register any custom projectile entity
 - it keeps custom projectile entity registration out of scope
 - it does not place torches through a custom projectile class
@@ -77,6 +78,8 @@ This Reborn MVP intentionally softens that port:
 - RAPID and SNIPE remain unchanged
 
 The current behavior is a bounded modern bridge that preserves the Torch identity without widening the projectile/entity system yet.
+
+The separate `EntityTorchArrow` parity gap is now documented in `docs/entity-rapid-torch-arrow-projectile-boundary.md`.
 
 ## Testing
 

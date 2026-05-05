@@ -87,6 +87,7 @@ This slice inspects the legacy `EntityCavenicArrow` path and pins the current Re
 - `docs/cavenic-bow-rapid-mode-mvp.md` keeps `RAPID` on vanilla arrows and does not port `EntityRapidArrow`.
 - `docs/cavenic-bow-torch-mode-mvp.md` keeps `TORCH` on marked vanilla arrows and does not port `EntityTorchArrow`.
 - `docs/cavenic-bow-release-semantics-mvp.md` keeps the real release path on vanilla-compatible arrows.
+- `docs/entity-rapid-torch-arrow-projectile-boundary.md` covers the separate player-shot `EntityRapidArrow` and `EntityTorchArrow` gaps.
 - `docs/crazy-skeleton-ranged-ai-mvp.md` restores the legacy goal cadence and weapon switching while keeping the current Reborn vanilla-compatible projectile bridge.
 
 ## What Full Projectile Parity Would Still Require

@@ -57,6 +57,8 @@ This Reborn MVP intentionally softens that port:
 
 The current values are a bounded modern stand-in that is easy to test and that keeps the vanilla projectile path intact.
 
+The separate `EntityRapidArrow` parity gap is now documented in `docs/entity-rapid-torch-arrow-projectile-boundary.md`.
+
 ## Runtime Wiring
 
 - `NORMAL` still uses vanilla bow behavior.
@@ -70,6 +72,7 @@ The current values are a bounded modern stand-in that is easy to test and that k
 
 - `EntityRapidArrow`
 - `EntityTorchArrow`
+- `docs/entity-rapid-torch-arrow-projectile-boundary.md`
 - custom projectile entity registration
 - rapid multi-shot behavior
 - TORCH mode shooting behavior

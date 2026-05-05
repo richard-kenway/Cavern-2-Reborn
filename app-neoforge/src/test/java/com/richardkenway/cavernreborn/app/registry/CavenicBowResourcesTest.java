@@ -135,8 +135,19 @@ class CavenicBowResourcesTest {
         assertFalse(clientSource.contains("CavenicArrow"));
         assertFalse(registriesSource.contains("rapid_arrow"));
         assertFalse(registriesSource.contains("torch_arrow"));
+        assertFalse(clientSource.contains("rapid_arrow"));
+        assertFalse(clientSource.contains("torch_arrow"));
+        assertFalse(clientSource.contains("RapidArrow"));
+        assertFalse(clientSource.contains("TorchArrow"));
         assertFalse(modSource.contains("rapid_arrow"));
         assertFalse(modSource.contains("torch_arrow"));
+
+        assertMissingProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "projectile", "RapidArrow.java"
+        );
+        assertMissingProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "projectile", "TorchArrow.java"
+        );
     }
 
     @Test
@@ -268,6 +279,18 @@ class CavenicBowResourcesTest {
 
     private static void assertClassPathOrigin(URL url, String expectedPathSuffix) {
         assertTrue(url.toString().contains(expectedPathSuffix), "Expected runtime classpath resource to contain " + expectedPathSuffix + " but got " + url);
+    }
+
+    private static void assertMissingProjectFile(String first, String... more) {
+        Path current = Path.of("").toAbsolutePath();
+
+        for (int i = 0; i < 5 && current != null; i++) {
+            Path candidate = current.resolve(Path.of(first, more));
+            if (Files.exists(candidate)) {
+                throw new AssertionError("Did not expect project file: " + candidate);
+            }
+            current = current.getParent();
+        }
     }
 
     private static String readProjectFile(String first, String... more) {

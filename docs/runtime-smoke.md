@@ -52,6 +52,7 @@ NeoForge GameTest runtime smoke covers:
 - cavenic bow TORCH no-custom-entity smoke
 - cavenic bow TORCH not inheriting RAPID or SNIPE behavior
 - entity cavenic arrow projectile boundary smoke
+- rapid/torch arrow projectile boundary smoke
 - cavenic bow enchantment applicability
 - cavenic bow cavenic item tag resolution
 - cavenic bow recipe manager resolution
