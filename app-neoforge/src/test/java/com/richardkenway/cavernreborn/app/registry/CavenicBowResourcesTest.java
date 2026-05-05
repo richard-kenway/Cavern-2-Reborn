@@ -33,6 +33,9 @@ class CavenicBowResourcesTest {
         String torchEventSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "item", "CavenicBowTorchEvents.java"
         );
+        String clientSource = readProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "client", "CavernClientModEvents.java"
+        );
         String modSource = readProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "CavernReborn.java"
         );
@@ -122,8 +125,14 @@ class CavenicBowResourcesTest {
         assertTrue(modSource.contains("NeoForge.EVENT_BUS.register(new CavenicBowTorchEvents())"));
         assertFalse(bowSource.contains("EntityRapidArrow"));
         assertFalse(bowSource.contains("EntityTorchArrow"));
+        assertFalse(bowSource.contains("EntityCavenicArrow"));
         assertFalse(torchEventSource.contains("EntityRapidArrow"));
         assertFalse(torchEventSource.contains("EntityTorchArrow"));
+        assertFalse(torchEventSource.contains("EntityCavenicArrow"));
+        assertFalse(registriesSource.contains("cavenic_arrow"));
+        assertFalse(registriesSource.contains("CAVENIC_ARROW"));
+        assertFalse(clientSource.contains("cavenic_arrow"));
+        assertFalse(clientSource.contains("CavenicArrow"));
         assertFalse(registriesSource.contains("rapid_arrow"));
         assertFalse(registriesSource.contains("torch_arrow"));
         assertFalse(modSource.contains("rapid_arrow"));

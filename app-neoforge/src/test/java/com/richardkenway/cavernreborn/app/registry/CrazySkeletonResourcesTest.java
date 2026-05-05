@@ -173,6 +173,8 @@ class CrazySkeletonResourcesTest {
         assertTrue(entitySource.contains("arrow = bowItem.customArrow(arrow, projectileStack, mainHandItem);"));
         assertTrue(entitySource.contains("arrow.setOwner(this);"));
         assertTrue(entitySource.contains("this.level().addFreshEntity(arrow);"));
+        assertFalse(entitySource.contains("EntityCavenicArrow"));
+        assertFalse(entitySource.contains("CAVENIC_ARROW"));
         assertTrue(entitySource.contains("protected void customServerAiStep()"));
         assertTrue(entitySource.contains("public void startSeenByPlayer(ServerPlayer player)"));
         assertTrue(entitySource.contains("public void stopSeenByPlayer(ServerPlayer player)"));
@@ -216,6 +218,8 @@ class CrazySkeletonResourcesTest {
 
         assertTrue(clientSource.contains("event.registerEntityRenderer(ModRegistries.CRAZY_SKELETON.get(), CrazySkeletonRenderer::new);"));
         assertTrue(clientSource.contains("event.registerSpriteSet(ModRegistries.CRAZY_MOB_PARTICLE.get(), CrazyMobParticle.Provider::new);"));
+        assertFalse(clientSource.contains("cavenic_arrow"));
+        assertFalse(clientSource.contains("CavenicArrow"));
         assertTrue(particleSource.contains("extends PortalParticle"));
         assertTrue(particleSource.contains("float f = this.random.nextFloat() * 0.5F + 0.4F;"));
         assertTrue(particleSource.contains("float color = 0.65F * f * 0.8F;"));
@@ -240,6 +244,9 @@ class CrazySkeletonResourcesTest {
         );
         assertMissingProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "ai", "CrazySkeletonCavenicBowAttackGoal.java"
+        );
+        assertMissingProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "projectile", "CavenicArrow.java"
         );
     }
 

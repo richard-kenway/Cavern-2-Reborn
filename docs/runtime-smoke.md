@@ -51,6 +51,7 @@ NeoForge GameTest runtime smoke covers:
 - cavenic bow TORCH wall-torch orientation smoke
 - cavenic bow TORCH no-custom-entity smoke
 - cavenic bow TORCH not inheriting RAPID or SNIPE behavior
+- entity cavenic arrow projectile boundary smoke
 - cavenic bow enchantment applicability
 - cavenic bow cavenic item tag resolution
 - cavenic bow recipe manager resolution
@@ -397,6 +398,7 @@ NeoForge GameTest runtime smoke covers:
 - actual long-run Cavenic Creeper population balance inside CAVERN
 - actual long-run Cavenic Skeleton population balance inside CAVERN
 - legacy Cavenic Bow Rapid/Torch custom projectile behavior and client feel beyond the current bounded Snipe, Rapid and Torch slices
+- legacy `EntityCavenicArrow` parity beyond the current vanilla-compatible skeleton/player projectile boundary
 - the current Cavenic Bow release-semantics coverage is still server-side GameTest only, not a substitute for manual client feel validation
 - actual long-run Cavenic Zombie population balance inside CAVERN
 - actual underwater aquamarine mining feel

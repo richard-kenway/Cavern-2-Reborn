@@ -4466,6 +4466,34 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void entityCavenicArrowProjectileBoundaryKeepsCurrentArrowPathsStableAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CRAZY_SKELETON_EQUIPMENT_ANCHOR.south(54);
+        ResourceLocation cavenicArrowId = ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "cavenic_arrow");
+
+        resetMiningArea(level, origin, 16.0D);
+
+        CrazySkeleton crazySkeleton = spawnLivingEntity(helper, ModRegistries.CRAZY_SKELETON.get(), origin);
+        Zombie target = spawnLivingEntity(helper, EntityType.ZOMBIE, origin.east(20));
+
+        crazySkeleton.setItemSlot(EquipmentSlot.MAINHAND, CrazySkeleton.createLegacyCrazySkeletonBow(level.registryAccess()));
+        crazySkeleton.reassessWeaponGoal();
+        crazySkeleton.setTarget(target);
+
+        helper.assertTrue(BuiltInRegistries.ENTITY_TYPE.getOptional(cavenicArrowId).isEmpty(), "Expected runtime entity registry to keep cavernreborn:cavenic_arrow absent");
+        helper.assertTrue(findGoalBySimpleName(crazySkeleton.goalSelector.getAvailableGoals(), "LegacyCrazySkeletonCavenicBowAttackGoal").isPresent(), "Expected crazy skeleton projectile boundary smoke to keep the local ranged goal wired");
+        helper.assertTrue(crazySkeleton.getMainHandItem().is(ModRegistries.CAVENIC_BOW.get()), "Expected crazy skeleton projectile boundary smoke to keep the guaranteed Cavenic Bow equipped");
+
+        crazySkeleton.performRangedAttack(target, BowItem.getPowerForTime(CrazySkeleton.LEGACY_RANGED_DRAW_DURATION_TICKS));
+
+        helper.runAfterDelay(1, () -> {
+            helper.assertTrue(BuiltInRegistries.ENTITY_TYPE.getOptional(cavenicArrowId).isEmpty(), "Expected runtime entity registry to keep cavernreborn:cavenic_arrow absent after the ranged attack");
+            helper.assertTrue(findGoalBySimpleName(crazySkeleton.goalSelector.getAvailableGoals(), "LegacyCrazySkeletonCavenicBowAttackGoal").isPresent(), "Expected crazy skeleton projectile boundary smoke to keep the local ranged goal intact");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void crazySkeletonLegacyOrbDropWiresAtRuntime(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos origin = CRAZY_SKELETON_EQUIPMENT_ANCHOR.south(16);

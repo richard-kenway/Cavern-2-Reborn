@@ -16,6 +16,7 @@ class CavenicBowDocumentationTest {
     private static final Path CAVENIC_BOW_RAPID = resolveProjectFile("docs", "cavenic-bow-rapid-mode-mvp.md");
     private static final Path CAVENIC_BOW_TORCH = resolveProjectFile("docs", "cavenic-bow-torch-mode-mvp.md");
     private static final Path CAVENIC_BOW_RELEASE = resolveProjectFile("docs", "cavenic-bow-release-semantics-mvp.md");
+    private static final Path ENTITY_CAVENIC_ARROW_BOUNDARY = resolveProjectFile("docs", "entity-cavenic-arrow-projectile-boundary.md");
     private static final Path RUNTIME_SMOKE = resolveProjectFile("docs", "runtime-smoke.md");
 
     @Test
@@ -34,6 +35,7 @@ class CavenicBowDocumentationTest {
         assertTrue(readme.contains("docs/cavenic-bow-rapid-mode-mvp.md"));
         assertTrue(readme.contains("docs/cavenic-bow-torch-mode-mvp.md"));
         assertTrue(readme.contains("docs/cavenic-bow-release-semantics-mvp.md"));
+        assertTrue(readme.contains("docs/entity-cavenic-arrow-projectile-boundary.md"));
         assertTrue(readme.contains("cavenic_bow"));
         assertTrue(readme.contains("stack-local mode state"));
         assertTrue(readme.contains("sneak-use mode cycling"));
@@ -161,6 +163,8 @@ class CavenicBowDocumentationTest {
         assertTrue(doc.contains("wall torch orientation"));
         assertTrue(doc.contains("`EntityRapidArrow`"));
         assertTrue(doc.contains("`EntityTorchArrow`"));
+        assertTrue(doc.contains("docs/entity-cavenic-arrow-projectile-boundary.md"));
+        assertTrue(doc.contains("`EntityCavenicArrow`"));
         assertTrue(doc.contains("custom projectile entities remain out of scope"));
     }
 
@@ -193,8 +197,29 @@ class CavenicBowDocumentationTest {
         assertTrue(runtimeSmoke.contains("cavenic bow TORCH no-custom-entity smoke"));
         assertTrue(runtimeSmoke.contains("cavenic bow RAPID not inheriting the SNIPE damage multiplier"));
         assertTrue(runtimeSmoke.contains("cavenic bow TORCH not inheriting RAPID or SNIPE behavior"));
+        assertTrue(runtimeSmoke.contains("entity cavenic arrow projectile boundary smoke"));
         assertTrue(runtimeSmoke.contains("cavenic bow recipe manager resolution"));
         assertTrue(runtimeSmoke.contains("custom projectile behavior"));
+    }
+
+    @Test
+    void entityCavenicArrowBoundaryDocStatesLegacyProjectileFindingsAndNoPortDecision() throws IOException {
+        String doc = Files.readString(ENTITY_CAVENIC_ARROW_BOUNDARY);
+
+        assertTrue(doc.contains("`cavern.entity.projectile.EntityCavenicArrow`"));
+        assertTrue(doc.contains("`cavern.item.ItemBowCavenic`"));
+        assertTrue(doc.contains("`cavern.entity.monster.EntityCavenicSkeleton`"));
+        assertTrue(doc.contains("`cavern.entity.monster.EntityCrazySkeleton`"));
+        assertTrue(doc.contains("extends `EntityTippedArrow`"));
+        assertTrue(doc.contains("`timeInGround > 10`"));
+        assertTrue(doc.contains("`setDead()`"));
+        assertTrue(doc.contains("player shots do not create `EntityCavenicArrow`"));
+        assertTrue(doc.contains("`EntityCavenicSkeleton#getArrow(float)` creates the legacy projectile path"));
+        assertTrue(doc.contains("no dedicated `cavenic_arrow` registration"));
+        assertTrue(doc.contains("no dedicated `RenderCavenicArrow` registration"));
+        assertTrue(doc.contains("Reborn `RAPID`, `SNIPE` and `TORCH` slices explicitly pin vanilla-arrow runtime identity"));
+        assertTrue(doc.contains("does not register or spawn `cavernreborn:cavenic_arrow`"));
+        assertTrue(doc.contains("thin tipped-arrow shell"));
     }
 
     private static Path resolveProjectFile(String first, String... more) {

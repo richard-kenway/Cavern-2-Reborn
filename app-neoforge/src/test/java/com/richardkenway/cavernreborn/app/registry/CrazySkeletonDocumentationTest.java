@@ -17,6 +17,7 @@ class CrazySkeletonDocumentationTest {
     private static final Path BOSS_DOC = resolveProjectFile("docs", "crazy-skeleton-boss-bar-mvp.md");
     private static final Path PARTICLE_DOC = resolveProjectFile("docs", "crazy-skeleton-particle-trail-mvp.md");
     private static final Path AI_MVP_DOC = resolveProjectFile("docs", "crazy-skeleton-ranged-ai-mvp.md");
+    private static final Path ENTITY_CAVENIC_ARROW_BOUNDARY_DOC = resolveProjectFile("docs", "entity-cavenic-arrow-projectile-boundary.md");
     private static final Path RUNTIME_SMOKE = resolveProjectFile("docs", "runtime-smoke.md");
 
     @Test
@@ -31,6 +32,7 @@ class CrazySkeletonDocumentationTest {
         assertTrue(readme.contains("docs/crazy-skeleton-boss-bar-mvp.md"));
         assertTrue(readme.contains("docs/crazy-skeleton-particle-trail-mvp.md"));
         assertTrue(readme.contains("docs/crazy-skeleton-ranged-ai-mvp.md"));
+        assertTrue(readme.contains("docs/entity-cavenic-arrow-projectile-boundary.md"));
         assertTrue(readme.contains("legacy `EntityAIAttackCavenicBow` path is now restored explicitly through a local Crazy Skeleton-only goal swap"));
         assertTrue(readme.contains("guaranteed `Cavenic Bow` mainhand, forced `Infinity` enchantment and `1.0F` mainhand drop chance are now restored explicitly"));
         assertTrue(readme.contains("legacy crazy-roster natural spawning stays deferred"));
@@ -204,6 +206,7 @@ class CrazySkeletonDocumentationTest {
         assertTrue(doc.contains("`BowItem.getPowerForTime(5)`"));
         assertTrue(doc.contains("keeps the current Reborn vanilla-compatible `CavenicBowItem` projectile path"));
         assertTrue(doc.contains("does not port `EntityCavenicArrow`"));
+        assertTrue(doc.contains("docs/entity-cavenic-arrow-projectile-boundary.md"));
         assertTrue(doc.contains("does not change vanilla `Skeleton`"));
         assertTrue(doc.contains("does not change Reborn `CavenicSkeleton`"));
         assertTrue(doc.contains("loot/orb unchanged"));
@@ -226,11 +229,20 @@ class CrazySkeletonDocumentationTest {
         assertTrue(runtimeSmoke.contains("crazy skeleton legacy ranged-goal constants smoke"));
         assertTrue(runtimeSmoke.contains("crazy skeleton local melee fallback switch smoke"));
         assertTrue(runtimeSmoke.contains("crazy skeleton vanilla and cavenic skeleton no-global-ai-change smoke"));
+        assertTrue(runtimeSmoke.contains("entity cavenic arrow projectile boundary smoke"));
         assertTrue(runtimeSmoke.contains("crazy skeleton boss-event wiring smoke"));
         assertTrue(runtimeSmoke.contains("crazy skeleton particle type registry id smoke"));
         assertTrue(runtimeSmoke.contains("crazy skeleton explicit no-natural-spawn baseline boundary"));
         assertTrue(runtimeSmoke.contains("actual long-running Crazy Skeleton ranged combat feel remains manual"));
         assertTrue(runtimeSmoke.contains("natural spawning remains deferred through Cavenia boundary"));
+    }
+
+    @Test
+    void entityCavenicArrowBoundaryDocStatesCrazySkeletonRelationship() throws IOException {
+        String doc = Files.readString(ENTITY_CAVENIC_ARROW_BOUNDARY_DOC);
+
+        assertTrue(doc.contains("Legacy `EntityCrazySkeleton` extends legacy `EntityCavenicSkeleton`, so it inherits that arrow factory"));
+        assertTrue(doc.contains("Reborn `CrazySkeleton` ranged AI intentionally keeps the current local `performRangedAttack(...)` bridge"));
     }
 
     private static Path resolveProjectFile(String first, String... more) {

@@ -58,6 +58,7 @@ Reborn implements a local Crazy Skeleton-only goal swap on `CrazySkeleton`.
 - Reborn keeps the current Reborn vanilla-compatible `CavenicBowItem` projectile path.
 - When no real projectile stack is found, the local bridge falls back to a vanilla `Items.ARROW` stack instead of changing global bow behavior.
 - Reborn does not port `EntityCavenicArrow`.
+- The exact projectile-parity gap is now documented separately in `docs/entity-cavenic-arrow-projectile-boundary.md`.
 
 ## Why This Mapping Stays Bounded
 
@@ -89,6 +90,7 @@ Reborn implements a local Crazy Skeleton-only goal swap on `CrazySkeleton`.
   - the exact legacy references
   - the local-goal mapping
   - the explicit `EntityCavenicArrow` non-port note
+  - the dedicated `docs/entity-cavenic-arrow-projectile-boundary.md` follow-up reference
   - the unchanged loot/damage/boss/particle/natural-spawn boundaries
 - NeoForge GameTest runtime smoke covers:
   - crazy skeleton legacy cavenic bow ranged-goal wiring smoke

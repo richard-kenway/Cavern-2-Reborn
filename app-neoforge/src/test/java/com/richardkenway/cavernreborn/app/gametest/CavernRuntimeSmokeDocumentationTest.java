@@ -58,6 +58,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/cavenic-bow-rapid-mode-mvp.md"));
         assertTrue(readme.contains("Cavenic Bow Torch Mode MVP"));
         assertTrue(readme.contains("docs/cavenic-bow-torch-mode-mvp.md"));
+        assertTrue(readme.contains("docs/entity-cavenic-arrow-projectile-boundary.md"));
         assertTrue(readme.contains("Cavenic Zombie Baseline MVP"));
         assertTrue(readme.contains("docs/cavenic-zombie-baseline-mvp.md"));
         assertTrue(readme.contains("Cavenic Zombie Natural Spawn MVP"));
@@ -266,6 +267,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("cavenic bow TORCH torch-consumption smoke"));
         assertTrue(doc.contains("cavenic bow TORCH no-custom-entity smoke"));
         assertTrue(doc.contains("cavenic bow TORCH not inheriting RAPID or SNIPE behavior"));
+        assertTrue(doc.contains("entity cavenic arrow projectile boundary smoke"));
         assertTrue(doc.contains("cavenic zombie runtime registry id"));
         assertTrue(doc.contains("cavenic zombie attribute registration smoke"));
         assertTrue(doc.contains("cavenic zombie hostile runtime spawn smoke"));
@@ -608,6 +610,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("actual long-running Crazy Skeleton ranged combat feel remains manual"));
         assertTrue(doc.contains("natural spawning remains deferred through Cavenia boundary"));
         assertTrue(doc.contains("legacy Cavenic Bow Rapid/Torch custom projectile behavior and client feel beyond the current bounded Snipe, Rapid and Torch slices"));
+        assertTrue(doc.contains("legacy `EntityCavenicArrow` parity beyond the current vanilla-compatible skeleton/player projectile boundary"));
         assertTrue(doc.contains("actual long-run Cavenic Zombie population balance inside CAVERN"));
         assertTrue(doc.contains("actual underwater aquamarine mining feel"));
         assertTrue(doc.contains("actual brittle magnite mining feel"));

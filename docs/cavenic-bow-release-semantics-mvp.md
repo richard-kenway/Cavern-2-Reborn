@@ -39,6 +39,7 @@ It does not add a new gameplay feature. It pins the current bow behavior against
 - `RAPID` keeps the bounded faster power ramp but still stays on the vanilla arrow entity path.
 - `SNIPE` keeps the bounded full-charge velocity and damage boost plus the extra durability surcharge only when the Snipe boost actually applies.
 - `TORCH` keeps the vanilla arrow entity path, uses a marker plus server-side impact handling and now keeps direct wall-torch orientation without opposite-wall fallback.
+- The remaining legacy `EntityCavenicArrow` projectile gap is documented separately in `docs/entity-cavenic-arrow-projectile-boundary.md`.
 
 ## Torch Placement Hardening
 
@@ -53,6 +54,7 @@ It does not add a new gameplay feature. It pins the current bow behavior against
 - `EntityTorchArrow`
 - custom projectile entities remain out of scope
 - custom projectile classes
+- `EntityCavenicArrow`
 - client visual feel and model predicates
 - Rapid rebalance
 - Snipe rebalance
