@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import com.richardkenway.cavernreborn.CavernReborn;
 import com.richardkenway.cavernreborn.app.block.AcresiaCropBlock;
@@ -275,6 +277,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CRAZY_SPIDER_PARTICLE_TRAIL_ANCHOR = new BlockPos(7840, 96, 0);
     private static final BlockPos CRAZY_SPIDER_COMBAT_ANCHOR = new BlockPos(7936, 96, 0);
     private static final BlockPos CRAZY_MOB_CAVENIA_ROSTER_BOUNDARY_ANCHOR = new BlockPos(8032, 96, 0);
+    private static final BlockPos CAVENIA_DIMENSION_FOUNDATION_BOUNDARY_ANCHOR = new BlockPos(8128, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -7024,6 +7027,70 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void caveniaDimensionProviderFoundationBoundaryStaysInactiveAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIA_DIMENSION_FOUNDATION_BOUNDARY_ANCHOR;
+        ResourceKey<Level> caveniaLevelKey = CavernNeoForgeDimensions.levelKey("cavernreborn:cavenia");
+        List<EntityType<? extends Mob>> crazyTypes = List.of(
+            ModRegistries.CRAZY_ZOMBIE.get(),
+            ModRegistries.CRAZY_SKELETON.get(),
+            ModRegistries.CRAZY_CREEPER.get(),
+            ModRegistries.CRAZY_SPIDER.get()
+        );
+        List<String> crazyIds = List.of(
+            "cavernreborn:crazy_zombie",
+            "cavernreborn:crazy_skeleton",
+            "cavernreborn:crazy_creeper",
+            "cavernreborn:crazy_spider"
+        );
+
+        resetMiningArea(level, origin, 24.0D);
+
+        helper.assertTrue(
+            CavernNeoForgeDimensions.isCavern(CavernNeoForgeDimensions.CAVERN_LEVEL_KEY),
+            "Expected the CAVERN key helper to keep recognizing the active checked-in dimension"
+        );
+        helper.assertTrue(
+            CavernNeoForgeDimensions.CAVERN_LEVEL_KEY.location().toString().equals(CavernDimensions.CAVERN_DIMENSION_ID),
+            "Expected the checked-in CAVERN level key to remain stable while the Cavenia foundation stays deferred"
+        );
+        helper.assertTrue(
+            level.getServer().getLevel(caveniaLevelKey) == null,
+            "Expected the Cavenia foundation boundary to keep cavernreborn:cavenia inactive at runtime"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-dimension-provider-foundation-boundary.md"),
+            "Expected the Cavenia dimension/provider foundation boundary doc to exist in the project root"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-crazy-roster-natural-spawn-boundary.md"),
+            "Expected the existing Cavenia crazy-roster boundary doc to stay present alongside the broader foundation boundary"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension", "cavenia.json"),
+            "Expected the Cavenia foundation boundary to keep the checked-in cavenia dimension resource absent"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension_type", "cavenia.json"),
+            "Expected the Cavenia foundation boundary to keep the checked-in cavenia dimension-type resource absent"
+        );
+
+        for (int i = 0; i < crazyTypes.size(); i++) {
+            EntityType<? extends Mob> crazyType = crazyTypes.get(i);
+            Mob crazyMob = spawnLivingEntity(helper, crazyType, origin.east(i * 4));
+            clearEquipment(crazyMob);
+
+            helper.assertTrue(crazyMob.isAlive(), "Expected crazy entity to remain spawnable for the Cavenia foundation boundary smoke: " + crazyIds.get(i));
+            helper.assertTrue(
+                SpawnPlacements.getPlacementType(crazyType) == SpawnPlacementTypes.NO_RESTRICTIONS,
+                "Expected the Cavenia foundation boundary to keep normal spawn placement unregistered: " + crazyIds.get(i)
+            );
+        }
+
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void cavenicMeleeRegistersAtRuntime(GameTestHelper helper) {
         helper.assertTrue(ModRegistries.CAVENIC_SWORD.get() != null, "Missing cavenic sword");
         helper.assertTrue(ModRegistries.CAVENIC_AXE.get() != null, "Missing cavenic axe");
@@ -9658,6 +9725,24 @@ public final class CavernSpecialOreGameTests {
         level.setBlock(spawnPos.below(), Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
         level.setBlock(spawnPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
         level.setBlock(spawnPos.above(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+    }
+
+    private static boolean projectFileExists(String first, String... more) {
+        return resolveProjectFile(first, more) != null;
+    }
+
+    private static Path resolveProjectFile(String first, String... more) {
+        Path current = Path.of("").toAbsolutePath();
+
+        for (int i = 0; i < 5 && current != null; i++) {
+            Path candidate = current.resolve(Path.of(first, more));
+            if (Files.exists(candidate)) {
+                return candidate;
+            }
+            current = current.getParent();
+        }
+
+        return null;
     }
 
     private record BowReleaseResult(

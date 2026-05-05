@@ -224,6 +224,9 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/crazy-spider-combat-effects-mvp.md"));
         assertTrue(readme.contains("Cavenia Crazy Roster Natural Spawn Boundary MVP"));
         assertTrue(readme.contains("docs/cavenia-crazy-roster-natural-spawn-boundary.md"));
+        assertTrue(readme.contains("Cavenia Dimension / Provider Foundation Boundary"));
+        assertTrue(readme.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
+        assertTrue(readme.contains("full mirage-world stack"));
         assertTrue(readme.contains("old Cavenia-only `crazySpawnChance` plus nearby non-boss `ICavenicMob` exclusion branch"));
         assertTrue(readme.contains("fourth crazy-variant foundation follow-up"));
         assertTrue(readme.contains("`crazy_spider`"));
@@ -571,6 +574,9 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("cavenic bear natural spawn placement registration"));
         assertTrue(doc.contains("cavenic bear CAVERN-only spawn predicate smoke"));
         assertTrue(doc.contains("docs/cavenia-crazy-roster-natural-spawn-boundary.md"));
+        assertTrue(doc.contains("inactive Cavenia dimension/provider foundation boundary"));
+        assertTrue(doc.contains("no active `cavernreborn:cavenia` level resolves at runtime"));
+        assertTrue(doc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
         assertTrue(doc.contains("cavenic bear biome modifier registry smoke"));
         assertTrue(doc.contains("cavenic bear biome tag resolution"));
         assertTrue(doc.contains("cavenic bear legacy fall-damage reduction smoke"));

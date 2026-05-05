@@ -107,6 +107,7 @@ Current Reborn has:
 
 - the checked-in `cavern` dimension
 - current `CAVERN`-only natural spawning for the direct Cavenic roster through `RegisterSpawnPlacementsEvent` plus biome modifiers and biome tags
+- the separate architecture boundary documented in `docs/cavenia-dimension-provider-foundation-boundary.md`
 
 Current Reborn does not have:
 
@@ -152,6 +153,7 @@ Reborn also does not register normal spawn placement for:
 Before active crazy natural spawning can be enabled honestly, Reborn needs:
 
 - a real `Cavenia` dimension foundation
+- the provider/terrain/biome split documented in `docs/cavenia-dimension-provider-foundation-boundary.md`
 - a Cavenia-only monster spawn host equivalent to legacy `WorldProviderCavenia#createSpawnCreature(...)`
 - a checked-in policy for `CaveniaConfig.crazySpawnChance`
 - the nearby non-boss `ICavenicMob` exclusion behavior or a modern equivalent that is source-honest
