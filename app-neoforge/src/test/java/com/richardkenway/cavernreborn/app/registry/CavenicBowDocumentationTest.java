@@ -16,6 +16,7 @@ class CavenicBowDocumentationTest {
     private static final Path CAVENIC_BOW_RAPID = resolveProjectFile("docs", "cavenic-bow-rapid-mode-mvp.md");
     private static final Path CAVENIC_BOW_RAPID_HURT_RESISTANCE = resolveProjectFile("docs", "cavenic-bow-rapid-low-armor-hurt-resistance-mvp.md");
     private static final Path CAVENIC_BOW_TORCH = resolveProjectFile("docs", "cavenic-bow-torch-mode-mvp.md");
+    private static final Path CAVENIC_BOW_TORCH_ITEM_USE_FORWARDING = resolveProjectFile("docs", "cavenic-bow-torch-item-use-forwarding-boundary.md");
     private static final Path CAVENIC_BOW_RELEASE = resolveProjectFile("docs", "cavenic-bow-release-semantics-mvp.md");
     private static final Path ENTITY_CAVENIC_ARROW_BOUNDARY = resolveProjectFile("docs", "entity-cavenic-arrow-projectile-boundary.md");
     private static final Path ENTITY_RAPID_TORCH_ARROW_BOUNDARY = resolveProjectFile("docs", "entity-rapid-torch-arrow-projectile-boundary.md");
@@ -38,6 +39,7 @@ class CavenicBowDocumentationTest {
         assertTrue(readme.contains("docs/cavenic-bow-rapid-mode-mvp.md"));
         assertTrue(readme.contains("docs/cavenic-bow-rapid-low-armor-hurt-resistance-mvp.md"));
         assertTrue(readme.contains("docs/cavenic-bow-torch-mode-mvp.md"));
+        assertTrue(readme.contains("docs/cavenic-bow-torch-item-use-forwarding-boundary.md"));
         assertTrue(readme.contains("docs/cavenic-bow-release-semantics-mvp.md"));
         assertTrue(readme.contains("docs/entity-cavenic-arrow-projectile-boundary.md"));
         assertTrue(readme.contains("docs/entity-rapid-torch-arrow-projectile-boundary.md"));
@@ -172,6 +174,7 @@ class CavenicBowDocumentationTest {
         assertTrue(doc.contains("never replaces liquids"));
         assertTrue(doc.contains("does not yet port `EntityTorchArrow`"));
         assertTrue(doc.contains("docs/entity-rapid-torch-arrow-projectile-boundary.md"));
+        assertTrue(doc.contains("docs/cavenic-bow-torch-item-use-forwarding-boundary.md"));
         assertTrue(doc.contains("RAPID and SNIPE remain unchanged"));
         assertTrue(doc.contains("docs/cavenic-bow-release-semantics-mvp.md"));
         assertTrue(doc.contains("custom projectile entity registration"));
@@ -190,6 +193,7 @@ class CavenicBowDocumentationTest {
         assertTrue(doc.contains("creative/no-arrow behavior"));
         assertTrue(doc.contains("Infinity behavior"));
         assertTrue(doc.contains("Torch consumption stays separate from arrow consumption"));
+        assertTrue(doc.contains("docs/cavenic-bow-torch-item-use-forwarding-boundary.md"));
         assertTrue(doc.contains("docs/cavenic-bow-rapid-low-armor-hurt-resistance-mvp.md"));
         assertTrue(doc.contains("wall torch orientation"));
         assertTrue(doc.contains("`EntityRapidArrow`"));
@@ -229,6 +233,7 @@ class CavenicBowDocumentationTest {
         assertTrue(runtimeSmoke.contains("cavenic bow TORCH torch-consumption smoke"));
         assertTrue(runtimeSmoke.contains("cavenic bow TORCH wall-torch orientation smoke"));
         assertTrue(runtimeSmoke.contains("cavenic bow TORCH no-custom-entity smoke"));
+        assertTrue(runtimeSmoke.contains("cavenic bow TORCH item-use-forwarding boundary smoke"));
         assertTrue(runtimeSmoke.contains("cavenic bow RAPID not inheriting the SNIPE damage multiplier"));
         assertTrue(runtimeSmoke.contains("cavenic bow TORCH not inheriting RAPID or SNIPE behavior"));
         assertTrue(runtimeSmoke.contains("entity cavenic arrow projectile boundary smoke"));
@@ -273,6 +278,7 @@ class CavenicBowDocumentationTest {
         assertTrue(doc.contains("`onHit(RayTraceResult rayTrace)`"));
         assertTrue(doc.contains("temporarily swap the player main hand"));
         assertTrue(doc.contains("`onItemUse(...)`"));
+        assertTrue(doc.contains("docs/cavenic-bow-torch-item-use-forwarding-boundary.md"));
         assertTrue(doc.contains("no dedicated `rapid_arrow` registration"));
         assertTrue(doc.contains("no dedicated `torch_arrow` registration"));
         assertTrue(doc.contains("no dedicated `RenderRapidArrow` registration"));
@@ -283,6 +289,28 @@ class CavenicBowDocumentationTest {
         assertTrue(doc.contains("cavernreborn:rapid_arrow"));
         assertTrue(doc.contains("cavernreborn:torch_arrow"));
         assertTrue(doc.contains("Crazy Skeleton ranged AI still keeping the current local vanilla-compatible projectile bridge"));
+    }
+
+    @Test
+    void cavenicBowTorchItemUseForwardingBoundaryDocStatesLegacyForwardingFindingsAndDeferralReason() throws IOException {
+        String doc = Files.readString(CAVENIC_BOW_TORCH_ITEM_USE_FORWARDING);
+
+        assertTrue(doc.contains("`cavern.entity.projectile.EntityTorchArrow`"));
+        assertTrue(doc.contains("`cavern.item.ItemBowCavenic`"));
+        assertTrue(doc.contains("`setTorchItem(ItemStack stack)`"));
+        assertTrue(doc.contains("calls `super.onHit(rayTrace)` first"));
+        assertTrue(doc.contains("returns immediately for entity hits"));
+        assertTrue(doc.contains("temporarily swaps the player's main hand"));
+        assertTrue(doc.contains("`onItemUse(...)`"));
+        assertTrue(doc.contains("`Block.getBlockFromItem(stack.getItem()) instanceof BlockTorch`"));
+        assertTrue(doc.contains("Reborn currently accepts only `Items.TORCH` as Torch ammo"));
+        assertTrue(doc.contains("`CavenicBowTorchEvents`"));
+        assertTrue(doc.contains("no `EntityTorchArrow`"));
+        assertTrue(doc.contains("no `cavernreborn:torch_arrow`"));
+        assertTrue(doc.contains("no custom torch-like block items"));
+        assertTrue(doc.contains("unsafe or at least brittle temporary main-hand mutation"));
+        assertTrue(doc.contains("`UseOnContext`"));
+        assertTrue(doc.contains("`BlockItem#useOn(...)`"));
     }
 
     private static Path resolveProjectFile(String first, String... more) {

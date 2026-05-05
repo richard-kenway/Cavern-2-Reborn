@@ -4547,6 +4547,51 @@ public final class CavernSpecialOreGameTests {
     }
 
     @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void cavenicBowTorchItemUseForwardingBoundaryKeepsCurrentPlacementStableAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIC_BOW_TORCH_ANCHOR.south(64);
+        BlockPos standingSupportPos = origin.east(4);
+        BlockPos standingTorchPos = standingSupportPos.above();
+        BlockPos wallSupportPos = origin.east(10);
+        BlockPos wallTorchPos = wallSupportPos.east();
+        ResourceLocation torchArrowId = ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "torch_arrow");
+        CavenicBowItem bowItem = (CavenicBowItem) ModRegistries.CAVENIC_BOW.get();
+        CavenicBowTorchEvents torchEvents = new CavenicBowTorchEvents();
+
+        resetMiningArea(level, origin, 16.0D);
+        level.setBlock(standingSupportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(wallSupportPos, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+
+        Player player = makeMockPlayer(helper, level, GameType.SURVIVAL, cavenicBow(), origin);
+        ItemStack bow = player.getMainHandItem();
+        bowItem.setMode(bow, CavenicBowMode.TORCH);
+        player.getInventory().add(new ItemStack(Items.ARROW, 2));
+        player.getInventory().add(new ItemStack(Items.TORCH, 2));
+
+        helper.assertTrue(BuiltInRegistries.ENTITY_TYPE.getOptional(torchArrowId).isEmpty(), "Expected runtime entity registry to keep cavernreborn:torch_arrow absent");
+
+        BowReleaseResult standingResult = releaseBowThroughRealUse(helper, player, BowItem.MAX_DRAW_DURATION);
+        AbstractArrow standingArrow = singleSpawnedArrow(helper, standingResult, "Torch item-use forwarding boundary smoke must still spawn one marked vanilla arrow");
+        helper.assertTrue("minecraft:arrow".equals(entityTypeId(standingArrow)), "Torch item-use forwarding boundary smoke must keep the vanilla arrow entity on standing placement");
+        helper.assertTrue(CavenicBowItem.isTorchArrow(standingArrow), "Torch item-use forwarding boundary smoke must keep the Torch marker on standing-placement shots before impact");
+        helper.assertFalse(CavenicBowItem.isRapidArrow(standingArrow), "Torch item-use forwarding boundary smoke must keep Rapid behavior separate from standing Torch shots");
+        torchEvents.onProjectileImpact(new ProjectileImpactEvent(standingArrow, hitResult(standingSupportPos, Direction.UP)));
+
+        BowReleaseResult wallResult = releaseBowThroughRealUse(helper, player, BowItem.MAX_DRAW_DURATION);
+        AbstractArrow wallArrow = singleSpawnedArrow(helper, wallResult, "Torch item-use forwarding boundary smoke must still keep the marked vanilla arrow path on wall hits");
+        helper.assertTrue("minecraft:arrow".equals(entityTypeId(wallArrow)), "Torch item-use forwarding boundary smoke must keep the vanilla arrow entity on wall placement");
+        helper.assertTrue(CavenicBowItem.isTorchArrow(wallArrow), "Torch item-use forwarding boundary smoke must keep the Torch marker on wall-placement shots before impact");
+        helper.assertFalse(CavenicBowItem.isRapidArrow(wallArrow), "Torch item-use forwarding boundary smoke must keep Rapid behavior separate from wall Torch shots");
+        torchEvents.onProjectileImpact(new ProjectileImpactEvent(wallArrow, hitResult(wallSupportPos, Direction.EAST)));
+
+        helper.assertTrue(level.getBlockState(standingTorchPos).is(Blocks.TORCH), "Torch item-use forwarding boundary smoke must keep standing torch placement on the bounded event path");
+        helper.assertTrue(level.getBlockState(wallTorchPos).is(Blocks.WALL_TORCH), "Torch item-use forwarding boundary smoke must keep wall-torch placement on the bounded event path");
+        helper.assertTrue(level.getBlockState(wallTorchPos).getValue(WallTorchBlock.FACING) == Direction.EAST, "Torch item-use forwarding boundary smoke must keep direct wall orientation intact");
+        helper.assertTrue(BuiltInRegistries.ENTITY_TYPE.getOptional(torchArrowId).isEmpty(), "Expected runtime entity registry to keep cavernreborn:torch_arrow absent after bounded Torch placement");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
     public static void crazySkeletonLegacyOrbDropWiresAtRuntime(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos origin = CRAZY_SKELETON_EQUIPMENT_ANCHOR.south(16);

@@ -132,6 +132,7 @@ This slice inspects the legacy `EntityRapidArrow` and `EntityTorchArrow` paths a
 - `docs/cavenic-bow-rapid-mode-mvp.md` keeps `RAPID` on vanilla arrows and now explicitly defers `EntityRapidArrow`.
 - `docs/cavenic-bow-rapid-low-armor-hurt-resistance-mvp.md` documents the restored legacy Rapid low-armor cooldown reset without widening the projectile entity path.
 - `docs/cavenic-bow-torch-mode-mvp.md` keeps `TORCH` on marked vanilla arrows and now explicitly defers `EntityTorchArrow`.
+- `docs/cavenic-bow-torch-item-use-forwarding-boundary.md` documents why Reborn still does not restore the old temporary main-hand `onItemUse(...)` wrapper for arbitrary `BlockTorch` items.
 - `docs/cavenic-bow-release-semantics-mvp.md` keeps the real release path on vanilla-compatible arrows and now points to this boundary for the remaining Rapid/Torch projectile gap.
 - `docs/entity-cavenic-arrow-projectile-boundary.md` covers the separate skeleton-side `EntityCavenicArrow` gap.
 - `docs/crazy-skeleton-ranged-ai-mvp.md` keeps the restored Crazy Skeleton goal cadence while preserving the current vanilla-compatible projectile bridge.

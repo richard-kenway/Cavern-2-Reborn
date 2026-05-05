@@ -53,6 +53,7 @@ NeoForge GameTest runtime smoke covers:
 - cavenic bow TORCH wall-torch orientation smoke
 - cavenic bow TORCH no-custom-entity smoke
 - cavenic bow TORCH not inheriting RAPID or SNIPE behavior
+- cavenic bow TORCH item-use-forwarding boundary smoke
 - entity cavenic arrow projectile boundary smoke
 - rapid/torch arrow projectile boundary smoke
 - cavenic bow enchantment applicability

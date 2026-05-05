@@ -60,6 +60,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/cavenic-bow-rapid-low-armor-hurt-resistance-mvp.md"));
         assertTrue(readme.contains("Cavenic Bow Torch Mode MVP"));
         assertTrue(readme.contains("docs/cavenic-bow-torch-mode-mvp.md"));
+        assertTrue(readme.contains("docs/cavenic-bow-torch-item-use-forwarding-boundary.md"));
         assertTrue(readme.contains("docs/entity-cavenic-arrow-projectile-boundary.md"));
         assertTrue(readme.contains("docs/entity-rapid-torch-arrow-projectile-boundary.md"));
         assertTrue(readme.contains("EntityRapidArrow"));
@@ -272,9 +273,12 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("cavenic bow TORCH valid block-placement smoke"));
         assertTrue(doc.contains("cavenic bow TORCH invalid-target no-placement smoke"));
         assertTrue(doc.contains("cavenic bow TORCH torch-consumption smoke"));
+        assertTrue(doc.contains("cavenic bow TORCH wall-torch orientation smoke"));
         assertTrue(doc.contains("cavenic bow TORCH no-custom-entity smoke"));
+        assertTrue(doc.contains("cavenic bow TORCH item-use-forwarding boundary smoke"));
         assertTrue(doc.contains("cavenic bow TORCH not inheriting RAPID or SNIPE behavior"));
         assertTrue(doc.contains("entity cavenic arrow projectile boundary smoke"));
+        assertTrue(doc.contains("rapid/torch arrow projectile boundary smoke"));
         assertTrue(doc.contains("cavenic zombie runtime registry id"));
         assertTrue(doc.contains("cavenic zombie attribute registration smoke"));
         assertTrue(doc.contains("cavenic zombie hostile runtime spawn smoke"));

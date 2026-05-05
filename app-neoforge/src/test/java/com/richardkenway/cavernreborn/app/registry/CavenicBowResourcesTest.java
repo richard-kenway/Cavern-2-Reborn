@@ -132,6 +132,10 @@ class CavenicBowResourcesTest {
         assertTrue(torchEventSource.contains("arrow.discard();"));
         assertTrue(torchEventSource.contains("event.setCanceled(true);"));
         assertFalse(torchEventSource.contains("oppositeState"), "Torch placement must not fallback-attach to an unrelated opposite support");
+        assertFalse(torchEventSource.contains("UseOnContext"));
+        assertFalse(torchEventSource.contains(".useOn("));
+        assertFalse(torchEventSource.contains("setItemInHand("));
+        assertFalse(torchEventSource.contains("getMainHandItem()"));
         assertTrue(rapidEventSource.contains("public static final int LEGACY_RAPID_LOW_ARMOR_THRESHOLD = 20"));
         assertTrue(rapidEventSource.contains("public void onLivingDamagePost(LivingDamageEvent.Post event)"));
         assertTrue(rapidEventSource.contains("public boolean tryResetRapidArrowLowArmorInvulnerability(LivingEntity target, AbstractArrow arrow)"));
@@ -169,6 +173,9 @@ class CavenicBowResourcesTest {
         );
         assertMissingProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "entity", "projectile", "CavenicArrow.java"
+        );
+        assertMissingProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "item", "CavenicBowTorchItemUseForwardingPolicy.java"
         );
     }
 

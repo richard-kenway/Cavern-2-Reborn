@@ -42,6 +42,7 @@ It does not add a new gameplay feature. It pins the current bow behavior against
 - `TORCH` keeps the vanilla arrow entity path, uses a marker plus server-side impact handling and now keeps direct wall-torch orientation without opposite-wall fallback.
 - The remaining legacy `EntityCavenicArrow` projectile gap is documented separately in `docs/entity-cavenic-arrow-projectile-boundary.md`.
 - The remaining legacy `EntityRapidArrow` / `EntityTorchArrow` projectile gaps are documented separately in `docs/entity-rapid-torch-arrow-projectile-boundary.md`.
+- The remaining legacy Torch item-use forwarding wrapper is documented separately in `docs/cavenic-bow-torch-item-use-forwarding-boundary.md`.
 
 ## Torch Placement Hardening
 

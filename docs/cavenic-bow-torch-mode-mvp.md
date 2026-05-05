@@ -81,6 +81,8 @@ The current behavior is a bounded modern bridge that preserves the Torch identit
 
 The separate `EntityTorchArrow` parity gap is now documented in `docs/entity-rapid-torch-arrow-projectile-boundary.md`.
 
+The remaining legacy temporary main-hand `onItemUse(...)` forwarding wrapper is documented separately in `docs/cavenic-bow-torch-item-use-forwarding-boundary.md`.
+
 ## Testing
 
 Coverage is split across:
