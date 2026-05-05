@@ -226,6 +226,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/cavenia-crazy-roster-natural-spawn-boundary.md"));
         assertTrue(readme.contains("Cavenia Dimension / Provider Foundation Boundary"));
         assertTrue(readme.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
+        assertTrue(readme.contains("Cavenia Dimension Key / Type Contract Boundary"));
+        assertTrue(readme.contains("docs/cavenia-dimension-key-type-contract-boundary.md"));
         assertTrue(readme.contains("full mirage-world stack"));
         assertTrue(readme.contains("old Cavenia-only `crazySpawnChance` plus nearby non-boss `ICavenicMob` exclusion branch"));
         assertTrue(readme.contains("fourth crazy-variant foundation follow-up"));
@@ -577,6 +579,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("inactive Cavenia dimension/provider foundation boundary"));
         assertTrue(doc.contains("no active `cavernreborn:cavenia` level resolves at runtime"));
         assertTrue(doc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
+        assertTrue(doc.contains("docs/cavenia-dimension-key-type-contract-boundary.md"));
+        assertTrue(doc.contains("inactive Cavenia dimension key/type contract boundary"));
         assertTrue(doc.contains("cavenic bear biome modifier registry smoke"));
         assertTrue(doc.contains("cavenic bear biome tag resolution"));
         assertTrue(doc.contains("cavenic bear legacy fall-damage reduction smoke"));

@@ -4,6 +4,10 @@ This note documents the inspected legacy `Cavenia` dimension/provider stack and 
 
 It does not add an active `cavenia` dimension, a provider port, a chunk generator port, portals, teleports or crazy natural spawning.
 
+The narrower future key/type contract is documented separately in:
+
+- `docs/cavenia-dimension-key-type-contract-boundary.md`
+
 ## Legacy References Inspected
 
 - `cavern.world.mirage.WorldProviderCavenia`
@@ -244,7 +248,7 @@ Adding crazy spawn placements, biome modifiers or biome tags in the current norm
 
 Future honest Cavenia work should be split into separate slices:
 
-- dimension key/type contract
+- dimension key/type contract documented in `docs/cavenia-dimension-key-type-contract-boundary.md`
 - mirage-world entry/access contract
 - biome provider / biome list contract
 - chunk generator / terrain contract

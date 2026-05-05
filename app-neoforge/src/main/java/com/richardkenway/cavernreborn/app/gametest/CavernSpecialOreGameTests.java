@@ -278,6 +278,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CRAZY_SPIDER_COMBAT_ANCHOR = new BlockPos(7936, 96, 0);
     private static final BlockPos CRAZY_MOB_CAVENIA_ROSTER_BOUNDARY_ANCHOR = new BlockPos(8032, 96, 0);
     private static final BlockPos CAVENIA_DIMENSION_FOUNDATION_BOUNDARY_ANCHOR = new BlockPos(8128, 96, 0);
+    private static final BlockPos CAVENIA_DIMENSION_KEY_TYPE_BOUNDARY_ANCHOR = new BlockPos(8224, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -7086,6 +7087,42 @@ public final class CavernSpecialOreGameTests {
                 "Expected the Cavenia foundation boundary to keep normal spawn placement unregistered: " + crazyIds.get(i)
             );
         }
+
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void caveniaDimensionKeyTypeContractBoundaryStaysInactiveAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIA_DIMENSION_KEY_TYPE_BOUNDARY_ANCHOR;
+        ResourceKey<Level> caveniaLevelKey = CavernNeoForgeDimensions.levelKey("cavernreborn:cavenia");
+
+        resetMiningArea(level, origin, 16.0D);
+
+        helper.assertTrue(
+            CavernNeoForgeDimensions.CAVERN_LEVEL_KEY.location().toString().equals(CavernDimensions.CAVERN_DIMENSION_ID),
+            "Expected the checked-in CAVERN level key to remain the only active dimension contract while Cavenia stays deferred"
+        );
+        helper.assertTrue(
+            level.getServer().getLevel(caveniaLevelKey) == null,
+            "Expected the Cavenia key/type contract boundary to keep cavernreborn:cavenia inactive at runtime"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-dimension-key-type-contract-boundary.md"),
+            "Expected the Cavenia dimension key/type contract boundary doc to exist in the project root"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension", "cavenia.json"),
+            "Expected the Cavenia key/type contract boundary to keep the checked-in cavenia dimension resource absent"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension_type", "cavenia.json"),
+            "Expected the Cavenia key/type contract boundary to keep the checked-in cavenia dimension-type resource absent"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_ZOMBIE.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected the key/type contract boundary to keep crazy spawning unchanged while Cavenia stays inactive"
+        );
 
         helper.succeed();
     }

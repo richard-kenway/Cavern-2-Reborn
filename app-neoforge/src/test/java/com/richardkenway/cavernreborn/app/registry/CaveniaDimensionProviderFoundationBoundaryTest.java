@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 class CaveniaDimensionProviderFoundationBoundaryTest {
     private static final Path README = resolveProjectFile("README.md");
     private static final Path BOUNDARY_DOC = resolveProjectFile("docs", "cavenia-dimension-provider-foundation-boundary.md");
+    private static final Path KEY_TYPE_BOUNDARY_DOC = resolveProjectFile("docs", "cavenia-dimension-key-type-contract-boundary.md");
     private static final Path CRAZY_ROSTER_BOUNDARY_DOC = resolveProjectFile("docs", "cavenia-crazy-roster-natural-spawn-boundary.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
     private static final Path DIMENSION_PACKAGE = resolveProjectFile(
@@ -30,6 +31,7 @@ class CaveniaDimensionProviderFoundationBoundaryTest {
     void docsStateTheLegacyCaveniaFoundationAndCurrentRebornBoundary() throws IOException {
         String readme = Files.readString(README);
         String boundaryDoc = Files.readString(BOUNDARY_DOC);
+        String keyTypeBoundaryDoc = Files.readString(KEY_TYPE_BOUNDARY_DOC);
         String crazyRosterDoc = Files.readString(CRAZY_ROSTER_BOUNDARY_DOC);
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE_DOC);
 
@@ -64,7 +66,9 @@ class CaveniaDimensionProviderFoundationBoundaryTest {
         assertTrue(boundaryDoc.contains("`data/cavernreborn/dimension/cavenia.json`"));
         assertTrue(boundaryDoc.contains("`data/cavernreborn/dimension_type/cavenia.json`"));
         assertTrue(boundaryDoc.contains("mirage-world entry/access contract"));
+        assertTrue(boundaryDoc.contains("docs/cavenia-dimension-key-type-contract-boundary.md"));
 
+        assertTrue(keyTypeBoundaryDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
         assertTrue(crazyRosterDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
         assertTrue(runtimeSmokeDoc.contains("inactive Cavenia dimension/provider foundation boundary"));
