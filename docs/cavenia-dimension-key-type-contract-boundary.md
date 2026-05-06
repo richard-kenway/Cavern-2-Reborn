@@ -14,6 +14,10 @@ The broader provider, terrain, entry and spawn architecture boundary remains doc
 
 - `docs/cavenia-dimension-provider-foundation-boundary.md`
 
+The narrower future biome-provider contract remains documented in:
+
+- `docs/cavenia-biome-provider-contract-boundary.md`
+
 The crazy-roster natural-spawn boundary remains documented in:
 
 - `docs/cavenia-crazy-roster-natural-spawn-boundary.md`
@@ -130,6 +134,7 @@ This increment does not finalize:
 
 - the actual `dimension/cavenia.json` generator object
 - the biome source
+- the legacy weighted biome-manager mapping
 - terrain settings
 - exact `height` and `logical_height`
 - exact `ambient_light`
@@ -175,6 +180,7 @@ Those decisions should be made together with the first honest active Cavenia MVP
 Future honest Cavenia work should split this contract into follow-up slices:
 
 - active dimension key/type MVP
+- biome provider contract MVP
 - terrain/generator MVP
 - biome provider MVP
 - mirage entry/access MVP

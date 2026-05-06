@@ -8,6 +8,10 @@ The narrower future key/type contract is documented separately in:
 
 - `docs/cavenia-dimension-key-type-contract-boundary.md`
 
+The narrower future biome-provider contract is documented separately in:
+
+- `docs/cavenia-biome-provider-contract-boundary.md`
+
 ## Legacy References Inspected
 
 - `cavern.world.mirage.WorldProviderCavenia`
@@ -95,6 +99,10 @@ It also defines two separate configurable managers:
 
 - `CaveniaConfig.BIOMES`
 - `CaveniaConfig.VEINS`
+
+The focused biome-provider and biome-list contract is documented separately in:
+
+- `docs/cavenia-biome-provider-contract-boundary.md`
 
 Default configured biome set found in `syncBiomesConfig()`:
 

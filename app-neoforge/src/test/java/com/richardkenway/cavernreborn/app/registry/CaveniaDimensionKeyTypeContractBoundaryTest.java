@@ -15,6 +15,7 @@ class CaveniaDimensionKeyTypeContractBoundaryTest {
     private static final Path README = resolveProjectFile("README.md");
     private static final Path CONTRACT_DOC = resolveProjectFile("docs", "cavenia-dimension-key-type-contract-boundary.md");
     private static final Path FOUNDATION_DOC = resolveProjectFile("docs", "cavenia-dimension-provider-foundation-boundary.md");
+    private static final Path BIOME_PROVIDER_DOC = resolveProjectFile("docs", "cavenia-biome-provider-contract-boundary.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
     private static final Path DIMENSIONS_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "dimension", "CavernNeoForgeDimensions.java"
@@ -31,6 +32,7 @@ class CaveniaDimensionKeyTypeContractBoundaryTest {
         String readme = Files.readString(README);
         String contractDoc = Files.readString(CONTRACT_DOC);
         String foundationDoc = Files.readString(FOUNDATION_DOC);
+        String biomeProviderDoc = Files.readString(BIOME_PROVIDER_DOC);
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE_DOC);
 
         assertTrue(readme.contains("Cavenia Dimension Key / Type Contract Boundary"));
@@ -59,9 +61,11 @@ class CaveniaDimensionKeyTypeContractBoundaryTest {
         assertTrue(contractDoc.contains("provider-owned spawn callback"));
         assertTrue(contractDoc.contains("client visual/fog/lighting parity"));
         assertTrue(contractDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
+        assertTrue(contractDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-crazy-roster-natural-spawn-boundary.md"));
 
         assertTrue(foundationDoc.contains("docs/cavenia-dimension-key-type-contract-boundary.md"));
+        assertTrue(biomeProviderDoc.contains("docs/cavenia-dimension-key-type-contract-boundary.md"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-dimension-key-type-contract-boundary.md"));
     }
 
