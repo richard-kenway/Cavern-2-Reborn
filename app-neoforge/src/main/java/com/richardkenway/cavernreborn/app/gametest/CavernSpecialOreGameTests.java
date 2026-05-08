@@ -283,6 +283,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIA_VEINS_CONTENT_BOUNDARY_ANCHOR = new BlockPos(8416, 96, 0);
     private static final BlockPos CAVENIA_CHUNK_GENERATOR_TERRAIN_BOUNDARY_ANCHOR = new BlockPos(8512, 96, 0);
     private static final BlockPos CAVENIA_CAVE_CARVER_BOUNDARY_ANCHOR = new BlockPos(8608, 96, 0);
+    private static final BlockPos CAVENIA_POPULATION_BOUNDARY_ANCHOR = new BlockPos(8704, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -7338,6 +7339,70 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             SpawnPlacements.getPlacementType(ModRegistries.CRAZY_SKELETON.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
             "Expected the cave-carver contract boundary to keep crazy spawning unchanged while Cavenia stays inactive"
+        );
+
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void caveniaPopulationLakesFallsShroomContractBoundaryStaysInactiveAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIA_POPULATION_BOUNDARY_ANCHOR;
+        ResourceKey<Level> caveniaLevelKey = CavernNeoForgeDimensions.levelKey("cavernreborn:cavenia");
+        Registry<ConfiguredFeature<?, ?>> configuredFeatures = level.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
+        Registry<PlacedFeature> placedFeatures = level.registryAccess().registryOrThrow(Registries.PLACED_FEATURE);
+
+        resetMiningArea(level, origin, 16.0D);
+
+        helper.assertTrue(
+            CavernNeoForgeDimensions.CAVERN_LEVEL_KEY.location().toString().equals(CavernDimensions.CAVERN_DIMENSION_ID),
+            "Expected the checked-in CAVERN level key to remain stable while the Cavenia population contract stays deferred"
+        );
+        helper.assertTrue(
+            level.getServer().getLevel(caveniaLevelKey) == null,
+            "Expected the Cavenia population contract boundary to keep cavernreborn:cavenia inactive at runtime"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-population-lakes-falls-shroom-contract-boundary.md"),
+            "Expected the Cavenia population contract boundary doc to exist in the project root"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension", "cavenia.json"),
+            "Expected the Cavenia population contract boundary to keep the checked-in cavenia dimension resource absent"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension_type", "cavenia.json"),
+            "Expected the Cavenia population contract boundary to keep the checked-in cavenia dimension-type resource absent"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "configured_feature", "cavenia_lake.json"),
+            "Expected the Cavenia population contract boundary to keep active Cavenia lake configured features absent"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "placed_feature", "cavenia_lake.json"),
+            "Expected the Cavenia population contract boundary to keep active Cavenia lake placed features absent"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "configured_feature", "cavenia_fall.json"),
+            "Expected the Cavenia population contract boundary to keep active Cavenia fall configured features absent"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "placed_feature", "cavenia_fall.json"),
+            "Expected the Cavenia population contract boundary to keep active Cavenia fall placed features absent"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "configured_feature", "cavenia_shroom.json"),
+            "Expected the Cavenia population contract boundary to keep active Cavenia shroom configured features absent"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "placed_feature", "cavenia_shroom.json"),
+            "Expected the Cavenia population contract boundary to keep active Cavenia shroom placed features absent"
+        );
+        assertRegistryKeyPresent(helper, configuredFeatures, Registries.CONFIGURED_FEATURE, "cavernreborn:cavenic_shroom_patch");
+        assertRegistryKeyPresent(helper, placedFeatures, Registries.PLACED_FEATURE, "cavernreborn:cavern_cavenic_shroom_patch");
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_SPIDER.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected the population contract boundary to keep crazy spawning unchanged while Cavenia stays inactive"
         );
 
         helper.succeed();

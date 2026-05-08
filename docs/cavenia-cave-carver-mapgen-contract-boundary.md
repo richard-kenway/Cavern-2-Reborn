@@ -38,6 +38,10 @@ The broader terrain/generator contract remains documented in:
 
 - `docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md`
 
+The narrower future population/lakes/falls/shroom contract remains documented in:
+
+- `docs/cavenia-population-lakes-falls-shroom-contract-boundary.md`
+
 The crazy-roster natural-spawn boundary remains documented in:
 
 - `docs/cavenia-crazy-roster-natural-spawn-boundary.md`

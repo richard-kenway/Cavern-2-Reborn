@@ -19,6 +19,7 @@ class CaveniaDimensionProviderFoundationBoundaryTest {
     private static final Path VEINS_BOUNDARY_DOC = resolveProjectFile("docs", "cavenia-veins-content-pipeline-contract-boundary.md");
     private static final Path TERRAIN_BOUNDARY_DOC = resolveProjectFile("docs", "cavenia-chunk-generator-terrain-pipeline-contract-boundary.md");
     private static final Path CAVE_CARVER_BOUNDARY_DOC = resolveProjectFile("docs", "cavenia-cave-carver-mapgen-contract-boundary.md");
+    private static final Path POPULATION_BOUNDARY_DOC = resolveProjectFile("docs", "cavenia-population-lakes-falls-shroom-contract-boundary.md");
     private static final Path CRAZY_ROSTER_BOUNDARY_DOC = resolveProjectFile("docs", "cavenia-crazy-roster-natural-spawn-boundary.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
     private static final Path DIMENSION_PACKAGE = resolveProjectFile(
@@ -40,6 +41,7 @@ class CaveniaDimensionProviderFoundationBoundaryTest {
         String veinsBoundaryDoc = Files.readString(VEINS_BOUNDARY_DOC);
         String terrainBoundaryDoc = Files.readString(TERRAIN_BOUNDARY_DOC);
         String caveCarverBoundaryDoc = Files.readString(CAVE_CARVER_BOUNDARY_DOC);
+        String populationBoundaryDoc = Files.readString(POPULATION_BOUNDARY_DOC);
         String crazyRosterDoc = Files.readString(CRAZY_ROSTER_BOUNDARY_DOC);
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE_DOC);
 
@@ -79,12 +81,14 @@ class CaveniaDimensionProviderFoundationBoundaryTest {
         assertTrue(boundaryDoc.contains("docs/cavenia-veins-content-pipeline-contract-boundary.md"));
         assertTrue(boundaryDoc.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
         assertTrue(boundaryDoc.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));
+        assertTrue(boundaryDoc.contains("docs/cavenia-population-lakes-falls-shroom-contract-boundary.md"));
 
         assertTrue(keyTypeBoundaryDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
         assertTrue(biomeProviderBoundaryDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
         assertTrue(veinsBoundaryDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
         assertTrue(terrainBoundaryDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
         assertTrue(caveCarverBoundaryDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
+        assertTrue(populationBoundaryDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
         assertTrue(crazyRosterDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
         assertTrue(runtimeSmokeDoc.contains("inactive Cavenia dimension/provider foundation boundary"));

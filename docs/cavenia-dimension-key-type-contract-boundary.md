@@ -30,6 +30,8 @@ The narrower future cave-carver contract remains documented in:
 
 - `docs/cavenia-cave-carver-mapgen-contract-boundary.md`
 
+- `docs/cavenia-population-lakes-falls-shroom-contract-boundary.md`
+
 The crazy-roster natural-spawn boundary remains documented in:
 
 - `docs/cavenia-crazy-roster-natural-spawn-boundary.md`
