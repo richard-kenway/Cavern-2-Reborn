@@ -26,6 +26,10 @@ The narrower biome-provider boundary remains documented in:
 
 - `docs/cavenia-biome-provider-contract-boundary.md`
 
+The narrower chunk-generator and terrain-pipeline contract remains documented in:
+
+- `docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md`
+
 The crazy-roster natural-spawn boundary remains documented in:
 
 - `docs/cavenia-crazy-roster-natural-spawn-boundary.md`
@@ -155,6 +159,10 @@ So the active VEINS pass runs:
 - after optional cave carving
 - after biome top/filter replacement
 - before the final `Chunk` instance is built
+
+The fuller chunk-order and terrain-generator contract is documented separately in:
+
+- `docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md`
 
 That means ore/content replacement is not a late population feature pass.
 

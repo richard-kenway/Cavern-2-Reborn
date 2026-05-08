@@ -293,6 +293,9 @@ NeoForge GameTest runtime smoke covers:
 - inactive Cavenia VEINS/content-pipeline contract boundary
 - no checked-in active Cavenia configured features, placed features, biome modifiers or content-pipeline worldgen resources
 - the Cavenia VEINS/content-pipeline contract boundary note at `docs/cavenia-veins-content-pipeline-contract-boundary.md`
+- inactive Cavenia chunk-generator/terrain-pipeline contract boundary
+- no checked-in active Cavenia noise settings, density functions, configured carvers, configured features or placed features
+- the Cavenia chunk-generator/terrain-pipeline contract boundary note at `docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md`
 - crazy spider explicit no-natural-spawn baseline boundary
 - actual long-run crazy spider orb drop-rate balance is not covered by server GameTests
 - actual long-running Crazy Spider fire/lava gameplay feel remains manual

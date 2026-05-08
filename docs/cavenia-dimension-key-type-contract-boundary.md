@@ -22,6 +22,10 @@ The narrower future VEINS/content-pipeline contract remains documented in:
 
 - `docs/cavenia-veins-content-pipeline-contract-boundary.md`
 
+The narrower future chunk-generator and terrain-pipeline contract remains documented in:
+
+- `docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md`
+
 The crazy-roster natural-spawn boundary remains documented in:
 
 - `docs/cavenia-crazy-roster-natural-spawn-boundary.md`
@@ -153,6 +157,10 @@ This increment does not finalize:
 - client visual/fog/lighting parity
 
 Those choices depend on future generator, biome-provider, entry and spawn work rather than the key/type contract alone.
+
+The terrain/generator side of that future work is documented separately in:
+
+- `docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md`
 
 ## Why Reborn Does Not Add `dimension/cavenia.json` Now
 

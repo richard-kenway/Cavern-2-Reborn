@@ -281,6 +281,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIA_DIMENSION_KEY_TYPE_BOUNDARY_ANCHOR = new BlockPos(8224, 96, 0);
     private static final BlockPos CAVENIA_BIOME_PROVIDER_BOUNDARY_ANCHOR = new BlockPos(8320, 96, 0);
     private static final BlockPos CAVENIA_VEINS_CONTENT_BOUNDARY_ANCHOR = new BlockPos(8416, 96, 0);
+    private static final BlockPos CAVENIA_CHUNK_GENERATOR_TERRAIN_BOUNDARY_ANCHOR = new BlockPos(8512, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -7224,6 +7225,66 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             SpawnPlacements.getPlacementType(ModRegistries.CRAZY_CREEPER.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
             "Expected the VEINS/content contract boundary to keep crazy spawning unchanged while Cavenia stays inactive"
+        );
+
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void caveniaChunkGeneratorTerrainPipelineContractBoundaryStaysInactiveAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIA_CHUNK_GENERATOR_TERRAIN_BOUNDARY_ANCHOR;
+        ResourceKey<Level> caveniaLevelKey = CavernNeoForgeDimensions.levelKey("cavernreborn:cavenia");
+        Registry<ConfiguredFeature<?, ?>> configuredFeatures = level.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE);
+        Registry<PlacedFeature> placedFeatures = level.registryAccess().registryOrThrow(Registries.PLACED_FEATURE);
+
+        resetMiningArea(level, origin, 16.0D);
+
+        helper.assertTrue(
+            CavernNeoForgeDimensions.CAVERN_LEVEL_KEY.location().toString().equals(CavernDimensions.CAVERN_DIMENSION_ID),
+            "Expected the checked-in CAVERN level key to remain stable while the Cavenia terrain-pipeline contract stays deferred"
+        );
+        helper.assertTrue(
+            level.getServer().getLevel(caveniaLevelKey) == null,
+            "Expected the Cavenia chunk-generator/terrain-pipeline contract boundary to keep cavernreborn:cavenia inactive at runtime"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"),
+            "Expected the Cavenia chunk-generator/terrain-pipeline contract boundary doc to exist in the project root"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension", "cavenia.json"),
+            "Expected the Cavenia chunk-generator/terrain-pipeline contract boundary to keep the checked-in cavenia dimension resource absent"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension_type", "cavenia.json"),
+            "Expected the Cavenia chunk-generator/terrain-pipeline contract boundary to keep the checked-in cavenia dimension-type resource absent"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "noise_settings", "cavenia.json"),
+            "Expected the Cavenia chunk-generator/terrain-pipeline contract boundary to keep active Cavenia noise settings absent"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "configured_carver", "cavenia.json"),
+            "Expected the Cavenia chunk-generator/terrain-pipeline contract boundary to keep active Cavenia configured carvers absent"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "configured_feature", "cavenia.json"),
+            "Expected the Cavenia chunk-generator/terrain-pipeline contract boundary to keep active Cavenia configured features absent"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "placed_feature", "cavenia.json"),
+            "Expected the Cavenia chunk-generator/terrain-pipeline contract boundary to keep active Cavenia placed features absent"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "density_function", "cavenia.json"),
+            "Expected the Cavenia chunk-generator/terrain-pipeline contract boundary to keep active Cavenia density functions absent"
+        );
+        assertRegistryKeyPresent(helper, configuredFeatures, Registries.CONFIGURED_FEATURE, "cavernreborn:magnite_ore");
+        assertRegistryKeyPresent(helper, placedFeatures, Registries.PLACED_FEATURE, "cavernreborn:cavern_ore_randomite");
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_ZOMBIE.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected the terrain-pipeline contract boundary to keep crazy spawning unchanged while Cavenia stays inactive"
         );
 
         helper.succeed();

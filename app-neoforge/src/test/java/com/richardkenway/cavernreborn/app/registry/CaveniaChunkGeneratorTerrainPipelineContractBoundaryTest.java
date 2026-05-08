@@ -11,13 +11,13 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
-class CaveniaBiomeProviderContractBoundaryTest {
+class CaveniaChunkGeneratorTerrainPipelineContractBoundaryTest {
     private static final Path README = resolveProjectFile("README.md");
-    private static final Path CONTRACT_DOC = resolveProjectFile("docs", "cavenia-biome-provider-contract-boundary.md");
+    private static final Path CONTRACT_DOC = resolveProjectFile("docs", "cavenia-chunk-generator-terrain-pipeline-contract-boundary.md");
     private static final Path FOUNDATION_DOC = resolveProjectFile("docs", "cavenia-dimension-provider-foundation-boundary.md");
     private static final Path KEY_TYPE_DOC = resolveProjectFile("docs", "cavenia-dimension-key-type-contract-boundary.md");
+    private static final Path BIOME_PROVIDER_DOC = resolveProjectFile("docs", "cavenia-biome-provider-contract-boundary.md");
     private static final Path VEINS_DOC = resolveProjectFile("docs", "cavenia-veins-content-pipeline-contract-boundary.md");
-    private static final Path TERRAIN_DOC = resolveProjectFile("docs", "cavenia-chunk-generator-terrain-pipeline-contract-boundary.md");
     private static final Path CRAZY_ROSTER_DOC = resolveProjectFile("docs", "cavenia-crazy-roster-natural-spawn-boundary.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
     private static final Path DIMENSIONS_SOURCE = resolveProjectFile(
@@ -31,72 +31,78 @@ class CaveniaBiomeProviderContractBoundaryTest {
     );
 
     @Test
-    void docsPinTheLegacyBiomeManagerAndInactiveRebornBoundary() throws IOException {
+    void docsPinTheLegacyTerrainPipelineAndInactiveRebornBoundary() throws IOException {
         String readme = Files.readString(README);
         String contractDoc = Files.readString(CONTRACT_DOC);
         String foundationDoc = Files.readString(FOUNDATION_DOC);
         String keyTypeDoc = Files.readString(KEY_TYPE_DOC);
+        String biomeProviderDoc = Files.readString(BIOME_PROVIDER_DOC);
         String veinsDoc = Files.readString(VEINS_DOC);
-        String terrainDoc = Files.readString(TERRAIN_DOC);
         String crazyRosterDoc = Files.readString(CRAZY_ROSTER_DOC);
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE_DOC);
 
-        assertTrue(readme.contains("Cavenia Biome Provider / Biome List Contract Boundary"));
-        assertTrue(readme.contains("docs/cavenia-biome-provider-contract-boundary.md"));
+        assertTrue(readme.contains("Cavenia Chunk Generator / Terrain Pipeline Contract Boundary"));
+        assertTrue(readme.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
 
-        assertTrue(contractDoc.contains("`CaveniaConfig.BIOMES`"));
-        assertTrue(contractDoc.contains("`WorldProviderCavenia#createBiomeProvider()`"));
-        assertTrue(contractDoc.contains("`CaveBiomeProvider`"));
         assertTrue(contractDoc.contains("`ChunkGeneratorCavenia`"));
-        assertTrue(contractDoc.contains("`CaveBiomeManager`"));
-        assertTrue(contractDoc.contains("`terrainBlock`"));
-        assertTrue(contractDoc.contains("`topBlock`"));
-        assertTrue(contractDoc.contains("There is no separate Cavenia-specific stored `fillerBlock` contract."));
-        assertTrue(contractDoc.contains("`OCEAN` weight `15`"));
-        assertTrue(contractDoc.contains("`PLAINS` weight `100`"));
-        assertTrue(contractDoc.contains("`DESERT` weight `70`"));
-        assertTrue(contractDoc.contains("`DESERT_HILLS` weight `10`"));
-        assertTrue(contractDoc.contains("`FOREST` weight `80`"));
-        assertTrue(contractDoc.contains("`FOREST_HILLS` weight `10`"));
-        assertTrue(contractDoc.contains("`TAIGA` weight `80`"));
-        assertTrue(contractDoc.contains("`TAIGA_HILLS` weight `10`"));
-        assertTrue(contractDoc.contains("`JUNGLE` weight `80`"));
-        assertTrue(contractDoc.contains("`JUNGLE_HILLS` weight `10`"));
-        assertTrue(contractDoc.contains("`SWAMPLAND` weight `60`"));
-        assertTrue(contractDoc.contains("`EXTREME_HILLS` weight `50`"));
-        assertTrue(contractDoc.contains("`SAVANNA` weight `50`"));
-        assertTrue(contractDoc.contains("`MESA` weight `50`"));
-        assertTrue(contractDoc.contains("`OCEAN` -> `minecraft:gravel`"));
-        assertTrue(contractDoc.contains("`PLAINS` -> `minecraft:grass`"));
-        assertTrue(contractDoc.contains("`DESERT` -> `minecraft:sand`"));
-        assertTrue(contractDoc.contains("`DESERT_HILLS` -> `minecraft:sandstone`"));
-        assertTrue(contractDoc.contains("`MESA` -> `minecraft:red_sandstone`"));
-        assertTrue(contractDoc.contains("the default terrain/filter layer stays stone everywhere unless the config is edited"));
-        assertTrue(contractDoc.contains("weighted biome-source strategy"));
-        assertTrue(contractDoc.contains("custom biome-provider code"));
-        assertTrue(contractDoc.contains("data-driven approximation of the legacy weighted-biome manager"));
-        assertTrue(contractDoc.contains("terrain surface-rules or generator-side top/filter mapping"));
+        assertTrue(contractDoc.contains("`WorldProviderCavenia`"));
+        assertTrue(contractDoc.contains("`MapGenCaveniaCaves`"));
+        assertTrue(contractDoc.contains("`CaveniaConfig.worldHeight = 128`"));
+        assertTrue(contractDoc.contains("`CaveniaConfig.generateCaves = true`"));
+        assertTrue(contractDoc.contains("`CaveniaConfig.generateLakes = true`"));
+        assertTrue(contractDoc.contains("`CaveniaConfig.BIOMES`"));
         assertTrue(contractDoc.contains("`CaveniaConfig.VEINS`"));
-        assertTrue(contractDoc.contains("no active Cavenia biome-source resources"));
-        assertTrue(contractDoc.contains("no active Cavenia biome tags"));
-        assertTrue(contractDoc.contains("no active Cavenia worldgen resources"));
+        assertTrue(contractDoc.contains("`setBlocksInChunk(...)`"));
+        assertTrue(contractDoc.contains("`replaceBiomeBlocks(...)`"));
+        assertTrue(contractDoc.contains("`veinGenerator.generate(world, rand, biomesForGeneration, primer)`"));
+        assertTrue(contractDoc.contains("`WorldGenBush(CAVENIC_SHROOM)`"));
+        assertTrue(contractDoc.contains("`ChunkGeneratorCavenia#generateChunk(int chunkX, int chunkZ)`"));
+        assertTrue(contractDoc.contains("base stone fill"));
+        assertTrue(contractDoc.contains("optional cave carving"));
+        assertTrue(contractDoc.contains("biome top/filter replacement"));
+        assertTrue(contractDoc.contains("VEINS mutation"));
+        assertTrue(contractDoc.contains("final `Chunk` construction"));
+        assertTrue(contractDoc.contains("fills the entire `ChunkPrimer` with stone"));
+        assertTrue(contractDoc.contains("bottom bedrock sits at `y = 0`"));
+        assertTrue(contractDoc.contains("top bedrock sits at `y = 127`"));
+        assertTrue(contractDoc.contains("`y = 128..255` is cleared back to air"));
+        assertTrue(contractDoc.contains("writes `gravel` when `y <= 2`"));
+        assertTrue(contractDoc.contains("writes water when `y - 1 < 10`"));
+        assertTrue(contractDoc.contains("`generateStructures(...) -> false`"));
+        assertTrue(contractDoc.contains("`getPossibleCreatures(...) -> Collections.emptyList()`"));
+        assertTrue(contractDoc.contains("`ForgeEventFactory.onChunkPopulate(true, ...)`"));
+        assertTrue(contractDoc.contains("`DecorateBiomeEvent.Pre`"));
+        assertTrue(contractDoc.contains("`OreGenEvent.Post`"));
+        assertTrue(contractDoc.contains("`BiomeDecorator.generateFalls`"));
+        assertTrue(contractDoc.contains("`WorldGenLakes(Blocks.WATER)`"));
+        assertTrue(contractDoc.contains("`WorldGenLakes(Blocks.LAVA)`"));
+        assertTrue(contractDoc.contains("`WorldGenLiquids(Blocks.FLOWING_WATER)`"));
+        assertTrue(contractDoc.contains("`WorldGenLiquids(Blocks.FLOWING_LAVA)`"));
+        assertTrue(contractDoc.contains("no active Cavenia noise settings"));
+        assertTrue(contractDoc.contains("no active Cavenia density functions"));
+        assertTrue(contractDoc.contains("no active Cavenia carvers"));
+        assertTrue(contractDoc.contains("no active Cavenia surface rules"));
+        assertTrue(contractDoc.contains("custom chunk generator"));
+        assertTrue(contractDoc.contains("custom cave carver"));
+        assertTrue(contractDoc.contains("surface rules or equivalent top/filter mapping"));
+        assertTrue(contractDoc.contains("strict ordering between carve, top/filter replacement and VEINS mutation"));
         assertTrue(contractDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-dimension-key-type-contract-boundary.md"));
+        assertTrue(contractDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-veins-content-pipeline-contract-boundary.md"));
-        assertTrue(contractDoc.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-crazy-roster-natural-spawn-boundary.md"));
 
-        assertTrue(foundationDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
-        assertTrue(keyTypeDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
-        assertTrue(veinsDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
-        assertTrue(terrainDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
+        assertTrue(foundationDoc.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
+        assertTrue(keyTypeDoc.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
+        assertTrue(biomeProviderDoc.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
+        assertTrue(veinsDoc.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
         assertTrue(crazyRosterDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
-        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
-        assertTrue(runtimeSmokeDoc.contains("inactive Cavenia biome-provider contract boundary"));
+        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
+        assertTrue(runtimeSmokeDoc.contains("inactive Cavenia chunk-generator/terrain-pipeline contract boundary"));
     }
 
     @Test
-    void rebornStillKeepsCaveniaBiomeProviderAndResourcesInactive() throws IOException {
+    void rebornStillKeepsCaveniaTerrainGeneratorResourcesInactive() throws IOException {
         String dimensionsSource = Files.readString(DIMENSIONS_SOURCE, StandardCharsets.UTF_8);
 
         assertFalse(dimensionsSource.contains("CAVENIA_LOCATION"));
@@ -108,7 +114,7 @@ class CaveniaBiomeProviderContractBoundaryTest {
         try (Stream<Path> dimensionFiles = Files.list(DIMENSION_PACKAGE)) {
             assertTrue(
                 dimensionFiles.map(path -> path.getFileName().toString()).noneMatch(name -> name.contains("Cavenia")),
-                "Expected the biome-provider boundary to keep Cavenia-specific runtime dimension classes absent"
+                "Expected the terrain-pipeline boundary to keep Cavenia-specific runtime dimension classes absent"
             );
         }
 
@@ -118,17 +124,20 @@ class CaveniaBiomeProviderContractBoundaryTest {
                     .filter(Files::isRegularFile)
                     .map(path -> path.toString().replace('\\', '/'))
                     .noneMatch(path ->
-                        path.contains("/worldgen/biome/cavenia")
-                            || path.contains("/tags/worldgen/biome/cavenia")
-                            || path.contains("/worldgen/noise_settings/cavenia")
+                        path.contains("/worldgen/noise_settings/cavenia")
+                            || path.contains("/worldgen/world_preset/cavenia")
+                            || path.contains("/worldgen/density_function/cavenia")
+                            || path.contains("/worldgen/noise/cavenia")
+                            || path.contains("/worldgen/configured_carver/cavenia")
                             || path.contains("/worldgen/configured_feature/cavenia")
                             || path.contains("/worldgen/placed_feature/cavenia")
+                            || path.contains("/neoforge/biome_modifier/cavenia")
                             || path.contains("/dimension/cavenia.json")
                             || path.contains("/dimension_type/cavenia.json")
                             || path.contains("/cavenia/")
                             || path.contains("cavenia_")
                     ),
-                "Expected the biome-provider boundary to keep active Cavenia biome/worldgen resources absent from checked-in data resources"
+                "Expected the terrain-pipeline boundary to keep active Cavenia generator resources absent from checked-in data resources"
             );
         }
     }

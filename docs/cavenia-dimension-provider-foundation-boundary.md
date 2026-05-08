@@ -16,6 +16,10 @@ The narrower future VEINS/content-pipeline contract is documented separately in:
 
 - `docs/cavenia-veins-content-pipeline-contract-boundary.md`
 
+The narrower future chunk-generator and terrain-pipeline contract is documented separately in:
+
+- `docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md`
+
 ## Legacy References Inspected
 
 - `cavern.world.mirage.WorldProviderCavenia`
@@ -144,6 +148,10 @@ The focused VEINS/content pipeline contract is documented separately in:
 
 - `docs/cavenia-veins-content-pipeline-contract-boundary.md`
 
+The focused chunk-generator and terrain-pipeline contract is documented separately in:
+
+- `docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md`
+
 ## Exact Legacy Chunk/Terrain Dependency Found
 
 `WorldProviderCavenia#createChunkGenerator()` returns `ChunkGeneratorCavenia`.
@@ -162,6 +170,7 @@ So an honest Cavenia port needs:
 
 - a biome-provider story
 - a terrain-generator story
+- a chunk-generator / terrain-pipeline story
 - a cave-carver/cave-map story
 - a configured-vein/content story
 - a post-generation population story

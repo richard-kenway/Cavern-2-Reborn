@@ -232,6 +232,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/cavenia-biome-provider-contract-boundary.md"));
         assertTrue(readme.contains("Cavenia VEINS / Content Pipeline Contract Boundary"));
         assertTrue(readme.contains("docs/cavenia-veins-content-pipeline-contract-boundary.md"));
+        assertTrue(readme.contains("Cavenia Chunk Generator / Terrain Pipeline Contract Boundary"));
+        assertTrue(readme.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
         assertTrue(readme.contains("full mirage-world stack"));
         assertTrue(readme.contains("old Cavenia-only `crazySpawnChance` plus nearby non-boss `ICavenicMob` exclusion branch"));
         assertTrue(readme.contains("fourth crazy-variant foundation follow-up"));
@@ -589,6 +591,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
         assertTrue(doc.contains("inactive Cavenia VEINS/content-pipeline contract boundary"));
         assertTrue(doc.contains("docs/cavenia-veins-content-pipeline-contract-boundary.md"));
+        assertTrue(doc.contains("inactive Cavenia chunk-generator/terrain-pipeline contract boundary"));
+        assertTrue(doc.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
         assertTrue(doc.contains("cavenic bear biome modifier registry smoke"));
         assertTrue(doc.contains("cavenic bear biome tag resolution"));
         assertTrue(doc.contains("cavenic bear legacy fall-damage reduction smoke"));

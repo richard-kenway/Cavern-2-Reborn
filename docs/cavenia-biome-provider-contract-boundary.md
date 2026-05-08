@@ -23,6 +23,10 @@ The separate VEINS/content-pipeline contract remains documented in:
 
 - `docs/cavenia-veins-content-pipeline-contract-boundary.md`
 
+The separate chunk-generator and terrain-pipeline contract remains documented in:
+
+- `docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md`
+
 The crazy-roster natural-spawn boundary remains documented in:
 
 - `docs/cavenia-crazy-roster-natural-spawn-boundary.md`
@@ -223,6 +227,7 @@ An honest port still needs decisions about:
 - how to express the old GenLayer zoom/voronoi behavior
 - how to map top/terrain replacement into terrain surface-rules or generator code
 - how to map the separate `CaveniaConfig.VEINS` and population pipeline documented in `docs/cavenia-veins-content-pipeline-contract-boundary.md`
+- how to map the generator-owned terrain flow documented in `docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md`
 - how to keep the biome contract consistent with future Cavenia terrain and VEIN/content work
 
 Adding active resources now would suggest a real biome pipeline that does not exist yet.
