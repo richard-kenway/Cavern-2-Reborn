@@ -27,6 +27,10 @@ The separate chunk-generator and terrain-pipeline contract remains documented in
 
 - `docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md`
 
+The separate cave-carver contract remains documented in:
+
+- `docs/cavenia-cave-carver-mapgen-contract-boundary.md`
+
 The crazy-roster natural-spawn boundary remains documented in:
 
 - `docs/cavenia-crazy-roster-natural-spawn-boundary.md`

@@ -11,14 +11,14 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
-class CaveniaBiomeProviderContractBoundaryTest {
+class CaveniaCaveCarverMapgenContractBoundaryTest {
     private static final Path README = resolveProjectFile("README.md");
-    private static final Path CONTRACT_DOC = resolveProjectFile("docs", "cavenia-biome-provider-contract-boundary.md");
+    private static final Path CONTRACT_DOC = resolveProjectFile("docs", "cavenia-cave-carver-mapgen-contract-boundary.md");
     private static final Path FOUNDATION_DOC = resolveProjectFile("docs", "cavenia-dimension-provider-foundation-boundary.md");
     private static final Path KEY_TYPE_DOC = resolveProjectFile("docs", "cavenia-dimension-key-type-contract-boundary.md");
+    private static final Path BIOME_PROVIDER_DOC = resolveProjectFile("docs", "cavenia-biome-provider-contract-boundary.md");
     private static final Path VEINS_DOC = resolveProjectFile("docs", "cavenia-veins-content-pipeline-contract-boundary.md");
     private static final Path TERRAIN_DOC = resolveProjectFile("docs", "cavenia-chunk-generator-terrain-pipeline-contract-boundary.md");
-    private static final Path CAVE_CARVER_DOC = resolveProjectFile("docs", "cavenia-cave-carver-mapgen-contract-boundary.md");
     private static final Path CRAZY_ROSTER_DOC = resolveProjectFile("docs", "cavenia-crazy-roster-natural-spawn-boundary.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
     private static final Path DIMENSIONS_SOURCE = resolveProjectFile(
@@ -32,75 +32,74 @@ class CaveniaBiomeProviderContractBoundaryTest {
     );
 
     @Test
-    void docsPinTheLegacyBiomeManagerAndInactiveRebornBoundary() throws IOException {
+    void docsPinTheLegacyCaveCarverContractAndInactiveRebornBoundary() throws IOException {
         String readme = Files.readString(README);
         String contractDoc = Files.readString(CONTRACT_DOC);
         String foundationDoc = Files.readString(FOUNDATION_DOC);
         String keyTypeDoc = Files.readString(KEY_TYPE_DOC);
+        String biomeProviderDoc = Files.readString(BIOME_PROVIDER_DOC);
         String veinsDoc = Files.readString(VEINS_DOC);
         String terrainDoc = Files.readString(TERRAIN_DOC);
-        String caveCarverDoc = Files.readString(CAVE_CARVER_DOC);
         String crazyRosterDoc = Files.readString(CRAZY_ROSTER_DOC);
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE_DOC);
 
-        assertTrue(readme.contains("Cavenia Biome Provider / Biome List Contract Boundary"));
-        assertTrue(readme.contains("docs/cavenia-biome-provider-contract-boundary.md"));
+        assertTrue(readme.contains("Cavenia Cave Carver / MapGenCaveniaCaves Contract Boundary"));
+        assertTrue(readme.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));
 
-        assertTrue(contractDoc.contains("`CaveniaConfig.BIOMES`"));
-        assertTrue(contractDoc.contains("`WorldProviderCavenia#createBiomeProvider()`"));
-        assertTrue(contractDoc.contains("`CaveBiomeProvider`"));
+        assertTrue(contractDoc.contains("`MapGenCaveniaCaves`"));
+        assertTrue(contractDoc.contains("`MapGenCavernCaves`"));
+        assertTrue(contractDoc.contains("`MapGenCaves`"));
+        assertTrue(contractDoc.contains("`CaveniaConfig.generateCaves = true`"));
         assertTrue(contractDoc.contains("`ChunkGeneratorCavenia`"));
-        assertTrue(contractDoc.contains("`CaveBiomeManager`"));
-        assertTrue(contractDoc.contains("`terrainBlock`"));
-        assertTrue(contractDoc.contains("`topBlock`"));
-        assertTrue(contractDoc.contains("There is no separate Cavenia-specific stored `fillerBlock` contract."));
-        assertTrue(contractDoc.contains("`OCEAN` weight `15`"));
-        assertTrue(contractDoc.contains("`PLAINS` weight `100`"));
-        assertTrue(contractDoc.contains("`DESERT` weight `70`"));
-        assertTrue(contractDoc.contains("`DESERT_HILLS` weight `10`"));
-        assertTrue(contractDoc.contains("`FOREST` weight `80`"));
-        assertTrue(contractDoc.contains("`FOREST_HILLS` weight `10`"));
-        assertTrue(contractDoc.contains("`TAIGA` weight `80`"));
-        assertTrue(contractDoc.contains("`TAIGA_HILLS` weight `10`"));
-        assertTrue(contractDoc.contains("`JUNGLE` weight `80`"));
-        assertTrue(contractDoc.contains("`JUNGLE_HILLS` weight `10`"));
-        assertTrue(contractDoc.contains("`SWAMPLAND` weight `60`"));
-        assertTrue(contractDoc.contains("`EXTREME_HILLS` weight `50`"));
-        assertTrue(contractDoc.contains("`SAVANNA` weight `50`"));
-        assertTrue(contractDoc.contains("`MESA` weight `50`"));
-        assertTrue(contractDoc.contains("`OCEAN` -> `minecraft:gravel`"));
-        assertTrue(contractDoc.contains("`PLAINS` -> `minecraft:grass`"));
-        assertTrue(contractDoc.contains("`DESERT` -> `minecraft:sand`"));
-        assertTrue(contractDoc.contains("`DESERT_HILLS` -> `minecraft:sandstone`"));
-        assertTrue(contractDoc.contains("`MESA` -> `minecraft:red_sandstone`"));
-        assertTrue(contractDoc.contains("the default terrain/filter layer stays stone everywhere unless the config is edited"));
-        assertTrue(contractDoc.contains("weighted biome-source strategy"));
-        assertTrue(contractDoc.contains("custom biome-provider code"));
-        assertTrue(contractDoc.contains("data-driven approximation of the legacy weighted-biome manager"));
-        assertTrue(contractDoc.contains("terrain surface-rules or generator-side top/filter mapping"));
-        assertTrue(contractDoc.contains("`CaveniaConfig.VEINS`"));
-        assertTrue(contractDoc.contains("no active Cavenia biome-source resources"));
-        assertTrue(contractDoc.contains("no active Cavenia biome tags"));
-        assertTrue(contractDoc.contains("no active Cavenia worldgen resources"));
+        assertTrue(contractDoc.contains("`addTunnel(...)`"));
+        assertTrue(contractDoc.contains("`recursiveGenerate(...)`"));
+        assertTrue(contractDoc.contains("`digBlock(...)`"));
+        assertTrue(contractDoc.contains("`addRoom(...)`"));
+        assertTrue(contractDoc.contains("`blockY = 20 + rand.nextInt(5)`"));
+        assertTrue(contractDoc.contains("`world.getActualHeight()`"));
+        assertTrue(contractDoc.contains("`world.provider.getActualHeight()`"));
+        assertTrue(contractDoc.contains("`y <= 2`"));
+        assertTrue(contractDoc.contains("`y - 1 < 10`"));
+        assertTrue(contractDoc.contains("`Blocks.GRAVEL`"));
+        assertTrue(contractDoc.contains("`Blocks.WATER`"));
+        assertTrue(contractDoc.contains("`Blocks.AIR`"));
+        assertTrue(contractDoc.contains("write `Blocks.GRAVEL`"));
+        assertTrue(contractDoc.contains("write `Blocks.WATER`"));
+        assertTrue(contractDoc.contains("write `Blocks.AIR`"));
+        assertTrue(contractDoc.contains("rand.nextInt(rand.nextInt(rand.nextInt(10) + 1) + 1)"));
+        assertTrue(contractDoc.contains("`rand.nextInt(3) == 0`"));
+        assertTrue(contractDoc.contains("rand.nextInt(5) == 0"));
+        assertTrue(contractDoc.contains("`scaleHeight = 1.35D`"));
+        assertTrue(contractDoc.contains("scale + 18.0F"));
+        assertTrue(contractDoc.contains("random.nextInt(6) == 0"));
+        assertTrue(contractDoc.contains("after the full stone base fill"));
+        assertTrue(contractDoc.contains("before biome top/filter replacement"));
+        assertTrue(contractDoc.contains("before `CaveniaConfig.VEINS`"));
+        assertTrue(contractDoc.contains("custom carver"));
+        assertTrue(contractDoc.contains("configured-carver data alone is likely not enough"));
+        assertTrue(contractDoc.contains("no active Cavenia configured carver resources"));
+        assertTrue(contractDoc.contains("no active Cavenia noise settings"));
+        assertTrue(contractDoc.contains("no active Cavenia density functions"));
+        assertTrue(contractDoc.contains("no active Cavenia chunk generator"));
         assertTrue(contractDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-dimension-key-type-contract-boundary.md"));
+        assertTrue(contractDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-veins-content-pipeline-contract-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
-        assertTrue(contractDoc.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-crazy-roster-natural-spawn-boundary.md"));
 
-        assertTrue(foundationDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
-        assertTrue(keyTypeDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
-        assertTrue(veinsDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
-        assertTrue(terrainDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
-        assertTrue(caveCarverDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
+        assertTrue(foundationDoc.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));
+        assertTrue(keyTypeDoc.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));
+        assertTrue(biomeProviderDoc.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));
+        assertTrue(veinsDoc.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));
+        assertTrue(terrainDoc.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));
         assertTrue(crazyRosterDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
-        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
-        assertTrue(runtimeSmokeDoc.contains("inactive Cavenia biome-provider contract boundary"));
+        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));
+        assertTrue(runtimeSmokeDoc.contains("inactive Cavenia cave-carver / `MapGenCaveniaCaves` contract boundary"));
     }
 
     @Test
-    void rebornStillKeepsCaveniaBiomeProviderAndResourcesInactive() throws IOException {
+    void rebornStillKeepsCaveniaCaveCarverResourcesInactive() throws IOException {
         String dimensionsSource = Files.readString(DIMENSIONS_SOURCE, StandardCharsets.UTF_8);
 
         assertFalse(dimensionsSource.contains("CAVENIA_LOCATION"));
@@ -108,11 +107,13 @@ class CaveniaBiomeProviderContractBoundaryTest {
 
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension_type", "cavenia.json");
+        assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "MapGenCaveniaCaves.java");
+        assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "MapGenCavernCaves.java");
 
         try (Stream<Path> dimensionFiles = Files.list(DIMENSION_PACKAGE)) {
             assertTrue(
-                dimensionFiles.map(path -> path.getFileName().toString()).noneMatch(name -> name.contains("Cavenia")),
-                "Expected the biome-provider boundary to keep Cavenia-specific runtime dimension classes absent"
+                dimensionFiles.map(path -> path.getFileName().toString()).noneMatch(name -> name.contains("Cavenia") || name.contains("CavernCaves")),
+                "Expected the cave-carver boundary to keep Cavenia-specific runtime dimension and carver classes absent"
             );
         }
 
@@ -122,9 +123,10 @@ class CaveniaBiomeProviderContractBoundaryTest {
                     .filter(Files::isRegularFile)
                     .map(path -> path.toString().replace('\\', '/'))
                     .noneMatch(path ->
-                        path.contains("/worldgen/biome/cavenia")
-                            || path.contains("/tags/worldgen/biome/cavenia")
+                        path.contains("/worldgen/configured_carver/cavenia")
                             || path.contains("/worldgen/noise_settings/cavenia")
+                            || path.contains("/worldgen/density_function/cavenia")
+                            || path.contains("/worldgen/noise/cavenia")
                             || path.contains("/worldgen/configured_feature/cavenia")
                             || path.contains("/worldgen/placed_feature/cavenia")
                             || path.contains("/dimension/cavenia.json")
@@ -132,7 +134,7 @@ class CaveniaBiomeProviderContractBoundaryTest {
                             || path.contains("/cavenia/")
                             || path.contains("cavenia_")
                     ),
-                "Expected the biome-provider boundary to keep active Cavenia biome/worldgen resources absent from checked-in data resources"
+                "Expected the cave-carver boundary to keep active Cavenia carver/worldgen resources absent from checked-in data resources"
             );
         }
     }

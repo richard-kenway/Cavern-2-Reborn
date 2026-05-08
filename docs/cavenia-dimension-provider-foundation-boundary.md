@@ -20,6 +20,10 @@ The narrower future chunk-generator and terrain-pipeline contract is documented 
 
 - `docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md`
 
+The narrower future cave-carver contract is documented separately in:
+
+- `docs/cavenia-cave-carver-mapgen-contract-boundary.md`
+
 ## Legacy References Inspected
 
 - `cavern.world.mirage.WorldProviderCavenia`

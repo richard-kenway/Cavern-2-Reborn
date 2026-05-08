@@ -35,6 +35,10 @@ The narrower future VEINS/content-pipeline contract remains documented in:
 
 - `docs/cavenia-veins-content-pipeline-contract-boundary.md`
 
+The narrower future cave-carver contract remains documented in:
+
+- `docs/cavenia-cave-carver-mapgen-contract-boundary.md`
+
 The crazy-roster natural-spawn boundary remains documented in:
 
 - `docs/cavenia-crazy-roster-natural-spawn-boundary.md`

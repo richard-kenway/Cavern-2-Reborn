@@ -18,6 +18,7 @@ class CaveniaChunkGeneratorTerrainPipelineContractBoundaryTest {
     private static final Path KEY_TYPE_DOC = resolveProjectFile("docs", "cavenia-dimension-key-type-contract-boundary.md");
     private static final Path BIOME_PROVIDER_DOC = resolveProjectFile("docs", "cavenia-biome-provider-contract-boundary.md");
     private static final Path VEINS_DOC = resolveProjectFile("docs", "cavenia-veins-content-pipeline-contract-boundary.md");
+    private static final Path CAVE_CARVER_DOC = resolveProjectFile("docs", "cavenia-cave-carver-mapgen-contract-boundary.md");
     private static final Path CRAZY_ROSTER_DOC = resolveProjectFile("docs", "cavenia-crazy-roster-natural-spawn-boundary.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
     private static final Path DIMENSIONS_SOURCE = resolveProjectFile(
@@ -38,6 +39,7 @@ class CaveniaChunkGeneratorTerrainPipelineContractBoundaryTest {
         String keyTypeDoc = Files.readString(KEY_TYPE_DOC);
         String biomeProviderDoc = Files.readString(BIOME_PROVIDER_DOC);
         String veinsDoc = Files.readString(VEINS_DOC);
+        String caveCarverDoc = Files.readString(CAVE_CARVER_DOC);
         String crazyRosterDoc = Files.readString(CRAZY_ROSTER_DOC);
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE_DOC);
 
@@ -86,6 +88,7 @@ class CaveniaChunkGeneratorTerrainPipelineContractBoundaryTest {
         assertTrue(contractDoc.contains("custom cave carver"));
         assertTrue(contractDoc.contains("surface rules or equivalent top/filter mapping"));
         assertTrue(contractDoc.contains("strict ordering between carve, top/filter replacement and VEINS mutation"));
+        assertTrue(contractDoc.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-dimension-key-type-contract-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
@@ -96,6 +99,7 @@ class CaveniaChunkGeneratorTerrainPipelineContractBoundaryTest {
         assertTrue(keyTypeDoc.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
         assertTrue(biomeProviderDoc.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
         assertTrue(veinsDoc.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
+        assertTrue(caveCarverDoc.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
         assertTrue(crazyRosterDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
         assertTrue(runtimeSmokeDoc.contains("inactive Cavenia chunk-generator/terrain-pipeline contract boundary"));
