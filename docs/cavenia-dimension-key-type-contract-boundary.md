@@ -18,6 +18,10 @@ The narrower future biome-provider contract remains documented in:
 
 - `docs/cavenia-biome-provider-contract-boundary.md`
 
+The narrower future VEINS/content-pipeline contract remains documented in:
+
+- `docs/cavenia-veins-content-pipeline-contract-boundary.md`
+
 The crazy-roster natural-spawn boundary remains documented in:
 
 - `docs/cavenia-crazy-roster-natural-spawn-boundary.md`

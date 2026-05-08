@@ -19,6 +19,10 @@ The narrower dimension key/type boundary remains documented in:
 
 - `docs/cavenia-dimension-key-type-contract-boundary.md`
 
+The separate VEINS/content-pipeline contract remains documented in:
+
+- `docs/cavenia-veins-content-pipeline-contract-boundary.md`
+
 The crazy-roster natural-spawn boundary remains documented in:
 
 - `docs/cavenia-crazy-roster-natural-spawn-boundary.md`
@@ -218,6 +222,7 @@ An honest port still needs decisions about:
 - whether to approximate the old weighted manager through a modern data-driven source
 - how to express the old GenLayer zoom/voronoi behavior
 - how to map top/terrain replacement into terrain surface-rules or generator code
+- how to map the separate `CaveniaConfig.VEINS` and population pipeline documented in `docs/cavenia-veins-content-pipeline-contract-boundary.md`
 - how to keep the biome contract consistent with future Cavenia terrain and VEIN/content work
 
 Adding active resources now would suggest a real biome pipeline that does not exist yet.

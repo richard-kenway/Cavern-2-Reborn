@@ -16,6 +16,7 @@ class CaveniaBiomeProviderContractBoundaryTest {
     private static final Path CONTRACT_DOC = resolveProjectFile("docs", "cavenia-biome-provider-contract-boundary.md");
     private static final Path FOUNDATION_DOC = resolveProjectFile("docs", "cavenia-dimension-provider-foundation-boundary.md");
     private static final Path KEY_TYPE_DOC = resolveProjectFile("docs", "cavenia-dimension-key-type-contract-boundary.md");
+    private static final Path VEINS_DOC = resolveProjectFile("docs", "cavenia-veins-content-pipeline-contract-boundary.md");
     private static final Path CRAZY_ROSTER_DOC = resolveProjectFile("docs", "cavenia-crazy-roster-natural-spawn-boundary.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
     private static final Path DIMENSIONS_SOURCE = resolveProjectFile(
@@ -34,6 +35,7 @@ class CaveniaBiomeProviderContractBoundaryTest {
         String contractDoc = Files.readString(CONTRACT_DOC);
         String foundationDoc = Files.readString(FOUNDATION_DOC);
         String keyTypeDoc = Files.readString(KEY_TYPE_DOC);
+        String veinsDoc = Files.readString(VEINS_DOC);
         String crazyRosterDoc = Files.readString(CRAZY_ROSTER_DOC);
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE_DOC);
 
@@ -78,10 +80,12 @@ class CaveniaBiomeProviderContractBoundaryTest {
         assertTrue(contractDoc.contains("no active Cavenia worldgen resources"));
         assertTrue(contractDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-dimension-key-type-contract-boundary.md"));
+        assertTrue(contractDoc.contains("docs/cavenia-veins-content-pipeline-contract-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-crazy-roster-natural-spawn-boundary.md"));
 
         assertTrue(foundationDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
         assertTrue(keyTypeDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
+        assertTrue(veinsDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
         assertTrue(crazyRosterDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
         assertTrue(runtimeSmokeDoc.contains("inactive Cavenia biome-provider contract boundary"));

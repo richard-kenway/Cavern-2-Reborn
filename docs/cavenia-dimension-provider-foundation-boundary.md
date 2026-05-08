@@ -12,6 +12,10 @@ The narrower future biome-provider contract is documented separately in:
 
 - `docs/cavenia-biome-provider-contract-boundary.md`
 
+The narrower future VEINS/content-pipeline contract is documented separately in:
+
+- `docs/cavenia-veins-content-pipeline-contract-boundary.md`
+
 ## Legacy References Inspected
 
 - `cavern.world.mirage.WorldProviderCavenia`
@@ -135,6 +139,10 @@ Default configured vein/content set found in `syncVeinsConfig()` includes:
 - dirt, gravel and sand
 
 This means a real Cavenia port is tied to its own biome manager and vein/content manager, not only to a dimension id and a monster list.
+
+The focused VEINS/content pipeline contract is documented separately in:
+
+- `docs/cavenia-veins-content-pipeline-contract-boundary.md`
 
 ## Exact Legacy Chunk/Terrain Dependency Found
 
