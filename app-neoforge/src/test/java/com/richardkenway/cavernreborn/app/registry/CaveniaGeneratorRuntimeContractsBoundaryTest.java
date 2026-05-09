@@ -21,6 +21,7 @@ class CaveniaGeneratorRuntimeContractsBoundaryTest {
     private static final Path TECHNICAL_SPIKE_DOC = resolveProjectFile("docs", "cavenia-active-foundation-technical-spike.md");
     private static final Path READINESS_DOC = resolveProjectFile("docs", "cavenia-active-foundation-readiness-plan.md");
     private static final Path RUNTIME_KEY_DOC = resolveProjectFile("docs", "cavenia-runtime-key-inactive-dimension-scaffold-mvp.md");
+    private static final Path ACTIVATION_HOSTS_DOC = resolveProjectFile("docs", "cavenia-generator-activation-readiness-host-contracts-mvp.md");
     private static final Path APP_SOURCE_ROOT = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app"
     );
@@ -40,6 +41,7 @@ class CaveniaGeneratorRuntimeContractsBoundaryTest {
         String technicalSpikeDoc = Files.readString(TECHNICAL_SPIKE_DOC);
         String readinessDoc = Files.readString(READINESS_DOC);
         String runtimeKeyDoc = Files.readString(RUNTIME_KEY_DOC);
+        String activationHostsDoc = Files.readString(ACTIVATION_HOSTS_DOC);
 
         assertTrue(contractsDoc.contains("Cavenia Generator Runtime Contract Interfaces / Non-Registered MVP"));
         assertTrue(contractsDoc.contains("`CaveniaGeneratorRuntimeContracts`"));
@@ -66,6 +68,7 @@ class CaveniaGeneratorRuntimeContractsBoundaryTest {
         assertTrue(contractsDoc.contains("no active crazy spawning"));
         assertTrue(contractsDoc.contains("no fake normal `CAVERN` crazy spawning"));
         assertTrue(contractsDoc.contains("`EntityCaveman -> deferred:caveman`"));
+        assertTrue(contractsDoc.contains("docs/cavenia-generator-activation-readiness-host-contracts-mvp.md"));
 
         assertTrue(readme.contains("Cavenia Generator Runtime Contract Interfaces / Non-Registered MVP"));
         assertTrue(readme.contains("docs/cavenia-generator-runtime-contracts-non-registered-mvp.md"));
@@ -78,6 +81,7 @@ class CaveniaGeneratorRuntimeContractsBoundaryTest {
         assertTrue(technicalSpikeDoc.contains("docs/cavenia-generator-runtime-contracts-non-registered-mvp.md"));
         assertTrue(readinessDoc.contains("docs/cavenia-generator-runtime-contracts-non-registered-mvp.md"));
         assertTrue(runtimeKeyDoc.contains("docs/cavenia-generator-runtime-contracts-non-registered-mvp.md"));
+        assertTrue(activationHostsDoc.contains("`CaveniaGeneratorRuntimeContracts`"));
     }
 
     @Test

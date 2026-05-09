@@ -35,6 +35,7 @@ The later non-registered active-generator technical scaffold note is now documen
 - `docs/cavenia-active-generator-registration-inert-boundary-mvp.md`
 - `docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md`
 - `docs/cavenia-generator-runtime-contracts-non-registered-mvp.md`
+- `docs/cavenia-generator-activation-readiness-host-contracts-mvp.md`
 
 Current readiness state still has no active Cavenia spawning and no fake normal `CAVERN` crazy spawning.
 
@@ -64,6 +65,9 @@ Current repository state now also has:
 - inert `CaveniaGeneratorRuntimeOperation`
 - inert `CaveniaGeneratorRuntimeOperationContract`
 - inert `CaveniaGeneratorRuntimeContracts`
+- inert `CaveniaActivationReadinessHost`
+- inert `CaveniaActivationReadinessHostContract`
+- inert `CaveniaActivationReadinessHosts`
 
 ## Completed Readiness Inputs
 

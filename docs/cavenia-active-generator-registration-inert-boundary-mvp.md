@@ -18,6 +18,10 @@ The later non-registered runtime-contract note is now documented separately in:
 
 - `docs/cavenia-generator-runtime-contracts-non-registered-mvp.md`
 
+The later activation-readiness host-contract note is now documented separately in:
+
+- `docs/cavenia-generator-activation-readiness-host-contracts-mvp.md`
+
 ## What This MVP Adds
 
 Current Reborn now has an inert NeoForge-side registration-boundary class:

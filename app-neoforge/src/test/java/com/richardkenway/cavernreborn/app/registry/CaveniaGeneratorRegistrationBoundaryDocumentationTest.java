@@ -18,6 +18,7 @@ class CaveniaGeneratorRegistrationBoundaryDocumentationTest {
     private static final Path SCAFFOLD_DOC = resolveProjectFile("docs", "cavenia-active-generator-technical-scaffold-mvp.md");
     private static final Path SKELETON_DOC = resolveProjectFile("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md");
     private static final Path CONTRACTS_DOC = resolveProjectFile("docs", "cavenia-generator-runtime-contracts-non-registered-mvp.md");
+    private static final Path ACTIVATION_HOSTS_DOC = resolveProjectFile("docs", "cavenia-generator-activation-readiness-host-contracts-mvp.md");
     private static final Path TECHNICAL_SPIKE_DOC = resolveProjectFile("docs", "cavenia-active-foundation-technical-spike.md");
     private static final Path READINESS_DOC = resolveProjectFile("docs", "cavenia-active-foundation-readiness-plan.md");
     private static final Path RUNTIME_KEY_DOC = resolveProjectFile("docs", "cavenia-runtime-key-inactive-dimension-scaffold-mvp.md");
@@ -37,6 +38,7 @@ class CaveniaGeneratorRegistrationBoundaryDocumentationTest {
         String scaffoldDoc = Files.readString(SCAFFOLD_DOC);
         String skeletonDoc = Files.readString(SKELETON_DOC);
         String contractsDoc = Files.readString(CONTRACTS_DOC);
+        String activationHostsDoc = Files.readString(ACTIVATION_HOSTS_DOC);
         String technicalSpikeDoc = Files.readString(TECHNICAL_SPIKE_DOC);
         String readinessDoc = Files.readString(READINESS_DOC);
         String runtimeKeyDoc = Files.readString(RUNTIME_KEY_DOC);
@@ -69,8 +71,10 @@ class CaveniaGeneratorRegistrationBoundaryDocumentationTest {
         assertTrue(bridgeDoc.contains("docs/cavenia-active-generator-registration-inert-boundary-mvp.md"));
         assertTrue(registrationDoc.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
         assertTrue(registrationDoc.contains("docs/cavenia-generator-runtime-contracts-non-registered-mvp.md"));
+        assertTrue(registrationDoc.contains("docs/cavenia-generator-activation-readiness-host-contracts-mvp.md"));
         assertTrue(skeletonDoc.contains("`CaveniaGeneratorRegistrationBoundary`"));
         assertTrue(contractsDoc.contains("`CaveniaGeneratorRegistrationBoundary`"));
+        assertTrue(activationHostsDoc.contains("`CaveniaGeneratorRegistrationBoundary`"));
         assertTrue(scaffoldDoc.contains("docs/cavenia-active-generator-registration-inert-boundary-mvp.md"));
         assertTrue(technicalSpikeDoc.contains("docs/cavenia-active-generator-registration-inert-boundary-mvp.md"));
         assertTrue(readinessDoc.contains("docs/cavenia-active-generator-registration-inert-boundary-mvp.md"));

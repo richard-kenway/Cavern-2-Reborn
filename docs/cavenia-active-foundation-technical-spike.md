@@ -62,6 +62,10 @@ The later non-registered runtime-contract note is now documented separately in:
 
 - `docs/cavenia-generator-runtime-contracts-non-registered-mvp.md`
 
+The later activation-readiness host-contract note is now documented separately in:
+
+- `docs/cavenia-generator-activation-readiness-host-contracts-mvp.md`
+
 This spike still does not imply active `cavernreborn:cavenia`, `dimension/cavenia.json`, `dimension_type/cavenia.json`, active Cavenia spawning, active crazy spawning, fake normal `CAVERN` crazy spawning or a `cavernreborn:caveman` entity.
 
 ## Spike Decision

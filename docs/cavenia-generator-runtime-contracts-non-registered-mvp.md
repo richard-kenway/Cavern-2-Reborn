@@ -12,6 +12,10 @@ It builds on:
 - `docs/cavenia-active-foundation-readiness-plan.md`
 - `docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md`
 
+The later activation-readiness host-contract note is now documented separately in:
+
+- `docs/cavenia-generator-activation-readiness-host-contracts-mvp.md`
+
 ## What This MVP Adds
 
 Current Reborn now has three app-side non-registered contract types:

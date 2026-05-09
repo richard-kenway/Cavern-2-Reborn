@@ -38,6 +38,7 @@ The later non-registered active-generator technical scaffold note is now documen
 - `docs/cavenia-active-generator-registration-inert-boundary-mvp.md`
 - `docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md`
 - `docs/cavenia-generator-runtime-contracts-non-registered-mvp.md`
+- `docs/cavenia-generator-activation-readiness-host-contracts-mvp.md`
 
 ## Exact Constants Added
 

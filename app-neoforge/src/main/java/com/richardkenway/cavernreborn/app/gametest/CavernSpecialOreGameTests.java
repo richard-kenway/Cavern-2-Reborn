@@ -46,6 +46,7 @@ import com.richardkenway.cavernreborn.app.item.CavenicBowItem;
 import com.richardkenway.cavernreborn.app.item.OreCompassItem;
 import com.richardkenway.cavernreborn.app.mining.CavernMiningAssistEvents;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorActivationRequirement;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaActivationReadinessHosts;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSelectionSkeleton;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorBridge;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorRuntimeContracts;
@@ -7830,12 +7831,29 @@ public final class CavernSpecialOreGameTests {
             "Expected the non-registered Cavenia runtime-contract layer to keep chunk creation and runtime biome-source behavior blocked behind the existing activation requirements"
         );
         helper.assertTrue(
+            CaveniaActivationReadinessHosts.contracts().size() == 6
+                && CaveniaActivationReadinessHosts.allHostsBlocked()
+                && !CaveniaActivationReadinessHosts.anyHostReady()
+                && !CaveniaActivationReadinessHosts.canActivateCavenia(),
+            "Expected the non-registered Cavenia activation-readiness host layer to keep every runtime host blocked and not ready"
+        );
+        helper.assertTrue(
+            CaveniaActivationReadinessHosts.runtimeOperationsBlocked()
+                && !CaveniaActivationReadinessHosts.generatorSkeletonCanCreateChunks()
+                && !CaveniaActivationReadinessHosts.biomeSelectionIsRuntimeBiomeSource(),
+            "Expected the non-registered Cavenia activation-readiness host layer to keep runtime operations, chunk creation and runtime biome-source behavior blocked"
+        );
+        helper.assertTrue(
             projectFileExists("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md"),
             "Expected the unregistered Cavenia generator/biome-selection skeleton doc to exist in the project root"
         );
         helper.assertTrue(
             projectFileExists("docs", "cavenia-generator-runtime-contracts-non-registered-mvp.md"),
             "Expected the non-registered Cavenia runtime-contracts doc to exist in the project root"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-generator-activation-readiness-host-contracts-mvp.md"),
+            "Expected the non-registered Cavenia activation-readiness host-contract doc to exist in the project root"
         );
         helper.assertTrue(
             projectFileExists("docs", "caveman-cavenia-normal-roster-boundary.md"),
