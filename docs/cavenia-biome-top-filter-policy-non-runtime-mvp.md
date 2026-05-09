@@ -9,6 +9,7 @@ It builds on:
 - `docs/cavenia-cave-carver-policy-non-runtime-mvp.md`
 - `docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md`
 - `docs/cavenia-veins-content-pipeline-contract-boundary.md`
+- `docs/cavenia-veins-content-policy-non-runtime-mvp.md`
 - `docs/cavenia-active-foundation-readiness-plan.md`
 - `docs/cavenia-active-foundation-technical-spike.md`
 - `docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md`

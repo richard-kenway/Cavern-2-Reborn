@@ -27,6 +27,7 @@ class CaveniaActiveFoundationTechnicalSpikeTest {
     private static final Path TERRAIN_POLICY_DOC = resolveProjectFile("docs", "cavenia-terrain-generator-foundation-non-runtime-mvp.md");
     private static final Path CAVE_CARVER_POLICY_DOC = resolveProjectFile("docs", "cavenia-cave-carver-policy-non-runtime-mvp.md");
     private static final Path BIOME_TOP_FILTER_POLICY_DOC = resolveProjectFile("docs", "cavenia-biome-top-filter-policy-non-runtime-mvp.md");
+    private static final Path VEINS_POLICY_DOC = resolveProjectFile("docs", "cavenia-veins-content-policy-non-runtime-mvp.md");
 
     @Test
     void technicalSpikeExistsAndPinsTheFirstActiveFoundationDecision() throws IOException {
@@ -48,6 +49,7 @@ class CaveniaActiveFoundationTechnicalSpikeTest {
         String terrainPolicyDoc = Files.readString(TERRAIN_POLICY_DOC);
         String caveCarverPolicyDoc = Files.readString(CAVE_CARVER_POLICY_DOC);
         String biomeTopFilterPolicyDoc = Files.readString(BIOME_TOP_FILTER_POLICY_DOC);
+        String veinsPolicyDoc = Files.readString(VEINS_POLICY_DOC);
 
         assertTrue(spikeDoc.contains("Cavenia Active Foundation Technical Spike"));
         assertTrue(spikeDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
@@ -67,6 +69,7 @@ class CaveniaActiveFoundationTechnicalSpikeTest {
         assertTrue(spikeDoc.contains("docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md"));
         assertTrue(spikeDoc.contains("docs/cavenia-cave-carver-policy-non-runtime-mvp.md"));
         assertTrue(spikeDoc.contains("docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md"));
+        assertTrue(spikeDoc.contains("docs/cavenia-veins-content-policy-non-runtime-mvp.md"));
         assertTrue(spikeDoc.contains("`CAVENIA_LOCATION`"));
         assertTrue(spikeDoc.contains("`CAVENIA_LEVEL_KEY`"));
         assertTrue(spikeDoc.contains("`dimension/cavenia.json`"));
@@ -103,6 +106,7 @@ class CaveniaActiveFoundationTechnicalSpikeTest {
         assertTrue(terrainPolicyDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
         assertTrue(caveCarverPolicyDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
         assertTrue(biomeTopFilterPolicyDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
+        assertTrue(veinsPolicyDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
     }
 
     private static Path resolveProjectFile(String first, String... more) {

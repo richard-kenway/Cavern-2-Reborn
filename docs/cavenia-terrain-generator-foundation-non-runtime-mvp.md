@@ -95,6 +95,10 @@ The later pure cave-carver follow-up is documented separately in:
 
 - `docs/cavenia-cave-carver-policy-non-runtime-mvp.md`
 
+The later pure VEINS/content follow-up is documented separately in:
+
+- `docs/cavenia-veins-content-policy-non-runtime-mvp.md`
+
 ## What This MVP Still Does Not Add
 
 This slice does not add:

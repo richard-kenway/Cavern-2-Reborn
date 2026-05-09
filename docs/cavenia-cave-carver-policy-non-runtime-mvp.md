@@ -7,6 +7,7 @@ It builds on:
 - `docs/cavenia-cave-carver-mapgen-contract-boundary.md`
 - `docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md`
 - `docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md`
+- `docs/cavenia-veins-content-policy-non-runtime-mvp.md`
 - `docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md`
 - `docs/cavenia-active-foundation-readiness-plan.md`
 - `docs/cavenia-active-foundation-technical-spike.md`

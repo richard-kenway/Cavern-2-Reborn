@@ -18,6 +18,10 @@ The later pure non-runtime biome top/filter policy note is documented separately
 
 - `docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md`
 
+The later pure non-runtime VEINS/content policy note is documented separately in:
+
+- `docs/cavenia-veins-content-policy-non-runtime-mvp.md`
+
 It does not add:
 
 - `data/cavernreborn/dimension/cavenia.json`

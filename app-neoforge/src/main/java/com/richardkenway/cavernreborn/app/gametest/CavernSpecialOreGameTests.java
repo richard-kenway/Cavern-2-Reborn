@@ -89,6 +89,7 @@ import com.richardkenway.cavernreborn.core.worldgen.CaveniaCaveCarverReplacement
 import com.richardkenway.cavernreborn.core.worldgen.CaveniaBiomeTopFilterPolicy;
 import com.richardkenway.cavernreborn.core.worldgen.CaveniaTerrainGeneratorPolicy;
 import com.richardkenway.cavernreborn.core.worldgen.CaveniaTerrainStep;
+import com.richardkenway.cavernreborn.core.worldgen.CaveniaVeinsContentPolicy;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -7558,6 +7559,10 @@ public final class CavernSpecialOreGameTests {
             "Expected the non-runtime Cavenia biome top/filter policy doc to exist in the project root"
         );
         helper.assertTrue(
+            projectFileExists("docs", "cavenia-veins-content-policy-non-runtime-mvp.md"),
+            "Expected the non-runtime Cavenia VEINS/content policy doc to exist in the project root"
+        );
+        helper.assertTrue(
             CaveniaTerrainGeneratorPolicy.WORLD_HEIGHT == 128,
             "Expected the non-runtime Cavenia terrain-generator policy to keep WORLD_HEIGHT pinned to 128"
         );
@@ -7599,6 +7604,33 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             CaveniaBiomeTopFilterPolicy.totalWeight() == 675,
             "Expected the non-runtime Cavenia biome top/filter policy to keep the shipped legacy total biome weight pinned"
+        );
+        helper.assertTrue(
+            CaveniaVeinsContentPolicy.entries().size() == 13,
+            "Expected the non-runtime Cavenia VEINS/content policy to keep the shipped legacy VEINS roster size pinned"
+        );
+        helper.assertTrue(
+            CaveniaVeinsContentPolicy.totalWeight() == 436,
+            "Expected the non-runtime Cavenia VEINS/content policy to keep the shipped legacy total VEINS weight pinned"
+        );
+        helper.assertTrue(
+            CaveniaVeinsContentPolicy.defaultTargetBlockId().equals("minecraft:stone")
+                && CaveniaVeinsContentPolicy.defaultChance() == 1.0D
+                && !CaveniaVeinsContentPolicy.autoVeinsDefaultEnabled(),
+            "Expected the non-runtime Cavenia VEINS/content policy to keep the default target block, default chance and autoVeins flag pinned"
+        );
+        helper.assertTrue(
+            CaveniaVeinsContentPolicy.containsLegacyBlockId("minecraft:coal_ore")
+                && CaveniaVeinsContentPolicy.containsLegacyBlockId("cavern:cave_block")
+                && !CaveniaVeinsContentPolicy.containsLegacyBlockId("minecraft:gold_ore"),
+            "Expected the non-runtime Cavenia VEINS/content policy to keep representative shipped entries present and gold absent from shipped defaults"
+        );
+        helper.assertTrue(
+            CaveniaVeinsContentPolicy.runsAfterCaveCarving()
+                && CaveniaVeinsContentPolicy.runsAfterBiomeTopFilterReplacement()
+                && CaveniaVeinsContentPolicy.runsBeforeFinalChunkConstruction()
+                && CaveniaVeinsContentPolicy.runsBeforePopulationStage(),
+            "Expected the non-runtime Cavenia VEINS/content policy to keep generator-side ordering after cave carving and top/filter replacement but before final chunk construction and population"
         );
         helper.assertTrue(
             projectFileExists("docs", "caveman-cavenia-normal-roster-boundary.md"),

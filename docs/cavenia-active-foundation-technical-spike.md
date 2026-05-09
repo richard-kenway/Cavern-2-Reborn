@@ -34,6 +34,10 @@ The later pure non-runtime biome top/filter policy note is now documented separa
 
 - `docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md`
 
+The later pure non-runtime VEINS/content policy note is now documented separately in:
+
+- `docs/cavenia-veins-content-policy-non-runtime-mvp.md`
+
 This spike still does not imply active `cavernreborn:cavenia`, `dimension/cavenia.json`, `dimension_type/cavenia.json`, active Cavenia spawning, active crazy spawning, fake normal `CAVERN` crazy spawning or a `cavernreborn:caveman` entity.
 
 ## Spike Decision
@@ -188,6 +192,10 @@ Pure data-driven approximation is not recommended as the primary foundation beca
 The later pure `core` biome/top/filter follow-up now pins the shipped weighted roster and default top/filter block mapping separately in:
 
 - `docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md`
+
+The later pure `core` VEINS/content follow-up now pins the shipped default content roster and ordering separately in:
+
+- `docs/cavenia-veins-content-policy-non-runtime-mvp.md`
 
 ## Decisions Required Before Any Active Dimension JSON
 

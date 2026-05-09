@@ -20,6 +20,7 @@ class CaveniaBiomeTopFilterPolicyBoundaryTest {
     private static final Path BIOME_PROVIDER_DOC = resolveProjectFile("docs", "cavenia-biome-provider-contract-boundary.md");
     private static final Path TERRAIN_POLICY_DOC = resolveProjectFile("docs", "cavenia-terrain-generator-foundation-non-runtime-mvp.md");
     private static final Path CAVE_CARVER_POLICY_DOC = resolveProjectFile("docs", "cavenia-cave-carver-policy-non-runtime-mvp.md");
+    private static final Path VEINS_POLICY_DOC = resolveProjectFile("docs", "cavenia-veins-content-policy-non-runtime-mvp.md");
     private static final Path TERRAIN_BOUNDARY_DOC = resolveProjectFile("docs", "cavenia-chunk-generator-terrain-pipeline-contract-boundary.md");
     private static final Path READINESS_DOC = resolveProjectFile("docs", "cavenia-active-foundation-readiness-plan.md");
     private static final Path TECHNICAL_SPIKE_DOC = resolveProjectFile("docs", "cavenia-active-foundation-technical-spike.md");
@@ -38,6 +39,7 @@ class CaveniaBiomeTopFilterPolicyBoundaryTest {
         String biomeProviderDoc = Files.readString(BIOME_PROVIDER_DOC);
         String terrainPolicyDoc = Files.readString(TERRAIN_POLICY_DOC);
         String caveCarverPolicyDoc = Files.readString(CAVE_CARVER_POLICY_DOC);
+        String veinsPolicyDoc = Files.readString(VEINS_POLICY_DOC);
         String terrainBoundaryDoc = Files.readString(TERRAIN_BOUNDARY_DOC);
         String readinessDoc = Files.readString(READINESS_DOC);
         String technicalSpikeDoc = Files.readString(TECHNICAL_SPIKE_DOC);
@@ -85,6 +87,7 @@ class CaveniaBiomeTopFilterPolicyBoundaryTest {
         assertTrue(biomeProviderDoc.contains("docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md"));
         assertTrue(terrainPolicyDoc.contains("docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md"));
         assertTrue(caveCarverPolicyDoc.contains("docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md"));
+        assertTrue(veinsPolicyDoc.contains("docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md"));
         assertTrue(terrainBoundaryDoc.contains("docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md"));
         assertTrue(readinessDoc.contains("docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md"));
         assertTrue(technicalSpikeDoc.contains("docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md"));

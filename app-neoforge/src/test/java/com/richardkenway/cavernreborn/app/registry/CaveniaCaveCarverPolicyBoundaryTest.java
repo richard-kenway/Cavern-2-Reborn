@@ -21,6 +21,7 @@ class CaveniaCaveCarverPolicyBoundaryTest {
     private static final Path CONTRACT_DOC = resolveProjectFile("docs", "cavenia-cave-carver-mapgen-contract-boundary.md");
     private static final Path TERRAIN_POLICY_DOC = resolveProjectFile("docs", "cavenia-terrain-generator-foundation-non-runtime-mvp.md");
     private static final Path BIOME_POLICY_DOC = resolveProjectFile("docs", "cavenia-biome-top-filter-policy-non-runtime-mvp.md");
+    private static final Path VEINS_POLICY_DOC = resolveProjectFile("docs", "cavenia-veins-content-policy-non-runtime-mvp.md");
     private static final Path TERRAIN_BOUNDARY_DOC = resolveProjectFile("docs", "cavenia-chunk-generator-terrain-pipeline-contract-boundary.md");
     private static final Path READINESS_DOC = resolveProjectFile("docs", "cavenia-active-foundation-readiness-plan.md");
     private static final Path TECHNICAL_SPIKE_DOC = resolveProjectFile("docs", "cavenia-active-foundation-technical-spike.md");
@@ -39,6 +40,7 @@ class CaveniaCaveCarverPolicyBoundaryTest {
         String contractDoc = Files.readString(CONTRACT_DOC);
         String terrainPolicyDoc = Files.readString(TERRAIN_POLICY_DOC);
         String biomePolicyDoc = Files.readString(BIOME_POLICY_DOC);
+        String veinsPolicyDoc = Files.readString(VEINS_POLICY_DOC);
         String terrainBoundaryDoc = Files.readString(TERRAIN_BOUNDARY_DOC);
         String readinessDoc = Files.readString(READINESS_DOC);
         String technicalSpikeDoc = Files.readString(TECHNICAL_SPIKE_DOC);
@@ -75,6 +77,7 @@ class CaveniaCaveCarverPolicyBoundaryTest {
         assertTrue(contractDoc.contains("docs/cavenia-cave-carver-policy-non-runtime-mvp.md"));
         assertTrue(terrainPolicyDoc.contains("docs/cavenia-cave-carver-policy-non-runtime-mvp.md"));
         assertTrue(biomePolicyDoc.contains("docs/cavenia-cave-carver-policy-non-runtime-mvp.md"));
+        assertTrue(veinsPolicyDoc.contains("docs/cavenia-cave-carver-policy-non-runtime-mvp.md"));
         assertTrue(terrainBoundaryDoc.contains("docs/cavenia-cave-carver-policy-non-runtime-mvp.md"));
         assertTrue(readinessDoc.contains("docs/cavenia-cave-carver-policy-non-runtime-mvp.md"));
         assertTrue(technicalSpikeDoc.contains("docs/cavenia-cave-carver-policy-non-runtime-mvp.md"));

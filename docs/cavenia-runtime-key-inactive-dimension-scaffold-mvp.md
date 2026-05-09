@@ -23,6 +23,10 @@ The later pure non-runtime biome top/filter policy note is now documented separa
 
 - `docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md`
 
+The later pure non-runtime VEINS/content policy note is now documented separately in:
+
+- `docs/cavenia-veins-content-policy-non-runtime-mvp.md`
+
 ## Exact Constants Added
 
 The current repository now exposes inert future Cavenia identity markers:
