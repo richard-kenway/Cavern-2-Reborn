@@ -58,8 +58,9 @@ class CaveniaDimensionKeyTypeContractBoundaryTest {
         assertTrue(contractDoc.contains("`monsterSpawn = 200`"));
         assertTrue(contractDoc.contains("`cavernreborn:cavenia`"));
         assertTrue(contractDoc.contains("future identity only"));
-        assertTrue(contractDoc.contains("no `CAVENIA_LOCATION`"));
-        assertTrue(contractDoc.contains("no `CAVENIA_LEVEL_KEY`"));
+        assertTrue(contractDoc.contains("inert `CAVENIA_LOCATION`"));
+        assertTrue(contractDoc.contains("inert `CAVENIA_LEVEL_KEY`"));
+        assertTrue(contractDoc.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
         assertTrue(contractDoc.contains("`data/cavernreborn/dimension/cavenia.json`"));
         assertTrue(contractDoc.contains("`data/cavernreborn/dimension_type/cavenia.json`"));
         assertTrue(contractDoc.contains("`has_skylight: false`"));
@@ -97,8 +98,8 @@ class CaveniaDimensionKeyTypeContractBoundaryTest {
     void rebornStillKeepsTheKeyTypeContractInactiveAtRuntimeAndInResources() throws IOException {
         String dimensionsSource = Files.readString(DIMENSIONS_SOURCE, StandardCharsets.UTF_8);
 
-        assertFalse(dimensionsSource.contains("CAVENIA_LOCATION"));
-        assertFalse(dimensionsSource.contains("CAVENIA_LEVEL_KEY"));
+        assertTrue(dimensionsSource.contains("CAVENIA_LOCATION"));
+        assertTrue(dimensionsSource.contains("CAVENIA_LEVEL_KEY"));
 
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension_type", "cavenia.json");

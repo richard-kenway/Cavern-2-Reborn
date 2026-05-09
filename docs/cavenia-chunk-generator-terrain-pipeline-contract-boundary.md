@@ -453,8 +453,8 @@ This increment does not resolve:
 - no active Cavenia biome source
 - no active `dimension/cavenia.json`
 - no active `dimension_type/cavenia.json`
-- no `CAVENIA_LOCATION`
-- no `CAVENIA_LEVEL_KEY`
+- inert `CAVENIA_LOCATION` only
+- inert `CAVENIA_LEVEL_KEY` only
 - no `WorldProviderCavenia` port
 - no lakes/falls/shroom generation
 - no portal/teleport/access flow

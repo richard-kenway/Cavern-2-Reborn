@@ -132,8 +132,8 @@ This MVP does not add active Cavenia spawning because Reborn still has:
 - no active `cavernreborn:cavenia` level
 - no `dimension/cavenia.json`
 - no `dimension_type/cavenia.json`
-- no `CAVENIA_LOCATION`
-- no `CAVENIA_LEVEL_KEY`
+- inert `CAVENIA_LOCATION` only
+- inert `CAVENIA_LEVEL_KEY` only
 - no active Cavenia spawn host/service
 - no active crazy natural spawning
 - no normal `CAVERN` crazy biome modifiers

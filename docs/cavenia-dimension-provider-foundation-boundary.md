@@ -12,6 +12,10 @@ The narrower active-foundation implementation-decision spike is documented separ
 
 - `docs/cavenia-active-foundation-technical-spike.md`
 
+The later inert runtime-key scaffold is documented separately in:
+
+- `docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md`
+
 The narrower future key/type contract is documented separately in:
 
 - `docs/cavenia-dimension-key-type-contract-boundary.md`
@@ -249,12 +253,16 @@ Current Reborn `CavernNeoForgeDimensions` exposes:
 
 - `CAVERN_LOCATION`
 - `CAVERN_LEVEL_KEY`
+- inert `CAVENIA_LOCATION`
+- inert `CAVENIA_LEVEL_KEY`
 
-It does not expose:
+Those Cavenia constants are identity markers only.
 
-- `CAVENIA_LOCATION`
-- `CAVENIA_LEVEL_KEY`
-- any placeholder `cavenia` dimension key
+They still do not create:
+
+- any active `cavenia` runtime level
+- any checked-in `data/cavernreborn/dimension/cavenia.json`
+- any checked-in `data/cavernreborn/dimension_type/cavenia.json`
 
 Current Reborn natural-spawn architecture is also narrower than the old provider model:
 

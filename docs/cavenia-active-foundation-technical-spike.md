@@ -18,7 +18,11 @@ It builds directly on:
 - `docs/cavenia-crazy-roster-natural-spawn-boundary.md`
 - `docs/caveman-cavenia-normal-roster-boundary.md`
 
-It does not add active `cavernreborn:cavenia`, `dimension/cavenia.json`, `dimension_type/cavenia.json`, `CAVENIA_LOCATION`, `CAVENIA_LEVEL_KEY`, active Cavenia spawning, active crazy spawning, fake normal `CAVERN` crazy spawning or a `cavernreborn:caveman` entity.
+The follow-up inert identity implementation is now documented separately in:
+
+- `docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md`
+
+This spike still does not imply active `cavernreborn:cavenia`, `dimension/cavenia.json`, `dimension_type/cavenia.json`, active Cavenia spawning, active crazy spawning, fake normal `CAVERN` crazy spawning or a `cavernreborn:caveman` entity.
 
 ## Spike Decision
 

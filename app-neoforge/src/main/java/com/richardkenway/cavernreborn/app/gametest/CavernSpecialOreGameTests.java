@@ -7475,7 +7475,6 @@ public final class CavernSpecialOreGameTests {
     public static void caveniaSpawnProviderCrazyRosterActivationContractBoundaryStaysInactiveAtRuntime(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos origin = CAVENIA_SPAWN_PROVIDER_BOUNDARY_ANCHOR;
-        ResourceKey<Level> caveniaLevelKey = CavernNeoForgeDimensions.levelKey("cavernreborn:cavenia");
         Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
         Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
         List<EntityType<? extends Mob>> crazyTypes = List.of(
@@ -7510,7 +7509,15 @@ public final class CavernSpecialOreGameTests {
             "Expected the checked-in CAVERN level key to remain stable while the Cavenia spawn-provider contract stays deferred"
         );
         helper.assertTrue(
-            level.getServer().getLevel(caveniaLevelKey) == null,
+            CavernNeoForgeDimensions.CAVENIA_LOCATION.toString().equals(CavernDimensions.CAVENIA_DIMENSION_ID),
+            "Expected the inert Cavenia location constant to stay pinned to cavernreborn:cavenia"
+        );
+        helper.assertTrue(
+            CavernNeoForgeDimensions.CAVENIA_LEVEL_KEY.location().toString().equals(CavernDimensions.CAVENIA_DIMENSION_ID),
+            "Expected the inert Cavenia level-key constant to stay pinned to cavernreborn:cavenia"
+        );
+        helper.assertTrue(
+            level.getServer().getLevel(CavernNeoForgeDimensions.CAVENIA_LEVEL_KEY) == null,
             "Expected the Cavenia spawn-provider contract boundary to keep cavernreborn:cavenia inactive at runtime"
         );
         helper.assertTrue(
@@ -7528,6 +7535,10 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             projectFileExists("docs", "cavenia-active-foundation-technical-spike.md"),
             "Expected the Cavenia active-foundation technical-spike doc to exist in the project root"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"),
+            "Expected the inert Cavenia runtime-key scaffold doc to exist in the project root"
         );
         helper.assertTrue(
             projectFileExists("docs", "caveman-cavenia-normal-roster-boundary.md"),

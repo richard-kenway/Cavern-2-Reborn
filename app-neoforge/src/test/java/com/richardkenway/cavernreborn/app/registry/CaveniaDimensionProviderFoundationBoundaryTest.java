@@ -89,6 +89,7 @@ class CaveniaDimensionProviderFoundationBoundaryTest {
         assertTrue(boundaryDoc.contains("docs/cavenia-population-lakes-falls-shroom-contract-boundary.md"));
         assertTrue(boundaryDoc.contains("docs/cavenia-mirage-entry-access-contract-boundary.md"));
         assertTrue(boundaryDoc.contains("docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md"));
+        assertTrue(boundaryDoc.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
 
         assertTrue(keyTypeBoundaryDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
         assertTrue(biomeProviderBoundaryDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
@@ -110,8 +111,8 @@ class CaveniaDimensionProviderFoundationBoundaryTest {
 
         assertFalse(entityEvents.toLowerCase().contains("cavenia"));
         assertFalse(entityEvents.contains("crazySpawnChance"));
-        assertFalse(dimensionsSource.contains("CAVENIA_LOCATION"));
-        assertFalse(dimensionsSource.contains("CAVENIA_LEVEL_KEY"));
+        assertTrue(dimensionsSource.contains("CAVENIA_LOCATION"));
+        assertTrue(dimensionsSource.contains("CAVENIA_LEVEL_KEY"));
 
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension_type", "cavenia.json");

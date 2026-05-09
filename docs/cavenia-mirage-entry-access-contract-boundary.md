@@ -14,8 +14,6 @@ It does not add:
 
 - `data/cavernreborn/dimension/cavenia.json`
 - `data/cavernreborn/dimension_type/cavenia.json`
-- `CAVENIA_LOCATION`
-- `CAVENIA_LEVEL_KEY`
 - an active `cavernreborn:cavenia` level
 - an active `mirage_book` item
 - an active Cavenia teleporter
@@ -368,8 +366,8 @@ Legacy advancements such as `enter_the_cavenia` and `mirage_trip` are observatio
 Current Reborn still has:
 
 - no active `cavenia` dimension
-- no `CAVENIA_LOCATION`
-- no `CAVENIA_LEVEL_KEY`
+- inert `CAVENIA_LOCATION` only
+- inert `CAVENIA_LEVEL_KEY` only
 - no `ItemMirageBook`
 - no `mirage_book` registry id
 - no `CaveniaTeleporter`

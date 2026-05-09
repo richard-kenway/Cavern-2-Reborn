@@ -24,6 +24,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
     private static final Path POLICY_DOC = resolveProjectFile("docs", "cavenia-spawn-provider-policy-mvp.md");
     private static final Path CRAZY_ROSTER_DOC = resolveProjectFile("docs", "cavenia-crazy-roster-natural-spawn-boundary.md");
     private static final Path CAVEMAN_DOC = resolveProjectFile("docs", "caveman-cavenia-normal-roster-boundary.md");
+    private static final Path SCAFFOLD_DOC = resolveProjectFile("docs", "cavenia-runtime-key-inactive-dimension-scaffold-mvp.md");
 
     @Test
     void readinessPlanExistsAndPinsTheCurrentInactiveFoundationState() throws IOException {
@@ -42,6 +43,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
         String policyDoc = Files.readString(POLICY_DOC);
         String crazyRosterDoc = Files.readString(CRAZY_ROSTER_DOC);
         String cavemanDoc = Files.readString(CAVEMAN_DOC);
+        String scaffoldDoc = Files.readString(SCAFFOLD_DOC);
 
         assertTrue(planDoc.contains("Cavenia Active Foundation Readiness / Implementation Plan"));
         assertTrue(planDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
@@ -65,6 +67,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(planDoc.contains("`dimension_type/cavenia.json`"));
         assertTrue(planDoc.contains("`CAVENIA_LOCATION`"));
         assertTrue(planDoc.contains("`CAVENIA_LEVEL_KEY`"));
+        assertTrue(planDoc.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
         assertTrue(planDoc.contains("no active Cavenia spawning"));
         assertTrue(planDoc.contains("no fake normal `CAVERN` crazy spawning"));
         assertTrue(planDoc.contains("Phase 0: Completed readiness inputs"));
@@ -92,12 +95,18 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(readme.contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(readme.contains("Cavenia Active Foundation Technical Spike"));
         assertTrue(readme.contains("docs/cavenia-active-foundation-technical-spike.md"));
+        assertTrue(readme.contains("Cavenia Runtime Key / Inactive Dimension Scaffold MVP"));
+        assertTrue(readme.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
         assertTrue(runtimeSmokeDoc.contains("Cavenia Active Foundation Readiness / Implementation Plan"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(runtimeSmokeDoc.contains("inactive Cavenia active-foundation readiness-plan boundary"));
         assertTrue(runtimeSmokeDoc.contains("Cavenia Active Foundation Technical Spike"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
         assertTrue(runtimeSmokeDoc.contains("inactive Cavenia active-foundation technical-spike boundary"));
+        assertTrue(runtimeSmokeDoc.contains("Cavenia Runtime Key / Inactive Dimension Scaffold MVP"));
+        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
+        assertTrue(runtimeSmokeDoc.contains("inert Cavenia runtime-key / inactive-dimension scaffold MVP"));
+        assertTrue(scaffoldDoc.contains("Cavenia Runtime Key / Inactive Dimension Scaffold MVP"));
 
         assertTrue(foundationDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(keyTypeDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));

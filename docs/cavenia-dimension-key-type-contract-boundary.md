@@ -10,12 +10,14 @@ The narrower active-foundation implementation-decision spike is documented separ
 
 - `docs/cavenia-active-foundation-technical-spike.md`
 
+The later inert runtime-key scaffold is documented separately in:
+
+- `docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md`
+
 It does not add:
 
 - `data/cavernreborn/dimension/cavenia.json`
 - `data/cavernreborn/dimension_type/cavenia.json`
-- `CAVENIA_LOCATION`
-- `CAVENIA_LEVEL_KEY`
 - an active `cavernreborn:cavenia` level
 
 The broader provider, terrain, entry and spawn architecture boundary remains documented in:
@@ -136,11 +138,14 @@ The likely future modern resource identity is:
 
 But in this increment it remains future identity only.
 
+Current Reborn now has:
+
+- inert `CAVENIA_LOCATION`
+- inert `CAVENIA_LEVEL_KEY`
+
 Current Reborn still has:
 
 - no active `cavernreborn:cavenia`
-- no `CAVENIA_LOCATION`
-- no `CAVENIA_LEVEL_KEY`
 - no `data/cavernreborn/dimension/cavenia.json`
 - no `data/cavernreborn/dimension_type/cavenia.json`
 
@@ -226,8 +231,6 @@ Future honest Cavenia work should split this contract into follow-up slices:
 - no active `cavenia` dimension
 - no `dimension/cavenia.json`
 - no `dimension_type/cavenia.json`
-- no `CAVENIA_LOCATION`
-- no `CAVENIA_LEVEL_KEY`
 - no `WorldProviderCavenia` port
 - no `ChunkGeneratorCavenia` port
 - no biome provider port

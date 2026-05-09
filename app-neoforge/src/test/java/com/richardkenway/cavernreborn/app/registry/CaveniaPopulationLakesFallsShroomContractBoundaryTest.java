@@ -122,8 +122,8 @@ class CaveniaPopulationLakesFallsShroomContractBoundaryTest {
     void rebornStillKeepsCaveniaPopulationResourcesInactive() throws IOException {
         String dimensionsSource = Files.readString(DIMENSIONS_SOURCE, StandardCharsets.UTF_8);
 
-        assertFalse(dimensionsSource.contains("CAVENIA_LOCATION"));
-        assertFalse(dimensionsSource.contains("CAVENIA_LEVEL_KEY"));
+        assertTrue(dimensionsSource.contains("CAVENIA_LOCATION"));
+        assertTrue(dimensionsSource.contains("CAVENIA_LEVEL_KEY"));
 
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension_type", "cavenia.json");

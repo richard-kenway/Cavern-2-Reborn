@@ -171,8 +171,8 @@ class CaveniaSpawnProviderCrazyRosterActivationContractBoundaryTest {
         String dimensionsSource = Files.readString(DIMENSIONS_SOURCE, StandardCharsets.UTF_8);
         String entityEvents = Files.readString(ENTITY_EVENTS, StandardCharsets.UTF_8);
 
-        assertFalse(dimensionsSource.contains("CAVENIA_LOCATION"));
-        assertFalse(dimensionsSource.contains("CAVENIA_LEVEL_KEY"));
+        assertTrue(dimensionsSource.contains("CAVENIA_LOCATION"));
+        assertTrue(dimensionsSource.contains("CAVENIA_LEVEL_KEY"));
         assertFalse(entityEvents.contains("CrazyZombie::check"));
         assertFalse(entityEvents.contains("CrazySkeleton::check"));
         assertFalse(entityEvents.contains("CrazyCreeper::check"));

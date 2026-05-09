@@ -342,8 +342,8 @@ Current Reborn still has:
 - no active `cavernreborn:cavenia`
 - no `dimension/cavenia.json`
 - no `dimension_type/cavenia.json`
-- no `CAVENIA_LOCATION`
-- no `CAVENIA_LEVEL_KEY`
+- inert `CAVENIA_LOCATION` only
+- inert `CAVENIA_LEVEL_KEY` only
 - no active `ChunkGeneratorCavenia`
 - no active `MapGenCaveniaCaves`
 - no active `MapGenCavernCaves`
@@ -398,7 +398,7 @@ Current Reborn intentionally keeps this line inactive:
 - no active Cavenia biome source
 - no active `dimension/cavenia.json`
 - no active `dimension_type/cavenia.json`
-- no `CAVENIA_LOCATION`
-- no `CAVENIA_LEVEL_KEY`
+- inert `CAVENIA_LOCATION` only
+- inert `CAVENIA_LEVEL_KEY` only
 
 That is intentional until a real Cavenia chunk-generator, biome-provider and content pipeline implementation is planned together.

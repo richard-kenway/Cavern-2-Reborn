@@ -126,8 +126,8 @@ class CaveniaMirageEntryAccessContractBoundaryTest {
         String dimensionsSource = Files.readString(DIMENSIONS_SOURCE, StandardCharsets.UTF_8);
         String registriesSource = Files.readString(REGISTRIES_SOURCE, StandardCharsets.UTF_8);
 
-        assertFalse(dimensionsSource.contains("CAVENIA_LOCATION"));
-        assertFalse(dimensionsSource.contains("CAVENIA_LEVEL_KEY"));
+        assertTrue(dimensionsSource.contains("CAVENIA_LOCATION"));
+        assertTrue(dimensionsSource.contains("CAVENIA_LEVEL_KEY"));
         assertFalse(registriesSource.contains("mirage_book"));
         assertFalse(registriesSource.contains("MirageBook"));
         assertFalse(registriesSource.contains("CaveniaPortal"));

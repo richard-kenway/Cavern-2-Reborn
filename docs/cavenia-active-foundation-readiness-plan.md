@@ -2,9 +2,18 @@
 
 This note consolidates the current source-confirmed Cavenia readiness state into a planning bridge for the first future active implementation slice.
 
-It does not add active `cavernreborn:cavenia`, `dimension/cavenia.json`, `dimension_type/cavenia.json`, `CAVENIA_LOCATION`, `CAVENIA_LEVEL_KEY`, active Cavenia worldgen, active Cavenia spawning or a runtime Cavenia access path.
+It does not add active `cavernreborn:cavenia`, `dimension/cavenia.json`, `dimension_type/cavenia.json`, active Cavenia worldgen, active Cavenia spawning or a runtime Cavenia access path.
+
+The later inert identity follow-up is now documented separately in:
+
+- `docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md`
 
 Current readiness state still has no active Cavenia spawning and no fake normal `CAVERN` crazy spawning.
+
+Current repository state now also has:
+
+- inert `CAVENIA_LOCATION`
+- inert `CAVENIA_LEVEL_KEY`
 
 ## Completed Readiness Inputs
 
@@ -58,6 +67,7 @@ The current repository state and inspected legacy source now pin these implement
 - `CaveniaSpawnProviderPolicy` now pins `monsterSpawn`, `crazySpawnChance`, the chance-to-range mapping, the vertical scan-range mapping, the normal roster and the crazy roster
 - the source-literal nearby scan wording remains: nearby `ICavenicMob` whose `isNonBoss()` returns `false`
 - `EntityCaveman -> deferred:caveman` remains intentional and source-backed
+- inert `CAVENIA_LOCATION` and `CAVENIA_LEVEL_KEY` now pin the future `cavernreborn:cavenia` identity without creating a runtime level
 
 ## Unresolved Blockers
 
@@ -81,8 +91,6 @@ This readiness-plan increment does not add:
 
 - `dimension/cavenia.json`
 - `dimension_type/cavenia.json`
-- `CAVENIA_LOCATION`
-- `CAVENIA_LEVEL_KEY`
 - active `cavernreborn:cavenia`
 - active Cavenia worldgen resources
 - active Cavenia biome source

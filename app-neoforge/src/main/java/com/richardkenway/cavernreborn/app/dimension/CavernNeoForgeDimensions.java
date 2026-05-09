@@ -1,6 +1,5 @@
 package com.richardkenway.cavernreborn.app.dimension;
 
-import com.richardkenway.cavernreborn.CavernReborn;
 import com.richardkenway.cavernreborn.core.state.CavernDimensions;
 
 import net.minecraft.core.registries.Registries;
@@ -9,8 +8,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
 public final class CavernNeoForgeDimensions {
-    public static final ResourceLocation CAVERN_LOCATION = ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "cavern");
-    public static final ResourceKey<Level> CAVERN_LEVEL_KEY = ResourceKey.create(Registries.DIMENSION, CAVERN_LOCATION);
+    public static final ResourceLocation CAVERN_LOCATION = resourceLocation(CavernDimensions.CAVERN_DIMENSION_ID);
+    public static final ResourceKey<Level> CAVERN_LEVEL_KEY = levelKey(CavernDimensions.CAVERN_DIMENSION_ID);
+    public static final ResourceLocation CAVENIA_LOCATION = resourceLocation(CavernDimensions.CAVENIA_DIMENSION_ID);
+    public static final ResourceKey<Level> CAVENIA_LEVEL_KEY = levelKey(CavernDimensions.CAVENIA_DIMENSION_ID);
 
     private CavernNeoForgeDimensions() {
     }
@@ -36,8 +37,16 @@ public final class CavernNeoForgeDimensions {
         return CAVERN_LEVEL_KEY.equals(levelKey);
     }
 
+    public static boolean isCavenia(ResourceKey<Level> levelKey) {
+        return CAVENIA_LEVEL_KEY.equals(levelKey);
+    }
+
     public static boolean isCavernDimensionId(String dimensionId) {
         return CavernDimensions.isCavern(dimensionId);
+    }
+
+    public static boolean isCaveniaDimensionId(String dimensionId) {
+        return CavernDimensions.isCavenia(dimensionId);
     }
 
     private static String requireText(String value, String fieldName) {

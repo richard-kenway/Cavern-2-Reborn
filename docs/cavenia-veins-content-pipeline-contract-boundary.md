@@ -329,8 +329,8 @@ Current Reborn still has:
 - no active Cavenia biome source
 - no active `dimension/cavenia.json`
 - no active `dimension_type/cavenia.json`
-- no `CAVENIA_LOCATION`
-- no `CAVENIA_LEVEL_KEY`
+- inert `CAVENIA_LOCATION` only
+- inert `CAVENIA_LEVEL_KEY` only
 - no `WorldProviderCavenia` port
 - no `ChunkGeneratorCavenia` port
 - no terrain generation
