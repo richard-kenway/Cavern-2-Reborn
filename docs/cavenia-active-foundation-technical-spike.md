@@ -58,6 +58,10 @@ The later unregistered generator/biome-selection skeleton note is now documented
 
 - `docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md`
 
+The later non-registered runtime-contract note is now documented separately in:
+
+- `docs/cavenia-generator-runtime-contracts-non-registered-mvp.md`
+
 This spike still does not imply active `cavernreborn:cavenia`, `dimension/cavenia.json`, `dimension_type/cavenia.json`, active Cavenia spawning, active crazy spawning, fake normal `CAVERN` crazy spawning or a `cavernreborn:caveman` entity.
 
 ## Spike Decision

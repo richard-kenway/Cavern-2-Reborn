@@ -10,14 +10,14 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
-class CaveniaGeneratorBridgeBoundaryTest {
+class CaveniaGeneratorRuntimeContractsBoundaryTest {
     private static final Path README = resolveProjectFile("README.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
+    private static final Path CONTRACTS_DOC = resolveProjectFile("docs", "cavenia-generator-runtime-contracts-non-registered-mvp.md");
+    private static final Path SKELETON_DOC = resolveProjectFile("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md");
+    private static final Path REGISTRATION_DOC = resolveProjectFile("docs", "cavenia-active-generator-registration-inert-boundary-mvp.md");
     private static final Path BRIDGE_DOC = resolveProjectFile("docs", "cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md");
     private static final Path SCAFFOLD_DOC = resolveProjectFile("docs", "cavenia-active-generator-technical-scaffold-mvp.md");
-    private static final Path REGISTRATION_DOC = resolveProjectFile("docs", "cavenia-active-generator-registration-inert-boundary-mvp.md");
-    private static final Path SKELETON_DOC = resolveProjectFile("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md");
-    private static final Path CONTRACTS_DOC = resolveProjectFile("docs", "cavenia-generator-runtime-contracts-non-registered-mvp.md");
     private static final Path TECHNICAL_SPIKE_DOC = resolveProjectFile("docs", "cavenia-active-foundation-technical-spike.md");
     private static final Path READINESS_DOC = resolveProjectFile("docs", "cavenia-active-foundation-readiness-plan.md");
     private static final Path RUNTIME_KEY_DOC = resolveProjectFile("docs", "cavenia-runtime-key-inactive-dimension-scaffold-mvp.md");
@@ -29,56 +29,59 @@ class CaveniaGeneratorBridgeBoundaryTest {
     );
 
     @Test
-    void docsPinTheInertAppSideGeneratorBridge() throws IOException {
+    void docsPinTheNonRegisteredGeneratorRuntimeContracts() throws IOException {
         String readme = Files.readString(README);
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE_DOC);
+        String contractsDoc = Files.readString(CONTRACTS_DOC);
+        String skeletonDoc = Files.readString(SKELETON_DOC);
+        String registrationDoc = Files.readString(REGISTRATION_DOC);
         String bridgeDoc = Files.readString(BRIDGE_DOC);
         String scaffoldDoc = Files.readString(SCAFFOLD_DOC);
-        String registrationDoc = Files.readString(REGISTRATION_DOC);
-        String skeletonDoc = Files.readString(SKELETON_DOC);
-        String contractsDoc = Files.readString(CONTRACTS_DOC);
         String technicalSpikeDoc = Files.readString(TECHNICAL_SPIKE_DOC);
         String readinessDoc = Files.readString(READINESS_DOC);
         String runtimeKeyDoc = Files.readString(RUNTIME_KEY_DOC);
 
-        assertTrue(bridgeDoc.contains("Cavenia Active Generator Runtime Prototype / Inert App-Side Bridge MVP"));
-        assertTrue(bridgeDoc.contains("`CaveniaGeneratorBridge`"));
-        assertTrue(bridgeDoc.contains("`CaveniaGeneratorScaffold`"));
-        assertTrue(bridgeDoc.contains("`CaveniaTerrainGeneratorPolicy`"));
-        assertTrue(bridgeDoc.contains("`CaveniaBiomeTopFilterPolicy`"));
-        assertTrue(bridgeDoc.contains("`CaveniaCaveCarverPolicy`"));
-        assertTrue(bridgeDoc.contains("`CaveniaVeinsContentPolicy`"));
-        assertTrue(bridgeDoc.contains("`CaveniaPopulationPolicy`"));
-        assertTrue(bridgeDoc.contains("`CaveniaSpawnProviderPolicy`"));
-        assertTrue(bridgeDoc.contains("not a `ChunkGenerator`"));
-        assertTrue(bridgeDoc.contains("not a `BiomeSource`"));
-        assertTrue(bridgeDoc.contains("no codec or registry entry was added"));
-        assertTrue(bridgeDoc.contains("no active `dimension/cavenia.json`"));
-        assertTrue(bridgeDoc.contains("no active `dimension_type/cavenia.json`"));
-        assertTrue(bridgeDoc.contains("no active Cavenia runtime level"));
-        assertTrue(bridgeDoc.contains("no active Cavenia spawning"));
-        assertTrue(bridgeDoc.contains("no active crazy spawning"));
-        assertTrue(bridgeDoc.contains("no fake normal `CAVERN` crazy spawning"));
-        assertTrue(bridgeDoc.contains("`EntityCaveman -> deferred:caveman`"));
-
-        assertTrue(readme.contains("Cavenia Active Generator Runtime Prototype / Inert App-Side Bridge MVP"));
-        assertTrue(readme.contains("docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md"));
-        assertTrue(runtimeSmokeDoc.contains("Cavenia Active Generator Runtime Prototype / Inert App-Side Bridge MVP"));
-        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md"));
-        assertTrue(scaffoldDoc.contains("docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md"));
-        assertTrue(bridgeDoc.contains("docs/cavenia-active-generator-registration-inert-boundary-mvp.md"));
-        assertTrue(bridgeDoc.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
-        assertTrue(bridgeDoc.contains("docs/cavenia-generator-runtime-contracts-non-registered-mvp.md"));
-        assertTrue(registrationDoc.contains("`CaveniaGeneratorBridge`"));
-        assertTrue(skeletonDoc.contains("`CaveniaGeneratorBridge`"));
+        assertTrue(contractsDoc.contains("Cavenia Generator Runtime Contract Interfaces / Non-Registered MVP"));
+        assertTrue(contractsDoc.contains("`CaveniaGeneratorRuntimeContracts`"));
+        assertTrue(contractsDoc.contains("`CaveniaGeneratorRuntimeOperation`"));
+        assertTrue(contractsDoc.contains("`CaveniaGeneratorRuntimeOperationContract`"));
+        assertTrue(contractsDoc.contains("`CaveniaGeneratorSkeleton`"));
+        assertTrue(contractsDoc.contains("`CaveniaBiomeSelectionSkeleton`"));
+        assertTrue(contractsDoc.contains("`CaveniaGeneratorRegistrationBoundary`"));
         assertTrue(contractsDoc.contains("`CaveniaGeneratorBridge`"));
-        assertTrue(technicalSpikeDoc.contains("docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md"));
-        assertTrue(readinessDoc.contains("docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md"));
-        assertTrue(runtimeKeyDoc.contains("docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md"));
+        assertTrue(contractsDoc.contains("`CaveniaGeneratorScaffold`"));
+        assertTrue(contractsDoc.contains("`CaveniaTerrainGeneratorPolicy`"));
+        assertTrue(contractsDoc.contains("`CaveniaBiomeTopFilterPolicy`"));
+        assertTrue(contractsDoc.contains("`CaveniaCaveCarverPolicy`"));
+        assertTrue(contractsDoc.contains("`CaveniaVeinsContentPolicy`"));
+        assertTrue(contractsDoc.contains("`CaveniaPopulationPolicy`"));
+        assertTrue(contractsDoc.contains("`CaveniaSpawnProviderPolicy`"));
+        assertTrue(contractsDoc.contains("not a `ChunkGenerator`"));
+        assertTrue(contractsDoc.contains("not a `BiomeSource`"));
+        assertTrue(contractsDoc.contains("no codec or registry entry was added"));
+        assertTrue(contractsDoc.contains("no active `dimension/cavenia.json`"));
+        assertTrue(contractsDoc.contains("no active `dimension_type/cavenia.json`"));
+        assertTrue(contractsDoc.contains("no active Cavenia runtime level"));
+        assertTrue(contractsDoc.contains("no active Cavenia spawning"));
+        assertTrue(contractsDoc.contains("no active crazy spawning"));
+        assertTrue(contractsDoc.contains("no fake normal `CAVERN` crazy spawning"));
+        assertTrue(contractsDoc.contains("`EntityCaveman -> deferred:caveman`"));
+
+        assertTrue(readme.contains("Cavenia Generator Runtime Contract Interfaces / Non-Registered MVP"));
+        assertTrue(readme.contains("docs/cavenia-generator-runtime-contracts-non-registered-mvp.md"));
+        assertTrue(runtimeSmokeDoc.contains("Cavenia Generator Runtime Contract Interfaces / Non-Registered MVP"));
+        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-generator-runtime-contracts-non-registered-mvp.md"));
+        assertTrue(skeletonDoc.contains("docs/cavenia-generator-runtime-contracts-non-registered-mvp.md"));
+        assertTrue(registrationDoc.contains("docs/cavenia-generator-runtime-contracts-non-registered-mvp.md"));
+        assertTrue(bridgeDoc.contains("docs/cavenia-generator-runtime-contracts-non-registered-mvp.md"));
+        assertTrue(scaffoldDoc.contains("docs/cavenia-generator-runtime-contracts-non-registered-mvp.md"));
+        assertTrue(technicalSpikeDoc.contains("docs/cavenia-generator-runtime-contracts-non-registered-mvp.md"));
+        assertTrue(readinessDoc.contains("docs/cavenia-generator-runtime-contracts-non-registered-mvp.md"));
+        assertTrue(runtimeKeyDoc.contains("docs/cavenia-generator-runtime-contracts-non-registered-mvp.md"));
     }
 
     @Test
-    void inertBridgeBoundaryKeepsActiveGeneratorAndResourceSurfaceAbsent() throws IOException {
+    void runtimeContractsBoundaryKeepsActiveGeneratorAndWorldgenSurfaceAbsent() throws IOException {
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension_type", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "configured_carver", "cavenia.json");
@@ -101,7 +104,7 @@ class CaveniaGeneratorBridgeBoundaryTest {
                             || name.equals("CaveniaBiomeSource.java")
                             || name.equals("MapGenCaveniaCaves.java")
                     ),
-                "Expected the inert app-side bridge MVP to avoid adding any active Cavenia generator, biome-source or cave-carver runtime classes"
+                "Expected the non-registered runtime-contract MVP to avoid adding any active Cavenia generator, biome-source or cave-carver runtime classes"
             );
         }
 
@@ -119,7 +122,7 @@ class CaveniaGeneratorBridgeBoundaryTest {
                             || path.contains("/neoforge/biome_modifier/cavenia")
                             || path.contains("/worldgen/biome/cavenia")
                     ),
-                "Expected the inert app-side bridge MVP to keep active Cavenia generator/worldgen resources absent"
+                "Expected the non-registered runtime-contract MVP to keep active Cavenia generator/worldgen resources absent"
             );
         }
     }

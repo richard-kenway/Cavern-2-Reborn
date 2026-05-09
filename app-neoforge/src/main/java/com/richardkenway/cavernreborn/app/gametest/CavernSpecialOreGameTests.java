@@ -48,6 +48,8 @@ import com.richardkenway.cavernreborn.app.mining.CavernMiningAssistEvents;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorActivationRequirement;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSelectionSkeleton;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorBridge;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorRuntimeContracts;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorRuntimeOperation;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorRegistrationBoundary;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorSkeleton;
 import com.richardkenway.cavernreborn.app.registry.ModArmorMaterials;
@@ -7799,8 +7801,41 @@ public final class CavernSpecialOreGameTests {
             "Expected the unregistered Cavenia biome-selection skeleton to keep the shipped biome roster pinned without creating a runtime biome source"
         );
         helper.assertTrue(
+            CaveniaGeneratorRuntimeContracts.contracts().size() == 9
+                && CaveniaGeneratorRuntimeContracts.operations().equals(List.of(
+                    CaveniaGeneratorRuntimeOperation.IDENTITY,
+                    CaveniaGeneratorRuntimeOperation.BASE_TERRAIN_FILL,
+                    CaveniaGeneratorRuntimeOperation.CAVE_CARVING,
+                    CaveniaGeneratorRuntimeOperation.BIOME_TOP_FILTER_REPLACEMENT,
+                    CaveniaGeneratorRuntimeOperation.VEINS_MUTATION,
+                    CaveniaGeneratorRuntimeOperation.FINAL_CHUNK_CONSTRUCTION,
+                    CaveniaGeneratorRuntimeOperation.POPULATION_INTEGRATION,
+                    CaveniaGeneratorRuntimeOperation.SPAWN_PROVIDER_INTEGRATION_DEFERRED,
+                    CaveniaGeneratorRuntimeOperation.ENTRY_ACCESS_DEFERRED
+                )),
+            "Expected the non-registered Cavenia runtime-contract layer to keep the future generator operation order pinned"
+        );
+        helper.assertTrue(
+            CaveniaGeneratorRuntimeContracts.allRuntimeOperationsBlocked()
+                && !CaveniaGeneratorRuntimeContracts.anyOperationCanCreateChunks()
+                && !CaveniaGeneratorRuntimeContracts.anyOperationCanMutatePrimer()
+                && CaveniaGeneratorRuntimeContracts.matchesScaffoldStageOrder(),
+            "Expected the non-registered Cavenia runtime-contract layer to keep every future generator operation blocked and aligned with the scaffold order"
+        );
+        helper.assertTrue(
+            !CaveniaGeneratorRuntimeContracts.generatorSkeletonCanCreateChunks()
+                && !CaveniaGeneratorRuntimeContracts.biomeSelectionIsRuntimeBiomeSource()
+                && CaveniaGeneratorRuntimeContracts.activationRequirements().contains(CaveniaGeneratorActivationRequirement.DIMENSION_JSON)
+                && CaveniaGeneratorRuntimeContracts.activationRequirements().contains(CaveniaGeneratorActivationRequirement.DIMENSION_TYPE_JSON),
+            "Expected the non-registered Cavenia runtime-contract layer to keep chunk creation and runtime biome-source behavior blocked behind the existing activation requirements"
+        );
+        helper.assertTrue(
             projectFileExists("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md"),
             "Expected the unregistered Cavenia generator/biome-selection skeleton doc to exist in the project root"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-generator-runtime-contracts-non-registered-mvp.md"),
+            "Expected the non-registered Cavenia runtime-contracts doc to exist in the project root"
         );
         helper.assertTrue(
             projectFileExists("docs", "caveman-cavenia-normal-roster-boundary.md"),

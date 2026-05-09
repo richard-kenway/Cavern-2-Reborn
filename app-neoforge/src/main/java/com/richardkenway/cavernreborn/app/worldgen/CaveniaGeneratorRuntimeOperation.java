@@ -1,0 +1,13 @@
+package com.richardkenway.cavernreborn.app.worldgen;
+
+public enum CaveniaGeneratorRuntimeOperation {
+    IDENTITY,
+    BASE_TERRAIN_FILL,
+    CAVE_CARVING,
+    BIOME_TOP_FILTER_REPLACEMENT,
+    VEINS_MUTATION,
+    FINAL_CHUNK_CONSTRUCTION,
+    POPULATION_INTEGRATION,
+    SPAWN_PROVIDER_INTEGRATION_DEFERRED,
+    ENTRY_ACCESS_DEFERRED
+}

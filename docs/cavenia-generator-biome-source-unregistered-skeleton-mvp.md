@@ -11,6 +11,10 @@ It builds on:
 - `docs/cavenia-active-foundation-readiness-plan.md`
 - `docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md`
 
+The later non-registered runtime-contract note is now documented separately in:
+
+- `docs/cavenia-generator-runtime-contracts-non-registered-mvp.md`
+
 ## What This MVP Adds
 
 Current Reborn now has two app-side unregistered skeleton classes:

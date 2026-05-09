@@ -34,6 +34,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
     private static final Path GENERATOR_BRIDGE_DOC = resolveProjectFile("docs", "cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md");
     private static final Path GENERATOR_REGISTRATION_DOC = resolveProjectFile("docs", "cavenia-active-generator-registration-inert-boundary-mvp.md");
     private static final Path GENERATOR_SKELETON_DOC = resolveProjectFile("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md");
+    private static final Path GENERATOR_RUNTIME_CONTRACTS_DOC = resolveProjectFile("docs", "cavenia-generator-runtime-contracts-non-registered-mvp.md");
 
     @Test
     void readinessPlanExistsAndPinsTheCurrentInactiveFoundationState() throws IOException {
@@ -82,6 +83,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(planDoc.contains("docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md"));
         assertTrue(planDoc.contains("docs/cavenia-active-generator-registration-inert-boundary-mvp.md"));
         assertTrue(planDoc.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
+        assertTrue(planDoc.contains("docs/cavenia-generator-runtime-contracts-non-registered-mvp.md"));
         assertTrue(planDoc.contains("`CaveniaSpawnProviderPolicy`"));
         assertTrue(planDoc.contains("`CaveniaSpawnEntry`"));
         assertTrue(planDoc.contains("`CaveniaTerrainGeneratorPolicy`"));
@@ -100,6 +102,9 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(planDoc.contains("`CaveniaGeneratorScaffoldStage`"));
         assertTrue(planDoc.contains("`CaveniaGeneratorSkeleton`"));
         assertTrue(planDoc.contains("`CaveniaBiomeSelectionSkeleton`"));
+        assertTrue(planDoc.contains("`CaveniaGeneratorRuntimeOperation`"));
+        assertTrue(planDoc.contains("`CaveniaGeneratorRuntimeOperationContract`"));
+        assertTrue(planDoc.contains("`CaveniaGeneratorRuntimeContracts`"));
         assertTrue(planDoc.contains("`EntityCaveman -> deferred:caveman`"));
         assertTrue(planDoc.contains("nearby `ICavenicMob` whose `isNonBoss()` returns `false`"));
         assertTrue(planDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
@@ -154,6 +159,8 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(readme.contains("docs/cavenia-active-generator-registration-inert-boundary-mvp.md"));
         assertTrue(readme.contains("Cavenia Chunk Generator / Biome Source Unregistered Skeleton MVP"));
         assertTrue(readme.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
+        assertTrue(readme.contains("Cavenia Generator Runtime Contract Interfaces / Non-Registered MVP"));
+        assertTrue(readme.contains("docs/cavenia-generator-runtime-contracts-non-registered-mvp.md"));
         assertTrue(runtimeSmokeDoc.contains("Cavenia Active Foundation Readiness / Implementation Plan"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(runtimeSmokeDoc.contains("inactive Cavenia active-foundation readiness-plan boundary"));
@@ -185,9 +192,12 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-active-generator-registration-inert-boundary-mvp.md"));
         assertTrue(runtimeSmokeDoc.contains("Cavenia Chunk Generator / Biome Source Unregistered Skeleton MVP"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
+        assertTrue(runtimeSmokeDoc.contains("Cavenia Generator Runtime Contract Interfaces / Non-Registered MVP"));
+        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-generator-runtime-contracts-non-registered-mvp.md"));
         assertTrue(Files.readString(GENERATOR_BRIDGE_DOC).contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(Files.readString(GENERATOR_REGISTRATION_DOC).contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(Files.readString(GENERATOR_SKELETON_DOC).contains("docs/cavenia-active-foundation-readiness-plan.md"));
+        assertTrue(Files.readString(GENERATOR_RUNTIME_CONTRACTS_DOC).contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(runtimeSmokeDoc.contains("non-registered Cavenia active-generator technical scaffold MVP"));
         assertTrue(scaffoldDoc.contains("Cavenia Runtime Key / Inactive Dimension Scaffold MVP"));
         assertTrue(terrainPolicyDoc.contains("Cavenia Terrain Generator Foundation / Non-Runtime MVP"));
@@ -216,6 +226,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(populationPolicyDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(generatorScaffoldDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(Files.readString(GENERATOR_REGISTRATION_DOC).contains("docs/cavenia-active-foundation-readiness-plan.md"));
+        assertTrue(Files.readString(GENERATOR_RUNTIME_CONTRACTS_DOC).contains("docs/cavenia-active-foundation-readiness-plan.md"));
     }
 
     private static Path resolveProjectFile(String first, String... more) {
