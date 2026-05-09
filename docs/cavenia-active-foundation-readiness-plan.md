@@ -8,12 +8,18 @@ The later inert identity follow-up is now documented separately in:
 
 - `docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md`
 
+The later pure non-runtime terrain-generator foundation note is now documented separately in:
+
+- `docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md`
+
 Current readiness state still has no active Cavenia spawning and no fake normal `CAVERN` crazy spawning.
 
 Current repository state now also has:
 
 - inert `CAVENIA_LOCATION`
 - inert `CAVENIA_LEVEL_KEY`
+- pure `CaveniaTerrainGeneratorPolicy`
+- pure `CaveniaTerrainStep`
 
 ## Completed Readiness Inputs
 
@@ -31,6 +37,7 @@ The current completed readiness base is:
 - `docs/cavenia-spawn-provider-policy-mvp.md`
 - `docs/cavenia-crazy-roster-natural-spawn-boundary.md`
 - `docs/caveman-cavenia-normal-roster-boundary.md`
+- `docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md`
 
 Together those notes now pin:
 
@@ -44,6 +51,7 @@ Together those notes now pin:
 - the shared mirage entry/access contract boundary
 - the provider-owned spawn-provider / crazy-roster activation contract boundary
 - the pure non-runtime `CaveniaSpawnProviderPolicy`
+- the pure non-runtime `CaveniaTerrainGeneratorPolicy`
 - the intentional `EntityCaveman -> deferred:caveman` normal-roster deferral
 
 Phase planning below should treat those documents and the pure `core` policy types `CaveniaSpawnProviderPolicy` and `CaveniaSpawnEntry` as the accepted readiness base.
@@ -68,6 +76,7 @@ The current repository state and inspected legacy source now pin these implement
 - the source-literal nearby scan wording remains: nearby `ICavenicMob` whose `isNonBoss()` returns `false`
 - `EntityCaveman -> deferred:caveman` remains intentional and source-backed
 - inert `CAVENIA_LOCATION` and `CAVENIA_LEVEL_KEY` now pin the future `cavernreborn:cavenia` identity without creating a runtime level
+- `CaveniaTerrainGeneratorPolicy` now pins `WORLD_HEIGHT = 128`, the bedrock/air height bands and the exact terrain-stage order without creating a runtime generator
 
 ## Unresolved Blockers
 
@@ -222,3 +231,4 @@ That next slice should stop at inert identity constants and boundary smoke. It s
 - `docs/cavenia-spawn-provider-policy-mvp.md`
 - `docs/cavenia-crazy-roster-natural-spawn-boundary.md`
 - `docs/caveman-cavenia-normal-roster-boundary.md`
+- `docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md`

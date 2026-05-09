@@ -25,6 +25,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
     private static final Path CRAZY_ROSTER_DOC = resolveProjectFile("docs", "cavenia-crazy-roster-natural-spawn-boundary.md");
     private static final Path CAVEMAN_DOC = resolveProjectFile("docs", "caveman-cavenia-normal-roster-boundary.md");
     private static final Path SCAFFOLD_DOC = resolveProjectFile("docs", "cavenia-runtime-key-inactive-dimension-scaffold-mvp.md");
+    private static final Path TERRAIN_POLICY_DOC = resolveProjectFile("docs", "cavenia-terrain-generator-foundation-non-runtime-mvp.md");
 
     @Test
     void readinessPlanExistsAndPinsTheCurrentInactiveFoundationState() throws IOException {
@@ -44,6 +45,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
         String crazyRosterDoc = Files.readString(CRAZY_ROSTER_DOC);
         String cavemanDoc = Files.readString(CAVEMAN_DOC);
         String scaffoldDoc = Files.readString(SCAFFOLD_DOC);
+        String terrainPolicyDoc = Files.readString(TERRAIN_POLICY_DOC);
 
         assertTrue(planDoc.contains("Cavenia Active Foundation Readiness / Implementation Plan"));
         assertTrue(planDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
@@ -58,8 +60,11 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(planDoc.contains("docs/cavenia-spawn-provider-policy-mvp.md"));
         assertTrue(planDoc.contains("docs/cavenia-crazy-roster-natural-spawn-boundary.md"));
         assertTrue(planDoc.contains("docs/caveman-cavenia-normal-roster-boundary.md"));
+        assertTrue(planDoc.contains("docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md"));
         assertTrue(planDoc.contains("`CaveniaSpawnProviderPolicy`"));
         assertTrue(planDoc.contains("`CaveniaSpawnEntry`"));
+        assertTrue(planDoc.contains("`CaveniaTerrainGeneratorPolicy`"));
+        assertTrue(planDoc.contains("`CaveniaTerrainStep`"));
         assertTrue(planDoc.contains("`EntityCaveman -> deferred:caveman`"));
         assertTrue(planDoc.contains("nearby `ICavenicMob` whose `isNonBoss()` returns `false`"));
         assertTrue(planDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
@@ -97,6 +102,8 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(readme.contains("docs/cavenia-active-foundation-technical-spike.md"));
         assertTrue(readme.contains("Cavenia Runtime Key / Inactive Dimension Scaffold MVP"));
         assertTrue(readme.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
+        assertTrue(readme.contains("Cavenia Terrain Generator Foundation / Non-Runtime MVP"));
+        assertTrue(readme.contains("docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md"));
         assertTrue(runtimeSmokeDoc.contains("Cavenia Active Foundation Readiness / Implementation Plan"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(runtimeSmokeDoc.contains("inactive Cavenia active-foundation readiness-plan boundary"));
@@ -106,7 +113,11 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(runtimeSmokeDoc.contains("Cavenia Runtime Key / Inactive Dimension Scaffold MVP"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
         assertTrue(runtimeSmokeDoc.contains("inert Cavenia runtime-key / inactive-dimension scaffold MVP"));
+        assertTrue(runtimeSmokeDoc.contains("Cavenia Terrain Generator Foundation / Non-Runtime MVP"));
+        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md"));
+        assertTrue(runtimeSmokeDoc.contains("non-runtime Cavenia terrain-generator foundation MVP"));
         assertTrue(scaffoldDoc.contains("Cavenia Runtime Key / Inactive Dimension Scaffold MVP"));
+        assertTrue(terrainPolicyDoc.contains("Cavenia Terrain Generator Foundation / Non-Runtime MVP"));
 
         assertTrue(foundationDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(keyTypeDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
@@ -120,6 +131,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(policyDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(crazyRosterDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(cavemanDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
+        assertTrue(terrainPolicyDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
     }
 
     private static Path resolveProjectFile(String first, String... more) {

@@ -10,6 +10,10 @@ The narrower active-foundation implementation-decision spike is documented separ
 
 - `docs/cavenia-active-foundation-technical-spike.md`
 
+The later pure non-runtime terrain-generator foundation note is documented separately in:
+
+- `docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md`
+
 It does not add:
 
 - `data/cavernreborn/dimension/cavenia.json`
@@ -247,6 +251,10 @@ That means any future modern approximation has to decide how to preserve or inte
 - biome-driven surface identity
 - vein replacement order
 - interaction between cave carving and later content mutation
+
+Current Reborn now also pins that same non-runtime order in:
+
+- `CaveniaTerrainGeneratorPolicy`
 
 ## Exact Legacy Final Chunk / Structure / Creature Hooks Found
 

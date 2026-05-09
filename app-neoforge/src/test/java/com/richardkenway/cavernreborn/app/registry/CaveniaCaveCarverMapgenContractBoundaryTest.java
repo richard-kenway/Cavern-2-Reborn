@@ -19,6 +19,7 @@ class CaveniaCaveCarverMapgenContractBoundaryTest {
     private static final Path BIOME_PROVIDER_DOC = resolveProjectFile("docs", "cavenia-biome-provider-contract-boundary.md");
     private static final Path VEINS_DOC = resolveProjectFile("docs", "cavenia-veins-content-pipeline-contract-boundary.md");
     private static final Path TERRAIN_DOC = resolveProjectFile("docs", "cavenia-chunk-generator-terrain-pipeline-contract-boundary.md");
+    private static final Path TERRAIN_POLICY_DOC = resolveProjectFile("docs", "cavenia-terrain-generator-foundation-non-runtime-mvp.md");
     private static final Path POPULATION_DOC = resolveProjectFile("docs", "cavenia-population-lakes-falls-shroom-contract-boundary.md");
     private static final Path ACCESS_DOC = resolveProjectFile("docs", "cavenia-mirage-entry-access-contract-boundary.md");
     private static final Path SPAWN_PROVIDER_DOC = resolveProjectFile("docs", "cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md");
@@ -43,6 +44,7 @@ class CaveniaCaveCarverMapgenContractBoundaryTest {
         String biomeProviderDoc = Files.readString(BIOME_PROVIDER_DOC);
         String veinsDoc = Files.readString(VEINS_DOC);
         String terrainDoc = Files.readString(TERRAIN_DOC);
+        String terrainPolicyDoc = Files.readString(TERRAIN_POLICY_DOC);
         String populationDoc = Files.readString(POPULATION_DOC);
         String accessDoc = Files.readString(ACCESS_DOC);
         String spawnProviderDoc = Files.readString(SPAWN_PROVIDER_DOC);
@@ -92,6 +94,7 @@ class CaveniaCaveCarverMapgenContractBoundaryTest {
         assertTrue(contractDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-veins-content-pipeline-contract-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
+        assertTrue(contractDoc.contains("docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md"));
         assertTrue(contractDoc.contains("docs/cavenia-population-lakes-falls-shroom-contract-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-mirage-entry-access-contract-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md"));
@@ -102,6 +105,7 @@ class CaveniaCaveCarverMapgenContractBoundaryTest {
         assertTrue(biomeProviderDoc.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));
         assertTrue(veinsDoc.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));
         assertTrue(terrainDoc.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));
+        assertTrue(terrainPolicyDoc.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));
         assertTrue(populationDoc.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));
         assertTrue(accessDoc.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));
         assertTrue(spawnProviderDoc.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));

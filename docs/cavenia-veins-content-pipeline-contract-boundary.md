@@ -10,6 +10,10 @@ The narrower active-foundation implementation-decision spike is documented separ
 
 - `docs/cavenia-active-foundation-technical-spike.md`
 
+The later pure non-runtime terrain-generator foundation note is documented separately in:
+
+- `docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md`
+
 It does not add:
 
 - `data/cavernreborn/dimension/cavenia.json`

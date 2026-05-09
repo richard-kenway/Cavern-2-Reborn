@@ -22,6 +22,10 @@ The follow-up inert identity implementation is now documented separately in:
 
 - `docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md`
 
+The later pure non-runtime terrain-generator foundation note is now documented separately in:
+
+- `docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md`
+
 This spike still does not imply active `cavernreborn:cavenia`, `dimension/cavenia.json`, `dimension_type/cavenia.json`, active Cavenia spawning, active crazy spawning, fake normal `CAVERN` crazy spawning or a `cavernreborn:caveman` entity.
 
 ## Spike Decision

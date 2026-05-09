@@ -23,6 +23,7 @@ class CaveniaChunkGeneratorTerrainPipelineContractBoundaryTest {
     private static final Path ACCESS_DOC = resolveProjectFile("docs", "cavenia-mirage-entry-access-contract-boundary.md");
     private static final Path SPAWN_PROVIDER_DOC = resolveProjectFile("docs", "cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md");
     private static final Path CRAZY_ROSTER_DOC = resolveProjectFile("docs", "cavenia-crazy-roster-natural-spawn-boundary.md");
+    private static final Path TERRAIN_POLICY_DOC = resolveProjectFile("docs", "cavenia-terrain-generator-foundation-non-runtime-mvp.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
     private static final Path DIMENSIONS_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "dimension", "CavernNeoForgeDimensions.java"
@@ -47,6 +48,7 @@ class CaveniaChunkGeneratorTerrainPipelineContractBoundaryTest {
         String accessDoc = Files.readString(ACCESS_DOC);
         String spawnProviderDoc = Files.readString(SPAWN_PROVIDER_DOC);
         String crazyRosterDoc = Files.readString(CRAZY_ROSTER_DOC);
+        String terrainPolicyDoc = Files.readString(TERRAIN_POLICY_DOC);
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE_DOC);
 
         assertTrue(readme.contains("Cavenia Chunk Generator / Terrain Pipeline Contract Boundary"));
@@ -103,6 +105,8 @@ class CaveniaChunkGeneratorTerrainPipelineContractBoundaryTest {
         assertTrue(contractDoc.contains("docs/cavenia-mirage-entry-access-contract-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-crazy-roster-natural-spawn-boundary.md"));
+        assertTrue(contractDoc.contains("docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md"));
+        assertTrue(contractDoc.contains("`CaveniaTerrainGeneratorPolicy`"));
 
         assertTrue(foundationDoc.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
         assertTrue(keyTypeDoc.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
@@ -113,6 +117,7 @@ class CaveniaChunkGeneratorTerrainPipelineContractBoundaryTest {
         assertTrue(accessDoc.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
         assertTrue(spawnProviderDoc.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
         assertTrue(crazyRosterDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
+        assertTrue(terrainPolicyDoc.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
         assertTrue(runtimeSmokeDoc.contains("inactive Cavenia chunk-generator/terrain-pipeline contract boundary"));
     }

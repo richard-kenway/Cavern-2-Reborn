@@ -84,6 +84,8 @@ import com.richardkenway.cavernreborn.core.progression.CavernProgressionUnlock;
 import com.richardkenway.cavernreborn.core.progression.CavernProgressionUpdateResult;
 import com.richardkenway.cavernreborn.core.spawn.CaveniaSpawnProviderPolicy;
 import com.richardkenway.cavernreborn.core.state.CavernDimensions;
+import com.richardkenway.cavernreborn.core.worldgen.CaveniaTerrainGeneratorPolicy;
+import com.richardkenway.cavernreborn.core.worldgen.CaveniaTerrainStep;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -7541,6 +7543,27 @@ public final class CavernSpecialOreGameTests {
             "Expected the inert Cavenia runtime-key scaffold doc to exist in the project root"
         );
         helper.assertTrue(
+            projectFileExists("docs", "cavenia-terrain-generator-foundation-non-runtime-mvp.md"),
+            "Expected the non-runtime Cavenia terrain-generator foundation doc to exist in the project root"
+        );
+        helper.assertTrue(
+            CaveniaTerrainGeneratorPolicy.WORLD_HEIGHT == 128,
+            "Expected the non-runtime Cavenia terrain-generator policy to keep WORLD_HEIGHT pinned to 128"
+        );
+        helper.assertTrue(
+            CaveniaTerrainGeneratorPolicy.generationSteps().equals(
+                List.of(
+                    CaveniaTerrainStep.BASE_STONE_FILL,
+                    CaveniaTerrainStep.OPTIONAL_CAVE_CARVING,
+                    CaveniaTerrainStep.BIOME_TOP_FILTER_REPLACEMENT,
+                    CaveniaTerrainStep.VEINS_GENERATOR_SIDE_MUTATION,
+                    CaveniaTerrainStep.FINAL_CHUNK_CONSTRUCTION,
+                    CaveniaTerrainStep.LATER_POPULATION_STAGE
+                )
+            ),
+            "Expected the non-runtime Cavenia terrain-generator policy to keep the legacy generation-step order pinned"
+        );
+        helper.assertTrue(
             projectFileExists("docs", "caveman-cavenia-normal-roster-boundary.md"),
             "Expected the Caveman normal-roster boundary doc to exist in the project root"
         );
@@ -7551,6 +7574,22 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension_type", "cavenia.json"),
             "Expected the Cavenia spawn-provider contract boundary to keep the checked-in cavenia dimension-type resource absent"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "noise_settings", "cavenia.json"),
+            "Expected the non-runtime Cavenia terrain-generator foundation to keep checked-in Cavenia noise settings absent"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "configured_carver", "cavenia.json"),
+            "Expected the non-runtime Cavenia terrain-generator foundation to keep checked-in Cavenia configured carvers absent"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "configured_feature", "cavenia.json"),
+            "Expected the non-runtime Cavenia terrain-generator foundation to keep checked-in Cavenia configured features absent"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "placed_feature", "cavenia.json"),
+            "Expected the non-runtime Cavenia terrain-generator foundation to keep checked-in Cavenia placed features absent"
         );
         helper.assertTrue(
             SpawnPlacements.getPlacementType(ModRegistries.CAVENIC_ZOMBIE.get()) == SpawnPlacementTypes.ON_GROUND,

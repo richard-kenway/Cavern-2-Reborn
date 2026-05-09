@@ -11,6 +11,10 @@ It builds on:
 - `docs/cavenia-spawn-provider-policy-mvp.md`
 - `docs/caveman-cavenia-normal-roster-boundary.md`
 
+The later pure non-runtime terrain-generator foundation note is now documented separately in:
+
+- `docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md`
+
 ## Exact Constants Added
 
 The current repository now exposes inert future Cavenia identity markers:
@@ -118,5 +122,9 @@ The next future active work still requires:
 - biome-source decisions
 - safe access and return decisions
 - explicit deferred spawn-provider behavior inside any future active dimension JSON
+
+The immediate non-runtime terrain follow-up is now documented in:
+
+- `docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md`
 
 This inert scaffold is only the identity floor for those later slices.

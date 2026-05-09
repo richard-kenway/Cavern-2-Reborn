@@ -20,6 +20,7 @@ class CaveniaRuntimeKeyInactiveDimensionScaffoldTest {
     private static final Path SCAFFOLD_DOC = resolveProjectFile("docs", "cavenia-runtime-key-inactive-dimension-scaffold-mvp.md");
     private static final Path READINESS_DOC = resolveProjectFile("docs", "cavenia-active-foundation-readiness-plan.md");
     private static final Path TECHNICAL_SPIKE_DOC = resolveProjectFile("docs", "cavenia-active-foundation-technical-spike.md");
+    private static final Path TERRAIN_POLICY_DOC = resolveProjectFile("docs", "cavenia-terrain-generator-foundation-non-runtime-mvp.md");
     private static final Path FOUNDATION_DOC = resolveProjectFile("docs", "cavenia-dimension-provider-foundation-boundary.md");
     private static final Path KEY_TYPE_DOC = resolveProjectFile("docs", "cavenia-dimension-key-type-contract-boundary.md");
     private static final Path CORE_DIMENSIONS_SOURCE = resolveProjectFile(
@@ -42,12 +43,14 @@ class CaveniaRuntimeKeyInactiveDimensionScaffoldTest {
         String scaffoldDoc = Files.readString(SCAFFOLD_DOC);
         String readinessDoc = Files.readString(READINESS_DOC);
         String technicalSpikeDoc = Files.readString(TECHNICAL_SPIKE_DOC);
+        String terrainPolicyDoc = Files.readString(TERRAIN_POLICY_DOC);
         String foundationDoc = Files.readString(FOUNDATION_DOC);
         String keyTypeDoc = Files.readString(KEY_TYPE_DOC);
 
         assertTrue(scaffoldDoc.contains("Cavenia Runtime Key / Inactive Dimension Scaffold MVP"));
         assertTrue(scaffoldDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(scaffoldDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
+        assertTrue(scaffoldDoc.contains("docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md"));
         assertTrue(scaffoldDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
         assertTrue(scaffoldDoc.contains("docs/cavenia-dimension-key-type-contract-boundary.md"));
         assertTrue(scaffoldDoc.contains("docs/cavenia-spawn-provider-policy-mvp.md"));
@@ -72,6 +75,7 @@ class CaveniaRuntimeKeyInactiveDimensionScaffoldTest {
         assertTrue(runtimeSmokeDoc.contains("inert Cavenia runtime-key / inactive-dimension scaffold MVP"));
         assertTrue(readinessDoc.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
         assertTrue(technicalSpikeDoc.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
+        assertTrue(terrainPolicyDoc.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
         assertTrue(foundationDoc.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
         assertTrue(keyTypeDoc.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
     }

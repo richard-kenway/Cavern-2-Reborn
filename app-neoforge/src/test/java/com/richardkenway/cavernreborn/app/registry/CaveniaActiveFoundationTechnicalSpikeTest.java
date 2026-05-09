@@ -24,6 +24,7 @@ class CaveniaActiveFoundationTechnicalSpikeTest {
     private static final Path CRAZY_ROSTER_DOC = resolveProjectFile("docs", "cavenia-crazy-roster-natural-spawn-boundary.md");
     private static final Path CAVEMAN_DOC = resolveProjectFile("docs", "caveman-cavenia-normal-roster-boundary.md");
     private static final Path SCAFFOLD_DOC = resolveProjectFile("docs", "cavenia-runtime-key-inactive-dimension-scaffold-mvp.md");
+    private static final Path TERRAIN_POLICY_DOC = resolveProjectFile("docs", "cavenia-terrain-generator-foundation-non-runtime-mvp.md");
 
     @Test
     void technicalSpikeExistsAndPinsTheFirstActiveFoundationDecision() throws IOException {
@@ -42,6 +43,7 @@ class CaveniaActiveFoundationTechnicalSpikeTest {
         String crazyRosterDoc = Files.readString(CRAZY_ROSTER_DOC);
         String cavemanDoc = Files.readString(CAVEMAN_DOC);
         String scaffoldDoc = Files.readString(SCAFFOLD_DOC);
+        String terrainPolicyDoc = Files.readString(TERRAIN_POLICY_DOC);
 
         assertTrue(spikeDoc.contains("Cavenia Active Foundation Technical Spike"));
         assertTrue(spikeDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
@@ -58,6 +60,7 @@ class CaveniaActiveFoundationTechnicalSpikeTest {
         assertTrue(spikeDoc.contains("docs/cavenia-crazy-roster-natural-spawn-boundary.md"));
         assertTrue(spikeDoc.contains("docs/caveman-cavenia-normal-roster-boundary.md"));
         assertTrue(spikeDoc.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
+        assertTrue(spikeDoc.contains("docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md"));
         assertTrue(spikeDoc.contains("`CAVENIA_LOCATION`"));
         assertTrue(spikeDoc.contains("`CAVENIA_LEVEL_KEY`"));
         assertTrue(spikeDoc.contains("`dimension/cavenia.json`"));
@@ -91,6 +94,7 @@ class CaveniaActiveFoundationTechnicalSpikeTest {
         assertTrue(crazyRosterDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
         assertTrue(cavemanDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
         assertTrue(scaffoldDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
+        assertTrue(terrainPolicyDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
     }
 
     private static Path resolveProjectFile(String first, String... more) {
