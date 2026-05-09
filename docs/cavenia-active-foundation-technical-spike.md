@@ -46,6 +46,10 @@ The later non-registered active-generator technical scaffold note is now documen
 
 - `docs/cavenia-active-generator-technical-scaffold-mvp.md`
 
+The later inert app-side runtime prototype note is now documented separately in:
+
+- `docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md`
+
 This spike still does not imply active `cavernreborn:cavenia`, `dimension/cavenia.json`, `dimension_type/cavenia.json`, active Cavenia spawning, active crazy spawning, fake normal `CAVERN` crazy spawning or a `cavernreborn:caveman` entity.
 
 ## Spike Decision

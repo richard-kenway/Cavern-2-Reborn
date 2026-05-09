@@ -262,6 +262,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/cavenia-population-policy-non-runtime-mvp.md"));
         assertTrue(readme.contains("Cavenia Active Generator Technical Scaffold / MVP"));
         assertTrue(readme.contains("docs/cavenia-active-generator-technical-scaffold-mvp.md"));
+        assertTrue(readme.contains("Cavenia Active Generator Runtime Prototype / Inert App-Side Bridge MVP"));
+        assertTrue(readme.contains("docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md"));
         assertTrue(readme.contains("full mirage-world stack"));
         assertTrue(readme.contains("old Cavenia-only `crazySpawnChance` plus a nearby `ICavenicMob` scan for `!entity.isNonBoss()`"));
         assertTrue(readme.contains("fourth crazy-variant foundation follow-up"));
@@ -658,8 +660,12 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("Cavenia Active Generator Technical Scaffold / MVP"));
         assertTrue(doc.contains("docs/cavenia-active-generator-technical-scaffold-mvp.md"));
         assertTrue(doc.contains("non-registered Cavenia active-generator technical scaffold MVP"));
+        assertTrue(doc.contains("Cavenia Active Generator Runtime Prototype / Inert App-Side Bridge MVP"));
+        assertTrue(doc.contains("docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md"));
+        assertTrue(doc.contains("inert app-side Cavenia generator bridge MVP"));
         assertTrue(doc.contains("`CaveniaPopulationPolicy.generateLakesDefaultEnabled()` remains pinned to `true`"));
         assertTrue(doc.contains("`CaveniaGeneratorScaffold` now resolves from `core`"));
+        assertTrue(doc.contains("`CaveniaGeneratorBridge` now resolves from `app-neoforge`"));
         assertTrue(doc.contains("runtime generator registration as false"));
         assertTrue(doc.contains("`CaveniaVeinsContentPolicy.entries().size()` remains pinned to `13`"));
         assertTrue(doc.contains("`CaveniaVeinsContentPolicy.totalWeight()` remains pinned to `436`"));

@@ -14,6 +14,10 @@ It builds on:
 - `docs/cavenia-active-foundation-readiness-plan.md`
 - `docs/cavenia-active-foundation-technical-spike.md`
 
+The later inert app-side runtime prototype note is now documented separately in:
+
+- `docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md`
+
 ## What This MVP Adds
 
 Current Reborn now has a pure `core` technical scaffold:

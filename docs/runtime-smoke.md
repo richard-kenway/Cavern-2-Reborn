@@ -344,6 +344,12 @@ NeoForge GameTest runtime smoke covers:
 - `CaveniaGeneratorScaffold` still keeps `worldHeight = 128`, biome roster size `14` and VEINS roster size `13`
 - `CaveniaGeneratorScaffold` still reports runtime generator registration as false and still requires dimension JSON plus dimension-type JSON before activation
 - the non-registered scaffold note at `docs/cavenia-active-generator-technical-scaffold-mvp.md`
+- Cavenia Active Generator Runtime Prototype / Inert App-Side Bridge MVP
+- inert app-side Cavenia generator bridge MVP
+- `CaveniaGeneratorBridge` now resolves from `app-neoforge`
+- `CaveniaGeneratorBridge` still mirrors `CAVENIA_LOCATION`, `CAVENIA_LEVEL_KEY`, `worldHeight = 128` and the accepted scaffold stage order from `core`
+- `CaveniaGeneratorBridge` still reports runtime generator registration and runtime dimension resources as false, and still requires dimension JSON plus dimension-type JSON before activation
+- the inert bridge note at `docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md`
 - `CaveniaSpawnProviderPolicy` still keeps `EntityCaveman -> deferred:caveman`
 - no registered `cavernreborn:caveman` entity type exists at runtime
 - no checked-in Caveman spawn placement, biome modifier or biome tag exists

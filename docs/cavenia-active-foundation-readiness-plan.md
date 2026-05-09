@@ -31,6 +31,7 @@ The later pure non-runtime population policy note is now documented separately i
 The later non-registered active-generator technical scaffold note is now documented separately in:
 
 - `docs/cavenia-active-generator-technical-scaffold-mvp.md`
+- `docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md`
 
 Current readiness state still has no active Cavenia spawning and no fake normal `CAVERN` crazy spawning.
 
@@ -118,6 +119,7 @@ The current repository state and inspected legacy source now pin these implement
 - the source-literal nearby scan wording remains: nearby `ICavenicMob` whose `isNonBoss()` returns `false`
 - `EntityCaveman -> deferred:caveman` remains intentional and source-backed
 - inert `CAVENIA_LOCATION` and `CAVENIA_LEVEL_KEY` now pin the future `cavernreborn:cavenia` identity without creating a runtime level
+- an inert app-side `CaveniaGeneratorBridge` can now mirror that accepted identity and the accepted `core` scaffold facts without becoming a registered generator
 - `CaveniaTerrainGeneratorPolicy` now pins `WORLD_HEIGHT = 128`, the bedrock/air height bands and the exact terrain-stage order without creating a runtime generator
 - `CaveniaCaveCarverPolicy` now pins the `20..24` tunnel-origin band, the gravel/water/air carve-replacement rules and the carve-before-top/filter-plus-VEINS ordering without creating a runtime carver
 - `CaveniaBiomeTopFilterPolicy` now pins the shipped `CaveniaConfig.BIOMES` roster, total weight `675`, the default stone terrain/filter rule and the shipped top-block mappings without creating a runtime biome source

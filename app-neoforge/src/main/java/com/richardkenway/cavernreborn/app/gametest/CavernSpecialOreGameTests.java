@@ -45,6 +45,7 @@ import com.richardkenway.cavernreborn.app.item.CavenicBowRapidEvents;
 import com.richardkenway.cavernreborn.app.item.CavenicBowItem;
 import com.richardkenway.cavernreborn.app.item.OreCompassItem;
 import com.richardkenway.cavernreborn.app.mining.CavernMiningAssistEvents;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorBridge;
 import com.richardkenway.cavernreborn.app.registry.ModArmorMaterials;
 import com.richardkenway.cavernreborn.app.registry.ModBlockTags;
 import com.richardkenway.cavernreborn.app.registry.ModItemTags;
@@ -7602,6 +7603,10 @@ public final class CavernSpecialOreGameTests {
             "Expected the non-registered Cavenia active-generator technical scaffold doc to exist in the project root"
         );
         helper.assertTrue(
+            projectFileExists("docs", "cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md"),
+            "Expected the inert app-side Cavenia generator-bridge doc to exist in the project root"
+        );
+        helper.assertTrue(
             CaveniaTerrainGeneratorPolicy.WORLD_HEIGHT == 128,
             "Expected the non-runtime Cavenia terrain-generator policy to keep WORLD_HEIGHT pinned to 128"
         );
@@ -7718,6 +7723,27 @@ public final class CavernSpecialOreGameTests {
                 && CaveniaGeneratorScaffold.requiresDimensionJsonBeforeActivation()
                 && CaveniaGeneratorScaffold.requiresDimensionTypeJsonBeforeActivation(),
             "Expected the non-registered Cavenia active-generator scaffold to keep runtime generator registration disabled until dimension resources exist"
+        );
+        helper.assertTrue(
+            CaveniaGeneratorBridge.location().toString().equals(CavernDimensions.CAVENIA_DIMENSION_ID)
+                && CaveniaGeneratorBridge.levelKey().location().toString().equals(CavernDimensions.CAVENIA_DIMENSION_ID)
+                && CaveniaGeneratorBridge.dimensionId().equals(CaveniaGeneratorScaffold.dimensionId()),
+            "Expected the inert app-side Cavenia generator bridge to mirror the accepted Cavenia identity without creating a runtime generator"
+        );
+        helper.assertTrue(
+            CaveniaGeneratorBridge.worldHeight() == 128
+                && CaveniaGeneratorBridge.scaffoldStages().equals(CaveniaGeneratorScaffold.stages())
+                && CaveniaGeneratorBridge.terrainStages().equals(CaveniaGeneratorScaffold.terrainStages()),
+            "Expected the inert app-side Cavenia generator bridge to expose the accepted scaffold and terrain stage order"
+        );
+        helper.assertTrue(
+            CaveniaGeneratorBridge.biomeEntryCount() == 14
+                && CaveniaGeneratorBridge.veinEntryCount() == 13
+                && !CaveniaGeneratorBridge.runtimeGeneratorRegistered()
+                && !CaveniaGeneratorBridge.runtimeDimensionResourcesPresent()
+                && CaveniaGeneratorBridge.requiresDimensionJsonBeforeActivation()
+                && CaveniaGeneratorBridge.requiresDimensionTypeJsonBeforeActivation(),
+            "Expected the inert app-side Cavenia generator bridge to stay explicitly inactive until runtime resources and generator registration exist"
         );
         helper.assertTrue(
             projectFileExists("docs", "caveman-cavenia-normal-roster-boundary.md"),

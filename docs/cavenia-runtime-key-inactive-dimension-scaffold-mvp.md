@@ -34,6 +34,7 @@ The later pure non-runtime population policy note is now documented separately i
 The later non-registered active-generator technical scaffold note is now documented separately in:
 
 - `docs/cavenia-active-generator-technical-scaffold-mvp.md`
+- `docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md`
 
 ## Exact Constants Added
 
