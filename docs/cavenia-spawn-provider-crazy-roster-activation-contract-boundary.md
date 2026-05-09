@@ -2,6 +2,10 @@
 
 This note documents the inspected legacy provider-owned hostile spawn path behind Cavenia's normal roster and crazy-roster activation.
 
+The consolidated readiness and future implementation order are documented separately in:
+
+- `docs/cavenia-active-foundation-readiness-plan.md`
+
 The broader inactive Cavenia runtime/provider boundary remains documented in:
 
 - `docs/cavenia-dimension-provider-foundation-boundary.md`

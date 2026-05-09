@@ -4,6 +4,10 @@ This note documents the inspected legacy `Cavenia` dimension/provider stack and 
 
 It does not add an active `cavenia` dimension, a provider port, a chunk generator port, portals, teleports or crazy natural spawning.
 
+The consolidated readiness and future implementation order are documented separately in:
+
+- `docs/cavenia-active-foundation-readiness-plan.md`
+
 The narrower future key/type contract is documented separately in:
 
 - `docs/cavenia-dimension-key-type-contract-boundary.md`

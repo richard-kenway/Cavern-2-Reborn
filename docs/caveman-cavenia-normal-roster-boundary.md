@@ -2,6 +2,10 @@
 
 This note documents the focused legacy `EntityCaveman` inspection behind the non-runtime `CaveniaSpawnProviderPolicy` normal roster entry.
 
+The consolidated readiness and future implementation order are documented separately in:
+
+- `docs/cavenia-active-foundation-readiness-plan.md`
+
 The current source-of-truth notes remain:
 
 - `docs/cavenia-spawn-provider-policy-mvp.md`

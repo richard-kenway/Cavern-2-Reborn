@@ -2,6 +2,10 @@
 
 This note documents the new non-runtime policy layer that encodes the source-confirmed legacy Cavenia spawn-provider defaults, roster data and crazy-roster decision helpers without enabling any active Cavenia spawning.
 
+The consolidated readiness and future implementation order are documented separately in:
+
+- `docs/cavenia-active-foundation-readiness-plan.md`
+
 The source-of-truth boundary notes remain:
 
 - `docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md`

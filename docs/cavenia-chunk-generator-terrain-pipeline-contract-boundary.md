@@ -2,6 +2,10 @@
 
 This note documents only the future `Cavenia` chunk-generator and terrain-pipeline contract.
 
+The consolidated readiness and future implementation order are documented separately in:
+
+- `docs/cavenia-active-foundation-readiness-plan.md`
+
 It does not add:
 
 - `data/cavernreborn/dimension/cavenia.json`

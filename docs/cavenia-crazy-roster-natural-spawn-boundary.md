@@ -2,6 +2,10 @@
 
 This note documents the inspected legacy natural-spawn path for the four direct crazy variants:
 
+The consolidated readiness and future implementation order are documented separately in:
+
+- `docs/cavenia-active-foundation-readiness-plan.md`
+
 - `cavernreborn:crazy_zombie`
 - `cavernreborn:crazy_skeleton`
 - `cavernreborn:crazy_creeper`
