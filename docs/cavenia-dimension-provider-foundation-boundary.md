@@ -30,6 +30,10 @@ The narrower future mirage entry/access contract is documented separately in:
 
 - `docs/cavenia-mirage-entry-access-contract-boundary.md`
 
+The narrower future spawn-provider / crazy-roster activation contract is documented separately in:
+
+- `docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md`
+
 ## Legacy References Inspected
 
 - `cavern.world.mirage.WorldProviderCavenia`

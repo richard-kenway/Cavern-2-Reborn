@@ -15,6 +15,10 @@ The separate mirage entry/access boundary remains documented in:
 
 - `docs/cavenia-mirage-entry-access-contract-boundary.md`
 
+The separate focused spawn-provider / crazy-roster activation contract remains documented in:
+
+- `docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md`
+
 ## Legacy References Inspected
 
 - `cavern.entity.CaveEntityRegistry`

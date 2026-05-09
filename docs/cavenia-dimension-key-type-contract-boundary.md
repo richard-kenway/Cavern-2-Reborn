@@ -36,6 +36,10 @@ The separate mirage entry/access contract remains documented in:
 
 - `docs/cavenia-mirage-entry-access-contract-boundary.md`
 
+The separate spawn-provider / crazy-roster activation contract remains documented in:
+
+- `docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md`
+
 The crazy-roster natural-spawn boundary remains documented in:
 
 - `docs/cavenia-crazy-roster-natural-spawn-boundary.md`

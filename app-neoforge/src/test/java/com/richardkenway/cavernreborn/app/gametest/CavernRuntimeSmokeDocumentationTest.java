@@ -240,6 +240,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/cavenia-population-lakes-falls-shroom-contract-boundary.md"));
         assertTrue(readme.contains("Cavenia Mirage Entry / Access Path Contract Boundary"));
         assertTrue(readme.contains("docs/cavenia-mirage-entry-access-contract-boundary.md"));
+        assertTrue(readme.contains("Cavenia Spawn Provider / Crazy Roster Activation Contract Boundary"));
+        assertTrue(readme.contains("docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md"));
         assertTrue(readme.contains("full mirage-world stack"));
         assertTrue(readme.contains("old Cavenia-only `crazySpawnChance` plus nearby non-boss `ICavenicMob` exclusion branch"));
         assertTrue(readme.contains("fourth crazy-variant foundation follow-up"));
@@ -606,6 +608,9 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("inactive Cavenia mirage entry/access contract boundary"));
         assertTrue(doc.contains("no registered `cavernreborn:mirage_book` item exists at runtime"));
         assertTrue(doc.contains("the Cavenia mirage entry/access contract boundary note at `docs/cavenia-mirage-entry-access-contract-boundary.md`"));
+        assertTrue(doc.contains("inactive Cavenia spawn-provider / crazy-roster activation contract boundary"));
+        assertTrue(doc.contains("no checked-in normal `CAVERN` crazy biome modifiers or crazy biome tags exist"));
+        assertTrue(doc.contains("the Cavenia spawn-provider / crazy-roster activation contract boundary note at `docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md`"));
         assertTrue(doc.contains("cavenic bear biome modifier registry smoke"));
         assertTrue(doc.contains("cavenic bear biome tag resolution"));
         assertTrue(doc.contains("cavenic bear legacy fall-damage reduction smoke"));

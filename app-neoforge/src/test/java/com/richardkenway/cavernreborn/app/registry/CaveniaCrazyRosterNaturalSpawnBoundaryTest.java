@@ -15,6 +15,7 @@ class CaveniaCrazyRosterNaturalSpawnBoundaryTest {
     private static final Path README = resolveProjectFile("README.md");
     private static final Path BOUNDARY_DOC = resolveProjectFile("docs", "cavenia-crazy-roster-natural-spawn-boundary.md");
     private static final Path ACCESS_BOUNDARY_DOC = resolveProjectFile("docs", "cavenia-mirage-entry-access-contract-boundary.md");
+    private static final Path SPAWN_PROVIDER_BOUNDARY_DOC = resolveProjectFile("docs", "cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md");
     private static final Path ZOMBIE_NATURAL_SPAWN_DOC = resolveProjectFile("docs", "crazy-zombie-natural-spawn-absent-or-deferred.md");
     private static final Path ZOMBIE_BASELINE_DOC = resolveProjectFile("docs", "crazy-zombie-baseline-mvp.md");
     private static final Path SKELETON_BASELINE_DOC = resolveProjectFile("docs", "crazy-skeleton-baseline-mvp.md");
@@ -32,6 +33,7 @@ class CaveniaCrazyRosterNaturalSpawnBoundaryTest {
         String readme = Files.readString(README);
         String boundaryDoc = Files.readString(BOUNDARY_DOC);
         String accessBoundaryDoc = Files.readString(ACCESS_BOUNDARY_DOC);
+        String spawnProviderBoundaryDoc = Files.readString(SPAWN_PROVIDER_BOUNDARY_DOC);
         String zombieNaturalSpawnDoc = Files.readString(ZOMBIE_NATURAL_SPAWN_DOC);
         String zombieBaselineDoc = Files.readString(ZOMBIE_BASELINE_DOC);
         String skeletonBaselineDoc = Files.readString(SKELETON_BASELINE_DOC);
@@ -40,6 +42,8 @@ class CaveniaCrazyRosterNaturalSpawnBoundaryTest {
 
         assertTrue(readme.contains("Cavenia Crazy Roster Natural Spawn Boundary MVP"));
         assertTrue(readme.contains("docs/cavenia-crazy-roster-natural-spawn-boundary.md"));
+        assertTrue(readme.contains("Cavenia Spawn Provider / Crazy Roster Activation Contract Boundary"));
+        assertTrue(readme.contains("docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md"));
         assertTrue(readme.contains("the old Cavenia-only `crazySpawnChance` plus nearby non-boss `ICavenicMob` exclusion branch"));
 
         assertTrue(boundaryDoc.contains("`CaveEntityRegistry.CRAZY_SPAWNS`"));
@@ -68,6 +72,7 @@ class CaveniaCrazyRosterNaturalSpawnBoundaryTest {
         assertTrue(boundaryDoc.contains("Reborn also does not register normal spawn placement for:"));
         assertTrue(boundaryDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
         assertTrue(boundaryDoc.contains("docs/cavenia-mirage-entry-access-contract-boundary.md"));
+        assertTrue(boundaryDoc.contains("docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md"));
         assertTrue(boundaryDoc.contains("`CRAZY_ZOMBIE`"));
         assertTrue(boundaryDoc.contains("`CRAZY_SKELETON`"));
         assertTrue(boundaryDoc.contains("`CRAZY_CREEPER`"));
@@ -79,6 +84,7 @@ class CaveniaCrazyRosterNaturalSpawnBoundaryTest {
         assertTrue(creeperBaselineDoc.contains("docs/cavenia-crazy-roster-natural-spawn-boundary.md"));
         assertTrue(spiderBaselineDoc.contains("docs/cavenia-crazy-roster-natural-spawn-boundary.md"));
         assertTrue(accessBoundaryDoc.contains("docs/cavenia-crazy-roster-natural-spawn-boundary.md"));
+        assertTrue(spawnProviderBoundaryDoc.contains("docs/cavenia-crazy-roster-natural-spawn-boundary.md"));
     }
 
     @Test

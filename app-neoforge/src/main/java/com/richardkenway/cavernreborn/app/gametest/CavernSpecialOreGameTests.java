@@ -285,6 +285,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIA_CAVE_CARVER_BOUNDARY_ANCHOR = new BlockPos(8608, 96, 0);
     private static final BlockPos CAVENIA_POPULATION_BOUNDARY_ANCHOR = new BlockPos(8704, 96, 0);
     private static final BlockPos CAVENIA_MIRAGE_ACCESS_BOUNDARY_ANCHOR = new BlockPos(8800, 96, 0);
+    private static final BlockPos CAVENIA_SPAWN_PROVIDER_BOUNDARY_ANCHOR = new BlockPos(8896, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -7465,6 +7466,109 @@ public final class CavernSpecialOreGameTests {
             SpawnPlacements.getPlacementType(ModRegistries.CRAZY_ZOMBIE.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
             "Expected the mirage entry/access contract boundary to keep crazy spawning unchanged while Cavenia stays inactive"
         );
+
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void caveniaSpawnProviderCrazyRosterActivationContractBoundaryStaysInactiveAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIA_SPAWN_PROVIDER_BOUNDARY_ANCHOR;
+        ResourceKey<Level> caveniaLevelKey = CavernNeoForgeDimensions.levelKey("cavernreborn:cavenia");
+        Registry<BiomeModifier> biomeModifiers = level.registryAccess().registryOrThrow(NeoForgeRegistries.Keys.BIOME_MODIFIERS);
+        Registry<Biome> biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        List<EntityType<? extends Mob>> crazyTypes = List.of(
+            ModRegistries.CRAZY_ZOMBIE.get(),
+            ModRegistries.CRAZY_SKELETON.get(),
+            ModRegistries.CRAZY_CREEPER.get(),
+            ModRegistries.CRAZY_SPIDER.get()
+        );
+        List<String> crazyIds = List.of(
+            "cavernreborn:crazy_zombie",
+            "cavernreborn:crazy_skeleton",
+            "cavernreborn:crazy_creeper",
+            "cavernreborn:crazy_spider"
+        );
+        List<String> spawnModifierIds = List.of(
+            "crazy_zombie_spawns",
+            "crazy_skeleton_spawns",
+            "crazy_creeper_spawns",
+            "crazy_spider_spawns"
+        );
+        List<String> spawnTagIds = List.of(
+            "spawns_crazy_zombie",
+            "spawns_crazy_skeleton",
+            "spawns_crazy_creeper",
+            "spawns_crazy_spider"
+        );
+
+        resetMiningArea(level, origin, 24.0D);
+
+        helper.assertTrue(
+            CavernNeoForgeDimensions.CAVERN_LEVEL_KEY.location().toString().equals(CavernDimensions.CAVERN_DIMENSION_ID),
+            "Expected the checked-in CAVERN level key to remain stable while the Cavenia spawn-provider contract stays deferred"
+        );
+        helper.assertTrue(
+            level.getServer().getLevel(caveniaLevelKey) == null,
+            "Expected the Cavenia spawn-provider contract boundary to keep cavernreborn:cavenia inactive at runtime"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md"),
+            "Expected the Cavenia spawn-provider contract boundary doc to exist in the project root"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension", "cavenia.json"),
+            "Expected the Cavenia spawn-provider contract boundary to keep the checked-in cavenia dimension resource absent"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension_type", "cavenia.json"),
+            "Expected the Cavenia spawn-provider contract boundary to keep the checked-in cavenia dimension-type resource absent"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CAVENIC_ZOMBIE.get()) == SpawnPlacementTypes.ON_GROUND,
+            "Expected the Cavenia spawn-provider contract boundary to keep direct Cavenic CAVERN spawn placements unchanged"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CAVENIC_SKELETON.get()) == SpawnPlacementTypes.ON_GROUND,
+            "Expected the Cavenia spawn-provider contract boundary to keep direct Cavenic CAVERN spawn placements unchanged"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CAVENIC_CREEPER.get()) == SpawnPlacementTypes.ON_GROUND,
+            "Expected the Cavenia spawn-provider contract boundary to keep direct Cavenic CAVERN spawn placements unchanged"
+        );
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CAVENIC_SPIDER.get()) == SpawnPlacementTypes.ON_GROUND,
+            "Expected the Cavenia spawn-provider contract boundary to keep direct Cavenic CAVERN spawn placements unchanged"
+        );
+
+        for (int i = 0; i < crazyTypes.size(); i++) {
+            EntityType<? extends Mob> crazyType = crazyTypes.get(i);
+            ResourceKey<BiomeModifier> spawnModifier = ResourceKey.create(
+                NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+                ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, spawnModifierIds.get(i))
+            );
+            TagKey<Biome> spawnTag = TagKey.create(
+                Registries.BIOME,
+                ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, spawnTagIds.get(i))
+            );
+            Mob crazyMob = spawnLivingEntity(helper, crazyType, origin.east(i * 4));
+            clearEquipment(crazyMob);
+
+            helper.assertTrue(crazyMob.isAlive(), "Expected crazy entity to stay runtime-spawnable for the spawn-provider boundary smoke: " + crazyIds.get(i));
+            assertRegistryId(helper, crazyType, crazyIds.get(i));
+            helper.assertTrue(
+                SpawnPlacements.getPlacementType(crazyType) == SpawnPlacementTypes.NO_RESTRICTIONS,
+                "Expected the spawn-provider contract boundary to keep normal crazy spawn placement unregistered: " + crazyIds.get(i)
+            );
+            helper.assertFalse(
+                biomeModifiers.containsKey(spawnModifier),
+                "Expected the spawn-provider contract boundary to keep fake normal CAVERN crazy biome modifiers absent: " + spawnModifierIds.get(i)
+            );
+            helper.assertFalse(
+                biomes.getTag(spawnTag).isPresent(),
+                "Expected the spawn-provider contract boundary to keep fake normal CAVERN crazy biome tags absent: " + spawnTagIds.get(i)
+            );
+        }
 
         helper.succeed();
     }
