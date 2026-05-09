@@ -20,6 +20,7 @@ class CaveniaDimensionKeyTypeContractBoundaryTest {
     private static final Path TERRAIN_DOC = resolveProjectFile("docs", "cavenia-chunk-generator-terrain-pipeline-contract-boundary.md");
     private static final Path CAVE_CARVER_DOC = resolveProjectFile("docs", "cavenia-cave-carver-mapgen-contract-boundary.md");
     private static final Path POPULATION_DOC = resolveProjectFile("docs", "cavenia-population-lakes-falls-shroom-contract-boundary.md");
+    private static final Path ACCESS_DOC = resolveProjectFile("docs", "cavenia-mirage-entry-access-contract-boundary.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
     private static final Path DIMENSIONS_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "dimension", "CavernNeoForgeDimensions.java"
@@ -41,6 +42,7 @@ class CaveniaDimensionKeyTypeContractBoundaryTest {
         String terrainDoc = Files.readString(TERRAIN_DOC);
         String caveCarverDoc = Files.readString(CAVE_CARVER_DOC);
         String populationDoc = Files.readString(POPULATION_DOC);
+        String accessDoc = Files.readString(ACCESS_DOC);
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE_DOC);
 
         assertTrue(readme.contains("Cavenia Dimension Key / Type Contract Boundary"));
@@ -74,6 +76,7 @@ class CaveniaDimensionKeyTypeContractBoundaryTest {
         assertTrue(contractDoc.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-population-lakes-falls-shroom-contract-boundary.md"));
+        assertTrue(contractDoc.contains("docs/cavenia-mirage-entry-access-contract-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-crazy-roster-natural-spawn-boundary.md"));
 
         assertTrue(foundationDoc.contains("docs/cavenia-dimension-key-type-contract-boundary.md"));
@@ -82,6 +85,7 @@ class CaveniaDimensionKeyTypeContractBoundaryTest {
         assertTrue(terrainDoc.contains("docs/cavenia-dimension-key-type-contract-boundary.md"));
         assertTrue(caveCarverDoc.contains("docs/cavenia-dimension-key-type-contract-boundary.md"));
         assertTrue(populationDoc.contains("docs/cavenia-dimension-key-type-contract-boundary.md"));
+        assertTrue(accessDoc.contains("docs/cavenia-dimension-key-type-contract-boundary.md"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-dimension-key-type-contract-boundary.md"));
     }
 

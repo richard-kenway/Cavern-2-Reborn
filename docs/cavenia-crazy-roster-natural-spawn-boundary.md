@@ -7,6 +7,14 @@ This note documents the inspected legacy natural-spawn path for the four direct 
 - `cavernreborn:crazy_creeper`
 - `cavernreborn:crazy_spider`
 
+The broader inactive Cavenia runtime/provider boundary remains documented in:
+
+- `docs/cavenia-dimension-provider-foundation-boundary.md`
+
+The separate mirage entry/access boundary remains documented in:
+
+- `docs/cavenia-mirage-entry-access-contract-boundary.md`
+
 ## Legacy References Inspected
 
 - `cavern.entity.CaveEntityRegistry`

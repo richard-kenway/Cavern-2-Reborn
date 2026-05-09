@@ -20,6 +20,7 @@ class CaveniaCaveCarverMapgenContractBoundaryTest {
     private static final Path VEINS_DOC = resolveProjectFile("docs", "cavenia-veins-content-pipeline-contract-boundary.md");
     private static final Path TERRAIN_DOC = resolveProjectFile("docs", "cavenia-chunk-generator-terrain-pipeline-contract-boundary.md");
     private static final Path POPULATION_DOC = resolveProjectFile("docs", "cavenia-population-lakes-falls-shroom-contract-boundary.md");
+    private static final Path ACCESS_DOC = resolveProjectFile("docs", "cavenia-mirage-entry-access-contract-boundary.md");
     private static final Path CRAZY_ROSTER_DOC = resolveProjectFile("docs", "cavenia-crazy-roster-natural-spawn-boundary.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
     private static final Path DIMENSIONS_SOURCE = resolveProjectFile(
@@ -42,6 +43,7 @@ class CaveniaCaveCarverMapgenContractBoundaryTest {
         String veinsDoc = Files.readString(VEINS_DOC);
         String terrainDoc = Files.readString(TERRAIN_DOC);
         String populationDoc = Files.readString(POPULATION_DOC);
+        String accessDoc = Files.readString(ACCESS_DOC);
         String crazyRosterDoc = Files.readString(CRAZY_ROSTER_DOC);
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE_DOC);
 
@@ -89,6 +91,7 @@ class CaveniaCaveCarverMapgenContractBoundaryTest {
         assertTrue(contractDoc.contains("docs/cavenia-veins-content-pipeline-contract-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-population-lakes-falls-shroom-contract-boundary.md"));
+        assertTrue(contractDoc.contains("docs/cavenia-mirage-entry-access-contract-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-crazy-roster-natural-spawn-boundary.md"));
 
         assertTrue(foundationDoc.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));
@@ -97,6 +100,7 @@ class CaveniaCaveCarverMapgenContractBoundaryTest {
         assertTrue(veinsDoc.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));
         assertTrue(terrainDoc.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));
         assertTrue(populationDoc.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));
+        assertTrue(accessDoc.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));
         assertTrue(crazyRosterDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));
         assertTrue(runtimeSmokeDoc.contains("inactive Cavenia cave-carver / `MapGenCaveniaCaves` contract boundary"));

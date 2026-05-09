@@ -303,6 +303,10 @@ NeoForge GameTest runtime smoke covers:
 - no checked-in active Cavenia lake/fall/shroom configured or placed features tied to a `cavenia` runtime path
 - the active `CAVERN` `cavenic_shroom` configured/placed keys still resolve separately from any Cavenia boundary work
 - the Cavenia population / lakes / falls / `cavenic_shroom` contract boundary note at `docs/cavenia-population-lakes-falls-shroom-contract-boundary.md`
+- inactive Cavenia mirage entry/access contract boundary
+- no registered `cavernreborn:mirage_book` item exists at runtime
+- no checked-in Cavenia access GUI, packet or portal resources tied to a `cavenia` runtime path
+- the Cavenia mirage entry/access contract boundary note at `docs/cavenia-mirage-entry-access-contract-boundary.md`
 - crazy spider explicit no-natural-spawn baseline boundary
 - actual long-run crazy spider orb drop-rate balance is not covered by server GameTests
 - actual long-running Crazy Spider fire/lava gameplay feel remains manual

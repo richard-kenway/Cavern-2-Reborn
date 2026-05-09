@@ -26,6 +26,10 @@ The narrower future cave-carver contract is documented separately in:
 
 - `docs/cavenia-population-lakes-falls-shroom-contract-boundary.md`
 
+The narrower future mirage entry/access contract is documented separately in:
+
+- `docs/cavenia-mirage-entry-access-contract-boundary.md`
+
 ## Legacy References Inspected
 
 - `cavern.world.mirage.WorldProviderCavenia`
@@ -208,7 +212,11 @@ The inspected references also show that legacy `Cavenia` belonged to the mirage-
 - `ItemMirageBook.EnumType.CAVENIA` maps to `CaveDimensions.CAVENIA`
 - `DimensionHandler#getCavenia()` exposes `CaveDimensions.CAVENIA`
 
-I did not inspect a standalone `CaveniaTeleporter` class because the inspected references already show that Cavenia was integrated into the broader mirage-world access model rather than a tiny isolated entry hook.
+The focused entry/access contract is now documented separately in:
+
+- `docs/cavenia-mirage-entry-access-contract-boundary.md`
+
+The inspected legacy shape already shows that Cavenia was integrated into the broader mirage-world access model rather than a tiny isolated entry hook.
 
 That means future Cavenia work is not only about worldgen. It also needs a user-facing entry/access decision that is honest to the old mirage-world family.
 

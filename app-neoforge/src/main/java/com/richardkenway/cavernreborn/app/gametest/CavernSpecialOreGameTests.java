@@ -284,6 +284,7 @@ public final class CavernSpecialOreGameTests {
     private static final BlockPos CAVENIA_CHUNK_GENERATOR_TERRAIN_BOUNDARY_ANCHOR = new BlockPos(8512, 96, 0);
     private static final BlockPos CAVENIA_CAVE_CARVER_BOUNDARY_ANCHOR = new BlockPos(8608, 96, 0);
     private static final BlockPos CAVENIA_POPULATION_BOUNDARY_ANCHOR = new BlockPos(8704, 96, 0);
+    private static final BlockPos CAVENIA_MIRAGE_ACCESS_BOUNDARY_ANCHOR = new BlockPos(8800, 96, 0);
     private static final Set<String> ALLOWED_RANDOMITE_DROPS = Set.of(
         "cavernreborn:aquamarine",
         "cavernreborn:magnite_ingot",
@@ -7403,6 +7404,66 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             SpawnPlacements.getPlacementType(ModRegistries.CRAZY_SPIDER.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
             "Expected the population contract boundary to keep crazy spawning unchanged while Cavenia stays inactive"
+        );
+
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = TEMPLATE_NAMESPACE, template = EMPTY_TEMPLATE, timeoutTicks = DEFAULT_TIMEOUT_TICKS)
+    public static void caveniaMirageEntryAccessContractBoundaryStaysInactiveAtRuntime(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos origin = CAVENIA_MIRAGE_ACCESS_BOUNDARY_ANCHOR;
+        ResourceKey<Level> caveniaLevelKey = CavernNeoForgeDimensions.levelKey("cavernreborn:cavenia");
+        ResourceLocation mirageBookId = ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "mirage_book");
+        ResourceLocation caveniaPortalId = ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "cavenia_portal");
+        Registry<PlacedFeature> placedFeatures = level.registryAccess().registryOrThrow(Registries.PLACED_FEATURE);
+
+        resetMiningArea(level, origin, 16.0D);
+
+        helper.assertTrue(
+            CavernNeoForgeDimensions.CAVERN_LEVEL_KEY.location().toString().equals(CavernDimensions.CAVERN_DIMENSION_ID),
+            "Expected the checked-in CAVERN level key to remain stable while the Cavenia mirage entry/access contract stays deferred"
+        );
+        helper.assertTrue(
+            level.getServer().getLevel(caveniaLevelKey) == null,
+            "Expected the Cavenia mirage entry/access contract boundary to keep cavernreborn:cavenia inactive at runtime"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-mirage-entry-access-contract-boundary.md"),
+            "Expected the Cavenia mirage entry/access contract boundary doc to exist in the project root"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension", "cavenia.json"),
+            "Expected the Cavenia mirage entry/access contract boundary to keep the checked-in cavenia dimension resource absent"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension_type", "cavenia.json"),
+            "Expected the Cavenia mirage entry/access contract boundary to keep the checked-in cavenia dimension-type resource absent"
+        );
+        helper.assertFalse(
+            BuiltInRegistries.ITEM.containsKey(mirageBookId),
+            "Expected the Cavenia mirage entry/access contract boundary to keep cavernreborn:mirage_book unregistered at runtime"
+        );
+        helper.assertFalse(
+            BuiltInRegistries.BLOCK.containsKey(caveniaPortalId),
+            "Expected the Cavenia mirage entry/access contract boundary to keep cavernreborn:cavenia_portal unregistered at runtime"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "item", "MirageBookItem.java"),
+            "Expected the Cavenia mirage entry/access contract boundary to keep a dedicated Reborn MirageBookItem class absent"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "dimension", "CaveniaTeleporter.java"),
+            "Expected the Cavenia mirage entry/access contract boundary to keep a dedicated Reborn Cavenia teleporter class absent"
+        );
+        helper.assertTrue(
+            ModRegistries.CAVERN_PORTAL_BLOCK.get() != null,
+            "Expected the checked-in CAVERN portal path to remain available while the Cavenia mirage entry/access contract stays inactive"
+        );
+        assertRegistryKeyPresent(helper, placedFeatures, Registries.PLACED_FEATURE, "cavernreborn:cavern_cavenic_shroom_patch");
+        helper.assertTrue(
+            SpawnPlacements.getPlacementType(ModRegistries.CRAZY_ZOMBIE.get()) == SpawnPlacementTypes.NO_RESTRICTIONS,
+            "Expected the mirage entry/access contract boundary to keep crazy spawning unchanged while Cavenia stays inactive"
         );
 
         helper.succeed();
