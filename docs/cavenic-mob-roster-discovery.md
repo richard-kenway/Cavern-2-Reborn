@@ -39,6 +39,7 @@ The direct legacy roster is already exhausted in Reborn, so no seventh direct Ca
 - `EntitySummonCavenicZombie` and `EntitySummonCavenicSkeleton` are summon-only derivatives, not direct `EntityCavenic*` baseline mobs.
 - `EntityCrazyZombie`, `EntityCrazySkeleton`, `EntityCrazyCreeper` and `EntityCrazySpider` are separate crazy variants, not direct `EntityCavenic*` roster entries.
 - `EntityCaveman`, `EntityCrystalTurret`, `EntitySkySeeker`, `EntityDurangHog`, `EntityAquaSquid`, `EntityMagicTorcher`, `EntityBeam` and `EntityCavenicArrow` are not direct Cavenic mob foundations for this slice.
+- The focused `EntityCaveman` normal-roster follow-up is documented separately in `docs/caveman-cavenia-normal-roster-boundary.md`.
 
 ## Decision
 

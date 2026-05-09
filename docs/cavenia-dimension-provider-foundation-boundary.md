@@ -34,6 +34,10 @@ The narrower future spawn-provider / crazy-roster activation contract is documen
 
 - `docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md`
 
+The focused deferred Caveman normal-roster follow-up is documented separately in:
+
+- `docs/caveman-cavenia-normal-roster-boundary.md`
+
 ## Legacy References Inspected
 
 - `cavern.world.mirage.WorldProviderCavenia`

@@ -109,6 +109,7 @@ class CavenicMobRosterDocumentationTest {
         assertTrue(doc.contains("`EntitySummonCavenicZombie` and `EntitySummonCavenicSkeleton`"));
         assertTrue(doc.contains("`EntityCrazyZombie`, `EntityCrazySkeleton`, `EntityCrazyCreeper` and `EntityCrazySpider`"));
         assertTrue(doc.contains("`EntityCaveman`, `EntityCrystalTurret`, `EntitySkySeeker`, `EntityDurangHog`, `EntityAquaSquid`, `EntityMagicTorcher`, `EntityBeam` and `EntityCavenicArrow`"));
+        assertTrue(doc.contains("docs/caveman-cavenia-normal-roster-boundary.md"));
         assertTrue(doc.contains("No remaining unported direct `EntityCavenic*` mobs exist in legacy Cavern 2."));
         assertTrue(doc.contains("Because no seventh direct class exists"));
         assertTrue(doc.contains("no new entity class, no new renderer, no new spawn egg"));

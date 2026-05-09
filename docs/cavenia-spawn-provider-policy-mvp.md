@@ -104,6 +104,7 @@ The non-runtime normal roster is:
 - `EntityCaveman` -> deferred marker `deferred:caveman`, weight `35`, group `1 / 1`
 
 `EntityCaveman` is intentionally a deferred legacy entry only. This policy does not add a Caveman entity or imply runtime registration.
+The focused Caveman inspection and deferral reasons are documented separately in `docs/caveman-cavenia-normal-roster-boundary.md`.
 
 ## Crazy Roster Encoded
 

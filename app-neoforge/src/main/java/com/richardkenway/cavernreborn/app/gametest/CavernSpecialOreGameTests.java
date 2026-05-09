@@ -7521,6 +7521,10 @@ public final class CavernSpecialOreGameTests {
             projectFileExists("docs", "cavenia-spawn-provider-policy-mvp.md"),
             "Expected the non-runtime Cavenia spawn-provider policy doc to exist in the project root"
         );
+        helper.assertTrue(
+            projectFileExists("docs", "caveman-cavenia-normal-roster-boundary.md"),
+            "Expected the Caveman normal-roster boundary doc to exist in the project root"
+        );
         helper.assertFalse(
             projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension", "cavenia.json"),
             "Expected the Cavenia spawn-provider contract boundary to keep the checked-in cavenia dimension resource absent"
@@ -7564,6 +7568,10 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             !CaveniaSpawnProviderPolicy.normalRoster().get(6).hasActiveRebornEntityId(),
             "Expected the non-runtime Cavenia spawn-provider policy to keep the Caveman entry explicitly deferred"
+        );
+        helper.assertTrue(
+            BuiltInRegistries.ENTITY_TYPE.getOptional(ResourceLocation.fromNamespaceAndPath(CavernReborn.MOD_ID, "caveman")).isEmpty(),
+            "Expected the Caveman boundary to keep cavernreborn:caveman unregistered at runtime"
         );
 
         for (int i = 0; i < crazyTypes.size(); i++) {

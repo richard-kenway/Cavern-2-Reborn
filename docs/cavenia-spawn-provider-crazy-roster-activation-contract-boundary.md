@@ -14,6 +14,10 @@ The separate non-runtime policy follow-up is documented in:
 
 - `docs/cavenia-spawn-provider-policy-mvp.md`
 
+The separate focused Caveman normal-roster deferral note is documented in:
+
+- `docs/caveman-cavenia-normal-roster-boundary.md`
+
 The separate mirage entry/access boundary remains documented in:
 
 - `docs/cavenia-mirage-entry-access-contract-boundary.md`
@@ -161,6 +165,8 @@ The exact inspected normal roster is:
 - `new SpawnListEntry(EntityCavenicBear.class, 30, 1, 1)`
 - `new SpawnListEntry(EntityCaveman.class, 35, 1, 1)`
 
+The current Reborn reason for keeping `EntityCaveman -> deferred:caveman` is documented separately in `docs/caveman-cavenia-normal-roster-boundary.md`.
+
 Legacy crazy activation swaps that list to:
 
 - `new SpawnListEntry(EntityCrazySkeleton.class, 1, 1, 1)`
@@ -269,6 +275,7 @@ An honest future Reborn implementation likely needs:
 - `docs/cavenia-population-lakes-falls-shroom-contract-boundary.md`
 - `docs/cavenia-mirage-entry-access-contract-boundary.md`
 - `docs/cavenia-crazy-roster-natural-spawn-boundary.md`
+- `docs/caveman-cavenia-normal-roster-boundary.md`
 
 ## Testing
 
