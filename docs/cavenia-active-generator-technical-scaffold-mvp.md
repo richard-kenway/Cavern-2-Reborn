@@ -18,6 +18,10 @@ The later inert app-side runtime prototype note is now documented separately in:
 
 - `docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md`
 
+The later inert generator-registration boundary note is now documented separately in:
+
+- `docs/cavenia-active-generator-registration-inert-boundary-mvp.md`
+
 ## What This MVP Adds
 
 Current Reborn now has a pure `core` technical scaffold:

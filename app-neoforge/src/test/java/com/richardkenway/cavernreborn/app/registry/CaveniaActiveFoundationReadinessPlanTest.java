@@ -32,6 +32,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
     private static final Path POPULATION_POLICY_DOC = resolveProjectFile("docs", "cavenia-population-policy-non-runtime-mvp.md");
     private static final Path GENERATOR_SCAFFOLD_DOC = resolveProjectFile("docs", "cavenia-active-generator-technical-scaffold-mvp.md");
     private static final Path GENERATOR_BRIDGE_DOC = resolveProjectFile("docs", "cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md");
+    private static final Path GENERATOR_REGISTRATION_DOC = resolveProjectFile("docs", "cavenia-active-generator-registration-inert-boundary-mvp.md");
 
     @Test
     void readinessPlanExistsAndPinsTheCurrentInactiveFoundationState() throws IOException {
@@ -78,6 +79,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(planDoc.contains("docs/cavenia-population-policy-non-runtime-mvp.md"));
         assertTrue(planDoc.contains("docs/cavenia-active-generator-technical-scaffold-mvp.md"));
         assertTrue(planDoc.contains("docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md"));
+        assertTrue(planDoc.contains("docs/cavenia-active-generator-registration-inert-boundary-mvp.md"));
         assertTrue(planDoc.contains("`CaveniaSpawnProviderPolicy`"));
         assertTrue(planDoc.contains("`CaveniaSpawnEntry`"));
         assertTrue(planDoc.contains("`CaveniaTerrainGeneratorPolicy`"));
@@ -144,6 +146,8 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(readme.contains("Cavenia Active Generator Technical Scaffold / MVP"));
         assertTrue(readme.contains("docs/cavenia-active-generator-technical-scaffold-mvp.md"));
         assertTrue(readme.contains("docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md"));
+        assertTrue(readme.contains("Cavenia Active Generator Registration / Inert Activation Boundary MVP"));
+        assertTrue(readme.contains("docs/cavenia-active-generator-registration-inert-boundary-mvp.md"));
         assertTrue(runtimeSmokeDoc.contains("Cavenia Active Foundation Readiness / Implementation Plan"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(runtimeSmokeDoc.contains("inactive Cavenia active-foundation readiness-plan boundary"));
@@ -171,7 +175,10 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(runtimeSmokeDoc.contains("Cavenia Active Generator Technical Scaffold / MVP"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-active-generator-technical-scaffold-mvp.md"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md"));
+        assertTrue(runtimeSmokeDoc.contains("Cavenia Active Generator Registration / Inert Activation Boundary MVP"));
+        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-active-generator-registration-inert-boundary-mvp.md"));
         assertTrue(Files.readString(GENERATOR_BRIDGE_DOC).contains("docs/cavenia-active-foundation-readiness-plan.md"));
+        assertTrue(Files.readString(GENERATOR_REGISTRATION_DOC).contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(runtimeSmokeDoc.contains("non-registered Cavenia active-generator technical scaffold MVP"));
         assertTrue(scaffoldDoc.contains("Cavenia Runtime Key / Inactive Dimension Scaffold MVP"));
         assertTrue(terrainPolicyDoc.contains("Cavenia Terrain Generator Foundation / Non-Runtime MVP"));
@@ -199,6 +206,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(veinsPolicyDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(populationPolicyDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(generatorScaffoldDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
+        assertTrue(Files.readString(GENERATOR_REGISTRATION_DOC).contains("docs/cavenia-active-foundation-readiness-plan.md"));
     }
 
     private static Path resolveProjectFile(String first, String... more) {

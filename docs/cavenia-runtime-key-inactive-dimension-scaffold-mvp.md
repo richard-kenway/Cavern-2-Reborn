@@ -35,6 +35,7 @@ The later non-registered active-generator technical scaffold note is now documen
 
 - `docs/cavenia-active-generator-technical-scaffold-mvp.md`
 - `docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md`
+- `docs/cavenia-active-generator-registration-inert-boundary-mvp.md`
 
 ## Exact Constants Added
 

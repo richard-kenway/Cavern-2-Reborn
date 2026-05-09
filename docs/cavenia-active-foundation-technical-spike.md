@@ -50,6 +50,10 @@ The later inert app-side runtime prototype note is now documented separately in:
 
 - `docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md`
 
+The later inert generator-registration boundary note is now documented separately in:
+
+- `docs/cavenia-active-generator-registration-inert-boundary-mvp.md`
+
 This spike still does not imply active `cavernreborn:cavenia`, `dimension/cavenia.json`, `dimension_type/cavenia.json`, active Cavenia spawning, active crazy spawning, fake normal `CAVERN` crazy spawning or a `cavernreborn:caveman` entity.
 
 ## Spike Decision

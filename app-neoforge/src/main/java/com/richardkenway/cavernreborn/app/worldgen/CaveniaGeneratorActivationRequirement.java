@@ -1,0 +1,13 @@
+package com.richardkenway.cavernreborn.app.worldgen;
+
+public enum CaveniaGeneratorActivationRequirement {
+    DIMENSION_JSON,
+    DIMENSION_TYPE_JSON,
+    CHUNK_GENERATOR_IMPLEMENTATION,
+    BIOME_SOURCE_STRATEGY,
+    GENERATOR_CODEC,
+    GENERATOR_REGISTRY_ENTRY,
+    SAFE_ACCESS_OR_TELEPORT,
+    CAVENIA_ONLY_SPAWN_HOST,
+    WORLDGEN_RESOURCE_MAPPING
+}
