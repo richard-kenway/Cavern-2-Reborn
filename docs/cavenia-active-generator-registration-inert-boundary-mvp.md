@@ -10,6 +10,10 @@ It builds on:
 - `docs/cavenia-active-foundation-readiness-plan.md`
 - `docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md`
 
+The later unregistered generator/biome-selection skeleton note is now documented separately in:
+
+- `docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md`
+
 ## What This MVP Adds
 
 Current Reborn now has an inert NeoForge-side registration-boundary class:

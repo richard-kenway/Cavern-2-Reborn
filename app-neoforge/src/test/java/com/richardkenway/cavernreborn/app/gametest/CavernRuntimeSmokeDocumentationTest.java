@@ -266,6 +266,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md"));
         assertTrue(readme.contains("Cavenia Active Generator Registration / Inert Activation Boundary MVP"));
         assertTrue(readme.contains("docs/cavenia-active-generator-registration-inert-boundary-mvp.md"));
+        assertTrue(readme.contains("Cavenia Chunk Generator / Biome Source Unregistered Skeleton MVP"));
+        assertTrue(readme.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
         assertTrue(readme.contains("full mirage-world stack"));
         assertTrue(readme.contains("old Cavenia-only `crazySpawnChance` plus a nearby `ICavenicMob` scan for `!entity.isNonBoss()`"));
         assertTrue(readme.contains("fourth crazy-variant foundation follow-up"));
@@ -668,10 +670,14 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("Cavenia Active Generator Registration / Inert Activation Boundary MVP"));
         assertTrue(doc.contains("docs/cavenia-active-generator-registration-inert-boundary-mvp.md"));
         assertTrue(doc.contains("inert Cavenia generator registration boundary MVP"));
+        assertTrue(doc.contains("Cavenia Chunk Generator / Biome Source Unregistered Skeleton MVP"));
+        assertTrue(doc.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
+        assertTrue(doc.contains("unregistered Cavenia generator/biome-source skeleton MVP"));
         assertTrue(doc.contains("`CaveniaPopulationPolicy.generateLakesDefaultEnabled()` remains pinned to `true`"));
         assertTrue(doc.contains("`CaveniaGeneratorScaffold` now resolves from `core`"));
         assertTrue(doc.contains("`CaveniaGeneratorBridge` now resolves from `app-neoforge`"));
         assertTrue(doc.contains("`CaveniaGeneratorRegistrationBoundary` now resolves from `app-neoforge`"));
+        assertTrue(doc.contains("`CaveniaGeneratorSkeleton` and `CaveniaBiomeSelectionSkeleton` now resolve from `app-neoforge`"));
         assertTrue(doc.contains("runtime generator registration as false"));
         assertTrue(doc.contains("codec registration and generator registry entry registration as false"));
         assertTrue(doc.contains("`CaveniaVeinsContentPolicy.entries().size()` remains pinned to `13`"));

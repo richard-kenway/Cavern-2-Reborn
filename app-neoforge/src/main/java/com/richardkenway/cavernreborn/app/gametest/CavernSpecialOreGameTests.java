@@ -46,8 +46,10 @@ import com.richardkenway.cavernreborn.app.item.CavenicBowItem;
 import com.richardkenway.cavernreborn.app.item.OreCompassItem;
 import com.richardkenway.cavernreborn.app.mining.CavernMiningAssistEvents;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorActivationRequirement;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSelectionSkeleton;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorBridge;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorRegistrationBoundary;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorSkeleton;
 import com.richardkenway.cavernreborn.app.registry.ModArmorMaterials;
 import com.richardkenway.cavernreborn.app.registry.ModBlockTags;
 import com.richardkenway.cavernreborn.app.registry.ModItemTags;
@@ -7769,6 +7771,36 @@ public final class CavernSpecialOreGameTests {
                 && CaveniaGeneratorRegistrationBoundary.activationRequirements().contains(CaveniaGeneratorActivationRequirement.DIMENSION_TYPE_JSON)
                 && !CaveniaGeneratorRegistrationBoundary.activationRequirements().isEmpty(),
             "Expected the inert Cavenia generator-registration boundary to keep explicit activation requirements pinned"
+        );
+        helper.assertTrue(
+            CaveniaGeneratorSkeleton.location().toString().equals(CavernDimensions.CAVENIA_DIMENSION_ID)
+                && CaveniaGeneratorSkeleton.levelKey().location().toString().equals(CavernDimensions.CAVENIA_DIMENSION_ID)
+                && CaveniaGeneratorSkeleton.dimensionId().equals(CaveniaGeneratorBridge.dimensionId()),
+            "Expected the unregistered Cavenia generator skeleton to mirror the accepted Cavenia identity without creating a runtime generator"
+        );
+        helper.assertTrue(
+            CaveniaGeneratorSkeleton.worldHeight() == 128
+                && CaveniaGeneratorSkeleton.scaffoldStages().equals(CaveniaGeneratorBridge.scaffoldStages())
+                && CaveniaGeneratorSkeleton.terrainStages().equals(CaveniaGeneratorBridge.terrainStages()),
+            "Expected the unregistered Cavenia generator skeleton to expose the accepted scaffold and terrain stage order from the bridge"
+        );
+        helper.assertTrue(
+            CaveniaGeneratorSkeleton.biomeSelection().entryCount() == 14
+                && CaveniaGeneratorSkeleton.biomeSelection().totalWeight() == 675
+                && !CaveniaGeneratorSkeleton.canCreateChunks()
+                && !CaveniaGeneratorSkeleton.canMutatePrimer()
+                && !CaveniaGeneratorSkeleton.runtimeGeneratorRegistered(),
+            "Expected the unregistered Cavenia generator skeleton to keep chunk creation, primer mutation and runtime generator activation absent"
+        );
+        helper.assertTrue(
+            CaveniaBiomeSelectionSkeleton.create().entryCount() == 14
+                && CaveniaBiomeSelectionSkeleton.create().totalWeight() == 675
+                && !CaveniaBiomeSelectionSkeleton.create().isRuntimeBiomeSource(),
+            "Expected the unregistered Cavenia biome-selection skeleton to keep the shipped biome roster pinned without creating a runtime biome source"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md"),
+            "Expected the unregistered Cavenia generator/biome-selection skeleton doc to exist in the project root"
         );
         helper.assertTrue(
             projectFileExists("docs", "caveman-cavenia-normal-roster-boundary.md"),

@@ -30,6 +30,7 @@ class CaveniaActiveGeneratorTechnicalScaffoldBoundaryTest {
     private static final Path TERRAIN_BOUNDARY_DOC = resolveProjectFile("docs", "cavenia-chunk-generator-terrain-pipeline-contract-boundary.md");
     private static final Path GENERATOR_BRIDGE_DOC = resolveProjectFile("docs", "cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md");
     private static final Path GENERATOR_REGISTRATION_DOC = resolveProjectFile("docs", "cavenia-active-generator-registration-inert-boundary-mvp.md");
+    private static final Path GENERATOR_SKELETON_DOC = resolveProjectFile("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md");
     private static final Path APP_SOURCE_ROOT = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app"
     );
@@ -53,6 +54,7 @@ class CaveniaActiveGeneratorTechnicalScaffoldBoundaryTest {
         String terrainBoundaryDoc = Files.readString(TERRAIN_BOUNDARY_DOC);
         String generatorBridgeDoc = Files.readString(GENERATOR_BRIDGE_DOC);
         String generatorRegistrationDoc = Files.readString(GENERATOR_REGISTRATION_DOC);
+        String generatorSkeletonDoc = Files.readString(GENERATOR_SKELETON_DOC);
 
         assertTrue(scaffoldDoc.contains("Cavenia Active Generator Technical Scaffold / MVP"));
         assertTrue(scaffoldDoc.contains("`CaveniaGeneratorScaffold`"));
@@ -75,6 +77,7 @@ class CaveniaActiveGeneratorTechnicalScaffoldBoundaryTest {
         assertTrue(scaffoldDoc.contains("`EntityCaveman -> deferred:caveman`"));
         assertTrue(scaffoldDoc.contains("docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md"));
         assertTrue(scaffoldDoc.contains("docs/cavenia-active-generator-registration-inert-boundary-mvp.md"));
+        assertTrue(scaffoldDoc.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
 
         assertTrue(readme.contains("Cavenia Active Generator Technical Scaffold / MVP"));
         assertTrue(readme.contains("docs/cavenia-active-generator-technical-scaffold-mvp.md"));
@@ -94,6 +97,7 @@ class CaveniaActiveGeneratorTechnicalScaffoldBoundaryTest {
         assertTrue(terrainBoundaryDoc.contains("docs/cavenia-active-generator-technical-scaffold-mvp.md"));
         assertTrue(generatorBridgeDoc.contains("`CaveniaGeneratorScaffold`"));
         assertTrue(generatorRegistrationDoc.contains("`CaveniaGeneratorScaffold`"));
+        assertTrue(generatorSkeletonDoc.contains("`CaveniaGeneratorScaffold`"));
     }
 
     @Test

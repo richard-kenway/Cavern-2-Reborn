@@ -33,6 +33,7 @@ The later non-registered active-generator technical scaffold note is now documen
 - `docs/cavenia-active-generator-technical-scaffold-mvp.md`
 - `docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md`
 - `docs/cavenia-active-generator-registration-inert-boundary-mvp.md`
+- `docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md`
 
 Current readiness state still has no active Cavenia spawning and no fake normal `CAVERN` crazy spawning.
 
@@ -57,6 +58,8 @@ Current repository state now also has:
 - inert `CaveniaGeneratorBridge`
 - inert `CaveniaGeneratorRegistrationBoundary`
 - inert `CaveniaGeneratorActivationRequirement`
+- inert `CaveniaGeneratorSkeleton`
+- inert `CaveniaBiomeSelectionSkeleton`
 
 ## Completed Readiness Inputs
 

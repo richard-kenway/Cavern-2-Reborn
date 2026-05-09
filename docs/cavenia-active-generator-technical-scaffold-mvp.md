@@ -22,6 +22,10 @@ The later inert generator-registration boundary note is now documented separatel
 
 - `docs/cavenia-active-generator-registration-inert-boundary-mvp.md`
 
+The later unregistered generator/biome-selection skeleton note is now documented separately in:
+
+- `docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md`
+
 ## What This MVP Adds
 
 Current Reborn now has a pure `core` technical scaffold:

@@ -10,13 +10,13 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
-class CaveniaGeneratorBridgeBoundaryTest {
+class CaveniaGeneratorBiomeSourceSkeletonBoundaryTest {
     private static final Path README = resolveProjectFile("README.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
+    private static final Path SKELETON_DOC = resolveProjectFile("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md");
+    private static final Path REGISTRATION_DOC = resolveProjectFile("docs", "cavenia-active-generator-registration-inert-boundary-mvp.md");
     private static final Path BRIDGE_DOC = resolveProjectFile("docs", "cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md");
     private static final Path SCAFFOLD_DOC = resolveProjectFile("docs", "cavenia-active-generator-technical-scaffold-mvp.md");
-    private static final Path REGISTRATION_DOC = resolveProjectFile("docs", "cavenia-active-generator-registration-inert-boundary-mvp.md");
-    private static final Path SKELETON_DOC = resolveProjectFile("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md");
     private static final Path TECHNICAL_SPIKE_DOC = resolveProjectFile("docs", "cavenia-active-foundation-technical-spike.md");
     private static final Path READINESS_DOC = resolveProjectFile("docs", "cavenia-active-foundation-readiness-plan.md");
     private static final Path RUNTIME_KEY_DOC = resolveProjectFile("docs", "cavenia-runtime-key-inactive-dimension-scaffold-mvp.md");
@@ -28,53 +28,54 @@ class CaveniaGeneratorBridgeBoundaryTest {
     );
 
     @Test
-    void docsPinTheInertAppSideGeneratorBridge() throws IOException {
+    void docsPinTheUnregisteredGeneratorAndBiomeSelectionSkeletons() throws IOException {
         String readme = Files.readString(README);
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE_DOC);
+        String skeletonDoc = Files.readString(SKELETON_DOC);
+        String registrationDoc = Files.readString(REGISTRATION_DOC);
         String bridgeDoc = Files.readString(BRIDGE_DOC);
         String scaffoldDoc = Files.readString(SCAFFOLD_DOC);
-        String registrationDoc = Files.readString(REGISTRATION_DOC);
-        String skeletonDoc = Files.readString(SKELETON_DOC);
         String technicalSpikeDoc = Files.readString(TECHNICAL_SPIKE_DOC);
         String readinessDoc = Files.readString(READINESS_DOC);
         String runtimeKeyDoc = Files.readString(RUNTIME_KEY_DOC);
 
-        assertTrue(bridgeDoc.contains("Cavenia Active Generator Runtime Prototype / Inert App-Side Bridge MVP"));
-        assertTrue(bridgeDoc.contains("`CaveniaGeneratorBridge`"));
-        assertTrue(bridgeDoc.contains("`CaveniaGeneratorScaffold`"));
-        assertTrue(bridgeDoc.contains("`CaveniaTerrainGeneratorPolicy`"));
-        assertTrue(bridgeDoc.contains("`CaveniaBiomeTopFilterPolicy`"));
-        assertTrue(bridgeDoc.contains("`CaveniaCaveCarverPolicy`"));
-        assertTrue(bridgeDoc.contains("`CaveniaVeinsContentPolicy`"));
-        assertTrue(bridgeDoc.contains("`CaveniaPopulationPolicy`"));
-        assertTrue(bridgeDoc.contains("`CaveniaSpawnProviderPolicy`"));
-        assertTrue(bridgeDoc.contains("not a `ChunkGenerator`"));
-        assertTrue(bridgeDoc.contains("not a `BiomeSource`"));
-        assertTrue(bridgeDoc.contains("no codec or registry entry was added"));
-        assertTrue(bridgeDoc.contains("no active `dimension/cavenia.json`"));
-        assertTrue(bridgeDoc.contains("no active `dimension_type/cavenia.json`"));
-        assertTrue(bridgeDoc.contains("no active Cavenia runtime level"));
-        assertTrue(bridgeDoc.contains("no active Cavenia spawning"));
-        assertTrue(bridgeDoc.contains("no active crazy spawning"));
-        assertTrue(bridgeDoc.contains("no fake normal `CAVERN` crazy spawning"));
-        assertTrue(bridgeDoc.contains("`EntityCaveman -> deferred:caveman`"));
-
-        assertTrue(readme.contains("Cavenia Active Generator Runtime Prototype / Inert App-Side Bridge MVP"));
-        assertTrue(readme.contains("docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md"));
-        assertTrue(runtimeSmokeDoc.contains("Cavenia Active Generator Runtime Prototype / Inert App-Side Bridge MVP"));
-        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md"));
-        assertTrue(scaffoldDoc.contains("docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md"));
-        assertTrue(bridgeDoc.contains("docs/cavenia-active-generator-registration-inert-boundary-mvp.md"));
-        assertTrue(bridgeDoc.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
-        assertTrue(registrationDoc.contains("`CaveniaGeneratorBridge`"));
+        assertTrue(skeletonDoc.contains("Cavenia Chunk Generator / Biome Source Unregistered Skeleton MVP"));
+        assertTrue(skeletonDoc.contains("`CaveniaGeneratorSkeleton`"));
+        assertTrue(skeletonDoc.contains("`CaveniaBiomeSelectionSkeleton`"));
         assertTrue(skeletonDoc.contains("`CaveniaGeneratorBridge`"));
-        assertTrue(technicalSpikeDoc.contains("docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md"));
-        assertTrue(readinessDoc.contains("docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md"));
-        assertTrue(runtimeKeyDoc.contains("docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md"));
+        assertTrue(skeletonDoc.contains("`CaveniaGeneratorRegistrationBoundary`"));
+        assertTrue(skeletonDoc.contains("`CaveniaGeneratorScaffold`"));
+        assertTrue(skeletonDoc.contains("`CaveniaTerrainGeneratorPolicy`"));
+        assertTrue(skeletonDoc.contains("`CaveniaBiomeTopFilterPolicy`"));
+        assertTrue(skeletonDoc.contains("`CaveniaCaveCarverPolicy`"));
+        assertTrue(skeletonDoc.contains("`CaveniaVeinsContentPolicy`"));
+        assertTrue(skeletonDoc.contains("`CaveniaPopulationPolicy`"));
+        assertTrue(skeletonDoc.contains("`CaveniaSpawnProviderPolicy`"));
+        assertTrue(skeletonDoc.contains("not a `ChunkGenerator`"));
+        assertTrue(skeletonDoc.contains("not a `BiomeSource`"));
+        assertTrue(skeletonDoc.contains("no codec or registry entry was added"));
+        assertTrue(skeletonDoc.contains("no active `dimension/cavenia.json`"));
+        assertTrue(skeletonDoc.contains("no active `dimension_type/cavenia.json`"));
+        assertTrue(skeletonDoc.contains("no active Cavenia runtime level"));
+        assertTrue(skeletonDoc.contains("no active Cavenia spawning"));
+        assertTrue(skeletonDoc.contains("no active crazy spawning"));
+        assertTrue(skeletonDoc.contains("no fake normal `CAVERN` crazy spawning"));
+        assertTrue(skeletonDoc.contains("`EntityCaveman -> deferred:caveman`"));
+
+        assertTrue(readme.contains("Cavenia Chunk Generator / Biome Source Unregistered Skeleton MVP"));
+        assertTrue(readme.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
+        assertTrue(runtimeSmokeDoc.contains("Cavenia Chunk Generator / Biome Source Unregistered Skeleton MVP"));
+        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
+        assertTrue(registrationDoc.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
+        assertTrue(bridgeDoc.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
+        assertTrue(scaffoldDoc.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
+        assertTrue(technicalSpikeDoc.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
+        assertTrue(readinessDoc.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
+        assertTrue(runtimeKeyDoc.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
     }
 
     @Test
-    void inertBridgeBoundaryKeepsActiveGeneratorAndResourceSurfaceAbsent() throws IOException {
+    void unregisteredSkeletonsKeepActiveGeneratorAndWorldgenSurfaceAbsent() throws IOException {
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension_type", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "configured_carver", "cavenia.json");
@@ -97,7 +98,7 @@ class CaveniaGeneratorBridgeBoundaryTest {
                             || name.equals("CaveniaBiomeSource.java")
                             || name.equals("MapGenCaveniaCaves.java")
                     ),
-                "Expected the inert app-side bridge MVP to avoid adding any active Cavenia generator, biome-source or cave-carver runtime classes"
+                "Expected the unregistered skeleton MVP to avoid adding any active Cavenia generator, biome-source or cave-carver runtime classes"
             );
         }
 
@@ -115,7 +116,7 @@ class CaveniaGeneratorBridgeBoundaryTest {
                             || path.contains("/neoforge/biome_modifier/cavenia")
                             || path.contains("/worldgen/biome/cavenia")
                     ),
-                "Expected the inert app-side bridge MVP to keep active Cavenia generator/worldgen resources absent"
+                "Expected the unregistered skeleton MVP to keep active Cavenia generator/worldgen resources absent"
             );
         }
     }

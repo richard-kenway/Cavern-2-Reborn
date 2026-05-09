@@ -54,6 +54,10 @@ The later inert generator-registration boundary note is now documented separatel
 
 - `docs/cavenia-active-generator-registration-inert-boundary-mvp.md`
 
+The later unregistered generator/biome-selection skeleton note is now documented separately in:
+
+- `docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md`
+
 This spike still does not imply active `cavernreborn:cavenia`, `dimension/cavenia.json`, `dimension_type/cavenia.json`, active Cavenia spawning, active crazy spawning, fake normal `CAVERN` crazy spawning or a `cavernreborn:caveman` entity.
 
 ## Spike Decision

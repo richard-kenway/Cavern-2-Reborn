@@ -36,6 +36,7 @@ The later non-registered active-generator technical scaffold note is now documen
 - `docs/cavenia-active-generator-technical-scaffold-mvp.md`
 - `docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md`
 - `docs/cavenia-active-generator-registration-inert-boundary-mvp.md`
+- `docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md`
 
 ## Exact Constants Added
 
@@ -152,5 +153,7 @@ The immediate non-runtime terrain follow-up is now documented in:
 The later non-registered active-generator scaffold follow-up is now documented in:
 
 - `docs/cavenia-active-generator-technical-scaffold-mvp.md`
-
+- `docs/cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md`
+- `docs/cavenia-active-generator-registration-inert-boundary-mvp.md`
+- `docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md`
 This inert scaffold is only the identity floor for those later slices.
