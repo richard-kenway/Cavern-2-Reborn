@@ -2,6 +2,10 @@
 
 This note documents a pure non-runtime terrain-generator foundation for future active Cavenia work.
 
+The later non-registered active-generator technical scaffold note is documented separately in:
+
+- `docs/cavenia-active-generator-technical-scaffold-mvp.md`
+
 It builds on:
 
 - `docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md`

@@ -25,6 +25,7 @@ class CaveniaCaveCarverPolicyBoundaryTest {
     private static final Path TERRAIN_BOUNDARY_DOC = resolveProjectFile("docs", "cavenia-chunk-generator-terrain-pipeline-contract-boundary.md");
     private static final Path READINESS_DOC = resolveProjectFile("docs", "cavenia-active-foundation-readiness-plan.md");
     private static final Path TECHNICAL_SPIKE_DOC = resolveProjectFile("docs", "cavenia-active-foundation-technical-spike.md");
+    private static final Path GENERATOR_SCAFFOLD_DOC = resolveProjectFile("docs", "cavenia-active-generator-technical-scaffold-mvp.md");
     private static final Path RESOURCES_ROOT = resolveProjectFile(
         "app-neoforge", "src", "main", "resources", "data", "cavernreborn"
     );
@@ -44,6 +45,7 @@ class CaveniaCaveCarverPolicyBoundaryTest {
         String terrainBoundaryDoc = Files.readString(TERRAIN_BOUNDARY_DOC);
         String readinessDoc = Files.readString(READINESS_DOC);
         String technicalSpikeDoc = Files.readString(TECHNICAL_SPIKE_DOC);
+        String generatorScaffoldDoc = Files.readString(GENERATOR_SCAFFOLD_DOC);
 
         assertTrue(policyDoc.contains("Cavenia Cave Carver Policy / Non-Runtime MVP"));
         assertTrue(policyDoc.contains("`CaveniaCaveCarverPolicy`"));
@@ -81,6 +83,7 @@ class CaveniaCaveCarverPolicyBoundaryTest {
         assertTrue(terrainBoundaryDoc.contains("docs/cavenia-cave-carver-policy-non-runtime-mvp.md"));
         assertTrue(readinessDoc.contains("docs/cavenia-cave-carver-policy-non-runtime-mvp.md"));
         assertTrue(technicalSpikeDoc.contains("docs/cavenia-cave-carver-policy-non-runtime-mvp.md"));
+        assertTrue(generatorScaffoldDoc.contains("docs/cavenia-cave-carver-policy-non-runtime-mvp.md"));
     }
 
     @Test

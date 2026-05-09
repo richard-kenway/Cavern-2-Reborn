@@ -31,6 +31,10 @@ The later pure non-runtime population policy note is now documented separately i
 
 - `docs/cavenia-population-policy-non-runtime-mvp.md`
 
+The later non-registered active-generator technical scaffold note is now documented separately in:
+
+- `docs/cavenia-active-generator-technical-scaffold-mvp.md`
+
 ## Exact Constants Added
 
 The current repository now exposes inert future Cavenia identity markers:
@@ -142,5 +146,9 @@ The next future active work still requires:
 The immediate non-runtime terrain follow-up is now documented in:
 
 - `docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md`
+
+The later non-registered active-generator scaffold follow-up is now documented in:
+
+- `docs/cavenia-active-generator-technical-scaffold-mvp.md`
 
 This inert scaffold is only the identity floor for those later slices.

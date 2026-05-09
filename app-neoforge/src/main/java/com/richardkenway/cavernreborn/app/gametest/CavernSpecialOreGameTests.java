@@ -86,6 +86,8 @@ import com.richardkenway.cavernreborn.core.spawn.CaveniaSpawnProviderPolicy;
 import com.richardkenway.cavernreborn.core.state.CavernDimensions;
 import com.richardkenway.cavernreborn.core.worldgen.CaveniaCaveCarverPolicy;
 import com.richardkenway.cavernreborn.core.worldgen.CaveniaCaveCarverReplacement;
+import com.richardkenway.cavernreborn.core.worldgen.CaveniaGeneratorScaffold;
+import com.richardkenway.cavernreborn.core.worldgen.CaveniaGeneratorScaffoldStage;
 import com.richardkenway.cavernreborn.core.worldgen.CaveniaBiomeTopFilterPolicy;
 import com.richardkenway.cavernreborn.core.worldgen.CaveniaPopulationPolicy;
 import com.richardkenway.cavernreborn.core.worldgen.CaveniaTerrainGeneratorPolicy;
@@ -7596,6 +7598,10 @@ public final class CavernSpecialOreGameTests {
             "Expected the non-runtime Cavenia VEINS/content policy doc to exist in the project root"
         );
         helper.assertTrue(
+            projectFileExists("docs", "cavenia-active-generator-technical-scaffold-mvp.md"),
+            "Expected the non-registered Cavenia active-generator technical scaffold doc to exist in the project root"
+        );
+        helper.assertTrue(
             CaveniaTerrainGeneratorPolicy.WORLD_HEIGHT == 128,
             "Expected the non-runtime Cavenia terrain-generator policy to keep WORLD_HEIGHT pinned to 128"
         );
@@ -7664,6 +7670,54 @@ public final class CavernSpecialOreGameTests {
                 && CaveniaVeinsContentPolicy.runsBeforeFinalChunkConstruction()
                 && CaveniaVeinsContentPolicy.runsBeforePopulationStage(),
             "Expected the non-runtime Cavenia VEINS/content policy to keep generator-side ordering after cave carving and top/filter replacement but before final chunk construction and population"
+        );
+        helper.assertTrue(
+            CaveniaGeneratorScaffold.dimensionId().equals(CavernDimensions.CAVENIA_DIMENSION_ID),
+            "Expected the non-registered Cavenia active-generator scaffold to keep the future cavenia dimension id pinned"
+        );
+        helper.assertTrue(
+            CaveniaGeneratorScaffold.worldHeight() == 128,
+            "Expected the non-registered Cavenia active-generator scaffold to keep the future cavenia world height pinned to 128"
+        );
+        helper.assertTrue(
+            CaveniaGeneratorScaffold.terrainStages().equals(CaveniaTerrainGeneratorPolicy.generationSteps()),
+            "Expected the non-registered Cavenia active-generator scaffold to reuse the terrain policy generation-step order"
+        );
+        helper.assertTrue(
+            CaveniaGeneratorScaffold.biomeEntryCount() == 14 && CaveniaGeneratorScaffold.biomeTotalWeight() == 675,
+            "Expected the non-registered Cavenia active-generator scaffold to keep the biome roster size and total weight pinned"
+        );
+        helper.assertTrue(
+            CaveniaGeneratorScaffold.veinEntryCount() == 13 && CaveniaGeneratorScaffold.veinTotalWeight() == 436,
+            "Expected the non-registered Cavenia active-generator scaffold to keep the VEINS roster size and total weight pinned"
+        );
+        helper.assertTrue(
+            CaveniaGeneratorScaffold.generateLakesDefaultEnabled()
+                && CaveniaGeneratorScaffold.populationRunsAfterVeinsMutation()
+                && CaveniaGeneratorScaffold.caveCarvingRunsBeforeBiomeTopFilterReplacement(),
+            "Expected the non-registered Cavenia active-generator scaffold to keep the population and cave-order policy relationships pinned"
+        );
+        helper.assertTrue(
+            CaveniaGeneratorScaffold.stages().equals(
+                List.of(
+                    CaveniaGeneratorScaffoldStage.IDENTITY,
+                    CaveniaGeneratorScaffoldStage.BASE_TERRAIN,
+                    CaveniaGeneratorScaffoldStage.CAVE_CARVING,
+                    CaveniaGeneratorScaffoldStage.BIOME_TOP_FILTER_REPLACEMENT,
+                    CaveniaGeneratorScaffoldStage.VEINS_MUTATION,
+                    CaveniaGeneratorScaffoldStage.FINAL_CHUNK_CONSTRUCTION,
+                    CaveniaGeneratorScaffoldStage.POPULATION_INTEGRATION,
+                    CaveniaGeneratorScaffoldStage.SPAWN_PROVIDER_INTEGRATION_DEFERRED,
+                    CaveniaGeneratorScaffoldStage.ENTRY_ACCESS_DEFERRED
+                )
+            ),
+            "Expected the non-registered Cavenia active-generator scaffold to keep the future custom-generator stage order pinned"
+        );
+        helper.assertTrue(
+            !CaveniaGeneratorScaffold.isRuntimeGeneratorRegistered()
+                && CaveniaGeneratorScaffold.requiresDimensionJsonBeforeActivation()
+                && CaveniaGeneratorScaffold.requiresDimensionTypeJsonBeforeActivation(),
+            "Expected the non-registered Cavenia active-generator scaffold to keep runtime generator registration disabled until dimension resources exist"
         );
         helper.assertTrue(
             projectFileExists("docs", "caveman-cavenia-normal-roster-boundary.md"),

@@ -2,6 +2,10 @@
 
 This note documents a pure non-runtime VEINS/content policy for future active Cavenia generator work.
 
+The later non-registered active-generator technical scaffold note is documented separately in:
+
+- `docs/cavenia-active-generator-technical-scaffold-mvp.md`
+
 It builds on:
 
 - `docs/cavenia-veins-content-pipeline-contract-boundary.md`

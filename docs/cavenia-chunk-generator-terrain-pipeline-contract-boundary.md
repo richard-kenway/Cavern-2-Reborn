@@ -26,6 +26,10 @@ The later pure non-runtime VEINS/content policy note is documented separately in
 
 - `docs/cavenia-veins-content-policy-non-runtime-mvp.md`
 
+The later non-registered active-generator technical scaffold note is documented separately in:
+
+- `docs/cavenia-active-generator-technical-scaffold-mvp.md`
+
 It does not add:
 
 - `data/cavernreborn/dimension/cavenia.json`

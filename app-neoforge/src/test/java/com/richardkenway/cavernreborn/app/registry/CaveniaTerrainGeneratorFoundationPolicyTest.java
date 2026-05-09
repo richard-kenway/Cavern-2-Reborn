@@ -29,6 +29,7 @@ class CaveniaTerrainGeneratorFoundationPolicyTest {
     private static final Path BIOME_TOP_FILTER_POLICY_DOC = resolveProjectFile("docs", "cavenia-biome-top-filter-policy-non-runtime-mvp.md");
     private static final Path VEINS_DOC = resolveProjectFile("docs", "cavenia-veins-content-pipeline-contract-boundary.md");
     private static final Path VEINS_POLICY_DOC = resolveProjectFile("docs", "cavenia-veins-content-policy-non-runtime-mvp.md");
+    private static final Path GENERATOR_SCAFFOLD_DOC = resolveProjectFile("docs", "cavenia-active-generator-technical-scaffold-mvp.md");
     private static final Path POLICY_SOURCE = resolveProjectFile(
         "core", "src", "main", "java", "com", "richardkenway", "cavernreborn", "core", "worldgen", "CaveniaTerrainGeneratorPolicy.java"
     );
@@ -54,6 +55,7 @@ class CaveniaTerrainGeneratorFoundationPolicyTest {
         String biomeTopFilterPolicyDoc = Files.readString(BIOME_TOP_FILTER_POLICY_DOC);
         String veinsDoc = Files.readString(VEINS_DOC);
         String veinsPolicyDoc = Files.readString(VEINS_POLICY_DOC);
+        String generatorScaffoldDoc = Files.readString(GENERATOR_SCAFFOLD_DOC);
 
         assertTrue(policyDoc.contains("Cavenia Terrain Generator Foundation / Non-Runtime MVP"));
         assertTrue(policyDoc.contains("`CaveniaTerrainGeneratorPolicy`"));
@@ -79,6 +81,7 @@ class CaveniaTerrainGeneratorFoundationPolicyTest {
         assertTrue(runtimeSmokeDoc.contains("Cavenia Terrain Generator Foundation / Non-Runtime MVP"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md"));
         assertTrue(runtimeSmokeDoc.contains("non-runtime Cavenia terrain-generator foundation MVP"));
+        assertTrue(generatorScaffoldDoc.contains("docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md"));
         assertTrue(policyDoc.contains("docs/cavenia-cave-carver-policy-non-runtime-mvp.md"));
         assertTrue(readinessDoc.contains("docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md"));
         assertTrue(technicalSpikeDoc.contains("docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md"));
