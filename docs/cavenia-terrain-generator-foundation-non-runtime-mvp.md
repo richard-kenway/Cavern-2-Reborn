@@ -7,6 +7,7 @@ It builds on:
 - `docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md`
 - `docs/cavenia-active-foundation-technical-spike.md`
 - `docs/cavenia-active-foundation-readiness-plan.md`
+- `docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md`
 - `docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md`
 - `docs/cavenia-cave-carver-mapgen-contract-boundary.md`
 - `docs/cavenia-biome-provider-contract-boundary.md`
@@ -84,6 +85,10 @@ This non-runtime MVP supports that direction by pinning the terrain-sensitive st
 - legacy `WORLD_HEIGHT = 128`
 - carve-before-top/filter ordering
 - VEINS mutation before final chunk construction
+
+The later pure biome/top/filter follow-up is documented separately in:
+
+- `docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md`
 
 ## What This MVP Still Does Not Add
 

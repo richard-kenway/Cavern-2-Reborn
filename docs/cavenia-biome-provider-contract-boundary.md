@@ -14,6 +14,10 @@ The later pure non-runtime terrain-generator foundation note is documented separ
 
 - `docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md`
 
+The later pure non-runtime biome top/filter policy note is documented separately in:
+
+- `docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md`
+
 It does not add:
 
 - `data/cavernreborn/dimension/cavenia.json`
@@ -257,6 +261,10 @@ An honest port still needs decisions about:
 - how to keep the biome contract consistent with future Cavenia terrain and VEIN/content work
 
 Adding active resources now would suggest a real biome pipeline that does not exist yet.
+
+Current Reborn now also pins the shipped legacy default biome roster, stone-default terrain/filter behavior and top-block mapping in the separate pure `core` note:
+
+- `docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md`
 
 ## Future Modern Mapping Constraints
 

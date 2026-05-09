@@ -26,6 +26,10 @@ The later pure non-runtime terrain-generator foundation note is now documented s
 
 - `docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md`
 
+The later pure non-runtime biome top/filter policy note is now documented separately in:
+
+- `docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md`
+
 This spike still does not imply active `cavernreborn:cavenia`, `dimension/cavenia.json`, `dimension_type/cavenia.json`, active Cavenia spawning, active crazy spawning, fake normal `CAVERN` crazy spawning or a `cavernreborn:caveman` entity.
 
 ## Spike Decision
@@ -176,6 +180,10 @@ The recommended direction is:
 The future active Cavenia path should keep terrain, cave carving, top/filter replacement and VEINS/content ordering on a custom runtime path, while treating later population/features as data-driven only where that does not falsify the source-confirmed generator contract.
 
 Pure data-driven approximation is not recommended as the primary foundation because the source-confirmed terrain order is too generator-owned.
+
+The later pure `core` biome/top/filter follow-up now pins the shipped weighted roster and default top/filter block mapping separately in:
+
+- `docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md`
 
 ## Decisions Required Before Any Active Dimension JSON
 

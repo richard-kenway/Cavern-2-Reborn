@@ -254,6 +254,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
         assertTrue(readme.contains("Cavenia Terrain Generator Foundation / Non-Runtime MVP"));
         assertTrue(readme.contains("docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md"));
+        assertTrue(readme.contains("Cavenia Biome Top/Filter Policy / Non-Runtime MVP"));
+        assertTrue(readme.contains("docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md"));
         assertTrue(readme.contains("full mirage-world stack"));
         assertTrue(readme.contains("old Cavenia-only `crazySpawnChance` plus a nearby `ICavenicMob` scan for `!entity.isNonBoss()`"));
         assertTrue(readme.contains("fourth crazy-variant foundation follow-up"));
@@ -635,6 +637,9 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("Cavenia Terrain Generator Foundation / Non-Runtime MVP"));
         assertTrue(doc.contains("docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md"));
         assertTrue(doc.contains("non-runtime Cavenia terrain-generator foundation MVP"));
+        assertTrue(doc.contains("Cavenia Biome Top/Filter Policy / Non-Runtime MVP"));
+        assertTrue(doc.contains("docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md"));
+        assertTrue(doc.contains("non-runtime Cavenia biome top/filter policy MVP"));
         assertTrue(doc.contains("`CaveniaSpawnProviderPolicy` still keeps `EntityCaveman -> deferred:caveman`"));
         assertTrue(doc.contains("no registered `cavernreborn:caveman` entity type exists at runtime"));
         assertTrue(doc.contains("docs/caveman-cavenia-normal-roster-boundary.md"));

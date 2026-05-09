@@ -84,6 +84,7 @@ import com.richardkenway.cavernreborn.core.progression.CavernProgressionUnlock;
 import com.richardkenway.cavernreborn.core.progression.CavernProgressionUpdateResult;
 import com.richardkenway.cavernreborn.core.spawn.CaveniaSpawnProviderPolicy;
 import com.richardkenway.cavernreborn.core.state.CavernDimensions;
+import com.richardkenway.cavernreborn.core.worldgen.CaveniaBiomeTopFilterPolicy;
 import com.richardkenway.cavernreborn.core.worldgen.CaveniaTerrainGeneratorPolicy;
 import com.richardkenway.cavernreborn.core.worldgen.CaveniaTerrainStep;
 
@@ -7547,6 +7548,10 @@ public final class CavernSpecialOreGameTests {
             "Expected the non-runtime Cavenia terrain-generator foundation doc to exist in the project root"
         );
         helper.assertTrue(
+            projectFileExists("docs", "cavenia-biome-top-filter-policy-non-runtime-mvp.md"),
+            "Expected the non-runtime Cavenia biome top/filter policy doc to exist in the project root"
+        );
+        helper.assertTrue(
             CaveniaTerrainGeneratorPolicy.WORLD_HEIGHT == 128,
             "Expected the non-runtime Cavenia terrain-generator policy to keep WORLD_HEIGHT pinned to 128"
         );
@@ -7562,6 +7567,14 @@ public final class CavernSpecialOreGameTests {
                 )
             ),
             "Expected the non-runtime Cavenia terrain-generator policy to keep the legacy generation-step order pinned"
+        );
+        helper.assertTrue(
+            CaveniaBiomeTopFilterPolicy.entries().size() == 14,
+            "Expected the non-runtime Cavenia biome top/filter policy to keep the shipped legacy biome roster size pinned"
+        );
+        helper.assertTrue(
+            CaveniaBiomeTopFilterPolicy.totalWeight() == 675,
+            "Expected the non-runtime Cavenia biome top/filter policy to keep the shipped legacy total biome weight pinned"
         );
         helper.assertTrue(
             projectFileExists("docs", "caveman-cavenia-normal-roster-boundary.md"),
@@ -7590,6 +7603,10 @@ public final class CavernSpecialOreGameTests {
         helper.assertFalse(
             projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "placed_feature", "cavenia.json"),
             "Expected the non-runtime Cavenia terrain-generator foundation to keep checked-in Cavenia placed features absent"
+        );
+        helper.assertFalse(
+            projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "biome", "cavenia.json"),
+            "Expected the non-runtime Cavenia biome top/filter policy to keep checked-in Cavenia biome-source resources absent"
         );
         helper.assertTrue(
             SpawnPlacements.getPlacementType(ModRegistries.CAVENIC_ZOMBIE.get()) == SpawnPlacementTypes.ON_GROUND,

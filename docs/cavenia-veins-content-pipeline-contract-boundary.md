@@ -14,6 +14,10 @@ The later pure non-runtime terrain-generator foundation note is documented separ
 
 - `docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md`
 
+The later pure non-runtime biome top/filter policy note is documented separately in:
+
+- `docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md`
+
 It does not add:
 
 - `data/cavernreborn/dimension/cavenia.json`
@@ -195,6 +199,10 @@ That means ore/content replacement is not a late population feature pass.
 It is generator-side chunk-primer mutation.
 
 Because `replaceBiomeBlocks(...)` already swaps exposed top blocks and stone-filter blocks before `VeinGenerator` runs, the default VEIN target of `minecraft:stone` means those VEIN entries only replace blocks that still remain stone at that stage.
+
+Current Reborn now also pins the shipped default biome/top/filter roster and block mapping separately in:
+
+- `docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md`
 
 ## Exact Separate Content Pipeline Found Outside `VEINS`
 

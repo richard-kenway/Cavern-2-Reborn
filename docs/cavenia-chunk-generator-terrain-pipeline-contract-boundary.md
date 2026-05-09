@@ -14,6 +14,10 @@ The later pure non-runtime terrain-generator foundation note is documented separ
 
 - `docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md`
 
+The later pure non-runtime biome top/filter policy note is documented separately in:
+
+- `docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md`
+
 It does not add:
 
 - `data/cavernreborn/dimension/cavenia.json`
@@ -255,6 +259,10 @@ That means any future modern approximation has to decide how to preserve or inte
 Current Reborn now also pins that same non-runtime order in:
 
 - `CaveniaTerrainGeneratorPolicy`
+
+Current Reborn now also pins the shipped default biome/top/filter roster and block mapping separately in:
+
+- `docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md`
 
 ## Exact Legacy Final Chunk / Structure / Creature Hooks Found
 
