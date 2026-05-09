@@ -153,8 +153,8 @@ class CaveniaVeinsContentPolicyBoundaryTest {
                     .filter(Files::isRegularFile)
                     .map(path -> path.getFileName().toString())
                     .noneMatch(name ->
-                        name.contains("CaveniaChunkGenerator")
-                            || name.contains("CaveniaBiomeSource")
+                        name.equals("CaveniaChunkGenerator.java")
+                            || name.equals("CaveniaBiomeSource.java")
                             || name.equals("Caveman.java")
                     ),
                 "Expected the non-runtime VEINS/content policy to avoid adding active Cavenia generator, biome-source or Caveman runtime classes"

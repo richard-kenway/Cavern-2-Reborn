@@ -66,6 +66,10 @@ The later activation-readiness host-contract note is now documented separately i
 
 - `docs/cavenia-generator-activation-readiness-host-contracts-mvp.md`
 
+The later generator-host / biome-source-strategy split-contract note is now documented separately in:
+
+- `docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md`
+
 This spike still does not imply active `cavernreborn:cavenia`, `dimension/cavenia.json`, `dimension_type/cavenia.json`, active Cavenia spawning, active crazy spawning, fake normal `CAVERN` crazy spawning or a `cavernreborn:caveman` entity.
 
 ## Spike Decision

@@ -13,6 +13,10 @@ It builds on:
 - `docs/cavenia-active-foundation-readiness-plan.md`
 - `docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md`
 
+The later generator-host / biome-source-strategy split-contract note is now documented separately in:
+
+- `docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md`
+
 ## What This MVP Adds
 
 Current Reborn now has three app-side non-registered activation-readiness host contract types:

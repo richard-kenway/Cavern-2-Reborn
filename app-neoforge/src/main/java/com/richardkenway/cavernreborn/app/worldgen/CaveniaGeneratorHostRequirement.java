@@ -1,0 +1,13 @@
+package com.richardkenway.cavernreborn.app.worldgen;
+
+public enum CaveniaGeneratorHostRequirement {
+    RUNTIME_CONTEXT,
+    BASE_TERRAIN_FILL,
+    CAVE_CARVER_EXECUTION,
+    BIOME_TOP_FILTER_EXECUTION,
+    VEINS_MUTATION_EXECUTION,
+    FINAL_CHUNK_CONSTRUCTION,
+    POPULATION_DELEGATION,
+    CODEC_AND_REGISTRATION,
+    DIMENSION_RESOURCE_BINDING
+}

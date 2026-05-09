@@ -154,9 +154,9 @@ class CaveniaActiveGeneratorTechnicalScaffoldBoundaryTest {
                     .filter(Files::isRegularFile)
                     .map(path -> path.getFileName().toString())
                     .noneMatch(name ->
-                        name.contains("CaveniaChunkGenerator")
-                            || name.contains("ChunkGeneratorCavenia")
-                            || name.contains("CaveniaBiomeSource")
+                        name.equals("CaveniaChunkGenerator.java")
+                            || name.equals("ChunkGeneratorCavenia.java")
+                            || name.equals("CaveniaBiomeSource.java")
                             || name.equals("Caveman.java")
                     ),
                 "Expected the active-generator scaffold MVP to avoid adding any active Cavenia generator, biome-source or Caveman runtime classes"

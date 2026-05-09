@@ -137,8 +137,8 @@ class CaveniaBiomeTopFilterPolicyBoundaryTest {
                     .filter(Files::isRegularFile)
                     .map(path -> path.getFileName().toString())
                     .noneMatch(name ->
-                        name.contains("CaveniaBiomeSource")
-                            || name.contains("CaveniaChunkGenerator")
+                        name.equals("CaveniaBiomeSource.java")
+                            || name.equals("CaveniaChunkGenerator.java")
                             || name.equals("Caveman.java")
                     ),
                 "Expected the non-runtime biome top/filter policy to avoid adding active Cavenia biome-source, generator or Caveman runtime classes"

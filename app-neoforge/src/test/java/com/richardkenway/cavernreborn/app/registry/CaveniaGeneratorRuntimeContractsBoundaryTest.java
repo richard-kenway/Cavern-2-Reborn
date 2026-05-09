@@ -22,6 +22,7 @@ class CaveniaGeneratorRuntimeContractsBoundaryTest {
     private static final Path READINESS_DOC = resolveProjectFile("docs", "cavenia-active-foundation-readiness-plan.md");
     private static final Path RUNTIME_KEY_DOC = resolveProjectFile("docs", "cavenia-runtime-key-inactive-dimension-scaffold-mvp.md");
     private static final Path ACTIVATION_HOSTS_DOC = resolveProjectFile("docs", "cavenia-generator-activation-readiness-host-contracts-mvp.md");
+    private static final Path SPLIT_DOC = resolveProjectFile("docs", "cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md");
     private static final Path APP_SOURCE_ROOT = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app"
     );
@@ -42,6 +43,7 @@ class CaveniaGeneratorRuntimeContractsBoundaryTest {
         String readinessDoc = Files.readString(READINESS_DOC);
         String runtimeKeyDoc = Files.readString(RUNTIME_KEY_DOC);
         String activationHostsDoc = Files.readString(ACTIVATION_HOSTS_DOC);
+        String splitDoc = Files.readString(SPLIT_DOC);
 
         assertTrue(contractsDoc.contains("Cavenia Generator Runtime Contract Interfaces / Non-Registered MVP"));
         assertTrue(contractsDoc.contains("`CaveniaGeneratorRuntimeContracts`"));
@@ -82,6 +84,8 @@ class CaveniaGeneratorRuntimeContractsBoundaryTest {
         assertTrue(readinessDoc.contains("docs/cavenia-generator-runtime-contracts-non-registered-mvp.md"));
         assertTrue(runtimeKeyDoc.contains("docs/cavenia-generator-runtime-contracts-non-registered-mvp.md"));
         assertTrue(activationHostsDoc.contains("`CaveniaGeneratorRuntimeContracts`"));
+        assertTrue(contractsDoc.contains("docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md"));
+        assertTrue(splitDoc.contains("`CaveniaGeneratorRuntimeContracts`"));
     }
 
     @Test

@@ -22,6 +22,7 @@ class CaveniaGeneratorRegistrationBoundaryDocumentationTest {
     private static final Path TECHNICAL_SPIKE_DOC = resolveProjectFile("docs", "cavenia-active-foundation-technical-spike.md");
     private static final Path READINESS_DOC = resolveProjectFile("docs", "cavenia-active-foundation-readiness-plan.md");
     private static final Path RUNTIME_KEY_DOC = resolveProjectFile("docs", "cavenia-runtime-key-inactive-dimension-scaffold-mvp.md");
+    private static final Path SPLIT_DOC = resolveProjectFile("docs", "cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md");
     private static final Path APP_SOURCE_ROOT = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app"
     );
@@ -42,6 +43,7 @@ class CaveniaGeneratorRegistrationBoundaryDocumentationTest {
         String technicalSpikeDoc = Files.readString(TECHNICAL_SPIKE_DOC);
         String readinessDoc = Files.readString(READINESS_DOC);
         String runtimeKeyDoc = Files.readString(RUNTIME_KEY_DOC);
+        String splitDoc = Files.readString(SPLIT_DOC);
 
         assertTrue(registrationDoc.contains("Cavenia Active Generator Registration / Inert Activation Boundary MVP"));
         assertTrue(registrationDoc.contains("`CaveniaGeneratorRegistrationBoundary`"));
@@ -79,6 +81,8 @@ class CaveniaGeneratorRegistrationBoundaryDocumentationTest {
         assertTrue(technicalSpikeDoc.contains("docs/cavenia-active-generator-registration-inert-boundary-mvp.md"));
         assertTrue(readinessDoc.contains("docs/cavenia-active-generator-registration-inert-boundary-mvp.md"));
         assertTrue(runtimeKeyDoc.contains("docs/cavenia-active-generator-registration-inert-boundary-mvp.md"));
+        assertTrue(registrationDoc.contains("docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md"));
+        assertTrue(splitDoc.contains("`CaveniaGeneratorRegistrationBoundary`"));
     }
 
     @Test

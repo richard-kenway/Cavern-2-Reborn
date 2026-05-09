@@ -19,6 +19,10 @@ The later activation-readiness host-contract note is now documented separately i
 
 - `docs/cavenia-generator-activation-readiness-host-contracts-mvp.md`
 
+The later generator-host / biome-source-strategy split-contract note is now documented separately in:
+
+- `docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md`
+
 ## What This MVP Adds
 
 Current Reborn now has two app-side unregistered skeleton classes:

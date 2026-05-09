@@ -272,6 +272,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/cavenia-generator-runtime-contracts-non-registered-mvp.md"));
         assertTrue(readme.contains("Cavenia Generator Activation-Readiness Runtime Host Contracts MVP"));
         assertTrue(readme.contains("docs/cavenia-generator-activation-readiness-host-contracts-mvp.md"));
+        assertTrue(readme.contains("Cavenia Generator Host / Biome Source Strategy Host Split Contracts MVP"));
+        assertTrue(readme.contains("docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md"));
         assertTrue(readme.contains("full mirage-world stack"));
         assertTrue(readme.contains("old Cavenia-only `crazySpawnChance` plus a nearby `ICavenicMob` scan for `!entity.isNonBoss()`"));
         assertTrue(readme.contains("fourth crazy-variant foundation follow-up"));
@@ -683,11 +685,15 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("Cavenia Generator Activation-Readiness Runtime Host Contracts MVP"));
         assertTrue(doc.contains("docs/cavenia-generator-activation-readiness-host-contracts-mvp.md"));
         assertTrue(doc.contains("non-registered Cavenia activation-readiness host-contract MVP"));
+        assertTrue(doc.contains("Cavenia Generator Host / Biome Source Strategy Host Split Contracts MVP"));
+        assertTrue(doc.contains("docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md"));
+        assertTrue(doc.contains("non-registered Cavenia generator-host / biome-source-strategy split-contract MVP"));
         assertTrue(doc.contains("`CaveniaPopulationPolicy.generateLakesDefaultEnabled()` remains pinned to `true`"));
         assertTrue(doc.contains("`CaveniaGeneratorScaffold` now resolves from `core`"));
         assertTrue(doc.contains("`CaveniaGeneratorBridge` now resolves from `app-neoforge`"));
         assertTrue(doc.contains("`CaveniaGeneratorRegistrationBoundary` now resolves from `app-neoforge`"));
         assertTrue(doc.contains("`CaveniaGeneratorSkeleton` and `CaveniaBiomeSelectionSkeleton` now resolve from `app-neoforge`"));
+        assertTrue(doc.contains("`CaveniaGeneratorHostContracts` and `CaveniaBiomeSourceStrategyContracts` now resolve from `app-neoforge`"));
         assertTrue(doc.contains("`CaveniaGeneratorRuntimeContracts` now resolves from `app-neoforge`"));
         assertTrue(doc.contains("`CaveniaActivationReadinessHosts` now resolves from `app-neoforge`"));
         assertTrue(doc.contains("runtime generator registration as false"));

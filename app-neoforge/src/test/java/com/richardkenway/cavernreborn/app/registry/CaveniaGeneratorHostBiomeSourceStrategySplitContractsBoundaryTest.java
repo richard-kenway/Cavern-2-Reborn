@@ -10,19 +10,19 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
-class CaveniaGeneratorBiomeSourceSkeletonBoundaryTest {
+class CaveniaGeneratorHostBiomeSourceStrategySplitContractsBoundaryTest {
     private static final Path README = resolveProjectFile("README.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
+    private static final Path SPLIT_DOC = resolveProjectFile("docs", "cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md");
+    private static final Path ACTIVATION_HOSTS_DOC = resolveProjectFile("docs", "cavenia-generator-activation-readiness-host-contracts-mvp.md");
+    private static final Path RUNTIME_CONTRACTS_DOC = resolveProjectFile("docs", "cavenia-generator-runtime-contracts-non-registered-mvp.md");
     private static final Path SKELETON_DOC = resolveProjectFile("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md");
     private static final Path REGISTRATION_DOC = resolveProjectFile("docs", "cavenia-active-generator-registration-inert-boundary-mvp.md");
     private static final Path BRIDGE_DOC = resolveProjectFile("docs", "cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md");
     private static final Path SCAFFOLD_DOC = resolveProjectFile("docs", "cavenia-active-generator-technical-scaffold-mvp.md");
-    private static final Path CONTRACTS_DOC = resolveProjectFile("docs", "cavenia-generator-runtime-contracts-non-registered-mvp.md");
-    private static final Path ACTIVATION_HOSTS_DOC = resolveProjectFile("docs", "cavenia-generator-activation-readiness-host-contracts-mvp.md");
     private static final Path TECHNICAL_SPIKE_DOC = resolveProjectFile("docs", "cavenia-active-foundation-technical-spike.md");
     private static final Path READINESS_DOC = resolveProjectFile("docs", "cavenia-active-foundation-readiness-plan.md");
     private static final Path RUNTIME_KEY_DOC = resolveProjectFile("docs", "cavenia-runtime-key-inactive-dimension-scaffold-mvp.md");
-    private static final Path SPLIT_DOC = resolveProjectFile("docs", "cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md");
     private static final Path APP_SOURCE_ROOT = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app"
     );
@@ -31,66 +31,68 @@ class CaveniaGeneratorBiomeSourceSkeletonBoundaryTest {
     );
 
     @Test
-    void docsPinTheUnregisteredGeneratorAndBiomeSelectionSkeletons() throws IOException {
+    void docsPinTheGeneratorHostAndBiomeSourceStrategySplitContracts() throws IOException {
         String readme = Files.readString(README);
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE_DOC);
+        String splitDoc = Files.readString(SPLIT_DOC);
+        String activationHostsDoc = Files.readString(ACTIVATION_HOSTS_DOC);
+        String runtimeContractsDoc = Files.readString(RUNTIME_CONTRACTS_DOC);
         String skeletonDoc = Files.readString(SKELETON_DOC);
         String registrationDoc = Files.readString(REGISTRATION_DOC);
         String bridgeDoc = Files.readString(BRIDGE_DOC);
         String scaffoldDoc = Files.readString(SCAFFOLD_DOC);
-        String contractsDoc = Files.readString(CONTRACTS_DOC);
-        String activationHostsDoc = Files.readString(ACTIVATION_HOSTS_DOC);
         String technicalSpikeDoc = Files.readString(TECHNICAL_SPIKE_DOC);
         String readinessDoc = Files.readString(READINESS_DOC);
         String runtimeKeyDoc = Files.readString(RUNTIME_KEY_DOC);
-        String splitDoc = Files.readString(SPLIT_DOC);
 
-        assertTrue(skeletonDoc.contains("Cavenia Chunk Generator / Biome Source Unregistered Skeleton MVP"));
-        assertTrue(skeletonDoc.contains("`CaveniaGeneratorSkeleton`"));
-        assertTrue(skeletonDoc.contains("`CaveniaBiomeSelectionSkeleton`"));
-        assertTrue(skeletonDoc.contains("`CaveniaGeneratorBridge`"));
-        assertTrue(skeletonDoc.contains("`CaveniaGeneratorRegistrationBoundary`"));
-        assertTrue(skeletonDoc.contains("`CaveniaGeneratorScaffold`"));
-        assertTrue(skeletonDoc.contains("`CaveniaTerrainGeneratorPolicy`"));
-        assertTrue(skeletonDoc.contains("`CaveniaBiomeTopFilterPolicy`"));
-        assertTrue(skeletonDoc.contains("`CaveniaCaveCarverPolicy`"));
-        assertTrue(skeletonDoc.contains("`CaveniaVeinsContentPolicy`"));
-        assertTrue(skeletonDoc.contains("`CaveniaPopulationPolicy`"));
-        assertTrue(skeletonDoc.contains("`CaveniaSpawnProviderPolicy`"));
-        assertTrue(skeletonDoc.contains("not a `ChunkGenerator`"));
-        assertTrue(skeletonDoc.contains("not a `BiomeSource`"));
-        assertTrue(skeletonDoc.contains("no codec or registry entry was added"));
-        assertTrue(skeletonDoc.contains("no active `dimension/cavenia.json`"));
-        assertTrue(skeletonDoc.contains("no active `dimension_type/cavenia.json`"));
-        assertTrue(skeletonDoc.contains("no active Cavenia runtime level"));
-        assertTrue(skeletonDoc.contains("no active Cavenia spawning"));
-        assertTrue(skeletonDoc.contains("no active crazy spawning"));
-        assertTrue(skeletonDoc.contains("no fake normal `CAVERN` crazy spawning"));
-        assertTrue(skeletonDoc.contains("`EntityCaveman -> deferred:caveman`"));
-
-        assertTrue(readme.contains("Cavenia Chunk Generator / Biome Source Unregistered Skeleton MVP"));
-        assertTrue(readme.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
-        assertTrue(runtimeSmokeDoc.contains("Cavenia Chunk Generator / Biome Source Unregistered Skeleton MVP"));
-        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
-        assertTrue(registrationDoc.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
-        assertTrue(bridgeDoc.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
-        assertTrue(scaffoldDoc.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
-        assertTrue(skeletonDoc.contains("docs/cavenia-generator-runtime-contracts-non-registered-mvp.md"));
-        assertTrue(skeletonDoc.contains("docs/cavenia-generator-activation-readiness-host-contracts-mvp.md"));
-        assertTrue(contractsDoc.contains("`CaveniaGeneratorSkeleton`"));
-        assertTrue(contractsDoc.contains("`CaveniaBiomeSelectionSkeleton`"));
-        assertTrue(activationHostsDoc.contains("`CaveniaGeneratorSkeleton`"));
-        assertTrue(activationHostsDoc.contains("`CaveniaBiomeSelectionSkeleton`"));
-        assertTrue(technicalSpikeDoc.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
-        assertTrue(readinessDoc.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
-        assertTrue(runtimeKeyDoc.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
-        assertTrue(skeletonDoc.contains("docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md"));
+        assertTrue(splitDoc.contains("Cavenia Generator Host / Biome Source Strategy Host Split Contracts MVP"));
+        assertTrue(splitDoc.contains("`CaveniaGeneratorHostContracts`"));
+        assertTrue(splitDoc.contains("`CaveniaGeneratorHostRequirement`"));
+        assertTrue(splitDoc.contains("`CaveniaGeneratorHostRequirementContract`"));
+        assertTrue(splitDoc.contains("`CaveniaBiomeSourceStrategyContracts`"));
+        assertTrue(splitDoc.contains("`CaveniaBiomeSourceStrategyRequirement`"));
+        assertTrue(splitDoc.contains("`CaveniaBiomeSourceStrategyRequirementContract`"));
+        assertTrue(splitDoc.contains("`CaveniaActivationReadinessHosts`"));
+        assertTrue(splitDoc.contains("`CaveniaGeneratorRuntimeContracts`"));
         assertTrue(splitDoc.contains("`CaveniaGeneratorSkeleton`"));
         assertTrue(splitDoc.contains("`CaveniaBiomeSelectionSkeleton`"));
+        assertTrue(splitDoc.contains("`CaveniaGeneratorRegistrationBoundary`"));
+        assertTrue(splitDoc.contains("`CaveniaGeneratorBridge`"));
+        assertTrue(splitDoc.contains("`CaveniaGeneratorScaffold`"));
+        assertTrue(splitDoc.contains("`CaveniaTerrainGeneratorPolicy`"));
+        assertTrue(splitDoc.contains("`CaveniaBiomeTopFilterPolicy`"));
+        assertTrue(splitDoc.contains("`CaveniaCaveCarverPolicy`"));
+        assertTrue(splitDoc.contains("`CaveniaVeinsContentPolicy`"));
+        assertTrue(splitDoc.contains("`CaveniaPopulationPolicy`"));
+        assertTrue(splitDoc.contains("`CaveniaSpawnProviderPolicy`"));
+        assertTrue(splitDoc.contains("not a `ChunkGenerator`"));
+        assertTrue(splitDoc.contains("not a `BiomeSource`"));
+        assertTrue(splitDoc.contains("no codec or registry entry was added"));
+        assertTrue(splitDoc.contains("no active `dimension/cavenia.json`"));
+        assertTrue(splitDoc.contains("no active `dimension_type/cavenia.json`"));
+        assertTrue(splitDoc.contains("no active Cavenia runtime level"));
+        assertTrue(splitDoc.contains("no active Cavenia spawning"));
+        assertTrue(splitDoc.contains("no active crazy spawning"));
+        assertTrue(splitDoc.contains("no fake normal `CAVERN` crazy spawning"));
+        assertTrue(splitDoc.contains("`EntityCaveman -> deferred:caveman`"));
+
+        assertTrue(readme.contains("Cavenia Generator Host / Biome Source Strategy Host Split Contracts MVP"));
+        assertTrue(readme.contains("docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md"));
+        assertTrue(runtimeSmokeDoc.contains("Cavenia Generator Host / Biome Source Strategy Host Split Contracts MVP"));
+        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md"));
+        assertTrue(activationHostsDoc.contains("docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md"));
+        assertTrue(runtimeContractsDoc.contains("docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md"));
+        assertTrue(skeletonDoc.contains("docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md"));
+        assertTrue(registrationDoc.contains("docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md"));
+        assertTrue(bridgeDoc.contains("docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md"));
+        assertTrue(scaffoldDoc.contains("docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md"));
+        assertTrue(technicalSpikeDoc.contains("docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md"));
+        assertTrue(readinessDoc.contains("docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md"));
+        assertTrue(runtimeKeyDoc.contains("docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md"));
     }
 
     @Test
-    void unregisteredSkeletonsKeepActiveGeneratorAndWorldgenSurfaceAbsent() throws IOException {
+    void splitContractsBoundaryKeepsActiveGeneratorAndWorldgenSurfaceAbsent() throws IOException {
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension_type", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "configured_carver", "cavenia.json");
@@ -113,7 +115,7 @@ class CaveniaGeneratorBiomeSourceSkeletonBoundaryTest {
                             || name.equals("CaveniaBiomeSource.java")
                             || name.equals("MapGenCaveniaCaves.java")
                     ),
-                "Expected the unregistered skeleton MVP to avoid adding any active Cavenia generator, biome-source or cave-carver runtime classes"
+                "Expected the generator-host / biome-source-strategy split-contract MVP to avoid adding any active Cavenia generator, biome-source or cave-carver runtime classes"
             );
         }
 
@@ -131,7 +133,7 @@ class CaveniaGeneratorBiomeSourceSkeletonBoundaryTest {
                             || path.contains("/neoforge/biome_modifier/cavenia")
                             || path.contains("/worldgen/biome/cavenia")
                     ),
-                "Expected the unregistered skeleton MVP to keep active Cavenia generator/worldgen resources absent"
+                "Expected the generator-host / biome-source-strategy split-contract MVP to keep active Cavenia generator/worldgen resources absent"
             );
         }
     }

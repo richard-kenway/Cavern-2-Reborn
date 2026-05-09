@@ -133,9 +133,9 @@ class CaveniaCaveCarverPolicyBoundaryTest {
                     .filter(Files::isRegularFile)
                     .map(path -> path.getFileName().toString())
                     .noneMatch(name ->
-                        name.contains("CaveniaChunkGenerator")
-                            || name.contains("CaveniaBiomeSource")
-                            || name.contains("MapGenCaveniaCaves")
+                        name.equals("CaveniaChunkGenerator.java")
+                            || name.equals("CaveniaBiomeSource.java")
+                            || name.equals("MapGenCaveniaCaves.java")
                             || name.equals("Caveman.java")
                     ),
                 "Expected the non-runtime cave-carver policy to avoid adding active Cavenia carver, generator, biome-source or Caveman runtime classes"

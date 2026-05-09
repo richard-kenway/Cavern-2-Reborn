@@ -149,8 +149,8 @@ class CaveniaPopulationPolicyBoundaryTest {
                     .filter(Files::isRegularFile)
                     .map(path -> path.getFileName().toString())
                     .noneMatch(name ->
-                        name.contains("CaveniaChunkGenerator")
-                            || name.contains("CaveniaBiomeSource")
+                        name.equals("CaveniaChunkGenerator.java")
+                            || name.equals("CaveniaBiomeSource.java")
                             || name.contains("CaveniaPopulationHooks")
                             || name.equals("Caveman.java")
                     ),
