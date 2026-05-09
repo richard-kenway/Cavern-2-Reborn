@@ -87,6 +87,7 @@ import com.richardkenway.cavernreborn.core.state.CavernDimensions;
 import com.richardkenway.cavernreborn.core.worldgen.CaveniaCaveCarverPolicy;
 import com.richardkenway.cavernreborn.core.worldgen.CaveniaCaveCarverReplacement;
 import com.richardkenway.cavernreborn.core.worldgen.CaveniaBiomeTopFilterPolicy;
+import com.richardkenway.cavernreborn.core.worldgen.CaveniaPopulationPolicy;
 import com.richardkenway.cavernreborn.core.worldgen.CaveniaTerrainGeneratorPolicy;
 import com.richardkenway.cavernreborn.core.worldgen.CaveniaTerrainStep;
 import com.richardkenway.cavernreborn.core.worldgen.CaveniaVeinsContentPolicy;
@@ -7374,6 +7375,38 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             projectFileExists("docs", "cavenia-population-lakes-falls-shroom-contract-boundary.md"),
             "Expected the Cavenia population contract boundary doc to exist in the project root"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-population-policy-non-runtime-mvp.md"),
+            "Expected the non-runtime Cavenia population-policy doc to exist in the project root"
+        );
+        helper.assertTrue(
+            CaveniaPopulationPolicy.generateLakesDefaultEnabled(),
+            "Expected the non-runtime Cavenia population policy to keep generateLakes enabled by default"
+        );
+        helper.assertTrue(
+            CaveniaPopulationPolicy.populationRunsAfterFinalChunkConstruction(),
+            "Expected the non-runtime Cavenia population policy to keep population later than final chunk construction"
+        );
+        helper.assertTrue(
+            CaveniaPopulationPolicy.populationRunsAfterVeinsMutation(),
+            "Expected the non-runtime Cavenia population policy to keep population later than VEINS mutation"
+        );
+        helper.assertTrue(
+            CaveniaPopulationPolicy.waterLakeRules().size() == 1,
+            "Expected the non-runtime Cavenia population policy to keep the single water-lake branch pinned"
+        );
+        helper.assertTrue(
+            CaveniaPopulationPolicy.lavaLakeRules().size() == 2,
+            "Expected the non-runtime Cavenia population policy to keep the two lava-lake branches pinned"
+        );
+        helper.assertTrue(
+            CaveniaPopulationPolicy.fallRules().size() == 4,
+            "Expected the non-runtime Cavenia population policy to keep the four fall/liquid branches pinned"
+        );
+        helper.assertTrue(
+            CaveniaPopulationPolicy.cavenicShroomRules().size() == 1,
+            "Expected the non-runtime Cavenia population policy to keep the single cavenic_shroom branch pinned"
         );
         helper.assertFalse(
             projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension", "cavenia.json"),

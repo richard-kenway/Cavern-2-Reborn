@@ -12,6 +12,7 @@ It builds on:
 - `docs/cavenia-active-foundation-readiness-plan.md`
 - `docs/cavenia-active-foundation-technical-spike.md`
 - `docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md`
+- `docs/cavenia-population-policy-non-runtime-mvp.md`
 
 ## What This MVP Adds
 

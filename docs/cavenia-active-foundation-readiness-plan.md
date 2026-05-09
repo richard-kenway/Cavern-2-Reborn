@@ -24,6 +24,10 @@ The later pure non-runtime VEINS/content policy note is now documented separatel
 
 - `docs/cavenia-veins-content-policy-non-runtime-mvp.md`
 
+The later pure non-runtime population policy note is now documented separately in:
+
+- `docs/cavenia-population-policy-non-runtime-mvp.md`
+
 Current readiness state still has no active Cavenia spawning and no fake normal `CAVERN` crazy spawning.
 
 Current repository state now also has:
@@ -39,6 +43,9 @@ Current repository state now also has:
 - pure `CaveniaVeinsContentPolicy`
 - pure `CaveniaVeinEntry`
 - pure `CaveniaVeinBiomeFilterMode`
+- pure `CaveniaPopulationPolicy`
+- pure `CaveniaPopulationStep`
+- pure `CaveniaPopulationBranch`
 
 ## Completed Readiness Inputs
 
@@ -60,6 +67,7 @@ The current completed readiness base is:
 - `docs/cavenia-cave-carver-policy-non-runtime-mvp.md`
 - `docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md`
 - `docs/cavenia-veins-content-policy-non-runtime-mvp.md`
+- `docs/cavenia-population-policy-non-runtime-mvp.md`
 
 Together those notes now pin:
 
@@ -77,6 +85,7 @@ Together those notes now pin:
 - the pure non-runtime `CaveniaCaveCarverPolicy`
 - the pure non-runtime `CaveniaBiomeTopFilterPolicy`
 - the pure non-runtime `CaveniaVeinsContentPolicy`
+- the pure non-runtime `CaveniaPopulationPolicy`
 - the intentional `EntityCaveman -> deferred:caveman` normal-roster deferral
 
 Phase planning below should treat those documents and the pure `core` policy types `CaveniaSpawnProviderPolicy` and `CaveniaSpawnEntry` as the accepted readiness base.
@@ -105,6 +114,7 @@ The current repository state and inspected legacy source now pin these implement
 - `CaveniaCaveCarverPolicy` now pins the `20..24` tunnel-origin band, the gravel/water/air carve-replacement rules and the carve-before-top/filter-plus-VEINS ordering without creating a runtime carver
 - `CaveniaBiomeTopFilterPolicy` now pins the shipped `CaveniaConfig.BIOMES` roster, total weight `675`, the default stone terrain/filter rule and the shipped top-block mappings without creating a runtime biome source
 - `CaveniaVeinsContentPolicy` now pins the shipped `CaveniaConfig.VEINS` roster, total weight `436`, default target block `minecraft:stone`, default chance `1.0D`, `autoVeins = false` and the source-as-written exclusion-style biome-filter branch without creating configured/placed features or a runtime generator
+- `CaveniaPopulationPolicy` now pins `CaveniaConfig.generateLakes = true`, the exact lake/fall/`cavenic_shroom` branch formulas from legacy `ChunkGeneratorCavenia#populate(...)`, the `BiomeDecorator.generateFalls` dependency and the later population ordering after VEINS mutation and final chunk construction without creating configured/placed features or a runtime generator
 
 ## Unresolved Blockers
 

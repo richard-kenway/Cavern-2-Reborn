@@ -99,6 +99,10 @@ The later pure VEINS/content follow-up is documented separately in:
 
 - `docs/cavenia-veins-content-policy-non-runtime-mvp.md`
 
+The later pure population follow-up is documented separately in:
+
+- `docs/cavenia-population-policy-non-runtime-mvp.md`
+
 ## What This MVP Still Does Not Add
 
 This slice does not add:

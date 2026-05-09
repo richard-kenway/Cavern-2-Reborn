@@ -10,6 +10,10 @@ The narrower active-foundation implementation-decision spike is documented separ
 
 - `docs/cavenia-active-foundation-technical-spike.md`
 
+The later pure non-runtime population-policy follow-up is documented separately in:
+
+- `docs/cavenia-population-policy-non-runtime-mvp.md`
+
 It does not add:
 
 - `data/cavernreborn/dimension/cavenia.json`
@@ -369,3 +373,7 @@ If Cavenia becomes active later, population work should probably stay split into
 3. active Cavenia shroom generation contract
 4. modern biome-trait/tag contract for those branches
 5. population ordering integration with future terrain/carver/VEINS work
+
+The current pure `core` non-runtime population follow-up that pins those defaults without activating runtime features is documented in:
+
+- `docs/cavenia-population-policy-non-runtime-mvp.md`

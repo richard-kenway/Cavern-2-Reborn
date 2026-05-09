@@ -258,6 +258,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md"));
         assertTrue(readme.contains("Cavenia VEINS / Content Policy / Non-Runtime MVP"));
         assertTrue(readme.contains("docs/cavenia-veins-content-policy-non-runtime-mvp.md"));
+        assertTrue(readme.contains("Cavenia Population Policy / Non-Runtime MVP"));
+        assertTrue(readme.contains("docs/cavenia-population-policy-non-runtime-mvp.md"));
         assertTrue(readme.contains("full mirage-world stack"));
         assertTrue(readme.contains("old Cavenia-only `crazySpawnChance` plus a nearby `ICavenicMob` scan for `!entity.isNonBoss()`"));
         assertTrue(readme.contains("fourth crazy-variant foundation follow-up"));
@@ -648,6 +650,10 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("Cavenia VEINS / Content Policy / Non-Runtime MVP"));
         assertTrue(doc.contains("docs/cavenia-veins-content-policy-non-runtime-mvp.md"));
         assertTrue(doc.contains("non-runtime Cavenia VEINS/content policy MVP"));
+        assertTrue(doc.contains("Cavenia Population Policy / Non-Runtime MVP"));
+        assertTrue(doc.contains("docs/cavenia-population-policy-non-runtime-mvp.md"));
+        assertTrue(doc.contains("non-runtime Cavenia population policy MVP"));
+        assertTrue(doc.contains("`CaveniaPopulationPolicy.generateLakesDefaultEnabled()` remains pinned to `true`"));
         assertTrue(doc.contains("`CaveniaVeinsContentPolicy.entries().size()` remains pinned to `13`"));
         assertTrue(doc.contains("`CaveniaVeinsContentPolicy.totalWeight()` remains pinned to `436`"));
         assertTrue(doc.contains("`CaveniaSpawnProviderPolicy` still keeps `EntityCaveman -> deferred:caveman`"));

@@ -27,6 +27,10 @@ The later pure non-runtime VEINS/content policy note is now documented separatel
 
 - `docs/cavenia-veins-content-policy-non-runtime-mvp.md`
 
+The later pure non-runtime population policy note is now documented separately in:
+
+- `docs/cavenia-population-policy-non-runtime-mvp.md`
+
 ## Exact Constants Added
 
 The current repository now exposes inert future Cavenia identity markers:

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 class CaveniaPopulationLakesFallsShroomContractBoundaryTest {
     private static final Path README = resolveProjectFile("README.md");
     private static final Path CONTRACT_DOC = resolveProjectFile("docs", "cavenia-population-lakes-falls-shroom-contract-boundary.md");
+    private static final Path POLICY_DOC = resolveProjectFile("docs", "cavenia-population-policy-non-runtime-mvp.md");
     private static final Path FOUNDATION_DOC = resolveProjectFile("docs", "cavenia-dimension-provider-foundation-boundary.md");
     private static final Path KEY_TYPE_DOC = resolveProjectFile("docs", "cavenia-dimension-key-type-contract-boundary.md");
     private static final Path BIOME_PROVIDER_DOC = resolveProjectFile("docs", "cavenia-biome-provider-contract-boundary.md");
@@ -39,6 +40,7 @@ class CaveniaPopulationLakesFallsShroomContractBoundaryTest {
     void docsPinTheLegacyPopulationContractAndInactiveRebornBoundary() throws IOException {
         String readme = Files.readString(README);
         String contractDoc = Files.readString(CONTRACT_DOC);
+        String policyDoc = Files.readString(POLICY_DOC);
         String foundationDoc = Files.readString(FOUNDATION_DOC);
         String keyTypeDoc = Files.readString(KEY_TYPE_DOC);
         String biomeProviderDoc = Files.readString(BIOME_PROVIDER_DOC);
@@ -53,6 +55,8 @@ class CaveniaPopulationLakesFallsShroomContractBoundaryTest {
 
         assertTrue(readme.contains("Cavenia Population / Lakes / Falls / Cavenic Shroom Contract Boundary"));
         assertTrue(readme.contains("docs/cavenia-population-lakes-falls-shroom-contract-boundary.md"));
+        assertTrue(readme.contains("Cavenia Population Policy / Non-Runtime MVP"));
+        assertTrue(readme.contains("docs/cavenia-population-policy-non-runtime-mvp.md"));
 
         assertTrue(contractDoc.contains("`ChunkGeneratorCavenia#populate(...)`"));
         assertTrue(contractDoc.contains("`CaveniaConfig.generateLakes = true`"));
@@ -103,6 +107,8 @@ class CaveniaPopulationLakesFallsShroomContractBoundaryTest {
         assertTrue(contractDoc.contains("docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-crazy-roster-natural-spawn-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenic-shroom-mvp.md"));
+        assertTrue(contractDoc.contains("docs/cavenia-population-policy-non-runtime-mvp.md"));
+        assertTrue(policyDoc.contains("Cavenia Population Policy / Non-Runtime MVP"));
 
         assertTrue(foundationDoc.contains("docs/cavenia-population-lakes-falls-shroom-contract-boundary.md"));
         assertTrue(keyTypeDoc.contains("docs/cavenia-population-lakes-falls-shroom-contract-boundary.md"));
@@ -116,6 +122,9 @@ class CaveniaPopulationLakesFallsShroomContractBoundaryTest {
         assertTrue(crazyRosterDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-population-lakes-falls-shroom-contract-boundary.md"));
         assertTrue(runtimeSmokeDoc.contains("inactive Cavenia population / lakes / falls / `cavenic_shroom` contract boundary"));
+        assertTrue(runtimeSmokeDoc.contains("Cavenia Population Policy / Non-Runtime MVP"));
+        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-population-policy-non-runtime-mvp.md"));
+        assertTrue(runtimeSmokeDoc.contains("non-runtime Cavenia population policy MVP"));
     }
 
     @Test

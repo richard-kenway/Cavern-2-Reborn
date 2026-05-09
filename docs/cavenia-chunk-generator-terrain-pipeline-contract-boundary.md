@@ -73,6 +73,10 @@ The separate spawn-provider / crazy-roster activation contract remains documente
 
 - `docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md`
 
+The later pure non-runtime population-policy follow-up is documented separately in:
+
+- `docs/cavenia-population-policy-non-runtime-mvp.md`
+
 The crazy-roster natural-spawn boundary remains documented in:
 
 - `docs/cavenia-crazy-roster-natural-spawn-boundary.md`
