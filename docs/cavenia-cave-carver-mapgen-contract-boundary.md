@@ -14,6 +14,10 @@ The later pure non-runtime terrain-generator foundation note is documented separ
 
 - `docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md`
 
+The later pure non-runtime cave-carver policy note is documented separately in:
+
+- `docs/cavenia-cave-carver-policy-non-runtime-mvp.md`
+
 It does not add:
 
 - `data/cavernreborn/dimension/cavenia.json`
@@ -41,6 +45,10 @@ The narrower future dimension key/type contract remains documented in:
 The narrower future biome-provider contract remains documented in:
 
 - `docs/cavenia-biome-provider-contract-boundary.md`
+
+The later pure non-runtime biome top/filter policy note is documented separately in:
+
+- `docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md`
 
 The narrower future VEINS/content-pipeline contract remains documented in:
 

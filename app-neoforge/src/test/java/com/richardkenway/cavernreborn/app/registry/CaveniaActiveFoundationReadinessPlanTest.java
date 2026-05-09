@@ -26,6 +26,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
     private static final Path CAVEMAN_DOC = resolveProjectFile("docs", "caveman-cavenia-normal-roster-boundary.md");
     private static final Path SCAFFOLD_DOC = resolveProjectFile("docs", "cavenia-runtime-key-inactive-dimension-scaffold-mvp.md");
     private static final Path TERRAIN_POLICY_DOC = resolveProjectFile("docs", "cavenia-terrain-generator-foundation-non-runtime-mvp.md");
+    private static final Path CAVE_CARVER_POLICY_DOC = resolveProjectFile("docs", "cavenia-cave-carver-policy-non-runtime-mvp.md");
     private static final Path BIOME_TOP_FILTER_POLICY_DOC = resolveProjectFile("docs", "cavenia-biome-top-filter-policy-non-runtime-mvp.md");
 
     @Test
@@ -47,6 +48,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
         String cavemanDoc = Files.readString(CAVEMAN_DOC);
         String scaffoldDoc = Files.readString(SCAFFOLD_DOC);
         String terrainPolicyDoc = Files.readString(TERRAIN_POLICY_DOC);
+        String caveCarverPolicyDoc = Files.readString(CAVE_CARVER_POLICY_DOC);
         String biomeTopFilterPolicyDoc = Files.readString(BIOME_TOP_FILTER_POLICY_DOC);
 
         assertTrue(planDoc.contains("Cavenia Active Foundation Readiness / Implementation Plan"));
@@ -63,11 +65,14 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(planDoc.contains("docs/cavenia-crazy-roster-natural-spawn-boundary.md"));
         assertTrue(planDoc.contains("docs/caveman-cavenia-normal-roster-boundary.md"));
         assertTrue(planDoc.contains("docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md"));
+        assertTrue(planDoc.contains("docs/cavenia-cave-carver-policy-non-runtime-mvp.md"));
         assertTrue(planDoc.contains("docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md"));
         assertTrue(planDoc.contains("`CaveniaSpawnProviderPolicy`"));
         assertTrue(planDoc.contains("`CaveniaSpawnEntry`"));
         assertTrue(planDoc.contains("`CaveniaTerrainGeneratorPolicy`"));
         assertTrue(planDoc.contains("`CaveniaTerrainStep`"));
+        assertTrue(planDoc.contains("`CaveniaCaveCarverPolicy`"));
+        assertTrue(planDoc.contains("`CaveniaCaveCarverReplacement`"));
         assertTrue(planDoc.contains("`CaveniaBiomeTopFilterPolicy`"));
         assertTrue(planDoc.contains("`CaveniaBiomeEntry`"));
         assertTrue(planDoc.contains("`EntityCaveman -> deferred:caveman`"));
@@ -109,6 +114,8 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(readme.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
         assertTrue(readme.contains("Cavenia Terrain Generator Foundation / Non-Runtime MVP"));
         assertTrue(readme.contains("docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md"));
+        assertTrue(readme.contains("Cavenia Cave Carver Policy / Non-Runtime MVP"));
+        assertTrue(readme.contains("docs/cavenia-cave-carver-policy-non-runtime-mvp.md"));
         assertTrue(readme.contains("Cavenia Biome Top/Filter Policy / Non-Runtime MVP"));
         assertTrue(readme.contains("docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md"));
         assertTrue(runtimeSmokeDoc.contains("Cavenia Active Foundation Readiness / Implementation Plan"));
@@ -123,11 +130,15 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(runtimeSmokeDoc.contains("Cavenia Terrain Generator Foundation / Non-Runtime MVP"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md"));
         assertTrue(runtimeSmokeDoc.contains("non-runtime Cavenia terrain-generator foundation MVP"));
+        assertTrue(runtimeSmokeDoc.contains("Cavenia Cave Carver Policy / Non-Runtime MVP"));
+        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-cave-carver-policy-non-runtime-mvp.md"));
+        assertTrue(runtimeSmokeDoc.contains("non-runtime Cavenia cave-carver policy MVP"));
         assertTrue(runtimeSmokeDoc.contains("Cavenia Biome Top/Filter Policy / Non-Runtime MVP"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md"));
         assertTrue(runtimeSmokeDoc.contains("non-runtime Cavenia biome top/filter policy MVP"));
         assertTrue(scaffoldDoc.contains("Cavenia Runtime Key / Inactive Dimension Scaffold MVP"));
         assertTrue(terrainPolicyDoc.contains("Cavenia Terrain Generator Foundation / Non-Runtime MVP"));
+        assertTrue(caveCarverPolicyDoc.contains("Cavenia Cave Carver Policy / Non-Runtime MVP"));
         assertTrue(biomeTopFilterPolicyDoc.contains("Cavenia Biome Top/Filter Policy / Non-Runtime MVP"));
 
         assertTrue(foundationDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
@@ -143,6 +154,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(crazyRosterDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(cavemanDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(terrainPolicyDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
+        assertTrue(caveCarverPolicyDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(biomeTopFilterPolicyDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
     }
 

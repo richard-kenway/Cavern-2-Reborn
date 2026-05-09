@@ -12,6 +12,10 @@ The later pure non-runtime terrain-generator foundation note is now documented s
 
 - `docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md`
 
+The later pure non-runtime cave-carver policy note is now documented separately in:
+
+- `docs/cavenia-cave-carver-policy-non-runtime-mvp.md`
+
 The later pure non-runtime biome top/filter policy note is now documented separately in:
 
 - `docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md`
@@ -24,6 +28,8 @@ Current repository state now also has:
 - inert `CAVENIA_LEVEL_KEY`
 - pure `CaveniaTerrainGeneratorPolicy`
 - pure `CaveniaTerrainStep`
+- pure `CaveniaCaveCarverPolicy`
+- pure `CaveniaCaveCarverReplacement`
 - pure `CaveniaBiomeTopFilterPolicy`
 - pure `CaveniaBiomeEntry`
 
@@ -44,6 +50,7 @@ The current completed readiness base is:
 - `docs/cavenia-crazy-roster-natural-spawn-boundary.md`
 - `docs/caveman-cavenia-normal-roster-boundary.md`
 - `docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md`
+- `docs/cavenia-cave-carver-policy-non-runtime-mvp.md`
 - `docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md`
 
 Together those notes now pin:
@@ -59,6 +66,7 @@ Together those notes now pin:
 - the provider-owned spawn-provider / crazy-roster activation contract boundary
 - the pure non-runtime `CaveniaSpawnProviderPolicy`
 - the pure non-runtime `CaveniaTerrainGeneratorPolicy`
+- the pure non-runtime `CaveniaCaveCarverPolicy`
 - the pure non-runtime `CaveniaBiomeTopFilterPolicy`
 - the intentional `EntityCaveman -> deferred:caveman` normal-roster deferral
 
@@ -85,6 +93,7 @@ The current repository state and inspected legacy source now pin these implement
 - `EntityCaveman -> deferred:caveman` remains intentional and source-backed
 - inert `CAVENIA_LOCATION` and `CAVENIA_LEVEL_KEY` now pin the future `cavernreborn:cavenia` identity without creating a runtime level
 - `CaveniaTerrainGeneratorPolicy` now pins `WORLD_HEIGHT = 128`, the bedrock/air height bands and the exact terrain-stage order without creating a runtime generator
+- `CaveniaCaveCarverPolicy` now pins the `20..24` tunnel-origin band, the gravel/water/air carve-replacement rules and the carve-before-top/filter-plus-VEINS ordering without creating a runtime carver
 - `CaveniaBiomeTopFilterPolicy` now pins the shipped `CaveniaConfig.BIOMES` roster, total weight `675`, the default stone terrain/filter rule and the shipped top-block mappings without creating a runtime biome source
 
 ## Unresolved Blockers

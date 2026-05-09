@@ -26,6 +26,10 @@ The later pure non-runtime terrain-generator foundation note is now documented s
 
 - `docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md`
 
+The later pure non-runtime cave-carver policy note is now documented separately in:
+
+- `docs/cavenia-cave-carver-policy-non-runtime-mvp.md`
+
 The later pure non-runtime biome top/filter policy note is now documented separately in:
 
 - `docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md`

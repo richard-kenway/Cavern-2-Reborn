@@ -6,6 +6,7 @@ It builds on:
 
 - `docs/cavenia-biome-provider-contract-boundary.md`
 - `docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md`
+- `docs/cavenia-cave-carver-policy-non-runtime-mvp.md`
 - `docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md`
 - `docs/cavenia-veins-content-pipeline-contract-boundary.md`
 - `docs/cavenia-active-foundation-readiness-plan.md`
@@ -89,6 +90,7 @@ This policy is a direct non-runtime follow-up to the earlier contract notes:
 - `CaveBiomeProvider` consumes that manager
 - `ChunkGeneratorCavenia#replaceBiomeBlocks(...)` resolves `top` and `filter` from the matching `CaveBiome`
 - `CaveniaTerrainGeneratorPolicy` already pins that biome top/filter replacement happens after optional cave carving and before VEINS mutation
+- `CaveniaCaveCarverPolicy` now pins the source-confirmed gravel/water/air carve bands and the carve-before-top/filter ordering
 
 So this policy is intentionally narrow, but it preserves the exact roster and replacement inputs that later active generator work must either match or explicitly approximate.
 

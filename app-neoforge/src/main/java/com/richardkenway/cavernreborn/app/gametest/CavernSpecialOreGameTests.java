@@ -84,6 +84,8 @@ import com.richardkenway.cavernreborn.core.progression.CavernProgressionUnlock;
 import com.richardkenway.cavernreborn.core.progression.CavernProgressionUpdateResult;
 import com.richardkenway.cavernreborn.core.spawn.CaveniaSpawnProviderPolicy;
 import com.richardkenway.cavernreborn.core.state.CavernDimensions;
+import com.richardkenway.cavernreborn.core.worldgen.CaveniaCaveCarverPolicy;
+import com.richardkenway.cavernreborn.core.worldgen.CaveniaCaveCarverReplacement;
 import com.richardkenway.cavernreborn.core.worldgen.CaveniaBiomeTopFilterPolicy;
 import com.richardkenway.cavernreborn.core.worldgen.CaveniaTerrainGeneratorPolicy;
 import com.richardkenway.cavernreborn.core.worldgen.CaveniaTerrainStep;
@@ -7548,6 +7550,10 @@ public final class CavernSpecialOreGameTests {
             "Expected the non-runtime Cavenia terrain-generator foundation doc to exist in the project root"
         );
         helper.assertTrue(
+            projectFileExists("docs", "cavenia-cave-carver-policy-non-runtime-mvp.md"),
+            "Expected the non-runtime Cavenia cave-carver policy doc to exist in the project root"
+        );
+        helper.assertTrue(
             projectFileExists("docs", "cavenia-biome-top-filter-policy-non-runtime-mvp.md"),
             "Expected the non-runtime Cavenia biome top/filter policy doc to exist in the project root"
         );
@@ -7567,6 +7573,24 @@ public final class CavernSpecialOreGameTests {
                 )
             ),
             "Expected the non-runtime Cavenia terrain-generator policy to keep the legacy generation-step order pinned"
+        );
+        helper.assertTrue(
+            CaveniaCaveCarverPolicy.DEFAULT_GENERATE_CAVES,
+            "Expected the non-runtime Cavenia cave-carver policy to keep generateCaves enabled by default"
+        );
+        helper.assertTrue(
+            CaveniaCaveCarverPolicy.minTunnelOriginY() == 20 && CaveniaCaveCarverPolicy.maxTunnelOriginY() == 24,
+            "Expected the non-runtime Cavenia cave-carver policy to keep the source-confirmed tunnel-origin Y band pinned"
+        );
+        helper.assertTrue(
+            CaveniaCaveCarverPolicy.replacementForY(2) == CaveniaCaveCarverReplacement.GRAVEL
+                && CaveniaCaveCarverPolicy.replacementForY(10) == CaveniaCaveCarverReplacement.WATER
+                && CaveniaCaveCarverPolicy.replacementForY(11) == CaveniaCaveCarverReplacement.AIR,
+            "Expected the non-runtime Cavenia cave-carver policy to keep the gravel/water/air carve-replacement rules pinned"
+        );
+        helper.assertTrue(
+            CaveniaCaveCarverPolicy.runsBeforeBiomeTopFilterReplacement() && CaveniaCaveCarverPolicy.runsBeforeVeinsMutation(),
+            "Expected the non-runtime Cavenia cave-carver policy to keep carve ordering before top/filter replacement and VEINS pinned"
         );
         helper.assertTrue(
             CaveniaBiomeTopFilterPolicy.entries().size() == 14,
