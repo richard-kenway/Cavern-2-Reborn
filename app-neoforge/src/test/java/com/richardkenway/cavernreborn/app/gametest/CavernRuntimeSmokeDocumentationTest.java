@@ -242,6 +242,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/cavenia-mirage-entry-access-contract-boundary.md"));
         assertTrue(readme.contains("Cavenia Spawn Provider / Crazy Roster Activation Contract Boundary"));
         assertTrue(readme.contains("docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md"));
+        assertTrue(readme.contains("Cavenia Spawn Provider Policy / Non-Runtime MVP"));
+        assertTrue(readme.contains("docs/cavenia-spawn-provider-policy-mvp.md"));
         assertTrue(readme.contains("full mirage-world stack"));
         assertTrue(readme.contains("old Cavenia-only `crazySpawnChance` plus a nearby `ICavenicMob` scan for `!entity.isNonBoss()`"));
         assertTrue(readme.contains("fourth crazy-variant foundation follow-up"));
@@ -358,6 +360,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("crazy creeper generic-damage baseline smoke"));
         assertTrue(doc.contains("crazy creeper boss-event wiring smoke"));
         assertTrue(doc.contains("crazy creeper boss-bar color/overlay smoke"));
+        assertTrue(doc.contains("non-runtime Cavenia spawn-provider policy constant and roster smoke"));
         assertTrue(doc.contains("crazy creeper boss-percent update smoke"));
         assertTrue(doc.contains("crazy creeper tracked-player add/remove smoke"));
         assertTrue(doc.contains("crazy creeper sky-darkening smoke"));

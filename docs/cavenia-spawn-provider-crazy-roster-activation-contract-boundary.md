@@ -10,6 +10,10 @@ The earlier crazy-roster roster-only summary remains documented in:
 
 - `docs/cavenia-crazy-roster-natural-spawn-boundary.md`
 
+The separate non-runtime policy follow-up is documented in:
+
+- `docs/cavenia-spawn-provider-policy-mvp.md`
+
 The separate mirage entry/access boundary remains documented in:
 
 - `docs/cavenia-mirage-entry-access-contract-boundary.md`
@@ -209,6 +213,7 @@ That does not replace the broader spawn-pack pipeline, but it does constrain the
 Current Reborn still has:
 
 - active direct Cavenic mob natural spawning in checked-in `CAVERN`
+- a pure non-runtime spawn-provider policy layer in `core`
 - no active `cavernreborn:cavenia` level
 - no active Cavenia provider spawn loop
 - no active Cavenia spawn callback
@@ -234,6 +239,7 @@ Adding normal `CAVERN` biome modifiers or spawn placements for crazy mobs would 
 
 An honest future Reborn implementation likely needs:
 
+- reuse of the non-runtime policy layer from `docs/cavenia-spawn-provider-policy-mvp.md`
 - a Cavenia-only spawn host/service or equivalent server-tick spawn owner
 - a modern policy representation for `CaveEntityRegistry.SPAWNS`
 - a modern policy representation for `CaveEntityRegistry.CRAZY_SPAWNS`
@@ -258,6 +264,7 @@ An honest future Reborn implementation likely needs:
 - `docs/cavenia-biome-provider-contract-boundary.md`
 - `docs/cavenia-veins-content-pipeline-contract-boundary.md`
 - `docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md`
+- `docs/cavenia-spawn-provider-policy-mvp.md`
 - `docs/cavenia-cave-carver-mapgen-contract-boundary.md`
 - `docs/cavenia-population-lakes-falls-shroom-contract-boundary.md`
 - `docs/cavenia-mirage-entry-access-contract-boundary.md`

@@ -23,6 +23,7 @@ class CaveniaSpawnProviderCrazyRosterActivationContractBoundaryTest {
     private static final Path POPULATION_DOC = resolveProjectFile("docs", "cavenia-population-lakes-falls-shroom-contract-boundary.md");
     private static final Path ACCESS_DOC = resolveProjectFile("docs", "cavenia-mirage-entry-access-contract-boundary.md");
     private static final Path CRAZY_ROSTER_DOC = resolveProjectFile("docs", "cavenia-crazy-roster-natural-spawn-boundary.md");
+    private static final Path POLICY_DOC = resolveProjectFile("docs", "cavenia-spawn-provider-policy-mvp.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
     private static final Path DIMENSIONS_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "dimension", "CavernNeoForgeDimensions.java"
@@ -50,10 +51,13 @@ class CaveniaSpawnProviderCrazyRosterActivationContractBoundaryTest {
         String populationDoc = Files.readString(POPULATION_DOC);
         String accessDoc = Files.readString(ACCESS_DOC);
         String crazyRosterDoc = Files.readString(CRAZY_ROSTER_DOC);
+        String policyDoc = Files.readString(POLICY_DOC);
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE_DOC);
 
         assertTrue(readme.contains("Cavenia Spawn Provider / Crazy Roster Activation Contract Boundary"));
         assertTrue(readme.contains("docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md"));
+        assertTrue(readme.contains("Cavenia Spawn Provider Policy / Non-Runtime MVP"));
+        assertTrue(readme.contains("docs/cavenia-spawn-provider-policy-mvp.md"));
 
         assertTrue(contractDoc.contains("`WorldProviderCavenia#createSpawnCreature(...)`"));
         assertTrue(contractDoc.contains("`WorldProviderCavern`"));
@@ -108,6 +112,7 @@ class CaveniaSpawnProviderCrazyRosterActivationContractBoundaryTest {
         assertTrue(contractDoc.contains("no active Cavenia provider spawn loop"));
         assertTrue(contractDoc.contains("no active crazy natural spawning"));
         assertTrue(contractDoc.contains("no fake normal `CAVERN` crazy biome modifiers, biome tags or spawn placements"));
+        assertTrue(contractDoc.contains("docs/cavenia-spawn-provider-policy-mvp.md"));
         assertTrue(contractDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-dimension-key-type-contract-boundary.md"));
         assertTrue(contractDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
@@ -127,8 +132,26 @@ class CaveniaSpawnProviderCrazyRosterActivationContractBoundaryTest {
         assertTrue(populationDoc.contains("docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md"));
         assertTrue(accessDoc.contains("docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md"));
         assertTrue(crazyRosterDoc.contains("docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md"));
+        assertTrue(crazyRosterDoc.contains("docs/cavenia-spawn-provider-policy-mvp.md"));
+        assertTrue(policyDoc.contains("`CaveniaSpawnProviderPolicy`"));
+        assertTrue(policyDoc.contains("`CaveniaSpawnEntry`"));
+        assertTrue(policyDoc.contains("`DEFAULT_MONSTER_SPAWN = 200`"));
+        assertTrue(policyDoc.contains("`DEFAULT_CRAZY_SPAWN_CHANCE = 0.1D`"));
+        assertTrue(policyDoc.contains("`chance <= 0.1D` -> `range = 50`"));
+        assertTrue(policyDoc.contains("`chance <= 0.2D` -> `range = 32`"));
+        assertTrue(policyDoc.contains("`chance <= 0.4D` -> `range = 16`"));
+        assertTrue(policyDoc.contains("`chance <= 0.6D` -> `range = 8`"));
+        assertTrue(policyDoc.contains("`chance <= 0.8D` -> `range = 4`"));
+        assertTrue(policyDoc.contains("otherwise `range = 0`"));
+        assertTrue(policyDoc.contains("`rangeY = range > 1 ? range / 2 : range`"));
+        assertTrue(policyDoc.contains("nearby `ICavenicMob` whose `isNonBoss()` returns `false`"));
+        assertTrue(policyDoc.contains("`EntityCaveman` -> deferred marker `deferred:caveman`"));
+        assertTrue(policyDoc.contains("no active Cavenia spawning"));
+        assertTrue(policyDoc.contains("no active crazy natural spawning"));
+        assertTrue(policyDoc.contains("no Caveman entity implementation"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md"));
         assertTrue(runtimeSmokeDoc.contains("inactive Cavenia spawn-provider / crazy-roster activation contract boundary"));
+        assertTrue(runtimeSmokeDoc.contains("non-runtime Cavenia spawn-provider policy constant and roster smoke"));
     }
 
     @Test

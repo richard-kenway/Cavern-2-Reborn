@@ -82,6 +82,7 @@ import com.richardkenway.cavernreborn.core.mining.MinerOrbBonusResult;
 import com.richardkenway.cavernreborn.core.progression.CavernProgressionPolicy;
 import com.richardkenway.cavernreborn.core.progression.CavernProgressionUnlock;
 import com.richardkenway.cavernreborn.core.progression.CavernProgressionUpdateResult;
+import com.richardkenway.cavernreborn.core.spawn.CaveniaSpawnProviderPolicy;
 import com.richardkenway.cavernreborn.core.state.CavernDimensions;
 
 import net.minecraft.core.BlockPos;
@@ -7516,6 +7517,10 @@ public final class CavernSpecialOreGameTests {
             projectFileExists("docs", "cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md"),
             "Expected the Cavenia spawn-provider contract boundary doc to exist in the project root"
         );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-spawn-provider-policy-mvp.md"),
+            "Expected the non-runtime Cavenia spawn-provider policy doc to exist in the project root"
+        );
         helper.assertFalse(
             projectFileExists("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension", "cavenia.json"),
             "Expected the Cavenia spawn-provider contract boundary to keep the checked-in cavenia dimension resource absent"
@@ -7539,6 +7544,26 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             SpawnPlacements.getPlacementType(ModRegistries.CAVENIC_SPIDER.get()) == SpawnPlacementTypes.ON_GROUND,
             "Expected the Cavenia spawn-provider contract boundary to keep direct Cavenic CAVERN spawn placements unchanged"
+        );
+        helper.assertTrue(
+            CaveniaSpawnProviderPolicy.DEFAULT_MONSTER_SPAWN == 200,
+            "Expected the non-runtime Cavenia spawn-provider policy to keep the legacy monster spawn default pinned"
+        );
+        helper.assertTrue(
+            CaveniaSpawnProviderPolicy.DEFAULT_CRAZY_SPAWN_CHANCE == 0.1D,
+            "Expected the non-runtime Cavenia spawn-provider policy to keep the legacy crazy spawn chance pinned"
+        );
+        helper.assertTrue(
+            CaveniaSpawnProviderPolicy.normalRoster().size() == 7,
+            "Expected the non-runtime Cavenia spawn-provider policy to keep the full normal roster pinned"
+        );
+        helper.assertTrue(
+            CaveniaSpawnProviderPolicy.crazyRoster().size() == 4,
+            "Expected the non-runtime Cavenia spawn-provider policy to keep the full crazy roster pinned"
+        );
+        helper.assertTrue(
+            !CaveniaSpawnProviderPolicy.normalRoster().get(6).hasActiveRebornEntityId(),
+            "Expected the non-runtime Cavenia spawn-provider policy to keep the Caveman entry explicitly deferred"
         );
 
         for (int i = 0; i < crazyTypes.size(); i++) {

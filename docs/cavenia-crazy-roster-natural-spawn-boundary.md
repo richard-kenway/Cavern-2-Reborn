@@ -19,6 +19,10 @@ The separate focused spawn-provider / crazy-roster activation contract remains d
 
 - `docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md`
 
+The separate non-runtime policy follow-up is documented in:
+
+- `docs/cavenia-spawn-provider-policy-mvp.md`
+
 ## Legacy References Inspected
 
 - `cavern.entity.CaveEntityRegistry`
@@ -123,6 +127,7 @@ Current Reborn has:
 
 Current Reborn does not have:
 
+- a non-runtime policy-connected active spawn host
 - a `cavenia` dimension
 - a `WorldProviderCavenia` equivalent
 - a Cavenia-only spawn callback that can swap between `SPAWNS` and `CRAZY_SPAWNS`
@@ -167,6 +172,7 @@ Before active crazy natural spawning can be enabled honestly, Reborn needs:
 - a real `Cavenia` dimension foundation
 - the provider/terrain/biome split documented in `docs/cavenia-dimension-provider-foundation-boundary.md`
 - a Cavenia-only monster spawn host equivalent to legacy `WorldProviderCavenia#createSpawnCreature(...)`
+- reuse of the non-runtime policy layer documented in `docs/cavenia-spawn-provider-policy-mvp.md`
 - a checked-in policy for `CaveniaConfig.crazySpawnChance`
 - the nearby `ICavenicMob` scan for `!entity.isNonBoss()` or a modern equivalent that is source-honest
 - a Cavenia-only roster switch that keeps crazy mobs out of the normal `CAVERN` biome-spawn pipeline
