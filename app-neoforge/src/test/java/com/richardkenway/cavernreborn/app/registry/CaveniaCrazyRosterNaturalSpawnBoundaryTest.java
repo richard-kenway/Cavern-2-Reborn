@@ -44,7 +44,7 @@ class CaveniaCrazyRosterNaturalSpawnBoundaryTest {
         assertTrue(readme.contains("docs/cavenia-crazy-roster-natural-spawn-boundary.md"));
         assertTrue(readme.contains("Cavenia Spawn Provider / Crazy Roster Activation Contract Boundary"));
         assertTrue(readme.contains("docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md"));
-        assertTrue(readme.contains("the old Cavenia-only `crazySpawnChance` plus nearby non-boss `ICavenicMob` exclusion branch"));
+        assertTrue(readme.contains("the old Cavenia-only `crazySpawnChance` plus a nearby `ICavenicMob` scan for `!entity.isNonBoss()`"));
 
         assertTrue(boundaryDoc.contains("`CaveEntityRegistry.CRAZY_SPAWNS`"));
         assertTrue(boundaryDoc.contains("`WorldProviderCavern#createSpawnCreature(...)`"));
@@ -52,6 +52,7 @@ class CaveniaCrazyRosterNaturalSpawnBoundaryTest {
         assertTrue(boundaryDoc.contains("`CaveniaConfig.crazySpawnChance`"));
         assertTrue(boundaryDoc.contains("`ICavenicMob`"));
         assertTrue(boundaryDoc.contains("`world.getEntitiesWithinAABB(..., entity -> entity instanceof ICavenicMob && !entity.isNonBoss()).isEmpty()`"));
+        assertTrue(boundaryDoc.contains("a nearby `ICavenicMob` scan for `!entity.isNonBoss()`"));
         assertTrue(boundaryDoc.contains("`new SpawnListEntry(EntityCrazySkeleton.class, 1, 1, 1)`"));
         assertTrue(boundaryDoc.contains("`new SpawnListEntry(EntityCrazyCreeper.class, 1, 1, 1)`"));
         assertTrue(boundaryDoc.contains("`new SpawnListEntry(EntityCrazyZombie.class, 1, 1, 1)`"));

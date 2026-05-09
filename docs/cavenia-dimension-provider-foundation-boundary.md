@@ -200,7 +200,7 @@ The inspected behavior is:
 - starts from `CaveEntityRegistry.SPAWNS`
 - reads `double chance = CaveniaConfig.crazySpawnChance`
 - when the chance roll passes, computes a nearby exclusion radius from that chance
-- switches to `CaveEntityRegistry.CRAZY_SPAWNS` only when the nearby search finds no `ICavenicMob && !entity.isNonBoss()`
+- switches to `CaveEntityRegistry.CRAZY_SPAWNS` only when the nearby search finds no `ICavenicMob` whose `isNonBoss()` returns `false`
 - then chooses from the selected weighted list
 
 That means active crazy spawning is not separable from the missing Cavenia provider foundation.

@@ -64,7 +64,8 @@ class CaveniaDimensionProviderFoundationBoundaryTest {
         assertTrue(boundaryDoc.contains("`createSpawnCreature(...)`"));
         assertTrue(boundaryDoc.contains("`CaveEntityRegistry.CRAZY_SPAWNS`"));
         assertTrue(boundaryDoc.contains("CaveniaConfig.crazySpawnChance"));
-        assertTrue(boundaryDoc.contains("`ICavenicMob && !entity.isNonBoss()`"));
+        assertTrue(boundaryDoc.contains("`ICavenicMob` whose `isNonBoss()` returns `false`"));
+        assertTrue(boundaryDoc.contains("no `ICavenicMob` whose `isNonBoss()` returns `false`"));
         assertTrue(boundaryDoc.contains("`dimensionId = -54`"));
         assertTrue(boundaryDoc.contains("`worldHeight = 128`"));
         assertTrue(boundaryDoc.contains("`generateCaves = true`"));

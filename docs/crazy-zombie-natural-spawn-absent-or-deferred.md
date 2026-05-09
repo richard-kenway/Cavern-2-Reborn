@@ -20,7 +20,7 @@ This note documents the inspected legacy natural-spawn path for `cavernreborn:cr
   - the dimension is `Cavenia`
   - `CaveniaConfig.crazySpawnChance > 0.0D`
   - a `world.rand.nextDouble()` roll passes that config chance
-  - no nearby `ICavenicMob` entity with `!entity.isNonBoss()` is found inside the chance-derived exclusion box
+  - no nearby `ICavenicMob` whose `isNonBoss()` returns `false` is found inside the chance-derived exclusion box
 - When that switch happens, Crazy Zombie is only one member of the weighted crazy roster, not a dedicated standalone biome spawn entry.
 
 ## Weight, Group Size And Cluster Details
@@ -37,7 +37,7 @@ This note documents the inspected legacy natural-spawn path for `cavernreborn:cr
 - It is tied to:
   - the unimplemented `Cavenia` dimension
   - `CaveniaConfig.crazySpawnChance`
-  - nearby non-boss `ICavenicMob` filtering
+  - a nearby `ICavenicMob` scan for `!entity.isNonBoss()`
   - weighted switching across the whole crazy roster
 - Reborn does not currently have `Cavenia`, the old Cavenia world-provider override, or the full crazy-roster population system.
 - Because of that, adding a `CAVERN` biome modifier or a direct `crazy_zombie` spawn placement would invent behavior that the legacy source does not support.

@@ -244,7 +244,7 @@ class CrazyZombieDocumentationTest {
         assertTrue(doc.contains("`new SpawnListEntry(EntityCrazyZombie.class, 1, 1, 1)`"));
         assertTrue(doc.contains("`WorldProviderCavenia#createSpawnCreature(...)`"));
         assertTrue(doc.contains("`CaveniaConfig.crazySpawnChance`"));
-        assertTrue(doc.contains("no nearby `ICavenicMob` entity with `!entity.isNonBoss()`"));
+        assertTrue(doc.contains("no nearby `ICavenicMob` whose `isNonBoss()` returns `false`"));
         assertTrue(doc.contains("Legacy `EntityCrazyZombie#getMaxSpawnedInChunk()` returns `1`"));
         assertTrue(doc.contains("Reborn does not register natural spawn placement for `crazy_zombie`"));
         assertTrue(doc.contains("does not add a fake `CAVERN` biome modifier or normal monster spawn rule"));

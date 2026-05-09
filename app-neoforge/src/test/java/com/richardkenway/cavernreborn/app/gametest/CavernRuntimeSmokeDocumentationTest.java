@@ -243,7 +243,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("Cavenia Spawn Provider / Crazy Roster Activation Contract Boundary"));
         assertTrue(readme.contains("docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md"));
         assertTrue(readme.contains("full mirage-world stack"));
-        assertTrue(readme.contains("old Cavenia-only `crazySpawnChance` plus nearby non-boss `ICavenicMob` exclusion branch"));
+        assertTrue(readme.contains("old Cavenia-only `crazySpawnChance` plus a nearby `ICavenicMob` scan for `!entity.isNonBoss()`"));
         assertTrue(readme.contains("fourth crazy-variant foundation follow-up"));
         assertTrue(readme.contains("`crazy_spider`"));
         assertTrue(readme.contains("vanilla spider loot baseline"));

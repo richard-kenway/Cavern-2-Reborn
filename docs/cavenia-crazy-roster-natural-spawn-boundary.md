@@ -91,7 +91,7 @@ This means the crazy roster is:
 
 - Cavenia-only
 - config-gated by `CaveniaConfig.crazySpawnChance`
-- additionally gated by nearby non-boss `ICavenicMob` exclusion
+- additionally gated by a nearby `ICavenicMob` scan for `!entity.isNonBoss()`
 - selected as one weighted roster, not as four standalone biome spawn entries
 
 ## Checks Not Found In The Crazy-Roster Switch
@@ -127,7 +127,7 @@ Current Reborn does not have:
 - a `WorldProviderCavenia` equivalent
 - a Cavenia-only spawn callback that can swap between `SPAWNS` and `CRAZY_SPAWNS`
 - a Reborn equivalent of `CaveniaConfig.crazySpawnChance`
-- a nearby non-boss `ICavenicMob` exclusion loop for the crazy roster
+- a nearby `ICavenicMob` scan for `!entity.isNonBoss()` or an equivalent policy
 
 Because of that, adding normal Reborn biome modifiers, biome tags or spawn placements for the crazy mobs would invent behavior that the legacy source does not support.
 
@@ -168,7 +168,7 @@ Before active crazy natural spawning can be enabled honestly, Reborn needs:
 - the provider/terrain/biome split documented in `docs/cavenia-dimension-provider-foundation-boundary.md`
 - a Cavenia-only monster spawn host equivalent to legacy `WorldProviderCavenia#createSpawnCreature(...)`
 - a checked-in policy for `CaveniaConfig.crazySpawnChance`
-- the nearby non-boss `ICavenicMob` exclusion behavior or a modern equivalent that is source-honest
+- the nearby `ICavenicMob` scan for `!entity.isNonBoss()` or a modern equivalent that is source-honest
 - a Cavenia-only roster switch that keeps crazy mobs out of the normal `CAVERN` biome-spawn pipeline
 
 ## Behavior Kept Unchanged In This Boundary Slice

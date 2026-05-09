@@ -107,13 +107,15 @@ The exact exclusion scan is:
 
 - `world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(pos.add(-range, -rangeY, -range), pos.add(range, rangeY, range)), entity -> entity instanceof ICavenicMob && !entity.isNonBoss()).isEmpty()`
 - predicate: `entity instanceof ICavenicMob && !entity.isNonBoss()`
+- source-literally, the scan is for nearby `ICavenicMob` entities whose `isNonBoss()` returns `false`
+- legacy naming elsewhere also points the same direction: `BlockPortalCavern` rejects `!entity.isNonBoss()`, and legacy `EntitySkySeeker#isNonBoss()` also returns `false`
 
 The switch behavior is:
 
 - keep `CaveEntityRegistry.SPAWNS` by default
 - switch to `CaveEntityRegistry.CRAZY_SPAWNS` only when:
   - `range <= 0`, or
-  - the nearby search finds no `ICavenicMob && !entity.isNonBoss()`
+  - the nearby search finds no nearby `ICavenicMob` whose `isNonBoss()` returns `false`
 
 The final entity choice is then:
 
@@ -178,13 +180,20 @@ The nearby exclusion predicate only cares about:
 - `entity instanceof ICavenicMob`
 - `!entity.isNonBoss()`
 
-The crazy entities inherit from direct Cavenic mob classes, so they still satisfy `instanceof ICavenicMob`, but all four inspected crazy classes override:
+The full inspected `ICavenicMob` set in legacy source is:
+
+- direct classes: `EntityCavenicSkeleton`, `EntityCavenicCreeper`, `EntityCavenicZombie`, `EntityCavenicSpider`, `EntityCavenicWitch`, `EntityCavenicBear`, `EntityCaveman`
+- crazy subclasses: `EntityCrazySkeleton`, `EntityCrazyCreeper`, `EntityCrazyZombie`, `EntityCrazySpider`
+
+I did not find any other `ICavenicMob` implementations in the legacy source tree.
+
+The crazy entities inherit from direct Cavenic mob classes, so they still satisfy `instanceof ICavenicMob`, and all four inspected crazy classes override:
 
 - `isNonBoss()` -> `false`
 
-That means crazy mobs do not satisfy the exclusion branch.
+That makes the crazy variants the explicit source-confirmed matches for the nearby predicate.
 
-The direct Cavenic classes inspected for the normal roster are the natural blockers because they implement `ICavenicMob` and keep the default interface behavior instead of overriding `isNonBoss()` to `false`.
+The direct Cavenic classes inspected for the normal roster do implement `ICavenicMob`, but they do not override `isNonBoss()` in their own class bodies. Because `ICavenicMob` itself does not define `isNonBoss()`, this boundary keeps the wording source-literal instead of relabeling the predicate as a generic non-boss exclusion.
 
 The crazy entries also keep:
 
@@ -216,7 +225,7 @@ Adding active crazy natural spawning now would still be source-dishonest because
 - a Cavenia-only hostile spawn host/service
 - a modern policy for `SPAWNS` versus `CRAZY_SPAWNS`
 - a modern policy for `crazySpawnChance`
-- a nearby `ICavenicMob` exclusion scan in Cavenia-only runtime context
+- a nearby `ICavenicMob` scan for `!entity.isNonBoss()` in Cavenia-only runtime context
 - the broader Cavenia access/provider/runtime foundation
 
 Adding normal `CAVERN` biome modifiers or spawn placements for crazy mobs would still be wrong because the inspected legacy activation path is not a normal biome-list registration path.
@@ -230,7 +239,7 @@ An honest future Reborn implementation likely needs:
 - a modern policy representation for `CaveEntityRegistry.CRAZY_SPAWNS`
 - a checked-in config or policy for `monsterSpawn`
 - a checked-in config or policy for `crazySpawnChance`
-- a nearby entity scan equivalent for `ICavenicMob && !entity.isNonBoss()`
+- a nearby entity scan equivalent for `ICavenicMob` whose `isNonBoss()` returns `false`
 - a spawn validity strategy that fits modern spawn placements without pretending normal `CAVERN` biome modifiers are enough
 
 ## Unresolved Questions
