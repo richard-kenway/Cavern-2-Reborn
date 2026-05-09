@@ -7526,6 +7526,10 @@ public final class CavernSpecialOreGameTests {
             "Expected the Cavenia active-foundation readiness-plan doc to exist in the project root"
         );
         helper.assertTrue(
+            projectFileExists("docs", "cavenia-active-foundation-technical-spike.md"),
+            "Expected the Cavenia active-foundation technical-spike doc to exist in the project root"
+        );
+        helper.assertTrue(
             projectFileExists("docs", "caveman-cavenia-normal-roster-boundary.md"),
             "Expected the Caveman normal-roster boundary doc to exist in the project root"
         );

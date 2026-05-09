@@ -60,6 +60,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(planDoc.contains("`CaveniaSpawnEntry`"));
         assertTrue(planDoc.contains("`EntityCaveman -> deferred:caveman`"));
         assertTrue(planDoc.contains("nearby `ICavenicMob` whose `isNonBoss()` returns `false`"));
+        assertTrue(planDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
         assertTrue(planDoc.contains("`dimension/cavenia.json`"));
         assertTrue(planDoc.contains("`dimension_type/cavenia.json`"));
         assertTrue(planDoc.contains("`CAVENIA_LOCATION`"));
@@ -77,7 +78,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(planDoc.contains("Phase 8: Spawn provider MVP"));
         assertTrue(planDoc.contains("Phase 9: Caveman full parity"));
         assertTrue(planDoc.contains("First Active MVP Candidate"));
-        assertTrue(planDoc.contains("Cavenia Active Foundation Technical Spike"));
+        assertTrue(planDoc.contains("`Cavenia Runtime Key / Inactive Dimension Scaffold MVP`"));
         assertTrue(planDoc.contains("Minimum Acceptance Checklist Before Enabling Cavenia"));
         assertTrue(planDoc.contains("active dimension key/type agreed"));
         assertTrue(planDoc.contains("safe generator strategy agreed"));
@@ -89,9 +90,14 @@ class CaveniaActiveFoundationReadinessPlanTest {
 
         assertTrue(readme.contains("Cavenia Active Foundation Readiness / Implementation Plan"));
         assertTrue(readme.contains("docs/cavenia-active-foundation-readiness-plan.md"));
+        assertTrue(readme.contains("Cavenia Active Foundation Technical Spike"));
+        assertTrue(readme.contains("docs/cavenia-active-foundation-technical-spike.md"));
         assertTrue(runtimeSmokeDoc.contains("Cavenia Active Foundation Readiness / Implementation Plan"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(runtimeSmokeDoc.contains("inactive Cavenia active-foundation readiness-plan boundary"));
+        assertTrue(runtimeSmokeDoc.contains("Cavenia Active Foundation Technical Spike"));
+        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
+        assertTrue(runtimeSmokeDoc.contains("inactive Cavenia active-foundation technical-spike boundary"));
 
         assertTrue(foundationDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(keyTypeDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));

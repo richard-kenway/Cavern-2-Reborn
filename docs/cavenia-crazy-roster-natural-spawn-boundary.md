@@ -6,6 +6,10 @@ The consolidated readiness and future implementation order are documented separa
 
 - `docs/cavenia-active-foundation-readiness-plan.md`
 
+The narrower active-foundation implementation-decision spike is documented separately in:
+
+- `docs/cavenia-active-foundation-technical-spike.md`
+
 - `cavernreborn:crazy_zombie`
 - `cavernreborn:crazy_skeleton`
 - `cavernreborn:crazy_creeper`

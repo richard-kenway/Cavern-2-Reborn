@@ -1,0 +1,105 @@
+package com.richardkenway.cavernreborn.app.registry;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import org.junit.jupiter.api.Test;
+
+class CaveniaActiveFoundationTechnicalSpikeTest {
+    private static final Path SPIKE_DOC = resolveProjectFile("docs", "cavenia-active-foundation-technical-spike.md");
+    private static final Path READINESS_DOC = resolveProjectFile("docs", "cavenia-active-foundation-readiness-plan.md");
+    private static final Path FOUNDATION_DOC = resolveProjectFile("docs", "cavenia-dimension-provider-foundation-boundary.md");
+    private static final Path KEY_TYPE_DOC = resolveProjectFile("docs", "cavenia-dimension-key-type-contract-boundary.md");
+    private static final Path BIOME_PROVIDER_DOC = resolveProjectFile("docs", "cavenia-biome-provider-contract-boundary.md");
+    private static final Path VEINS_DOC = resolveProjectFile("docs", "cavenia-veins-content-pipeline-contract-boundary.md");
+    private static final Path TERRAIN_DOC = resolveProjectFile("docs", "cavenia-chunk-generator-terrain-pipeline-contract-boundary.md");
+    private static final Path CAVE_CARVER_DOC = resolveProjectFile("docs", "cavenia-cave-carver-mapgen-contract-boundary.md");
+    private static final Path POPULATION_DOC = resolveProjectFile("docs", "cavenia-population-lakes-falls-shroom-contract-boundary.md");
+    private static final Path ACCESS_DOC = resolveProjectFile("docs", "cavenia-mirage-entry-access-contract-boundary.md");
+    private static final Path SPAWN_PROVIDER_DOC = resolveProjectFile("docs", "cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md");
+    private static final Path POLICY_DOC = resolveProjectFile("docs", "cavenia-spawn-provider-policy-mvp.md");
+    private static final Path CRAZY_ROSTER_DOC = resolveProjectFile("docs", "cavenia-crazy-roster-natural-spawn-boundary.md");
+    private static final Path CAVEMAN_DOC = resolveProjectFile("docs", "caveman-cavenia-normal-roster-boundary.md");
+
+    @Test
+    void technicalSpikeExistsAndPinsTheFirstActiveFoundationDecision() throws IOException {
+        String spikeDoc = Files.readString(SPIKE_DOC);
+        String readinessDoc = Files.readString(READINESS_DOC);
+        String foundationDoc = Files.readString(FOUNDATION_DOC);
+        String keyTypeDoc = Files.readString(KEY_TYPE_DOC);
+        String biomeProviderDoc = Files.readString(BIOME_PROVIDER_DOC);
+        String veinsDoc = Files.readString(VEINS_DOC);
+        String terrainDoc = Files.readString(TERRAIN_DOC);
+        String caveCarverDoc = Files.readString(CAVE_CARVER_DOC);
+        String populationDoc = Files.readString(POPULATION_DOC);
+        String accessDoc = Files.readString(ACCESS_DOC);
+        String spawnProviderDoc = Files.readString(SPAWN_PROVIDER_DOC);
+        String policyDoc = Files.readString(POLICY_DOC);
+        String crazyRosterDoc = Files.readString(CRAZY_ROSTER_DOC);
+        String cavemanDoc = Files.readString(CAVEMAN_DOC);
+
+        assertTrue(spikeDoc.contains("Cavenia Active Foundation Technical Spike"));
+        assertTrue(spikeDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
+        assertTrue(spikeDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
+        assertTrue(spikeDoc.contains("docs/cavenia-dimension-key-type-contract-boundary.md"));
+        assertTrue(spikeDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
+        assertTrue(spikeDoc.contains("docs/cavenia-veins-content-pipeline-contract-boundary.md"));
+        assertTrue(spikeDoc.contains("docs/cavenia-chunk-generator-terrain-pipeline-contract-boundary.md"));
+        assertTrue(spikeDoc.contains("docs/cavenia-cave-carver-mapgen-contract-boundary.md"));
+        assertTrue(spikeDoc.contains("docs/cavenia-population-lakes-falls-shroom-contract-boundary.md"));
+        assertTrue(spikeDoc.contains("docs/cavenia-mirage-entry-access-contract-boundary.md"));
+        assertTrue(spikeDoc.contains("docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md"));
+        assertTrue(spikeDoc.contains("docs/cavenia-spawn-provider-policy-mvp.md"));
+        assertTrue(spikeDoc.contains("docs/cavenia-crazy-roster-natural-spawn-boundary.md"));
+        assertTrue(spikeDoc.contains("docs/caveman-cavenia-normal-roster-boundary.md"));
+        assertTrue(spikeDoc.contains("`CAVENIA_LOCATION`"));
+        assertTrue(spikeDoc.contains("`CAVENIA_LEVEL_KEY`"));
+        assertTrue(spikeDoc.contains("`dimension/cavenia.json`"));
+        assertTrue(spikeDoc.contains("`dimension_type/cavenia.json`"));
+        assertTrue(spikeDoc.contains("`worldHeight = 128`"));
+        assertTrue(spikeDoc.contains("Custom chunk generator"));
+        assertTrue(spikeDoc.contains("Data-driven approximation"));
+        assertTrue(spikeDoc.contains("hybrid custom generator plus data-driven features"));
+        assertTrue(spikeDoc.contains("safe entry/access"));
+        assertTrue(spikeDoc.contains("no active Cavenia spawning"));
+        assertTrue(spikeDoc.contains("no active crazy spawning"));
+        assertTrue(spikeDoc.contains("no fake normal `CAVERN` crazy spawning"));
+        assertTrue(spikeDoc.contains("no Mirage Book"));
+        assertTrue(spikeDoc.contains("no portal"));
+        assertTrue(spikeDoc.contains("no player access or teleport"));
+        assertTrue(spikeDoc.contains("`EntityCaveman -> deferred:caveman`"));
+        assertTrue(spikeDoc.contains("`Cavenia Runtime Key / Inactive Dimension Scaffold MVP`"));
+
+        assertTrue(readinessDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
+        assertTrue(readinessDoc.contains("`Cavenia Runtime Key / Inactive Dimension Scaffold MVP`"));
+        assertTrue(foundationDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
+        assertTrue(keyTypeDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
+        assertTrue(biomeProviderDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
+        assertTrue(veinsDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
+        assertTrue(terrainDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
+        assertTrue(caveCarverDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
+        assertTrue(populationDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
+        assertTrue(accessDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
+        assertTrue(spawnProviderDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
+        assertTrue(policyDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
+        assertTrue(crazyRosterDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
+        assertTrue(cavemanDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
+    }
+
+    private static Path resolveProjectFile(String first, String... more) {
+        Path current = Path.of("").toAbsolutePath();
+
+        for (int i = 0; i < 5 && current != null; i++) {
+            Path candidate = current.resolve(Path.of(first, more));
+            if (Files.exists(candidate)) {
+                return candidate;
+            }
+            current = current.getParent();
+        }
+
+        throw new IllegalStateException("Could not resolve project file: " + Path.of(first, more));
+    }
+}

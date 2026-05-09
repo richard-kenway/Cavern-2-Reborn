@@ -39,6 +39,10 @@ Together those notes now pin:
 
 Phase planning below should treat those documents and the pure `core` policy types `CaveniaSpawnProviderPolicy` and `CaveniaSpawnEntry` as the accepted readiness base.
 
+The narrower follow-up implementation-decision spike is now documented separately in:
+
+- `docs/cavenia-active-foundation-technical-spike.md`
+
 ## Stable Implementation Inputs
 
 The current repository state and inspected legacy source now pin these implementation inputs:
@@ -176,9 +180,15 @@ It requires explicit decisions for:
 
 ## First Active MVP Candidate
 
-The recommended next real slice is `Cavenia Active Foundation Technical Spike`.
+The follow-up implementation-decision bridge now lives in:
 
-That is the safer next step because generator strategy, key/type shape, safe arrival expectations and the eventual spawn-host architecture still need explicit technical decisions before a checked-in active runtime identity can stay honest and non-broken.
+- `docs/cavenia-active-foundation-technical-spike.md`
+
+The recommended next real slice after that spike is:
+
+- `Cavenia Runtime Key / Inactive Dimension Scaffold MVP`
+
+That next slice should stop at inert identity constants and boundary smoke. It should not add `dimension/cavenia.json`, `dimension_type/cavenia.json`, active travel, terrain, spawning or fake `CAVERN` parity.
 
 ## Minimum Acceptance Checklist Before Enabling Cavenia
 

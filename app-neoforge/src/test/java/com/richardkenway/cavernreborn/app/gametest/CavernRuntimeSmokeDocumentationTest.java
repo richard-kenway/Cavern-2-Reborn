@@ -248,6 +248,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/caveman-cavenia-normal-roster-boundary.md"));
         assertTrue(readme.contains("Cavenia Active Foundation Readiness / Implementation Plan"));
         assertTrue(readme.contains("docs/cavenia-active-foundation-readiness-plan.md"));
+        assertTrue(readme.contains("Cavenia Active Foundation Technical Spike"));
+        assertTrue(readme.contains("docs/cavenia-active-foundation-technical-spike.md"));
         assertTrue(readme.contains("full mirage-world stack"));
         assertTrue(readme.contains("old Cavenia-only `crazySpawnChance` plus a nearby `ICavenicMob` scan for `!entity.isNonBoss()`"));
         assertTrue(readme.contains("fourth crazy-variant foundation follow-up"));
@@ -620,6 +622,9 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("Cavenia Active Foundation Readiness / Implementation Plan"));
         assertTrue(doc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(doc.contains("inactive Cavenia active-foundation readiness-plan boundary"));
+        assertTrue(doc.contains("Cavenia Active Foundation Technical Spike"));
+        assertTrue(doc.contains("docs/cavenia-active-foundation-technical-spike.md"));
+        assertTrue(doc.contains("inactive Cavenia active-foundation technical-spike boundary"));
         assertTrue(doc.contains("`CaveniaSpawnProviderPolicy` still keeps `EntityCaveman -> deferred:caveman`"));
         assertTrue(doc.contains("no registered `cavernreborn:caveman` entity type exists at runtime"));
         assertTrue(doc.contains("docs/caveman-cavenia-normal-roster-boundary.md"));
