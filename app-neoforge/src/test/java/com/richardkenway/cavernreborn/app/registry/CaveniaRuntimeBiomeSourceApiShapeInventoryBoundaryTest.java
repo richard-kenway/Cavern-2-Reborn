@@ -15,6 +15,9 @@ class CaveniaRuntimeBiomeSourceApiShapeInventoryBoundaryTest {
         "The runtime-biome-source API-shape inventory follow-up is now documented in .";
     private static final Path README = resolveProjectFile("README.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
+    private static final Path REAL_SUBCLASS_GO_NO_GO_DOC = resolveProjectFile(
+        "docs", "cavenia-runtime-biome-source-real-subclass-go-no-go-decision-mvp.md"
+    );
     private static final Path INVENTORY_DOC = resolveProjectFile("docs", "cavenia-runtime-biome-source-api-shape-inventory-mvp.md");
     private static final Path SUBCLASS_DECISION_DOC = resolveProjectFile(
         "docs", "cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"
@@ -48,6 +51,7 @@ class CaveniaRuntimeBiomeSourceApiShapeInventoryBoundaryTest {
     void docsPinTheRuntimeBiomeSourceApiShapeInventorySlice() throws IOException {
         String readme = Files.readString(README);
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE_DOC);
+        String realSubclassGoNoGoDoc = Files.readString(REAL_SUBCLASS_GO_NO_GO_DOC);
         String inventoryDoc = Files.readString(INVENTORY_DOC);
         String subclassDecisionDoc = Files.readString(SUBCLASS_DECISION_DOC);
         String skeletonDoc = Files.readString(SKELETON_DOC);
@@ -67,6 +71,8 @@ class CaveniaRuntimeBiomeSourceApiShapeInventoryBoundaryTest {
         assertTrue(inventoryDoc.contains("`CaveniaRuntimeBiomeSourceApiShapeInventory`"));
         assertTrue(inventoryDoc.contains("`CaveniaRuntimeBiomeSourceApiShapeComponent`"));
         assertTrue(inventoryDoc.contains("`CaveniaRuntimeBiomeSourceApiShapeInventoryEntry`"));
+        assertTrue(inventoryDoc.contains("docs/cavenia-runtime-biome-source-real-subclass-go-no-go-decision-mvp.md"));
+        assertTrue(realSubclassGoNoGoDoc.contains("`CaveniaRuntimeBiomeSourceApiShapeInventory`"));
         assertTrue(inventoryDoc.contains("`CaveniaRuntimeBiomeSourceSubclassDecision`"));
         assertTrue(inventoryDoc.contains("`CaveniaRuntimeBiomeSourceSkeleton`"));
         assertTrue(inventoryDoc.contains("`CaveniaRuntimeBiomeSourceFirstImplementationDecision`"));
@@ -118,8 +124,10 @@ class CaveniaRuntimeBiomeSourceApiShapeInventoryBoundaryTest {
 
         assertTrue(readme.contains("Cavenia Runtime BiomeSource API Shape Inventory MVP"));
         assertTrue(readme.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(readme.contains("docs/cavenia-runtime-biome-source-real-subclass-go-no-go-decision-mvp.md"));
         assertTrue(runtimeSmokeDoc.contains("Cavenia Runtime BiomeSource API Shape Inventory MVP"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-runtime-biome-source-real-subclass-go-no-go-decision-mvp.md"));
         assertTrue(subclassDecisionDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
         assertTrue(skeletonDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
         assertTrue(firstDecisionDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));

@@ -109,6 +109,8 @@ class CaveniaRuntimeBiomeSourceSubclassDecisionTest {
         assertTrue(CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayInventoryRuntimeBiomeSourceApiShape());
         assertTrue(CaveniaRuntimeBiomeSourceSubclassDecision.runtimeBiomeSourceApiShapeInventoryReady());
         assertFalse(CaveniaRuntimeBiomeSourceSubclassDecision.runtimeBiomeSourceApiShapeRuntimeReady());
+        assertTrue(CaveniaRuntimeBiomeSourceSubclassDecision.realSubclassGoNoGoDecisionReady());
+        assertFalse(CaveniaRuntimeBiomeSourceSubclassDecision.realSubclassGoNoGoRuntimeReady());
         assertFalse(CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayImplementRealBiomeSourceSubclass());
         assertFalse(CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayAddCodecImplementation());
         assertFalse(CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayRegisterCodec());

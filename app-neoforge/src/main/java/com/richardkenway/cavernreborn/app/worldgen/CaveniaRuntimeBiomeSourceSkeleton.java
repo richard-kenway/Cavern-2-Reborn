@@ -134,6 +134,15 @@ public final class CaveniaRuntimeBiomeSourceSkeleton {
         return false;
     }
 
+    public static boolean realSubclassGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision
+            .decisionIsGoForGuardedUnregisteredRealSubclassNext();
+    }
+
+    public static boolean realSubclassGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static int guardrailCount() {
         return CaveniaRuntimeBiomeSourceFirstImplementationDecision.guardrailCount();
     }

@@ -543,6 +543,24 @@ NeoForge GameTest runtime smoke covers:
 - runtime biome source is not ready, runtime biome source is not registered, codec is not registered and registry lookup access is not ready
 - dimension JSON/type JSON remain absent, Cavenia cannot activate now and `EntityCaveman -> deferred:caveman` remains unchanged
 - the runtime-biome-source API-shape inventory note at `docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md`
+- Cavenia Runtime BiomeSource Real Subclass Go/No-Go Decision MVP
+- runtime-biome-source real-subclass go/no-go decision MVP
+- `CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision` now resolves from `app-neoforge`
+- selected decision is `PROCEED_WITH_GUARDED_UNREGISTERED_REAL_BIOME_SOURCE_SUBCLASS_NEXT`
+- decision is go for guarded unregistered real subclass next
+- real subclass is not implemented in this slice and runtime API is not allowed in this slice
+- guardrail count is `18`, all guardrails are enforced in this slice and no runtime activation is allowed by guardrails
+- next slice may add one designated real subclass file named `CaveniaRuntimeBiomeSource.java`
+- next slice may extend `BiomeSource` only in the designated subclass
+- next slice may use abstract method signature types only and may use unsupported method stubs only
+- next slice may not add usable codec implementation, may not register codec and may not register biome-source type
+- next slice may not use registry lookup access and may not implement holder/resource-key conversion
+- next slice may not add dimension JSON/type JSON and may not create an active Cavenia level
+- next slice may not add worldgen resources, may not add access/teleport, may not add spawning and may not register `cavernreborn:caveman`
+- API shape inventory is ready, skeleton is ready, selected-surface readiness item count remains `68` and global readiness matrix total/blocked requirement counts remain `46/46`
+- runtime biome source is not ready in this slice, runtime biome source is not registered, codec is not registered and registry lookup access is not ready
+- dimension JSON/type JSON remain absent, Cavenia cannot activate now and `EntityCaveman -> deferred:caveman` remains unchanged
+- the runtime-biome-source real-subclass go/no-go decision note at `docs/cavenia-runtime-biome-source-real-subclass-go-no-go-decision-mvp.md`
 - the registry lookup readiness note at `docs/cavenia-registry-lookup-readiness-contracts-mvp.md`
 - `CaveniaSpawnProviderPolicy` still keeps `EntityCaveman -> deferred:caveman`
 - no registered `cavernreborn:caveman` entity type exists at runtime

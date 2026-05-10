@@ -70,6 +70,9 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceApiS
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceApiShapeInventory;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceGuardrail;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceNextStepDecision;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceRealSubclassGuardrail;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceRealSubclassNextStepDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceSkeleton;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceSubclassDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceSubclassNextStepDecision;
@@ -8675,6 +8678,88 @@ public final class CavernSpecialOreGameTests {
                 && !CaveniaRuntimeBiomeSourceApiShapeInventory.dimensionTypeJsonPresent()
                 && CaveniaRuntimeBiomeSourceApiShapeInventory.cavemanRemainsDeferred(),
             "Expected the runtime-biome-source API shape inventory layer to keep the locally inspected BiomeSource shape pinned while runtime, registration and activation remain absent"
+        );
+        helper.assertTrue(
+            CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.selectedDecision()
+                == CaveniaRuntimeBiomeSourceRealSubclassNextStepDecision
+                    .PROCEED_WITH_GUARDED_UNREGISTERED_REAL_BIOME_SOURCE_SUBCLASS_NEXT
+                && CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision
+                    .decisionIsGoForGuardedUnregisteredRealSubclassNext()
+                && CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.decisionIsImplementationOnlyForNextSlice()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.realSubclassImplementedInThisSlice()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.runtimeApiAllowedInThisSlice()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.activationAllowedInThisSlice()
+                && CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.guardrailCount() == 18
+                && CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.guardrailValues().equals(List.of(
+                    CaveniaRuntimeBiomeSourceRealSubclassGuardrail.ALLOW_ONE_DESIGNATED_REAL_SUBCLASS_FILE_NEXT,
+                    CaveniaRuntimeBiomeSourceRealSubclassGuardrail.ALLOW_BIOME_SOURCE_EXTENDS_ONLY_IN_DESIGNATED_SUBCLASS,
+                    CaveniaRuntimeBiomeSourceRealSubclassGuardrail.ALLOW_ABSTRACT_METHOD_SIGNATURE_TYPES_ONLY,
+                    CaveniaRuntimeBiomeSourceRealSubclassGuardrail.ALLOW_UNSUPPORTED_METHOD_STUBS_ONLY,
+                    CaveniaRuntimeBiomeSourceRealSubclassGuardrail.NO_USABLE_CODEC_IMPLEMENTATION,
+                    CaveniaRuntimeBiomeSourceRealSubclassGuardrail.NO_CODEC_REGISTRATION,
+                    CaveniaRuntimeBiomeSourceRealSubclassGuardrail.NO_BIOME_SOURCE_TYPE_REGISTRATION,
+                    CaveniaRuntimeBiomeSourceRealSubclassGuardrail.NO_REGISTRY_LOOKUP_ACCESS,
+                    CaveniaRuntimeBiomeSourceRealSubclassGuardrail.NO_HOLDER_RESOURCE_KEY_CONVERSION_IMPLEMENTATION,
+                    CaveniaRuntimeBiomeSourceRealSubclassGuardrail.NO_DIMENSION_JSON,
+                    CaveniaRuntimeBiomeSourceRealSubclassGuardrail.NO_DIMENSION_TYPE_JSON,
+                    CaveniaRuntimeBiomeSourceRealSubclassGuardrail.NO_ACTIVE_CAVENIA_LEVEL,
+                    CaveniaRuntimeBiomeSourceRealSubclassGuardrail.NO_WORLDGEN_RESOURCES,
+                    CaveniaRuntimeBiomeSourceRealSubclassGuardrail.NO_ACCESS_OR_TELEPORT,
+                    CaveniaRuntimeBiomeSourceRealSubclassGuardrail.NO_SPAWNING,
+                    CaveniaRuntimeBiomeSourceRealSubclassGuardrail.NO_CAVEMAN_ENTITY_REGISTRATION,
+                    CaveniaRuntimeBiomeSourceRealSubclassGuardrail.KEEP_SUBCLASS_UNREGISTERED_AND_UNREFERENCED_BY_RUNTIME,
+                    CaveniaRuntimeBiomeSourceRealSubclassGuardrail.KEEP_EXISTING_SKELETON_AND_API_INVENTORY_INTACT
+                )),
+            "Expected the real-subclass go/no-go decision layer to keep the exact selected branch and guardrail order pinned without creating the designated subclass file in this slice"
+        );
+        helper.assertTrue(
+            CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.allGuardrailsEnforcedInThisSlice()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.anyRuntimeActivationAllowedByGuardrails()
+                && CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.allowedNextSliceActionCount() == 4
+                && CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.nextSliceMayAddOneDesignatedRealSubclassFile()
+                && CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.nextSliceDesignatedSubclassSimpleName()
+                    .equals("CaveniaRuntimeBiomeSource")
+                && CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.nextSliceDesignatedSubclassFileName()
+                    .equals("CaveniaRuntimeBiomeSource.java")
+                && CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision
+                    .nextSliceMayExtendBiomeSourceOnlyInDesignatedSubclass()
+                && CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision
+                    .nextSliceMayUseAbstractMethodSignatureTypesOnly()
+                && CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.nextSliceMayUseUnsupportedMethodStubsOnly()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.nextSliceMayAddUsableCodecImplementation()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.nextSliceMayRegisterCodec()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.nextSliceMayRegisterBiomeSourceType()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.nextSliceMayUseRegistryLookupAccess()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision
+                    .nextSliceMayImplementHolderResourceKeyConversion()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.nextSliceMayAddDimensionJson()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.nextSliceMayAddDimensionTypeJson()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.nextSliceMayCreateActiveCaveniaLevel()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.nextSliceMayAddWorldgenResources()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.nextSliceMayAddAccessOrTeleport()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.nextSliceMayAddSpawning()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.nextSliceMayRegisterCavemanEntity(),
+            "Expected the real-subclass go/no-go decision layer to allow only the single guarded designated subclass direction while keeping codec, lookup, dimension, worldgen, access and spawning blocked"
+        );
+        helper.assertTrue(
+            CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.apiShapeInventoryReady()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.apiShapeRuntimeReady()
+                && CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.skeletonReady()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.skeletonRuntimeReady()
+                && CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.subclassDecisionApiShapePinned()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.subclassDecisionReadyForRealSubclass()
+                && CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.selectedSurfaceReadinessItemCount() == 68
+                && CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.globalReadinessMatrixTotalRequirementCount() == 46
+                && CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.globalReadinessMatrixBlockedRequirementCount() == 46
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.runtimeBiomeSourceReady()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.runtimeBiomeSourceRegistered()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.codecRegistered()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.registryLookupAccessReady()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.dimensionJsonPresent()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.dimensionTypeJsonPresent()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.canActivateCaveniaNow()
+                && CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.cavemanRemainsDeferred(),
+            "Expected the real-subclass go/no-go decision layer to keep the API inventory ready, the skeleton ready, and every runtime, registration and activation surface blocked in this slice"
         );
         helper.assertTrue(
             projectFileExists("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md"),

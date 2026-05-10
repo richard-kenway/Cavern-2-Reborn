@@ -299,6 +299,15 @@ public final class CaveniaRuntimeBiomeSourceApiShapeInventory {
         return false;
     }
 
+    public static boolean realSubclassGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision
+            .decisionIsGoForGuardedUnregisteredRealSubclassNext();
+    }
+
+    public static boolean realSubclassGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static int selectedSurfaceReadinessItemCount() {
         return CaveniaBiomeSourceStrategyReadinessMatrix.totalReadinessItemCount();
     }

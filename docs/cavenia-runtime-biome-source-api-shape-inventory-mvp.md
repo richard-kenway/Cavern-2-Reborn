@@ -223,3 +223,5 @@ Current Reborn therefore still keeps:
 The next slice can make an explicit go/no-go decision for a guarded real `BiomeSource` subclass based on this inventory.
 
 Any real subclass must still avoid dimension activation unless explicitly chosen.
+
+The runtime-biome-source real-subclass go/no-go decision follow-up is now documented in `docs/cavenia-runtime-biome-source-real-subclass-go-no-go-decision-mvp.md`.
