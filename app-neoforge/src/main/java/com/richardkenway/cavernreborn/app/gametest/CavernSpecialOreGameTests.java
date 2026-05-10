@@ -76,6 +76,8 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceFall
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceHolderConversionReadiness;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourcePossibleBiomesReadiness;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceReadinessChainConsolidation;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceReadinessChainNextDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceRealSubclassGuardrail;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceRealSubclassNextStepDecision;
@@ -9006,6 +9008,67 @@ public final class CavernSpecialOreGameTests {
             "Expected the noise-biome readiness contract to pin the future method shape, selector path, candidate source, fallback source and possible-biomes constraint without adding runtime selection, holder returns, lookup or activation"
         );
         helper.assertTrue(
+            CaveniaRuntimeBiomeSourceReadinessChainConsolidation.readinessChainConsolidationReady()
+                && CaveniaRuntimeBiomeSourceReadinessChainConsolidation.allCurrentReadinessLayersReady()
+                && CaveniaRuntimeBiomeSourceReadinessChainConsolidation.runtimeReadyLayerCount() == 0
+                && CaveniaRuntimeBiomeSourceReadinessChainConsolidation.consolidatedReadinessLayerCount() == 6
+                && CaveniaRuntimeBiomeSourceReadinessChainConsolidation.selectedNextDecision()
+                    == CaveniaRuntimeBiomeSourceReadinessChainNextDecision.PROCEED_WITH_SELECTOR_INPUT_DERIVATION_GO_NO_GO_NEXT
+                && CaveniaRuntimeBiomeSourceReadinessChainConsolidation.selectorInputDerivationGoNoGoIsNext()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.selectorInputDerivationReadinessPinned()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.selectorInputDerivationImplementationReady()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.selectorInputDerivationRuntimeReady()
+                && CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayAddSelectorInputDerivationGoNoGoDecision()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayImplementSelectorInputDerivation()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayUseCoordinatesForRuntimeSelection()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayUseClimateSamplerForRuntimeSelection()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayMakeGetNoiseBiomeUsable()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayMakeCollectPossibleBiomesUsable()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayUseRegistryLookupAccess()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayResolveHolders()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayImplementResourceLocationConversion()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayImplementResourceKeyConversion()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayAddFallbackImplementation()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayAddUsableCodecImplementation()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayRegisterCodec()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayRegisterBiomeSourceType()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayAddDimensionJson()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayAddDimensionTypeJson()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayCreateActiveCaveniaLevel()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayAddWorldgenResources()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayAddAccessOrTeleport()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayAddSpawning()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayRegisterCavemanEntity()
+                && CaveniaRuntimeBiomeSourceReadinessChainConsolidation.codecMethodShapeStubReady()
+                && CaveniaRuntimeBiomeSourceReadinessChainConsolidation.holderConversionReadinessReady()
+                && CaveniaRuntimeBiomeSourceReadinessChainConsolidation.fallbackPolicyReadinessReady()
+                && CaveniaRuntimeBiomeSourceReadinessChainConsolidation.possibleBiomesReadinessReady()
+                && CaveniaRuntimeBiomeSourceReadinessChainConsolidation.noiseBiomeSelectionReadinessReady()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.runtimeHolderReturnReady()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.collectPossibleBiomesImplementationReady()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.getNoiseBiomeImplementationReady()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.registryLookupAccessReady()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.holderResolutionReady()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.resourceLocationConversionReady()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.resourceKeyConversionReady()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.usableCodecImplementationReady()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.codecRegistered()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.biomeSourceTypeRegistered()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.normalRuntimeConstructionAllowed()
+                && CaveniaRuntimeBiomeSourceReadinessChainConsolidation.unsupportedMethodStubsOnly()
+                && CaveniaRuntimeBiomeSourceReadinessChainConsolidation.weightedSelectionTotalWeight() == 675
+                && CaveniaRuntimeBiomeSourceReadinessChainConsolidation.candidateEntryCount() == 14
+                && CaveniaRuntimeBiomeSourceReadinessChainConsolidation.fallbackLegacyBiomeName().equals("PLAINS")
+                && CaveniaRuntimeBiomeSourceReadinessChainConsolidation.fallbackCandidateModernBiomeKey().equals("minecraft:plains")
+                && CaveniaRuntimeBiomeSourceReadinessChainConsolidation.selectedSurfaceReadinessItemCount() == 68
+                && CaveniaRuntimeBiomeSourceReadinessChainConsolidation.globalReadinessMatrixTotalRequirementCount() == 46
+                && CaveniaRuntimeBiomeSourceReadinessChainConsolidation.globalReadinessMatrixBlockedRequirementCount() == 46
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.dimensionJsonPresent()
+                && !CaveniaRuntimeBiomeSourceReadinessChainConsolidation.dimensionTypeJsonPresent()
+                && CaveniaRuntimeBiomeSourceReadinessChainConsolidation.cavemanRemainsDeferred(),
+            "Expected the readiness-chain consolidation layer to keep the guarded runtime-biome-source chain consolidated, select only the next selector-input-derivation go/no-go decision, and keep every runtime surface blocked"
+        );
+        helper.assertTrue(
             CaveniaRuntimeBiomeSource.guardedSubclassStubReady()
                 && CaveniaRuntimeBiomeSource.designatedSubclassSimpleName().equals("CaveniaRuntimeBiomeSource")
                 && CaveniaRuntimeBiomeSource.designatedSubclassFileName().equals("CaveniaRuntimeBiomeSource.java")
@@ -9036,6 +9099,9 @@ public final class CavernSpecialOreGameTests {
                 && !CaveniaRuntimeBiomeSource.noiseBiomeSelectionRuntimeReady()
                 && !CaveniaRuntimeBiomeSource.getNoiseBiomeRuntimeReady()
                 && CaveniaRuntimeBiomeSource.noiseBiomeMethodShapePinned()
+                && CaveniaRuntimeBiomeSource.readinessChainConsolidationReady()
+                && !CaveniaRuntimeBiomeSource.readinessChainRuntimeReady()
+                && CaveniaRuntimeBiomeSource.selectorInputDerivationGoNoGoIsNext()
                 && CaveniaRuntimeBiomeSource.fallbackLegacyBiomeName().equals("PLAINS")
                 && CaveniaRuntimeBiomeSource.fallbackCandidateModernBiomeKey().equals("minecraft:plains")
                 && !CaveniaRuntimeBiomeSource.dimensionBindingReady()

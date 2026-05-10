@@ -191,6 +191,14 @@ public final class CaveniaRuntimeBiomeSourceSkeleton {
         return false;
     }
 
+    public static boolean readinessChainConsolidationReady() {
+        return CaveniaRuntimeBiomeSourceReadinessChainConsolidation.readinessChainConsolidationReady();
+    }
+
+    public static boolean readinessChainRuntimeReady() {
+        return false;
+    }
+
     public static int guardrailCount() {
         return CaveniaRuntimeBiomeSourceFirstImplementationDecision.guardrailCount();
     }

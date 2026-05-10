@@ -148,6 +148,8 @@ class CaveniaRuntimeBiomeSourcePossibleBiomesReadinessTest {
         assertEquals("PLAINS", CaveniaRuntimeBiomeSourcePossibleBiomesReadiness.fallbackLegacyBiomeName());
         assertEquals("minecraft:plains", CaveniaRuntimeBiomeSourcePossibleBiomesReadiness.fallbackCandidateModernBiomeKey());
         assertTrue(CaveniaRuntimeBiomeSourcePossibleBiomesReadiness.fallbackIncludedIfEmpty());
+        assertTrue(CaveniaRuntimeBiomeSourcePossibleBiomesReadiness.readinessChainConsolidationReady());
+        assertFalse(CaveniaRuntimeBiomeSourcePossibleBiomesReadiness.readinessChainRuntimeReady());
         assertFalse(CaveniaRuntimeBiomeSourcePossibleBiomesReadiness.fallbackRuntimeReady());
         assertTrue(CaveniaRuntimeBiomeSourcePossibleBiomesReadiness.holderConversionReadinessReady());
         assertFalse(CaveniaRuntimeBiomeSourcePossibleBiomesReadiness.holderConversionRuntimeReady());

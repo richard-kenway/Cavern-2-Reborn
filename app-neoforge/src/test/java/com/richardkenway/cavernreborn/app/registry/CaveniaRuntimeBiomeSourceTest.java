@@ -109,6 +109,17 @@ class CaveniaRuntimeBiomeSourceTest {
         );
         assertTrue(
             designatedSource.contains(
+                "public static boolean readinessChainConsolidationReady() {\n        return CaveniaRuntimeBiomeSourceReadinessChainConsolidation.readinessChainConsolidationReady();\n    }"
+            )
+        );
+        assertTrue(designatedSource.contains("public static boolean readinessChainRuntimeReady() {\n        return false;\n    }"));
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean selectorInputDerivationGoNoGoIsNext() {\n        return CaveniaRuntimeBiomeSourceReadinessChainConsolidation.selectorInputDerivationGoNoGoIsNext();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
                 "public static String fallbackLegacyBiomeName() {\n        return CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackLegacyBiomeName();\n    }"
             )
         );

@@ -278,6 +278,14 @@ public final class CaveniaRuntimeBiomeSourceFallbackPolicyReadiness {
         return false;
     }
 
+    public static boolean readinessChainConsolidationReady() {
+        return CaveniaRuntimeBiomeSourceReadinessChainConsolidation.readinessChainConsolidationReady();
+    }
+
+    public static boolean readinessChainRuntimeReady() {
+        return false;
+    }
+
     public static boolean holderConversionReadinessReady() {
         return CaveniaRuntimeBiomeSourceHolderConversionReadiness.holderConversionReadinessReady();
     }

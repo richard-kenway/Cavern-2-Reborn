@@ -356,6 +356,14 @@ public final class CaveniaRuntimeBiomeSourceApiShapeInventory {
         return false;
     }
 
+    public static boolean readinessChainConsolidationReady() {
+        return CaveniaRuntimeBiomeSourceReadinessChainConsolidation.readinessChainConsolidationReady();
+    }
+
+    public static boolean readinessChainRuntimeReady() {
+        return false;
+    }
+
     public static int selectedSurfaceReadinessItemCount() {
         return CaveniaBiomeSourceStrategyReadinessMatrix.totalReadinessItemCount();
     }

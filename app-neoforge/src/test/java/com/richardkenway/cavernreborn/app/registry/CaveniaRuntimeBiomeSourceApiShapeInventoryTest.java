@@ -134,6 +134,8 @@ class CaveniaRuntimeBiomeSourceApiShapeInventoryTest {
         assertFalse(CaveniaRuntimeBiomeSourceApiShapeInventory.possibleBiomesRuntimeReady());
         assertTrue(CaveniaRuntimeBiomeSourceApiShapeInventory.noiseBiomeSelectionReadinessReady());
         assertFalse(CaveniaRuntimeBiomeSourceApiShapeInventory.noiseBiomeSelectionRuntimeReady());
+        assertTrue(CaveniaRuntimeBiomeSourceApiShapeInventory.readinessChainConsolidationReady());
+        assertFalse(CaveniaRuntimeBiomeSourceApiShapeInventory.readinessChainRuntimeReady());
         assertEquals(68, CaveniaRuntimeBiomeSourceApiShapeInventory.selectedSurfaceReadinessItemCount());
         assertEquals(46, CaveniaRuntimeBiomeSourceApiShapeInventory.globalReadinessMatrixTotalRequirementCount());
         assertEquals(46, CaveniaRuntimeBiomeSourceApiShapeInventory.globalReadinessMatrixBlockedRequirementCount());

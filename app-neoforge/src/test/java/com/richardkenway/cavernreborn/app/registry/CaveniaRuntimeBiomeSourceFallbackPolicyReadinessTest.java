@@ -133,6 +133,8 @@ class CaveniaRuntimeBiomeSourceFallbackPolicyReadinessTest {
         assertFalse(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.holderConversionRuntimeReady());
         assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.noiseBiomeSelectionReadinessReady());
         assertFalse(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.noiseBiomeSelectionRuntimeReady());
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.readinessChainConsolidationReady());
+        assertFalse(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.readinessChainRuntimeReady());
         assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.codecMethodShapeStubReady());
         assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.designatedSubclassReady());
         assertFalse(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.designatedSubclassRuntimeReady());

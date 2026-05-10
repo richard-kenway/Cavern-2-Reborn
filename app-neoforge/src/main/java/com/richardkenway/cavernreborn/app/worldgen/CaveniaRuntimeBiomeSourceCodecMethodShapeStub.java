@@ -249,6 +249,14 @@ public final class CaveniaRuntimeBiomeSourceCodecMethodShapeStub {
         return false;
     }
 
+    public static boolean readinessChainConsolidationReady() {
+        return CaveniaRuntimeBiomeSourceReadinessChainConsolidation.readinessChainConsolidationReady();
+    }
+
+    public static boolean readinessChainRuntimeReady() {
+        return false;
+    }
+
     public static boolean dimensionBindingReady() {
         return false;
     }

@@ -237,3 +237,5 @@ This slice builds directly on:
 
 - next slice can make a consolidation decision for the guarded runtime biome-source readiness chain
 - a separate explicit decision could also define non-runtime selector input derivation while keeping registry lookup and activation absent
+
+The readiness-chain consolidation / next-decision follow-up is now documented in `docs/cavenia-runtime-biome-source-readiness-chain-consolidation-next-decision-mvp.md`.

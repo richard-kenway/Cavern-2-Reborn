@@ -14,22 +14,27 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
-import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent;
-import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceNoiseBiomeSelectionEntry;
-import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceReadinessChainComponent;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceReadinessChainConsolidation;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceReadinessChainEntry;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceReadinessChainNextDecision;
 
-class CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadinessTest {
+class CaveniaRuntimeBiomeSourceReadinessChainConsolidationTest {
     private static final Path COMPONENT_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
-        "CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.java"
+        "CaveniaRuntimeBiomeSourceReadinessChainComponent.java"
     );
     private static final Path ENTRY_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
-        "CaveniaRuntimeBiomeSourceNoiseBiomeSelectionEntry.java"
+        "CaveniaRuntimeBiomeSourceReadinessChainEntry.java"
     );
-    private static final Path READINESS_SOURCE = resolveProjectFile(
+    private static final Path NEXT_DECISION_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
-        "CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.java"
+        "CaveniaRuntimeBiomeSourceReadinessChainNextDecision.java"
+    );
+    private static final Path CONSOLIDATION_SOURCE = resolveProjectFile(
+        "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
+        "CaveniaRuntimeBiomeSourceReadinessChainConsolidation.java"
     );
     private static final Path DESIGNATED_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
@@ -43,177 +48,160 @@ class CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadinessTest {
     );
 
     @Test
-    void noiseBiomeSelectionReadinessPinsTheFutureSelectionPathWithoutImplementingIt() throws IOException {
-        List<CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent> expectedComponents = List.of(
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.NOISE_BIOME_METHOD_SHAPE,
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.COORDINATE_INPUT_SHAPE,
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.CLIMATE_SAMPLER_INPUT_SHAPE,
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.WEIGHT_VALUE_DERIVATION_DECISION,
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.WEIGHTED_SELECTION_SOURCE,
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.ADAPTER_SELECTION_SOURCE,
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.CANDIDATE_KEY_OUTPUT_SOURCE,
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.HOLDER_CONVERSION_DEPENDENCY,
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.FALLBACK_POLICY_SOURCE,
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.POSSIBLE_BIOMES_CONSTRAINT,
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.NO_RUNTIME_HOLDER_RETURN,
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.NO_GET_NOISE_BIOME_IMPLEMENTATION,
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.NO_REGISTRY_LOOKUP_ACCESS,
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.REAL_NOISE_BIOME_SELECTION_STILL_DEFERRED
+    void readinessChainConsolidationPinsTheCurrentChainAndTheNextDecisionWithoutImplementingRuntimeBehavior() throws IOException {
+        List<CaveniaRuntimeBiomeSourceReadinessChainComponent> expectedComponents = List.of(
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.DESIGNATED_SUBCLASS_STUB,
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.CODEC_METHOD_SHAPE_STUB,
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.HOLDER_RESOURCE_KEY_CONVERSION_READINESS,
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.FALLBACK_POLICY_READINESS,
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.POSSIBLE_BIOMES_READINESS,
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.NOISE_BIOME_SELECTION_READINESS,
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.SELECTOR_INPUT_DERIVATION_NOT_PINNED,
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.REGISTRY_LOOKUP_ACCESS_BLOCKED,
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.HOLDER_RESOLUTION_BLOCKED,
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.RESOURCE_LOCATION_CONVERSION_BLOCKED,
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.RESOURCE_KEY_CONVERSION_BLOCKED,
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.USABLE_RUNTIME_METHODS_BLOCKED,
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.USABLE_CODEC_IMPLEMENTATION_BLOCKED,
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.CODEC_AND_TYPE_REGISTRATION_BLOCKED,
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.DIMENSION_ACTIVATION_BLOCKED,
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.WORLDGEN_ACCESS_SPAWNING_BLOCKED,
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.NEXT_DECISION_SELECTED
         );
-        Set<CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent> registryLookupRequiredComponents = Set.of(
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.HOLDER_CONVERSION_DEPENDENCY,
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.FALLBACK_POLICY_SOURCE,
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.POSSIBLE_BIOMES_CONSTRAINT,
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.NO_RUNTIME_HOLDER_RETURN,
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.NO_GET_NOISE_BIOME_IMPLEMENTATION,
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.REAL_NOISE_BIOME_SELECTION_STILL_DEFERRED
+        Set<CaveniaRuntimeBiomeSourceReadinessChainComponent> nextDecisionInputs = Set.of(
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.CODEC_METHOD_SHAPE_STUB,
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.HOLDER_RESOURCE_KEY_CONVERSION_READINESS,
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.FALLBACK_POLICY_READINESS,
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.POSSIBLE_BIOMES_READINESS,
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.NOISE_BIOME_SELECTION_READINESS,
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.SELECTOR_INPUT_DERIVATION_NOT_PINNED,
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.NEXT_DECISION_SELECTED
         );
-        List<CaveniaRuntimeBiomeSourceNoiseBiomeSelectionEntry> entries =
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.entries();
-        List<String> candidateKeys = CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.candidateModernBiomeKeys();
+        List<CaveniaRuntimeBiomeSourceReadinessChainEntry> entries =
+            CaveniaRuntimeBiomeSourceReadinessChainConsolidation.entries();
         String designatedSource = Files.readString(DESIGNATED_SOURCE);
 
-        assertEquals(expectedComponents, CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.components());
-        assertEquals(14, CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.entryCount());
+        assertEquals(expectedComponents, CaveniaRuntimeBiomeSourceReadinessChainConsolidation.components());
+        assertEquals(17, CaveniaRuntimeBiomeSourceReadinessChainConsolidation.entryCount());
         assertTrue(entries.stream().allMatch(entry -> entry.sourceContractName() != null && !entry.sourceContractName().isBlank()));
-        assertTrue(entries.stream().allMatch(entry -> entry.readinessDecision() != null && !entry.readinessDecision().isBlank()));
-        assertTrue(entries.stream().allMatch(entry -> entry.expectedFutureBehavior() != null && !entry.expectedFutureBehavior().isBlank()));
+        assertTrue(entries.stream().allMatch(entry -> entry.consolidatedReadiness() != null && !entry.consolidatedReadiness().isBlank()));
+        assertTrue(entries.stream().allMatch(entry -> entry.runtimeState() != null && !entry.runtimeState().isBlank()));
         assertTrue(entries.stream().allMatch(entry -> entry.blocker() != null && !entry.blocker().isBlank()));
-        assertTrue(entries.stream().allMatch(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionEntry::readinessPinned));
-        assertTrue(entries.stream().allMatch(entry -> !entry.implementationReady()));
-        assertTrue(entries.stream().allMatch(entry -> !entry.registryLookupAvailable()));
-        assertTrue(entries.stream().allMatch(entry -> !entry.noiseBiomeRuntimeReady()));
-        assertTrue(entries.stream().allMatch(entry -> !entry.activationAllowedInThisSlice()));
-        entries.forEach(entry -> assertEquals(
-            registryLookupRequiredComponents.contains(entry.component()),
-            entry.registryLookupRequired()
-        ));
+        assertTrue(entries.stream().allMatch(entry -> !entry.runtimeReady()));
+        assertTrue(entries.stream().allMatch(CaveniaRuntimeBiomeSourceReadinessChainEntry::blocksActivation));
+        entries.forEach(entry -> assertEquals(nextDecisionInputs.contains(entry.component()), entry.nextDecisionInput()));
 
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.entryFor(
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.NOISE_BIOME_METHOD_SHAPE
-        ).orElseThrow().readinessDecision().contains("getNoiseBiome(int x, int y, int z, Climate.Sampler sampler)"));
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.entryFor(
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.CLIMATE_SAMPLER_INPUT_SHAPE
-        ).orElseThrow().readinessDecision().contains("Climate.Sampler"));
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.entryFor(
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.NO_RUNTIME_HOLDER_RETURN
-        ).orElseThrow().readinessDecision().contains("Holder<Biome>"));
-
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.noiseBiomeSelectionReadinessReady());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.noiseBiomeMethodShapePinned());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.coordinateInputShapePinned());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.climateSamplerInputShapePinned());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.weightValueDerivationDecisionPinned());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.weightedSelectionSourcePinned());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.adapterSelectionSourcePinned());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.candidateKeyOutputSourcePinned());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.holderConversionDependencyPinned());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.fallbackPolicySourcePinned());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.possibleBiomesConstraintPinned());
-        assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.runtimeHolderReturnReady());
-        assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.getNoiseBiomeImplementationReady());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.registryLookupRequiredForRuntimeNoiseBiome());
-        assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.registryLookupAccessReady());
-        assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.noiseBiomeRuntimeReady());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.realNoiseBiomeSelectionStillDeferred());
-        assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.activationAllowedInThisSlice());
-        assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.canActivateCaveniaNow());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.readinessChainConsolidationReady());
-        assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.readinessChainRuntimeReady());
-        assertEquals("getNoiseBiome", CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.noiseBiomeMethodName());
+        assertTrue(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.readinessChainConsolidationReady());
+        assertTrue(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.allCurrentReadinessLayersReady());
+        assertEquals(0, CaveniaRuntimeBiomeSourceReadinessChainConsolidation.runtimeReadyLayerCount());
+        assertEquals(6, CaveniaRuntimeBiomeSourceReadinessChainConsolidation.consolidatedReadinessLayerCount());
         assertEquals(
-            "getNoiseBiome(int x, int y, int z, Climate.Sampler sampler)",
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.noiseBiomeMethodSignature()
+            CaveniaRuntimeBiomeSourceReadinessChainNextDecision.PROCEED_WITH_SELECTOR_INPUT_DERIVATION_GO_NO_GO_NEXT,
+            CaveniaRuntimeBiomeSourceReadinessChainConsolidation.selectedNextDecision()
         );
-        assertEquals(
-            "future x/y/z coordinate inputs are pinned but not used for runtime selection in this slice",
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.coordinateInputPolicy()
-        );
-        assertEquals(
-            "future Climate.Sampler input is pinned but not used for runtime selection in this slice",
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.climateSamplerInputPolicy()
-        );
-        assertEquals(
-            "future deterministic coordinate/climate-to-weight-value derivation remains deferred",
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.weightValueDerivationPolicy()
-        );
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.weightedSelectionAlgorithmReady());
-        assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.weightedSelectionRuntimeReady());
-        assertEquals(675, CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.weightedSelectionTotalWeight());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.adapterShapeReady());
-        assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.adapterRuntimeReady());
-        assertEquals(14, CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.candidateEntryCount());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.candidateInventoryReady());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.candidateKeysStillStringOnly());
-        assertTrue(candidateKeys.contains("minecraft:plains"));
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.holderConversionReadinessReady());
-        assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.holderConversionRuntimeReady());
-        assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.holderResolutionReady());
-        assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.resourceKeyConversionReady());
-        assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.resourceLocationConversionReady());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.fallbackPolicyReadinessReady());
-        assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.fallbackPolicyRuntimeReady());
-        assertEquals("PLAINS", CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.fallbackLegacyBiomeName());
-        assertEquals("minecraft:plains", CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.fallbackCandidateModernBiomeKey());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.possibleBiomesReadinessReady());
-        assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.possibleBiomesRuntimeReady());
-        assertEquals(
-            "future noise-biome results should resolve to candidates compatible with future possible-biomes holder outputs",
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.possibleBiomesConstraintPolicy()
-        );
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.codecMethodShapeStubReady());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.designatedSubclassReady());
-        assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.designatedSubclassRuntimeReady());
-        assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.usableCodecImplementationReady());
-        assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.codecRegistered());
-        assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.biomeSourceTypeRegistered());
-        assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.normalRuntimeConstructionAllowed());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.unsupportedMethodStubsOnly());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.collectPossibleBiomesStubbed());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.getNoiseBiomeStubbed());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.codecMethodStubbed());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.goNoGoGuardrailsEnforced());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.apiShapeInventoryReady());
-        assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.dimensionBindingReady());
-        assertEquals(68, CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.selectedSurfaceReadinessItemCount());
-        assertEquals(46, CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.globalReadinessMatrixTotalRequirementCount());
-        assertEquals(46, CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.globalReadinessMatrixBlockedRequirementCount());
-        assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.dimensionJsonPresent());
-        assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.dimensionTypeJsonPresent());
-        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.cavemanRemainsDeferred());
+        assertTrue(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.selectorInputDerivationGoNoGoIsNext());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.selectorInputDerivationReadinessPinned());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.selectorInputDerivationImplementationReady());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.selectorInputDerivationRuntimeReady());
+        assertTrue(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayAddSelectorInputDerivationGoNoGoDecision());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayImplementSelectorInputDerivation());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayUseCoordinatesForRuntimeSelection());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayUseClimateSamplerForRuntimeSelection());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayMakeGetNoiseBiomeUsable());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayMakeCollectPossibleBiomesUsable());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayUseRegistryLookupAccess());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayResolveHolders());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayImplementResourceLocationConversion());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayImplementResourceKeyConversion());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayAddFallbackImplementation());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayAddUsableCodecImplementation());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayRegisterCodec());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayRegisterBiomeSourceType());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayAddDimensionJson());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayAddDimensionTypeJson());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayCreateActiveCaveniaLevel());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayAddWorldgenResources());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayAddAccessOrTeleport());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayAddSpawning());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.nextSliceMayRegisterCavemanEntity());
+        assertTrue(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.designatedSubclassReady());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.designatedSubclassRuntimeReady());
+        assertTrue(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.codecMethodShapeStubReady());
+        assertTrue(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.holderConversionReadinessReady());
+        assertTrue(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.fallbackPolicyReadinessReady());
+        assertTrue(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.possibleBiomesReadinessReady());
+        assertTrue(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.noiseBiomeSelectionReadinessReady());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.codecMethodShapeRuntimeReady());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.holderConversionRuntimeReady());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.fallbackPolicyRuntimeReady());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.possibleBiomesRuntimeReady());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.noiseBiomeSelectionRuntimeReady());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.runtimeHolderReturnReady());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.collectPossibleBiomesImplementationReady());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.getNoiseBiomeImplementationReady());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.usableRuntimeBiomeSourceReady());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.registryLookupAccessReady());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.holderResolutionReady());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.resourceLocationConversionReady());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.resourceKeyConversionReady());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.usableCodecImplementationReady());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.codecRegistered());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.biomeSourceTypeRegistered());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.normalRuntimeConstructionAllowed());
+        assertTrue(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.unsupportedMethodStubsOnly());
+        assertTrue(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.collectPossibleBiomesStubbed());
+        assertTrue(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.getNoiseBiomeStubbed());
+        assertTrue(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.codecMethodStubbed());
+        assertTrue(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.weightedSelectionAlgorithmReady());
+        assertEquals(675, CaveniaRuntimeBiomeSourceReadinessChainConsolidation.weightedSelectionTotalWeight());
+        assertTrue(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.adapterShapeReady());
+        assertEquals(14, CaveniaRuntimeBiomeSourceReadinessChainConsolidation.candidateEntryCount());
+        assertTrue(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.candidateInventoryReady());
+        assertTrue(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.candidateKeysStillStringOnly());
+        assertEquals("PLAINS", CaveniaRuntimeBiomeSourceReadinessChainConsolidation.fallbackLegacyBiomeName());
+        assertEquals("minecraft:plains", CaveniaRuntimeBiomeSourceReadinessChainConsolidation.fallbackCandidateModernBiomeKey());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.dimensionBindingReady());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.activationAllowedInThisSlice());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.canActivateCaveniaNow());
+        assertEquals(68, CaveniaRuntimeBiomeSourceReadinessChainConsolidation.selectedSurfaceReadinessItemCount());
+        assertEquals(46, CaveniaRuntimeBiomeSourceReadinessChainConsolidation.globalReadinessMatrixTotalRequirementCount());
+        assertEquals(46, CaveniaRuntimeBiomeSourceReadinessChainConsolidation.globalReadinessMatrixBlockedRequirementCount());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.dimensionJsonPresent());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.dimensionTypeJsonPresent());
+        assertTrue(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.cavemanRemainsDeferred());
 
         assertTrue(
             designatedSource.contains(
-                "public static boolean noiseBiomeSelectionReadinessReady() {\n        return CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.noiseBiomeSelectionReadinessReady();\n    }"
+                "public static boolean readinessChainConsolidationReady() {\n        return CaveniaRuntimeBiomeSourceReadinessChainConsolidation.readinessChainConsolidationReady();\n    }"
             )
         );
-        assertTrue(designatedSource.contains("public static boolean noiseBiomeSelectionRuntimeReady() {\n        return false;\n    }"));
-        assertTrue(designatedSource.contains("public static boolean getNoiseBiomeRuntimeReady() {\n        return false;\n    }"));
+        assertTrue(designatedSource.contains("public static boolean readinessChainRuntimeReady() {\n        return false;\n    }"));
         assertTrue(
             designatedSource.contains(
-                "public static boolean noiseBiomeMethodShapePinned() {\n        return CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.noiseBiomeMethodShapePinned();\n    }"
+                "public static boolean selectorInputDerivationGoNoGoIsNext() {\n        return CaveniaRuntimeBiomeSourceReadinessChainConsolidation.selectorInputDerivationGoNoGoIsNext();\n    }"
             )
         );
 
-        assertImmutableList(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.entries(), entries.get(0));
+        assertImmutableList(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.entries(), entries.get(0));
         assertImmutableList(
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.components(),
-            CaveniaRuntimeBiomeSourceNoiseBiomeSelectionComponent.NOISE_BIOME_METHOD_SHAPE
+            CaveniaRuntimeBiomeSourceReadinessChainConsolidation.components(),
+            CaveniaRuntimeBiomeSourceReadinessChainComponent.DESIGNATED_SUBCLASS_STUB
         );
-        assertImmutableList(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.candidateModernBiomeKeys(), "minecraft:plains");
         entries.forEach(entry -> assertNotNull(entry.component()));
     }
 
     @Test
-    void noiseBiomeSelectionReadinessSourcesKeepRuntimeApiUsageAndNoiseBiomeImplementationBlocked() throws IOException {
+    void readinessChainConsolidationSourcesKeepRuntimeApiUsageAndActivationBlocked() throws IOException {
         String componentSource = Files.readString(COMPONENT_SOURCE);
         String entrySource = Files.readString(ENTRY_SOURCE);
-        String readinessSource = Files.readString(READINESS_SOURCE);
+        String nextDecisionSource = Files.readString(NEXT_DECISION_SOURCE);
+        String consolidationSource = Files.readString(CONSOLIDATION_SOURCE);
         String designatedSource = Files.readString(DESIGNATED_SOURCE);
 
         assertSourceStaysInert(componentSource);
         assertSourceStaysInert(entrySource);
-        assertSourceStaysInert(readinessSource);
+        assertSourceStaysInert(nextDecisionSource);
+        assertSourceStaysInert(consolidationSource);
 
         assertTrue(designatedSource.contains("extends BiomeSource"));
         assertTrue(designatedSource.contains("import net.minecraft.world.level.biome.BiomeSource;"));
@@ -316,7 +304,7 @@ class CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadinessTest {
                             || path.contains("/neoforge/biome_modifier/cavenia")
                             || path.contains("/tags/worldgen/biome/cavenia")
                     ),
-                "Expected the noise-biome readiness slice to keep active Cavenia resources absent"
+                "Expected the readiness-chain consolidation slice to keep active Cavenia resources absent"
             );
         }
     }
