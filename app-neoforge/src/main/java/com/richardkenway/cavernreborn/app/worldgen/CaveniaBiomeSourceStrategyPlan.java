@@ -218,6 +218,14 @@ public final class CaveniaBiomeSourceStrategyPlan {
         return false;
     }
 
+    public static boolean runtimeBiomeSourceSubclassDecisionReady() {
+        return CaveniaRuntimeBiomeSourceSubclassDecision.codecHolderRegistryShapeDecisionIsNext();
+    }
+
+    public static boolean runtimeBiomeSourceSubclassRuntimeReady() {
+        return false;
+    }
+
     public static boolean runtimeBiomeSourceReady() {
         return false;
     }

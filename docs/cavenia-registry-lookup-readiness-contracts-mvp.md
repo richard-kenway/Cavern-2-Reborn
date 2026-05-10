@@ -184,3 +184,5 @@ The runtime-biome-source first-implementation decision/guardrails follow-up is n
 Real runtime `BiomeSource`, codec, registration and registry lookup access must remain separate explicit MVPs.
 
 The unregistered runtime-biome-source skeleton follow-up is now documented in `docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md`.
+
+The runtime-biome-source codec/holder/registry decision follow-up is now documented in `docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md`.

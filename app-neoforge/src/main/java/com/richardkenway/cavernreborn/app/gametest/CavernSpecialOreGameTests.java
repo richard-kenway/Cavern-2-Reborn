@@ -69,6 +69,9 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceFirs
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceGuardrail;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceNextStepDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceSkeleton;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceSubclassDecision;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceSubclassNextStepDecision;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceSubclassRequirement;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaWeightedBiomeSelectionAlgorithm;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaDimensionResourceContracts;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaDimensionResourceRequirement;
@@ -8536,12 +8539,90 @@ public final class CavernSpecialOreGameTests {
             "Expected the unregistered runtime-biome-source skeleton to keep codec, lookup, dimension binding and activation absent while the decision guardrails remain fully enforced"
         );
         helper.assertTrue(
+            CaveniaRuntimeBiomeSourceSubclassDecision.selectedDecision()
+                == CaveniaRuntimeBiomeSourceSubclassNextStepDecision
+                    .DEFER_REAL_BIOME_SOURCE_SUBCLASS_UNTIL_CODEC_HOLDER_REGISTRY_SHAPE_IS_PINNED
+                && CaveniaRuntimeBiomeSourceSubclassDecision.allowedNextDecision()
+                    == CaveniaRuntimeBiomeSourceSubclassNextStepDecision.PROCEED_WITH_CODEC_HOLDER_REGISTRY_SHAPE_DECISION_NEXT
+                && CaveniaRuntimeBiomeSourceSubclassDecision.realSubclassDeferred()
+                && CaveniaRuntimeBiomeSourceSubclassDecision.codecHolderRegistryShapeDecisionIsNext()
+                && CaveniaRuntimeBiomeSourceSubclassDecision.requirementCount() == 14
+                && CaveniaRuntimeBiomeSourceSubclassDecision.requirements().equals(List.of(
+                    CaveniaRuntimeBiomeSourceSubclassRequirement.SKELETON_READY,
+                    CaveniaRuntimeBiomeSourceSubclassRequirement.REAL_SUBCLASS_DEFERRED,
+                    CaveniaRuntimeBiomeSourceSubclassRequirement.ABSTRACT_METHODS_INVENTORY,
+                    CaveniaRuntimeBiomeSourceSubclassRequirement.CODEC_METHOD_SHAPE_DECISION,
+                    CaveniaRuntimeBiomeSourceSubclassRequirement.POSSIBLE_BIOMES_SHAPE_DECISION,
+                    CaveniaRuntimeBiomeSourceSubclassRequirement.NOISE_BIOME_QUERY_SHAPE_DECISION,
+                    CaveniaRuntimeBiomeSourceSubclassRequirement.HOLDER_RETURN_PATH_DECISION,
+                    CaveniaRuntimeBiomeSourceSubclassRequirement.REGISTRY_CONTEXT_DECISION,
+                    CaveniaRuntimeBiomeSourceSubclassRequirement.RESOURCE_KEY_CONVERSION_DECISION,
+                    CaveniaRuntimeBiomeSourceSubclassRequirement.MISSING_BIOME_FALLBACK_DECISION,
+                    CaveniaRuntimeBiomeSourceSubclassRequirement.NO_DIMENSION_ACTIVATION,
+                    CaveniaRuntimeBiomeSourceSubclassRequirement.NO_CODEC_REGISTRATION,
+                    CaveniaRuntimeBiomeSourceSubclassRequirement.NO_REGISTRY_LOOKUP_ACCESS,
+                    CaveniaRuntimeBiomeSourceSubclassRequirement.NO_WORLDGEN_ACCESS_SPAWNING
+                ))
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.realMinecraftBiomeSourceImplementedInThisSlice()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.runtimeApiAllowedInThisSlice()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.activationAllowedInThisSlice()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.canActivateCaveniaNow(),
+            "Expected the runtime-biome-source subclass decision layer to defer the real subclass while pinning codec, holder and registry shape work as the next allowed branch"
+        );
+        helper.assertTrue(
+            CaveniaRuntimeBiomeSourceSubclassDecision.skeletonReady()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.skeletonRuntimeReady()
+                && CaveniaRuntimeBiomeSourceSubclassDecision.allHardGuardrailsStillPinned()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.apiShapeDecisionsPinned()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.readyForRealSubclass()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.abstractMethodsInventoryReady()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.codecMethodShapeReady()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.possibleBiomesShapeReady()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.noiseBiomeQueryShapeReady()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.holderReturnPathReady()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.registryContextReady()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.resourceKeyConversionReady()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.missingBiomeFallbackReady()
+                && CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayInventoryRuntimeBiomeSourceApiShape()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayImplementRealBiomeSourceSubclass()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayAddCodecImplementation()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayRegisterCodec()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayUseRegistryLookupAccess(),
+            "Expected the runtime-biome-source subclass decision layer to keep all real-subclass API-shape decisions unpinned while allowing only an inventory pass next"
+        );
+        helper.assertTrue(
+            !CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayAddDimensionJson()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayAddDimensionTypeJson()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayCreateActiveCaveniaLevel()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayAddWorldgenResources()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayAddAccessOrTeleport()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayAddSpawning()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayRegisterCavemanEntity()
+                && CaveniaRuntimeBiomeSourceSubclassDecision.skeletonShapeReady()
+                && CaveniaRuntimeBiomeSourceSubclassDecision.skeletonConsumesAdapter()
+                && CaveniaRuntimeBiomeSourceSubclassDecision.selectedSurfaceReadinessItemCount() == 68
+                && CaveniaRuntimeBiomeSourceSubclassDecision.globalReadinessMatrixTotalRequirementCount() == 46
+                && CaveniaRuntimeBiomeSourceSubclassDecision.globalReadinessMatrixBlockedRequirementCount() == 46
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.runtimeBiomeSourceReady()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.runtimeBiomeSourceRegistered()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.codecRegistered()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.registryLookupAccessReady()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.dimensionJsonPresent()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.dimensionTypeJsonPresent()
+                && CaveniaRuntimeBiomeSourceSubclassDecision.cavemanRemainsDeferred(),
+            "Expected the runtime-biome-source subclass decision layer to keep runtime biome-source, codec, lookup, dimension and Caveman activation absent"
+        );
+        helper.assertTrue(
             projectFileExists("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md"),
             "Expected the unregistered Cavenia generator/biome-selection skeleton doc to exist in the project root"
         );
         helper.assertTrue(
             projectFileExists("docs", "cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"),
             "Expected the unregistered runtime-biome-source skeleton doc to exist in the project root"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"),
+            "Expected the runtime-biome-source codec-holder-registry decision doc to exist in the project root"
         );
         helper.assertTrue(
             projectFileExists("docs", "cavenia-generator-runtime-contracts-non-registered-mvp.md"),

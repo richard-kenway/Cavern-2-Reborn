@@ -135,5 +135,6 @@ Future recommendation:
 - the final selected-surface readiness-matrix follow-up is now documented in `docs/cavenia-biome-source-strategy-final-readiness-matrix-mvp.md`
 - the runtime-biome-source first-implementation decision/guardrails follow-up is now documented in `docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md`
 - the unregistered runtime-biome-source skeleton follow-up is now documented in `docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md`
+- the runtime-biome-source codec/holder/registry decision follow-up is now documented in `docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md`
 - later readiness-only slices can define registry lookup readiness contracts for that adapter, but must still avoid actual registry lookup access, codec registration and dimension activation unless explicitly chosen
 - runtime `BiomeSource`, codec, registration and registry lookup access must remain separate explicit MVPs

@@ -94,6 +94,7 @@ class CaveniaBiomeSourceStrategyReadinessMatrixBoundaryTest {
         assertTrue(matrixDoc.contains("`EntityCaveman -> deferred:caveman`"));
         assertTrue(matrixDoc.contains("docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md"));
         assertTrue(matrixDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
+        assertTrue(matrixDoc.contains("docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"));
 
         assertTrue(readme.contains("Cavenia BIOME_SOURCE_STRATEGY Final Readiness Matrix MVP"));
         assertTrue(readme.contains("docs/cavenia-biome-source-strategy-final-readiness-matrix-mvp.md"));

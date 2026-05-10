@@ -94,6 +94,8 @@ class CaveniaRuntimeBiomeSourceSkeletonTest {
         assertFalse(CaveniaRuntimeBiomeSourceSkeleton.decisionAllowsCodecImplementation());
         assertFalse(CaveniaRuntimeBiomeSourceSkeleton.decisionAllowsRegistryLookupAccess());
         assertFalse(CaveniaRuntimeBiomeSourceSkeleton.decisionAllowsDimensionActivation());
+        assertTrue(CaveniaRuntimeBiomeSourceSkeleton.realSubclassDecisionReady());
+        assertFalse(CaveniaRuntimeBiomeSourceSkeleton.realSubclassReady());
         assertEquals(14, CaveniaRuntimeBiomeSourceSkeleton.guardrailCount());
         assertTrue(CaveniaRuntimeBiomeSourceSkeleton.allGuardrailsEnforced());
         assertEquals(14, CaveniaRuntimeBiomeSourceSkeleton.adapterEntryCount());

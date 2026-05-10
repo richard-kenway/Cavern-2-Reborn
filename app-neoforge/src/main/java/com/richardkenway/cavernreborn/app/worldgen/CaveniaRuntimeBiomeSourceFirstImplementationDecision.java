@@ -118,6 +118,14 @@ public final class CaveniaRuntimeBiomeSourceFirstImplementationDecision {
         return false;
     }
 
+    public static boolean runtimeBiomeSourceSubclassDecisionReady() {
+        return CaveniaRuntimeBiomeSourceSubclassDecision.codecHolderRegistryShapeDecisionIsNext();
+    }
+
+    public static boolean runtimeBiomeSourceSubclassRuntimeReady() {
+        return false;
+    }
+
     public static boolean activationAllowedInThisSlice() {
         return false;
     }

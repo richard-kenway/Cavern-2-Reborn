@@ -124,6 +124,7 @@ The current completed readiness base is:
 - `docs/cavenia-crazy-roster-natural-spawn-boundary.md`
 - `docs/caveman-cavenia-normal-roster-boundary.md`
 - `docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md`
+- `docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md`
 - `docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md`
 - `docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md`
 - `docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md`

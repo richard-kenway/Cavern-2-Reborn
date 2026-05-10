@@ -260,5 +260,6 @@ The later biome-source follow-ups are documented in:
 - `docs/cavenia-biome-source-strategy-final-readiness-matrix-mvp.md`
 - `docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md`
 - `docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md`
+- `docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md`
 
 Until a real generator host, real biome-source strategy, codec/registration path, dimension resources, safe access and Cavenia-only spawn-host decisions exist, this slice remains a non-registered split-contract layer only.

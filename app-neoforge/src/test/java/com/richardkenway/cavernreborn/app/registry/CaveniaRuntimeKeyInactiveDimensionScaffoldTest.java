@@ -113,6 +113,7 @@ class CaveniaRuntimeKeyInactiveDimensionScaffoldTest {
         assertTrue(scaffoldDoc.contains("docs/cavenia-biome-source-strategy-final-readiness-matrix-mvp.md"));
         assertTrue(scaffoldDoc.contains("docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md"));
         assertTrue(scaffoldDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
+        assertTrue(scaffoldDoc.contains("docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"));
 
         assertTrue(readme.contains("Cavenia Runtime Key / Inactive Dimension Scaffold MVP"));
         assertTrue(readme.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));

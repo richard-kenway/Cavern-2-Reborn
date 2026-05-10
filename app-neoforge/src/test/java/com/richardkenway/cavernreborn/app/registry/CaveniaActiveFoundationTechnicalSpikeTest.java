@@ -115,6 +115,7 @@ class CaveniaActiveFoundationTechnicalSpikeTest {
         assertTrue(spikeDoc.contains("docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md"));
         assertTrue(spikeDoc.contains("docs/cavenia-registry-lookup-readiness-contracts-mvp.md"));
         assertTrue(spikeDoc.contains("docs/cavenia-biome-source-strategy-final-readiness-matrix-mvp.md"));
+        assertTrue(spikeDoc.contains("docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"));
         assertTrue(spikeDoc.contains("`CAVENIA_LOCATION`"));
         assertTrue(spikeDoc.contains("`CAVENIA_LEVEL_KEY`"));
         assertTrue(spikeDoc.contains("`dimension/cavenia.json`"));

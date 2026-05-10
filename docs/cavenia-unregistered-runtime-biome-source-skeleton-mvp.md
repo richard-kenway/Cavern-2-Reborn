@@ -189,3 +189,5 @@ Current Reborn therefore still keeps:
 The next slice may decide whether to introduce a real Minecraft `BiomeSource` subclass or continue with additional guardrail/readiness work.
 
 A real `BiomeSource` subclass must be a separate explicit MVP and must still avoid dimension activation unless explicitly chosen.
+
+The runtime-biome-source codec/holder/registry decision follow-up is now documented in `docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md`.

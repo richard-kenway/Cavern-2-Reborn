@@ -118,6 +118,14 @@ public final class CaveniaRuntimeBiomeSourceSkeleton {
         return false;
     }
 
+    public static boolean realSubclassDecisionReady() {
+        return CaveniaRuntimeBiomeSourceSubclassDecision.codecHolderRegistryShapeDecisionIsNext();
+    }
+
+    public static boolean realSubclassReady() {
+        return false;
+    }
+
     public static int guardrailCount() {
         return CaveniaRuntimeBiomeSourceFirstImplementationDecision.guardrailCount();
     }

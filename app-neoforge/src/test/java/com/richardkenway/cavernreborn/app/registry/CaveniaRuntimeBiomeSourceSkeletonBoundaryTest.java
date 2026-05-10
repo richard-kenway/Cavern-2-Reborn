@@ -94,6 +94,7 @@ class CaveniaRuntimeBiomeSourceSkeletonBoundaryTest {
         assertTrue(skeletonDoc.contains("active Cavenia worldgen resources are absent"));
         assertTrue(skeletonDoc.contains("`cavernreborn:caveman` is absent"));
         assertTrue(skeletonDoc.contains("`EntityCaveman -> deferred:caveman`"));
+        assertTrue(skeletonDoc.contains("docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"));
 
         assertTrue(readme.contains("Cavenia Unregistered Runtime BiomeSource Skeleton MVP"));
         assertTrue(readme.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
@@ -115,6 +116,8 @@ class CaveniaRuntimeBiomeSourceSkeletonBoundaryTest {
         assertTrue(technicalSpikeDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
         assertTrue(foundationReadinessDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
         assertTrue(runtimeKeyDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
+        assertTrue(readme.contains("docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"));
+        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"));
     }
 
     @Test

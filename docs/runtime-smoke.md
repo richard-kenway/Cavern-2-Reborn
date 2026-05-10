@@ -519,6 +519,9 @@ NeoForge GameTest runtime smoke covers:
 - dimension JSON/type JSON remain absent, Cavenia cannot activate now and `EntityCaveman -> deferred:caveman` remains unchanged
 - the unregistered runtime-biome-source skeleton note at `docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md`
 - the runtime-biome-source first-implementation decision/guardrails note at `docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md`
+- Cavenia Runtime BiomeSource Codec/Holder/Registry Decision MVP
+- runtime-biome-source codec/holder/registry decision MVP
+- the runtime-biome-source codec/holder/registry decision note at `docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md`
 - registry lookup access is not ready, registry verification is not ready and runtime biome source is not ready
 - runtime biome source is not registered and codec is not registered
 - adapter entry count remains `14` and adapter total weight remains `675`

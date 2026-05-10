@@ -200,3 +200,5 @@ The next slice can implement an unregistered runtime-biome-source skeleton only.
 That future slice must keep no dimension activation, no codec registration, no registry lookup access, no worldgen resources, no access/teleport and no spawning unless those are explicitly chosen later.
 
 The unregistered runtime-biome-source skeleton follow-up is now documented in `docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md`.
+
+The runtime-biome-source codec/holder/registry decision follow-up is now documented in `docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md`.

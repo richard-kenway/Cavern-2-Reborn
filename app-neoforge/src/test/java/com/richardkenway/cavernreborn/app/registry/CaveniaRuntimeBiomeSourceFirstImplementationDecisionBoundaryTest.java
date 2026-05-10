@@ -102,6 +102,7 @@ class CaveniaRuntimeBiomeSourceFirstImplementationDecisionBoundaryTest {
         assertTrue(decisionDoc.contains("no active Cavenia worldgen resources"));
         assertTrue(decisionDoc.contains("`EntityCaveman -> deferred:caveman`"));
         assertTrue(decisionDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
+        assertTrue(decisionDoc.contains("docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"));
 
         assertTrue(readme.contains("Cavenia Runtime BiomeSource First Implementation Decision / Guardrails MVP"));
         assertTrue(readme.contains("docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md"));
@@ -122,6 +123,8 @@ class CaveniaRuntimeBiomeSourceFirstImplementationDecisionBoundaryTest {
         assertTrue(technicalSpikeDoc.contains("docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md"));
         assertTrue(foundationReadinessDoc.contains("docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md"));
         assertTrue(runtimeKeyDoc.contains("docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md"));
+        assertTrue(readme.contains("docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"));
+        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"));
     }
 
     @Test
