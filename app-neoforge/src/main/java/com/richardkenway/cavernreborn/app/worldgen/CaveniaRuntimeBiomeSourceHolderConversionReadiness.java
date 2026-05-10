@@ -212,6 +212,14 @@ public final class CaveniaRuntimeBiomeSourceHolderConversionReadiness {
         return false;
     }
 
+    public static boolean noiseBiomeSelectionReadinessReady() {
+        return CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.noiseBiomeSelectionReadinessReady();
+    }
+
+    public static boolean noiseBiomeSelectionRuntimeReady() {
+        return false;
+    }
+
     public static boolean noiseBiomeRuntimeReady() {
         return false;
     }

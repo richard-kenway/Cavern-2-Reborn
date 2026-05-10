@@ -207,3 +207,5 @@ This slice builds directly on:
 
 - next slice can continue with noise-biome selection readiness
 - a separate explicit decision could also define a non-runtime possible-biomes implementation shape while keeping registry lookup and activation absent
+
+The runtime-biome-source noise-biome selection readiness follow-up is now documented in `docs/cavenia-runtime-biome-source-noise-biome-selection-readiness-mvp.md`.

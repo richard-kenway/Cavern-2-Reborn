@@ -215,3 +215,5 @@ Future recommendation:
 - or make a go/no-go decision for non-runtime fallback implementation shape while keeping registry lookup and activation absent
 
 The runtime-biome-source possible-biomes readiness follow-up is now documented in `docs/cavenia-runtime-biome-source-possible-biomes-readiness-mvp.md`.
+
+The runtime-biome-source noise-biome selection readiness follow-up is now documented in `docs/cavenia-runtime-biome-source-noise-biome-selection-readiness-mvp.md`.

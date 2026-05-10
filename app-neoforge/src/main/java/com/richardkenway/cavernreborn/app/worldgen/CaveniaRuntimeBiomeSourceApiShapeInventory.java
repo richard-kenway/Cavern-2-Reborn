@@ -73,7 +73,7 @@ public final class CaveniaRuntimeBiomeSourceApiShapeInventory {
             "public abstract net.minecraft.core.Holder<net.minecraft.world.level.biome.Biome> getNoiseBiome(int, int, "
                 + "int, net.minecraft.world.level.biome.Climate$Sampler); helper methods getBiomesWithin(...), "
                 + "findBiomeHorizontal(...), and findClosestBiome3d(...) delegate to getNoiseBiome(...)",
-            "A future subclass must return holder-backed noise biomes through the exact locally observed query method "
+            "A future subclass must provide holder-backed noise biomes through the exact locally observed query method "
                 + "shape while preserving the helper-method expectations.",
             "The noise-biome query shape is pinned, but no runtime biome resolution is implemented in this slice."
         ),
@@ -345,6 +345,14 @@ public final class CaveniaRuntimeBiomeSourceApiShapeInventory {
     }
 
     public static boolean possibleBiomesRuntimeReady() {
+        return false;
+    }
+
+    public static boolean noiseBiomeSelectionReadinessReady() {
+        return CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.noiseBiomeSelectionReadinessReady();
+    }
+
+    public static boolean noiseBiomeSelectionRuntimeReady() {
         return false;
     }
 

@@ -241,6 +241,14 @@ public final class CaveniaRuntimeBiomeSourceCodecMethodShapeStub {
         return false;
     }
 
+    public static boolean noiseBiomeSelectionReadinessReady() {
+        return CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.noiseBiomeSelectionReadinessReady();
+    }
+
+    public static boolean noiseBiomeSelectionRuntimeReady() {
+        return false;
+    }
+
     public static boolean dimensionBindingReady() {
         return false;
     }

@@ -145,6 +145,22 @@ public final class CaveniaRuntimeBiomeSource extends BiomeSource {
         return CaveniaRuntimeBiomeSourcePossibleBiomesReadiness.candidateEntryCount();
     }
 
+    public static boolean noiseBiomeSelectionReadinessReady() {
+        return CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.noiseBiomeSelectionReadinessReady();
+    }
+
+    public static boolean noiseBiomeSelectionRuntimeReady() {
+        return false;
+    }
+
+    public static boolean getNoiseBiomeRuntimeReady() {
+        return false;
+    }
+
+    public static boolean noiseBiomeMethodShapePinned() {
+        return CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.noiseBiomeMethodShapePinned();
+    }
+
     public static String fallbackLegacyBiomeName() {
         return CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackLegacyBiomeName();
     }

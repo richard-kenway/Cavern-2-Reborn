@@ -110,6 +110,8 @@ class CaveniaRuntimeBiomeSourceSkeletonTest {
         assertFalse(CaveniaRuntimeBiomeSourceSkeleton.fallbackPolicyRuntimeReady());
         assertTrue(CaveniaRuntimeBiomeSourceSkeleton.possibleBiomesReadinessReady());
         assertFalse(CaveniaRuntimeBiomeSourceSkeleton.possibleBiomesRuntimeReady());
+        assertTrue(CaveniaRuntimeBiomeSourceSkeleton.noiseBiomeSelectionReadinessReady());
+        assertFalse(CaveniaRuntimeBiomeSourceSkeleton.noiseBiomeSelectionRuntimeReady());
         assertEquals(14, CaveniaRuntimeBiomeSourceSkeleton.guardrailCount());
         assertTrue(CaveniaRuntimeBiomeSourceSkeleton.allGuardrailsEnforced());
         assertEquals(14, CaveniaRuntimeBiomeSourceSkeleton.adapterEntryCount());

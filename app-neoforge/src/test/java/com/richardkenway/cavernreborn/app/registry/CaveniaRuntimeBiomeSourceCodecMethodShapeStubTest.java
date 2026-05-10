@@ -108,6 +108,8 @@ class CaveniaRuntimeBiomeSourceCodecMethodShapeStubTest {
         assertFalse(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.fallbackPolicyRuntimeReady());
         assertTrue(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.possibleBiomesReadinessReady());
         assertFalse(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.possibleBiomesRuntimeReady());
+        assertTrue(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.noiseBiomeSelectionReadinessReady());
+        assertFalse(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.noiseBiomeSelectionRuntimeReady());
         assertFalse(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.dimensionBindingReady());
         assertEquals(68, CaveniaRuntimeBiomeSourceCodecMethodShapeStub.selectedSurfaceReadinessItemCount());
         assertEquals(46, CaveniaRuntimeBiomeSourceCodecMethodShapeStub.globalReadinessMatrixTotalRequirementCount());

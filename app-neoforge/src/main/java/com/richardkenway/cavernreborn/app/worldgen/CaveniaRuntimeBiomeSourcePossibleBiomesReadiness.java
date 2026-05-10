@@ -59,7 +59,7 @@ public final class CaveniaRuntimeBiomeSourcePossibleBiomesReadiness {
             "CaveniaRuntimeBiomeSourceHolderConversionReadiness",
             "Future " + COLLECT_POSSIBLE_BIOMES_METHOD + " behavior still depends on the holder/resource-key conversion path reaching "
                 + HOLDER_BIOME_NAME + "-backed runtime outputs.",
-            "A later slice must finish the runtime conversion path before possible-biomes can return holder-backed values.",
+            "A later slice must finish the runtime conversion path before possible-biomes can produce holder-backed values.",
             true,
             "Holder conversion remains blocked, so possible-biomes runtime behavior stays deferred."
         ),
@@ -193,6 +193,14 @@ public final class CaveniaRuntimeBiomeSourcePossibleBiomesReadiness {
     }
 
     public static boolean possibleBiomesRuntimeReady() {
+        return false;
+    }
+
+    public static boolean noiseBiomeSelectionReadinessReady() {
+        return CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.noiseBiomeSelectionReadinessReady();
+    }
+
+    public static boolean noiseBiomeSelectionRuntimeReady() {
         return false;
     }
 
