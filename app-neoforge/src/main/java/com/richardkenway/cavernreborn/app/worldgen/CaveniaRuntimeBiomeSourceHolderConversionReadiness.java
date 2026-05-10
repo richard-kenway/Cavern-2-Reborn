@@ -252,6 +252,10 @@ public final class CaveniaRuntimeBiomeSourceHolderConversionReadiness {
         return false;
     }
 
+    public static boolean possibleBiomesReadinessReady() {
+        return CaveniaRuntimeBiomeSourcePossibleBiomesReadiness.possibleBiomesReadinessReady();
+    }
+
     public static boolean designatedSubclassReady() {
         return true;
     }

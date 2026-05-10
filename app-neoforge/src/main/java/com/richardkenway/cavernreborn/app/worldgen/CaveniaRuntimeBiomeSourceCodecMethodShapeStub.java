@@ -233,6 +233,14 @@ public final class CaveniaRuntimeBiomeSourceCodecMethodShapeStub {
         return false;
     }
 
+    public static boolean possibleBiomesReadinessReady() {
+        return CaveniaRuntimeBiomeSourcePossibleBiomesReadiness.possibleBiomesReadinessReady();
+    }
+
+    public static boolean possibleBiomesRuntimeReady() {
+        return false;
+    }
+
     public static boolean dimensionBindingReady() {
         return false;
     }

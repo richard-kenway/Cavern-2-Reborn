@@ -127,6 +127,8 @@ class CaveniaRuntimeBiomeSourceFallbackPolicyReadinessTest {
         assertEquals(14, CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackCandidateEntryCount());
         assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.candidateInventoryReady());
         assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.candidateKeysStillStringOnly());
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.possibleBiomesReadinessReady());
+        assertFalse(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.possibleBiomesRuntimeReady());
         assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.holderConversionReadinessReady());
         assertFalse(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.holderConversionRuntimeReady());
         assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.codecMethodShapeStubReady());

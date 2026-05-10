@@ -213,3 +213,5 @@ Why no access/spawning/worldgen resources were added:
 Future recommendation:
 - next slice can continue with possible-biomes readiness
 - or make a go/no-go decision for non-runtime fallback implementation shape while keeping registry lookup and activation absent
+
+The runtime-biome-source possible-biomes readiness follow-up is now documented in `docs/cavenia-runtime-biome-source-possible-biomes-readiness-mvp.md`.

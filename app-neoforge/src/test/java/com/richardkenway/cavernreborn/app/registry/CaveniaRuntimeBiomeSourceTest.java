@@ -85,6 +85,18 @@ class CaveniaRuntimeBiomeSourceTest {
         assertTrue(designatedSource.contains("public static boolean fallbackPolicyRuntimeReady() {\n        return false;\n    }"));
         assertTrue(
             designatedSource.contains(
+                "public static boolean possibleBiomesReadinessReady() {\n        return CaveniaRuntimeBiomeSourcePossibleBiomesReadiness.possibleBiomesReadinessReady();\n    }"
+            )
+        );
+        assertTrue(designatedSource.contains("public static boolean possibleBiomesRuntimeReady() {\n        return false;\n    }"));
+        assertTrue(designatedSource.contains("public static boolean collectPossibleBiomesRuntimeReady() {\n        return false;\n    }"));
+        assertTrue(
+            designatedSource.contains(
+                "public static int candidatePossibleBiomesEntryCount() {\n        return CaveniaRuntimeBiomeSourcePossibleBiomesReadiness.candidateEntryCount();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
                 "public static String fallbackLegacyBiomeName() {\n        return CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackLegacyBiomeName();\n    }"
             )
         );
