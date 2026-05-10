@@ -29,6 +29,7 @@ class CaveniaBiomeProviderContractBoundaryTest {
     private static final Path BIOME_SOURCE_PLAN_DOC = resolveProjectFile("docs", "cavenia-biome-source-strategy-narrow-non-runtime-mvp.md");
     private static final Path BIOME_MAPPING_DOC = resolveProjectFile("docs", "cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md");
     private static final Path WEIGHTED_SELECTION_DOC = resolveProjectFile("docs", "cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md");
+    private static final Path ADAPTER_DOC = resolveProjectFile("docs", "cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md");
     private static final Path DIMENSIONS_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "dimension", "CavernNeoForgeDimensions.java"
     );
@@ -58,6 +59,7 @@ class CaveniaBiomeProviderContractBoundaryTest {
         String biomeSourcePlanDoc = Files.readString(BIOME_SOURCE_PLAN_DOC);
         String biomeMappingDoc = Files.readString(BIOME_MAPPING_DOC);
         String weightedSelectionDoc = Files.readString(WEIGHTED_SELECTION_DOC);
+        String adapterDoc = Files.readString(ADAPTER_DOC);
 
         assertTrue(readme.contains("Cavenia Biome Provider / Biome List Contract Boundary"));
         assertTrue(readme.contains("docs/cavenia-biome-provider-contract-boundary.md"));
@@ -112,6 +114,7 @@ class CaveniaBiomeProviderContractBoundaryTest {
         assertTrue(contractDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
         assertTrue(contractDoc.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
         assertTrue(contractDoc.contains("docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md"));
+        assertTrue(contractDoc.contains("docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md"));
 
         assertTrue(foundationDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
         assertTrue(keyTypeDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
@@ -129,6 +132,7 @@ class CaveniaBiomeProviderContractBoundaryTest {
         assertTrue(biomeSourcePlanDoc.contains("`CaveniaBiomeSelectionSkeleton`"));
         assertTrue(biomeMappingDoc.contains("`CaveniaBiomeSelectionSkeleton`"));
         assertTrue(weightedSelectionDoc.contains("`CaveniaBiomeSelectionSkeleton`"));
+        assertTrue(adapterDoc.contains("`CaveniaBiomeSelectionSkeleton`"));
     }
 
     @Test

@@ -319,3 +319,7 @@ This increment does not decide:
 - no portal/teleport/access flow
 - no active Cavenia spawning
 - no active crazy spawning
+
+The later unregistered adapter follow-up is now documented in:
+
+- `docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md`

@@ -186,10 +186,11 @@ The inventory deliberately uses:
 
 ## Future Recommendation
 
-The next slice can define a pure weighted-selection algorithm over legacy candidate entries, but should still be non-runtime unless explicitly changing the boundary.
-
-Runtime `BiomeSource`, codec, registration and registry lookup access must remain separate explicit MVPs.
-
-That later pure selector follow-up is now documented in:
+The later pure selector and unregistered adapter follow-ups are now documented in:
 
 - `docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md`
+- `docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md`
+
+The next slice can define codec/registration readiness contracts for that adapter, but should still avoid actual codec registration, registry lookup access and runtime activation unless explicitly changing the boundary.
+
+Runtime `BiomeSource`, codec, registration and registry lookup access must remain separate explicit MVPs.

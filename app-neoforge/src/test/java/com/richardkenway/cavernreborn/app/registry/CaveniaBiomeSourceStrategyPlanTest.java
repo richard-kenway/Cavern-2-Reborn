@@ -90,6 +90,8 @@ class CaveniaBiomeSourceStrategyPlanTest {
         assertFalse(CaveniaBiomeSourceStrategyPlan.weightedSelectionAlgorithmReady());
         assertTrue(CaveniaBiomeSourceStrategyPlan.weightedSelectionAlgorithmInventoryReady());
         assertFalse(CaveniaBiomeSourceStrategyPlan.weightedSelectionAlgorithmFinalRuntimeReady());
+        assertTrue(CaveniaBiomeSourceStrategyPlan.unregisteredAdapterShapeReady());
+        assertFalse(CaveniaBiomeSourceStrategyPlan.unregisteredAdapterRuntimeReady());
         assertFalse(CaveniaBiomeSourceStrategyPlan.runtimeBiomeSourceReady());
         assertFalse(CaveniaBiomeSourceStrategyPlan.codecRegistered());
         assertFalse(CaveniaBiomeSourceStrategyPlan.registryLookupAccessReady());

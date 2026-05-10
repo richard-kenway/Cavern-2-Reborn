@@ -14,6 +14,7 @@ class CaveniaBiomeSourceStrategyPlanBoundaryTest {
     private static final Path README = resolveProjectFile("README.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
     private static final Path PLAN_DOC = resolveProjectFile("docs", "cavenia-biome-source-strategy-narrow-non-runtime-mvp.md");
+    private static final Path ADAPTER_DOC = resolveProjectFile("docs", "cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md");
     private static final Path INVENTORY_DOC = resolveProjectFile("docs", "cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md");
     private static final Path ALGORITHM_DOC = resolveProjectFile("docs", "cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md");
     private static final Path SELECTION_DOC = resolveProjectFile("docs", "cavenia-deliberate-first-active-surface-selection-mvp.md");
@@ -36,6 +37,7 @@ class CaveniaBiomeSourceStrategyPlanBoundaryTest {
         String readme = Files.readString(README);
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE_DOC);
         String planDoc = Files.readString(PLAN_DOC);
+        String adapterDoc = Files.readString(ADAPTER_DOC);
         String inventoryDoc = Files.readString(INVENTORY_DOC);
         String algorithmDoc = Files.readString(ALGORITHM_DOC);
         String selectionDoc = Files.readString(SELECTION_DOC);
@@ -76,6 +78,7 @@ class CaveniaBiomeSourceStrategyPlanBoundaryTest {
         assertTrue(planDoc.contains("no active Cavenia spawning"));
         assertTrue(planDoc.contains("no active Cavenia worldgen resources"));
         assertTrue(planDoc.contains("`EntityCaveman -> deferred:caveman`"));
+        assertTrue(planDoc.contains("docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md"));
 
         assertTrue(readme.contains("Cavenia Biome Source Strategy Narrow Non-Runtime MVP"));
         assertTrue(readme.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
@@ -91,6 +94,7 @@ class CaveniaBiomeSourceStrategyPlanBoundaryTest {
         assertTrue(runtimeKeyDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
         assertTrue(inventoryDoc.contains("`CaveniaBiomeSourceStrategyPlan`"));
         assertTrue(algorithmDoc.contains("`CaveniaBiomeSourceStrategyPlan`"));
+        assertTrue(adapterDoc.contains("`CaveniaBiomeSourceStrategyPlan`"));
     }
 
     @Test

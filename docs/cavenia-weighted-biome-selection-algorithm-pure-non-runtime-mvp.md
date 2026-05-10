@@ -129,5 +129,6 @@ Cross-links:
 - `docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md`
 
 Future recommendation:
-- next slice can introduce an unregistered runtime-biome-source shape/adapter contract that consumes the pure selector, but must still avoid codec/registration and dimension activation unless explicitly chosen
+- the unregistered runtime-biome-source shape/adapter contract follow-up is now documented in `docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md`
+- next slice can define codec/registration readiness contracts for that adapter, but must still avoid actual codec registration and dimension activation unless explicitly chosen
 - runtime `BiomeSource`, codec, registration and registry lookup access must remain separate explicit MVPs

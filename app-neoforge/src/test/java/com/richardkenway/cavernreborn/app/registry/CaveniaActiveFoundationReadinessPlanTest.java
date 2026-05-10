@@ -44,6 +44,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
     private static final Path BIOME_SOURCE_PLAN_DOC = resolveProjectFile("docs", "cavenia-biome-source-strategy-narrow-non-runtime-mvp.md");
     private static final Path BIOME_MAPPING_DOC = resolveProjectFile("docs", "cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md");
     private static final Path WEIGHTED_SELECTION_DOC = resolveProjectFile("docs", "cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md");
+    private static final Path ADAPTER_DOC = resolveProjectFile("docs", "cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md");
 
     @Test
     void readinessPlanExistsAndPinsTheCurrentInactiveFoundationState() throws IOException {
@@ -69,6 +70,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
         String veinsPolicyDoc = Files.readString(VEINS_POLICY_DOC);
         String populationPolicyDoc = Files.readString(POPULATION_POLICY_DOC);
         String generatorScaffoldDoc = Files.readString(GENERATOR_SCAFFOLD_DOC);
+        String adapterDoc = Files.readString(ADAPTER_DOC);
 
         assertTrue(planDoc.contains("Cavenia Active Foundation Readiness / Implementation Plan"));
         assertTrue(planDoc.contains("docs/cavenia-dimension-provider-foundation-boundary.md"));
@@ -102,6 +104,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(planDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
         assertTrue(planDoc.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
         assertTrue(planDoc.contains("docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md"));
+        assertTrue(planDoc.contains("docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md"));
         assertTrue(planDoc.contains("`CaveniaSpawnProviderPolicy`"));
         assertTrue(planDoc.contains("`CaveniaSpawnEntry`"));
         assertTrue(planDoc.contains("`CaveniaTerrainGeneratorPolicy`"));
@@ -222,6 +225,8 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(readme.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
         assertTrue(readme.contains("Cavenia Weighted Biome Selection Algorithm / Pure Non-Runtime MVP"));
         assertTrue(readme.contains("docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md"));
+        assertTrue(readme.contains("Cavenia Unregistered Runtime Biome-Source Shape / Adapter Contract MVP"));
+        assertTrue(readme.contains("docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md"));
         assertTrue(runtimeSmokeDoc.contains("Cavenia Active Foundation Readiness / Implementation Plan"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(runtimeSmokeDoc.contains("inactive Cavenia active-foundation readiness-plan boundary"));
@@ -270,10 +275,13 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
         assertTrue(runtimeSmokeDoc.contains("Cavenia Legacy-To-Modern Biome-Key Mapping Inventory MVP"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
+        assertTrue(runtimeSmokeDoc.contains("Cavenia Unregistered Runtime Biome-Source Shape / Adapter Contract MVP"));
+        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md"));
         assertTrue(Files.readString(SELECTION_DOC).contains("`BIOME_SOURCE_STRATEGY`"));
         assertTrue(Files.readString(BIOME_SOURCE_PLAN_DOC).contains("`CaveniaBiomeSourceStrategyPlan`"));
         assertTrue(Files.readString(BIOME_MAPPING_DOC).contains("`CaveniaLegacyToModernBiomeKeyMappings`"));
         assertTrue(Files.readString(WEIGHTED_SELECTION_DOC).contains("`CaveniaWeightedBiomeSelectionAlgorithm`"));
+        assertTrue(adapterDoc.contains("`CaveniaGeneratorRegistrationBoundary`"));
         assertTrue(Files.readString(WORLDGEN_RESOURCE_SPLIT_DOC).contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(runtimeSmokeDoc.contains("non-registered Cavenia dimension-resource / access-travel / spawn-host split-contract MVP"));
         assertTrue(Files.readString(GENERATOR_BRIDGE_DOC).contains("docs/cavenia-active-foundation-readiness-plan.md"));

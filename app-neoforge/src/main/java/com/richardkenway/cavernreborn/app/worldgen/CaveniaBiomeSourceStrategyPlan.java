@@ -170,6 +170,14 @@ public final class CaveniaBiomeSourceStrategyPlan {
         return false;
     }
 
+    public static boolean unregisteredAdapterShapeReady() {
+        return CaveniaBiomeSelectionAdapterContract.adapterShapeReady();
+    }
+
+    public static boolean unregisteredAdapterRuntimeReady() {
+        return false;
+    }
+
     public static boolean runtimeBiomeSourceReady() {
         return false;
     }

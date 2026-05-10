@@ -455,6 +455,17 @@ NeoForge GameTest runtime smoke covers:
 - dimension JSON/type JSON remain absent and Cavenia cannot activate now
 - `EntityCaveman -> deferred:caveman` remains unchanged
 - the pure non-runtime selector note at `docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md`
+- Cavenia Unregistered Runtime Biome-Source Shape / Adapter Contract MVP
+- unregistered Cavenia runtime-biome-source shape / adapter contract MVP
+- `CaveniaBiomeSelectionAdapterContract` now resolves from `app-neoforge`
+- adapter shape is ready while adapter runtime is not ready
+- adapter consumes the pure weighted selector and keeps the exact entry count `14` and total weight `675`
+- representative adapter selections remain pinned: `0` first entry candidate, `675` first entry candidate and `-1` last entry candidate
+- adapter results remain candidate-only while runtime `BiomeSource`, runtime biome-source registration, codec/registration and registry lookup access are not ready
+- selected surface remains `BIOME_SOURCE_STRATEGY`, plan remains non-runtime and activation is not allowed in this slice
+- dimension JSON/type JSON remain absent and Cavenia cannot activate now
+- `EntityCaveman -> deferred:caveman` remains unchanged
+- the unregistered adapter note at `docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md`
 - `CaveniaSpawnProviderPolicy` still keeps `EntityCaveman -> deferred:caveman`
 - no registered `cavernreborn:caveman` entity type exists at runtime
 - no checked-in Caveman spawn placement, biome modifier or biome tag exists

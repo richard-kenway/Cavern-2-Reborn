@@ -14,6 +14,7 @@ class CaveniaLegacyToModernBiomeKeyMappingsBoundaryTest {
     private static final Path README = resolveProjectFile("README.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
     private static final Path INVENTORY_DOC = resolveProjectFile("docs", "cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md");
+    private static final Path ADAPTER_DOC = resolveProjectFile("docs", "cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md");
     private static final Path ALGORITHM_DOC = resolveProjectFile("docs", "cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md");
     private static final Path PLAN_DOC = resolveProjectFile("docs", "cavenia-biome-source-strategy-narrow-non-runtime-mvp.md");
     private static final Path SELECTION_DOC = resolveProjectFile("docs", "cavenia-deliberate-first-active-surface-selection-mvp.md");
@@ -36,6 +37,7 @@ class CaveniaLegacyToModernBiomeKeyMappingsBoundaryTest {
         String readme = Files.readString(README);
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE_DOC);
         String inventoryDoc = Files.readString(INVENTORY_DOC);
+        String adapterDoc = Files.readString(ADAPTER_DOC);
         String algorithmDoc = Files.readString(ALGORITHM_DOC);
         String planDoc = Files.readString(PLAN_DOC);
         String selectionDoc = Files.readString(SELECTION_DOC);
@@ -80,6 +82,7 @@ class CaveniaLegacyToModernBiomeKeyMappingsBoundaryTest {
         assertTrue(inventoryDoc.contains("no active Cavenia biome tags"));
         assertTrue(inventoryDoc.contains("no active Cavenia worldgen resources"));
         assertTrue(inventoryDoc.contains("`EntityCaveman -> deferred:caveman`"));
+        assertTrue(inventoryDoc.contains("docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md"));
 
         assertTrue(readme.contains("Cavenia Legacy-To-Modern Biome-Key Mapping Inventory MVP"));
         assertTrue(readme.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
@@ -95,6 +98,7 @@ class CaveniaLegacyToModernBiomeKeyMappingsBoundaryTest {
         assertTrue(readinessDoc.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
         assertTrue(runtimeKeyDoc.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
         assertTrue(algorithmDoc.contains("`CaveniaLegacyToModernBiomeKeyMappings`"));
+        assertTrue(adapterDoc.contains("`CaveniaLegacyToModernBiomeKeyMappings`"));
     }
 
     @Test

@@ -251,8 +251,9 @@ This slice reduces future ambiguity because:
 - the biome-source-strategy split now maps directly onto the accepted legacy biome-policy inputs
 - both remain blocked until activation requirements are satisfied
 
-The later pure selector follow-up is documented in:
+The later biome-source follow-ups are documented in:
 
 - `docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md`
+- `docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md`
 
 Until a real generator host, real biome-source strategy, codec/registration path, dimension resources, safe access and Cavenia-only spawn-host decisions exist, this slice remains a non-registered split-contract layer only.

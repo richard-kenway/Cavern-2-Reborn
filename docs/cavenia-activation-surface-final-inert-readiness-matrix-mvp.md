@@ -207,4 +207,7 @@ This slice reduces future ambiguity because:
 - all remain blocked until activation requirements are satisfied
 - future implementation can choose one surface to activate deliberately rather than accidentally crossing boundaries
 
-The later pure selector follow-up is documented in `docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md`.
+The later biome-source follow-ups are documented in:
+
+- `docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md`
+- `docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md`

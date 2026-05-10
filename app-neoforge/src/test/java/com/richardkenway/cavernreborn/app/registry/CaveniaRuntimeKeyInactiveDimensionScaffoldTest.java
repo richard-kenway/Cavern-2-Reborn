@@ -34,6 +34,7 @@ class CaveniaRuntimeKeyInactiveDimensionScaffoldTest {
     private static final Path BIOME_SOURCE_PLAN_DOC = resolveProjectFile("docs", "cavenia-biome-source-strategy-narrow-non-runtime-mvp.md");
     private static final Path BIOME_MAPPING_DOC = resolveProjectFile("docs", "cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md");
     private static final Path WEIGHTED_SELECTION_DOC = resolveProjectFile("docs", "cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md");
+    private static final Path ADAPTER_DOC = resolveProjectFile("docs", "cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md");
     private static final Path FOUNDATION_DOC = resolveProjectFile("docs", "cavenia-dimension-provider-foundation-boundary.md");
     private static final Path KEY_TYPE_DOC = resolveProjectFile("docs", "cavenia-dimension-key-type-contract-boundary.md");
     private static final Path CORE_DIMENSIONS_SOURCE = resolveProjectFile(
@@ -56,6 +57,7 @@ class CaveniaRuntimeKeyInactiveDimensionScaffoldTest {
         String scaffoldDoc = Files.readString(SCAFFOLD_DOC);
         String readinessDoc = Files.readString(READINESS_DOC);
         String technicalSpikeDoc = Files.readString(TECHNICAL_SPIKE_DOC);
+        String adapterDoc = Files.readString(ADAPTER_DOC);
         String terrainPolicyDoc = Files.readString(TERRAIN_POLICY_DOC);
         String generatorScaffoldDoc = Files.readString(GENERATOR_SCAFFOLD_DOC);
         String generatorBridgeDoc = Files.readString(GENERATOR_BRIDGE_DOC);
@@ -97,6 +99,7 @@ class CaveniaRuntimeKeyInactiveDimensionScaffoldTest {
         assertTrue(scaffoldDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
         assertTrue(scaffoldDoc.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
         assertTrue(scaffoldDoc.contains("docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md"));
+        assertTrue(scaffoldDoc.contains("docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md"));
 
         assertTrue(readme.contains("Cavenia Runtime Key / Inactive Dimension Scaffold MVP"));
         assertTrue(readme.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
@@ -113,6 +116,7 @@ class CaveniaRuntimeKeyInactiveDimensionScaffoldTest {
         assertTrue(Files.readString(GENERATOR_RUNTIME_CONTRACTS_DOC).contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
         assertTrue(activationHostsDoc.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
         assertTrue(Files.readString(DIMENSION_ACCESS_SPAWN_SPLIT_DOC).contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
+        assertTrue(adapterDoc.contains("dimension JSON/type JSON are absent"));
         assertTrue(Files.readString(WORLDGEN_RESOURCE_SPLIT_DOC).contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
         assertTrue(Files.readString(MATRIX_DOC).contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
         assertTrue(Files.readString(SELECTION_DOC).contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));

@@ -196,12 +196,13 @@ Current Reborn still keeps:
 
 ## Future Recommendation
 
-The next implementation slice should stay inside `BIOME_SOURCE_STRATEGY` and inventory candidate modern biome keys without becoming runtime.
-
-It should still avoid dimension JSON, active level, access, spawning and worldgen resources unless explicitly chosen later.
-
-That later non-runtime follow-up is now documented in:
+The later non-runtime and unregistered follow-ups are now documented in:
 
 - `docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md`
 - `docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md`
 - `docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md`
+- `docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md`
+
+The next implementation slice should still stay inside `BIOME_SOURCE_STRATEGY`, but it can now move to codec/registration readiness contracts for the adapter without becoming runtime.
+
+It should still avoid dimension JSON, active level, access, spawning and worldgen resources unless explicitly chosen later.

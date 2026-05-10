@@ -179,3 +179,7 @@ Before active biome/generator work starts, the project still needs:
 - dimension type height/logical-height decisions
 
 This note is therefore a non-runtime biome/top-filter foundation only, not an active Cavenia biome-provider or terrain slice.
+
+The later unregistered adapter follow-up is now documented in:
+
+- `docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md`

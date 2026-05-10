@@ -56,6 +56,7 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeKeyMappingKind;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaLegacyToModernBiomeKeyMappings;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyPlan;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyPlanStep;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSelectionAdapterContract;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyContracts;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyRequirement;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaWeightedBiomeSelectionAlgorithm;
@@ -8227,6 +8228,33 @@ public final class CavernSpecialOreGameTests {
             "Expected the pure non-runtime Cavenia weighted biome-selection algorithm to keep representative wrapping selections pinned while runtime biome-source activation stays absent"
         );
         helper.assertTrue(
+            CaveniaBiomeSelectionAdapterContract.queryForWeightValue(0).weightValue() == 0
+                && !CaveniaBiomeSelectionAdapterContract.queryForWeightValue(0).registryLookupAvailable()
+                && !CaveniaBiomeSelectionAdapterContract.queryForWeightValue(0).runtimeBiomeSourceAvailable()
+                && CaveniaBiomeSelectionAdapterContract.adapterShapeReady()
+                && !CaveniaBiomeSelectionAdapterContract.adapterRuntimeReady()
+                && CaveniaBiomeSelectionAdapterContract.consumesWeightedSelector()
+                && CaveniaBiomeSelectionAdapterContract.entryCount() == 14
+                && CaveniaBiomeSelectionAdapterContract.totalWeight() == 675,
+            "Expected the unregistered Cavenia biome-selection adapter contract to keep its inert query shape and exact weighted-selector footprint pinned"
+        );
+        helper.assertTrue(
+            CaveniaBiomeSelectionAdapterContract.selectCandidateByWeightValue(0).legacyBiomeName().equals("OCEAN")
+                && CaveniaBiomeSelectionAdapterContract.selectCandidateByWeightValue(675).legacyBiomeName().equals("OCEAN")
+                && CaveniaBiomeSelectionAdapterContract.selectCandidateByWeightValue(-1).legacyBiomeName().equals("MESA")
+                && CaveniaBiomeSelectionAdapterContract.selectCandidateByWeightValue(0).candidateOnly()
+                && !CaveniaBiomeSelectionAdapterContract.selectCandidateByWeightValue(0).runtimeBiomeSourceResult()
+                && !CaveniaBiomeSelectionAdapterContract.runtimeBiomeSourceReady()
+                && !CaveniaBiomeSelectionAdapterContract.runtimeBiomeSourceRegistered()
+                && !CaveniaBiomeSelectionAdapterContract.codecRegistered()
+                && !CaveniaBiomeSelectionAdapterContract.registryLookupAccessReady()
+                && !CaveniaBiomeSelectionAdapterContract.dimensionJsonPresent()
+                && !CaveniaBiomeSelectionAdapterContract.dimensionTypeJsonPresent()
+                && !CaveniaBiomeSelectionAdapterContract.canActivateCaveniaNow()
+                && CaveniaBiomeSelectionAdapterContract.cavemanRemainsDeferred(),
+            "Expected the unregistered Cavenia biome-selection adapter contract to keep representative wrapped candidate selections pinned while runtime biome-source activation stays absent"
+        );
+        helper.assertTrue(
             projectFileExists("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md"),
             "Expected the unregistered Cavenia generator/biome-selection skeleton doc to exist in the project root"
         );
@@ -8261,6 +8289,10 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             projectFileExists("docs", "cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"),
             "Expected the non-runtime Cavenia legacy-to-modern biome-key mapping inventory doc to exist in the project root"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md"),
+            "Expected the unregistered Cavenia biome-selection adapter contract doc to exist in the project root"
         );
         helper.assertTrue(
             projectFileExists("docs", "caveman-cavenia-normal-roster-boundary.md"),

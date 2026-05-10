@@ -316,3 +316,7 @@ The recommended next implementation slice after this spike is:
 - `Cavenia Runtime Key / Inactive Dimension Scaffold MVP`
 
 That slice should be limited to inert identity constants, boundary-doc updates and runtime smoke/tests that prove the identity exists in code but still does not create a real Cavenia runtime path.
+
+The later unregistered adapter follow-up is now documented in:
+
+- `docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md`
