@@ -24,6 +24,10 @@ The later dimension-resource / access-travel / spawn-host split-contract note is
 
 - `docs/cavenia-dimension-access-spawn-split-contracts-mvp.md`
 
+The later worldgen-resource split-contract note is now documented separately in:
+
+- `docs/cavenia-worldgen-resource-host-split-contracts-mvp.md`
+
 ## What This MVP Adds
 
 Current Reborn now has three app-side non-registered contract types:

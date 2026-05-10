@@ -74,6 +74,10 @@ The later dimension-resource / access-travel / spawn-host split-contract note is
 
 - `docs/cavenia-dimension-access-spawn-split-contracts-mvp.md`
 
+The later worldgen-resource split-contract note is now documented separately in:
+
+- `docs/cavenia-worldgen-resource-host-split-contracts-mvp.md`
+
 This spike still does not imply active `cavernreborn:cavenia`, `dimension/cavenia.json`, `dimension_type/cavenia.json`, active Cavenia spawning, active crazy spawning, fake normal `CAVERN` crazy spawning or a `cavernreborn:caveman` entity.
 
 ## Spike Decision

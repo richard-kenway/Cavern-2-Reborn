@@ -10,20 +10,21 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
-class CaveniaDimensionAccessSpawnSplitContractsBoundaryTest {
+class CaveniaWorldgenResourceSplitContractsBoundaryTest {
     private static final Path README = resolveProjectFile("README.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
-    private static final Path SPLIT_DOC = resolveProjectFile("docs", "cavenia-dimension-access-spawn-split-contracts-mvp.md");
-    private static final Path ACTIVATION_HOSTS_DOC = resolveProjectFile("docs", "cavenia-generator-activation-readiness-host-contracts-mvp.md");
-    private static final Path REGISTRATION_DOC = resolveProjectFile("docs", "cavenia-active-generator-registration-inert-boundary-mvp.md");
+    private static final Path SPLIT_DOC = resolveProjectFile("docs", "cavenia-worldgen-resource-host-split-contracts-mvp.md");
+    private static final Path DIMENSION_ACCESS_SPAWN_DOC = resolveProjectFile("docs", "cavenia-dimension-access-spawn-split-contracts-mvp.md");
     private static final Path GENERATOR_HOST_DOC = resolveProjectFile("docs", "cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md");
-    private static final Path BIOME_RUNTIME_DOC = resolveProjectFile("docs", "cavenia-generator-runtime-contracts-non-registered-mvp.md");
+    private static final Path ACTIVATION_HOSTS_DOC = resolveProjectFile("docs", "cavenia-generator-activation-readiness-host-contracts-mvp.md");
+    private static final Path RUNTIME_CONTRACTS_DOC = resolveProjectFile("docs", "cavenia-generator-runtime-contracts-non-registered-mvp.md");
+    private static final Path GENERATOR_SKELETON_DOC = resolveProjectFile("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md");
+    private static final Path REGISTRATION_DOC = resolveProjectFile("docs", "cavenia-active-generator-registration-inert-boundary-mvp.md");
     private static final Path BRIDGE_DOC = resolveProjectFile("docs", "cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md");
     private static final Path TECHNICAL_SCAFFOLD_DOC = resolveProjectFile("docs", "cavenia-active-generator-technical-scaffold-mvp.md");
     private static final Path TECHNICAL_SPIKE_DOC = resolveProjectFile("docs", "cavenia-active-foundation-technical-spike.md");
     private static final Path READINESS_DOC = resolveProjectFile("docs", "cavenia-active-foundation-readiness-plan.md");
     private static final Path RUNTIME_KEY_DOC = resolveProjectFile("docs", "cavenia-runtime-key-inactive-dimension-scaffold-mvp.md");
-    private static final Path WORLDGEN_RESOURCE_SPLIT_DOC = resolveProjectFile("docs", "cavenia-worldgen-resource-host-split-contracts-mvp.md");
     private static final Path APP_SOURCE_ROOT = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app"
     );
@@ -32,43 +33,37 @@ class CaveniaDimensionAccessSpawnSplitContractsBoundaryTest {
     );
 
     @Test
-    void docsPinTheDimensionAccessAndSpawnSplitContracts() throws IOException {
+    void docsPinTheWorldgenResourceSplitContracts() throws IOException {
         String readme = Files.readString(README);
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE_DOC);
         String splitDoc = Files.readString(SPLIT_DOC);
-        String activationHostsDoc = Files.readString(ACTIVATION_HOSTS_DOC);
-        String registrationDoc = Files.readString(REGISTRATION_DOC);
+        String dimensionAccessSpawnDoc = Files.readString(DIMENSION_ACCESS_SPAWN_DOC);
         String generatorHostDoc = Files.readString(GENERATOR_HOST_DOC);
-        String biomeRuntimeDoc = Files.readString(BIOME_RUNTIME_DOC);
+        String activationHostsDoc = Files.readString(ACTIVATION_HOSTS_DOC);
+        String runtimeContractsDoc = Files.readString(RUNTIME_CONTRACTS_DOC);
+        String generatorSkeletonDoc = Files.readString(GENERATOR_SKELETON_DOC);
+        String registrationDoc = Files.readString(REGISTRATION_DOC);
         String bridgeDoc = Files.readString(BRIDGE_DOC);
         String technicalScaffoldDoc = Files.readString(TECHNICAL_SCAFFOLD_DOC);
         String technicalSpikeDoc = Files.readString(TECHNICAL_SPIKE_DOC);
         String readinessDoc = Files.readString(READINESS_DOC);
         String runtimeKeyDoc = Files.readString(RUNTIME_KEY_DOC);
 
-        assertTrue(splitDoc.contains("Cavenia Dimension-Resource / Access-Travel / Spawn-Host Split Contracts MVP"));
-        assertTrue(splitDoc.contains("`CaveniaDimensionResourceContracts`"));
-        assertTrue(splitDoc.contains("`CaveniaDimensionResourceRequirement`"));
-        assertTrue(splitDoc.contains("`CaveniaDimensionResourceRequirementContract`"));
-        assertTrue(splitDoc.contains("`CaveniaAccessTravelContracts`"));
-        assertTrue(splitDoc.contains("`CaveniaAccessTravelRequirement`"));
-        assertTrue(splitDoc.contains("`CaveniaAccessTravelRequirementContract`"));
-        assertTrue(splitDoc.contains("`CaveniaSpawnHostContracts`"));
-        assertTrue(splitDoc.contains("`CaveniaSpawnHostRequirement`"));
-        assertTrue(splitDoc.contains("`CaveniaSpawnHostRequirementContract`"));
+        assertTrue(splitDoc.contains("Cavenia Worldgen-Resource Host Split Contracts MVP"));
+        assertTrue(splitDoc.contains("`CaveniaWorldgenResourceContracts`"));
+        assertTrue(splitDoc.contains("`CaveniaWorldgenResourceRequirement`"));
+        assertTrue(splitDoc.contains("`CaveniaWorldgenResourceRequirementContract`"));
         assertTrue(splitDoc.contains("`CaveniaActivationReadinessHosts`"));
-        assertTrue(splitDoc.contains("`CaveniaGeneratorRegistrationBoundary`"));
+        assertTrue(splitDoc.contains("`CaveniaDimensionResourceContracts`"));
         assertTrue(splitDoc.contains("`CaveniaGeneratorHostContracts`"));
         assertTrue(splitDoc.contains("`CaveniaBiomeSourceStrategyContracts`"));
         assertTrue(splitDoc.contains("`CaveniaGeneratorRuntimeContracts`"));
-        assertTrue(splitDoc.contains("`CaveniaGeneratorBridge`"));
-        assertTrue(splitDoc.contains("`CaveniaSpawnProviderPolicy`"));
-        assertTrue(splitDoc.contains("`CaveniaSpawnEntry`"));
-        assertTrue(splitDoc.contains("`CaveniaTerrainGeneratorPolicy`"));
-        assertTrue(splitDoc.contains("`CaveniaBiomeTopFilterPolicy`"));
+        assertTrue(splitDoc.contains("`CaveniaGeneratorRegistrationBoundary`"));
         assertTrue(splitDoc.contains("`CaveniaCaveCarverPolicy`"));
         assertTrue(splitDoc.contains("`CaveniaVeinsContentPolicy`"));
         assertTrue(splitDoc.contains("`CaveniaPopulationPolicy`"));
+        assertTrue(splitDoc.contains("`CaveniaBiomeTopFilterPolicy`"));
+        assertTrue(splitDoc.contains("`CaveniaTerrainGeneratorPolicy`"));
         assertTrue(splitDoc.contains("not a `ChunkGenerator`"));
         assertTrue(splitDoc.contains("not a `BiomeSource`"));
         assertTrue(splitDoc.contains("no codec or registry entry was added"));
@@ -78,41 +73,46 @@ class CaveniaDimensionAccessSpawnSplitContractsBoundaryTest {
         assertTrue(splitDoc.contains("no active Cavenia access or teleport"));
         assertTrue(splitDoc.contains("no active Cavenia spawning"));
         assertTrue(splitDoc.contains("no active crazy spawning"));
-        assertTrue(splitDoc.contains("fake normal `CAVERN` crazy spawning"));
-        assertTrue(splitDoc.contains("`EntityCaveman -> deferred:caveman`"));
-        assertTrue(splitDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
+        assertTrue(splitDoc.contains("no fake normal `CAVERN` crazy spawning"));
+        assertTrue(splitDoc.contains("no CAVERN resource reuse is accepted as Cavenia parity"));
 
-        assertTrue(readme.contains("Cavenia Dimension-Resource / Access-Travel / Spawn-Host Split Contracts MVP"));
-        assertTrue(readme.contains("docs/cavenia-dimension-access-spawn-split-contracts-mvp.md"));
-        assertTrue(runtimeSmokeDoc.contains("Cavenia Dimension-Resource / Access-Travel / Spawn-Host Split Contracts MVP"));
-        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-dimension-access-spawn-split-contracts-mvp.md"));
-        assertTrue(activationHostsDoc.contains("docs/cavenia-dimension-access-spawn-split-contracts-mvp.md"));
-        assertTrue(registrationDoc.contains("docs/cavenia-dimension-access-spawn-split-contracts-mvp.md"));
-        assertTrue(generatorHostDoc.contains("docs/cavenia-dimension-access-spawn-split-contracts-mvp.md"));
-        assertTrue(biomeRuntimeDoc.contains("docs/cavenia-dimension-access-spawn-split-contracts-mvp.md"));
-        assertTrue(bridgeDoc.contains("docs/cavenia-dimension-access-spawn-split-contracts-mvp.md"));
-        assertTrue(technicalScaffoldDoc.contains("docs/cavenia-dimension-access-spawn-split-contracts-mvp.md"));
-        assertTrue(technicalSpikeDoc.contains("docs/cavenia-dimension-access-spawn-split-contracts-mvp.md"));
-        assertTrue(readinessDoc.contains("docs/cavenia-dimension-access-spawn-split-contracts-mvp.md"));
-        assertTrue(runtimeKeyDoc.contains("docs/cavenia-dimension-access-spawn-split-contracts-mvp.md"));
-        assertTrue(Files.readString(WORLDGEN_RESOURCE_SPLIT_DOC).contains("docs/cavenia-dimension-access-spawn-split-contracts-mvp.md"));
+        assertTrue(readme.contains("Cavenia Worldgen-Resource Host Split Contracts MVP"));
+        assertTrue(readme.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
+        assertTrue(runtimeSmokeDoc.contains("Cavenia Worldgen-Resource Host Split Contracts MVP"));
+        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
+        assertTrue(dimensionAccessSpawnDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
+        assertTrue(generatorHostDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
+        assertTrue(activationHostsDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
+        assertTrue(runtimeContractsDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
+        assertTrue(generatorSkeletonDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
+        assertTrue(registrationDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
+        assertTrue(bridgeDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
+        assertTrue(technicalScaffoldDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
+        assertTrue(technicalSpikeDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
+        assertTrue(readinessDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
+        assertTrue(runtimeKeyDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
     }
 
     @Test
-    void splitContractsBoundaryKeepsActiveDimensionAccessAndSpawnSurfaceAbsent() throws IOException {
+    void splitContractsBoundaryKeepsActiveWorldgenResourcesAbsent() throws IOException {
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension_type", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "configured_carver", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "configured_feature", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "placed_feature", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "neoforge", "biome_modifier", "cavenia.json");
+        assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "tags", "worldgen", "biome", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "CaveniaChunkGenerator.java");
         assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "ChunkGeneratorCavenia.java");
         assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "CaveniaBiomeSource.java");
         assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "MapGenCaveniaCaves.java");
         assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "CaveniaTeleporter.java");
+        assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "CaveniaPortal.java");
+        assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "CaveniaPortalBlock.java");
+        assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "CaveniaAccessHandler.java");
         assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "CaveniaSpawnProvider.java");
         assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "CaveniaSpawnHandler.java");
+        assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "CaveniaServerTickSpawner.java");
 
         try (Stream<Path> sourceFiles = Files.walk(APP_SOURCE_ROOT)) {
             assertTrue(
@@ -125,10 +125,14 @@ class CaveniaDimensionAccessSpawnSplitContractsBoundaryTest {
                             || name.equals("CaveniaBiomeSource.java")
                             || name.equals("MapGenCaveniaCaves.java")
                             || name.equals("CaveniaTeleporter.java")
+                            || name.equals("CaveniaPortal.java")
+                            || name.equals("CaveniaPortalBlock.java")
+                            || name.equals("CaveniaAccessHandler.java")
                             || name.equals("CaveniaSpawnProvider.java")
                             || name.equals("CaveniaSpawnHandler.java")
+                            || name.equals("CaveniaServerTickSpawner.java")
                     ),
-                "Expected the dimension/access/spawn split-contract MVP to avoid adding any active Cavenia runtime classes"
+                "Expected the worldgen-resource split-contract MVP to avoid adding any active Cavenia runtime classes"
             );
         }
 
@@ -144,9 +148,9 @@ class CaveniaDimensionAccessSpawnSplitContractsBoundaryTest {
                             || path.contains("/worldgen/configured_feature/cavenia")
                             || path.contains("/worldgen/placed_feature/cavenia")
                             || path.contains("/neoforge/biome_modifier/cavenia")
-                            || path.contains("/worldgen/biome/cavenia")
+                            || path.contains("/tags/worldgen/biome/cavenia")
                     ),
-                "Expected the dimension/access/spawn split-contract MVP to keep active Cavenia runtime resources absent"
+                "Expected the worldgen-resource split-contract MVP to keep active Cavenia runtime resources absent"
             );
         }
     }
