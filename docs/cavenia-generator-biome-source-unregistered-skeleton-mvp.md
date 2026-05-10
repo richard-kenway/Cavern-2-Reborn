@@ -23,6 +23,10 @@ The later generator-host / biome-source-strategy split-contract note is now docu
 
 - `docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md`
 
+The later dimension-resource / access-travel / spawn-host split-contract note is now documented separately in:
+
+- `docs/cavenia-dimension-access-spawn-split-contracts-mvp.md`
+
 ## What This MVP Adds
 
 Current Reborn now has two app-side unregistered skeleton classes:

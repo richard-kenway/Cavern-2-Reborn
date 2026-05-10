@@ -1,0 +1,12 @@
+package com.richardkenway.cavernreborn.app.worldgen;
+
+public enum CaveniaSpawnHostRequirement {
+    CAVENIA_LEVEL_AVAILABILITY,
+    POLICY_CONSUMPTION,
+    NORMAL_ROSTER_HANDLING,
+    CRAZY_ROSTER_HANDLING,
+    NEARBY_ICAVENICMOB_SCAN,
+    CAVEMAN_DEFERRAL,
+    HOST_LOOP_OR_TICK_SOURCE,
+    NO_FAKE_CAVERN_CRAZY_SPAWNING
+}

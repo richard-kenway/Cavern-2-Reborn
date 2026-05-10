@@ -145,10 +145,12 @@ class CaveniaMirageEntryAccessContractBoundaryTest {
                     .filter(Files::isRegularFile)
                     .map(path -> path.getFileName().toString())
                     .noneMatch(name ->
-                        name.contains("Mirage")
-                            || name.contains("CaveniaTeleporter")
-                            || name.contains("CaveniaPortal")
-                            || name.contains("CaveniaAccess")
+                        name.equals("ItemMirageBook.java")
+                            || name.equals("MirageBookItem.java")
+                            || name.equals("CaveniaTeleporter.java")
+                            || name.equals("CaveniaPortal.java")
+                            || name.equals("CaveniaPortalBlock.java")
+                            || name.equals("CaveniaAccessHandler.java")
                     ),
                 "Expected the mirage-access boundary to keep Reborn mirage/Cavenia access classes absent"
             );

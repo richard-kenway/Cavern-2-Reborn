@@ -688,12 +688,16 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("Cavenia Generator Host / Biome Source Strategy Host Split Contracts MVP"));
         assertTrue(doc.contains("docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md"));
         assertTrue(doc.contains("non-registered Cavenia generator-host / biome-source-strategy split-contract MVP"));
+        assertTrue(doc.contains("Cavenia Dimension-Resource / Access-Travel / Spawn-Host Split Contracts MVP"));
+        assertTrue(doc.contains("docs/cavenia-dimension-access-spawn-split-contracts-mvp.md"));
+        assertTrue(doc.contains("non-registered Cavenia dimension-resource / access-travel / spawn-host split-contract MVP"));
         assertTrue(doc.contains("`CaveniaPopulationPolicy.generateLakesDefaultEnabled()` remains pinned to `true`"));
         assertTrue(doc.contains("`CaveniaGeneratorScaffold` now resolves from `core`"));
         assertTrue(doc.contains("`CaveniaGeneratorBridge` now resolves from `app-neoforge`"));
         assertTrue(doc.contains("`CaveniaGeneratorRegistrationBoundary` now resolves from `app-neoforge`"));
         assertTrue(doc.contains("`CaveniaGeneratorSkeleton` and `CaveniaBiomeSelectionSkeleton` now resolve from `app-neoforge`"));
         assertTrue(doc.contains("`CaveniaGeneratorHostContracts` and `CaveniaBiomeSourceStrategyContracts` now resolve from `app-neoforge`"));
+        assertTrue(doc.contains("`CaveniaDimensionResourceContracts`, `CaveniaAccessTravelContracts` and `CaveniaSpawnHostContracts` now resolve from `app-neoforge`"));
         assertTrue(doc.contains("`CaveniaGeneratorRuntimeContracts` now resolves from `app-neoforge`"));
         assertTrue(doc.contains("`CaveniaActivationReadinessHosts` now resolves from `app-neoforge`"));
         assertTrue(doc.contains("runtime generator registration as false"));
@@ -701,6 +705,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("`CaveniaVeinsContentPolicy.entries().size()` remains pinned to `13`"));
         assertTrue(doc.contains("`CaveniaVeinsContentPolicy.totalWeight()` remains pinned to `436`"));
         assertTrue(doc.contains("`CaveniaSpawnProviderPolicy` still keeps `EntityCaveman -> deferred:caveman`"));
+        assertTrue(doc.contains("dimension resources absent"));
+        assertTrue(doc.contains("level creation, teleport and spawning blocked"));
         assertTrue(doc.contains("no registered `cavernreborn:caveman` entity type exists at runtime"));
         assertTrue(doc.contains("docs/caveman-cavenia-normal-roster-boundary.md"));
         assertTrue(doc.contains("no checked-in normal `CAVERN` crazy biome modifiers or crazy biome tags exist"));

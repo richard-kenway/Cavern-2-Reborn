@@ -37,6 +37,7 @@ The later non-registered active-generator technical scaffold note is now documen
 - `docs/cavenia-generator-runtime-contracts-non-registered-mvp.md`
 - `docs/cavenia-generator-activation-readiness-host-contracts-mvp.md`
 - `docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md`
+- `docs/cavenia-dimension-access-spawn-split-contracts-mvp.md`
 
 Current readiness state still has no active Cavenia spawning and no fake normal `CAVERN` crazy spawning.
 
@@ -75,6 +76,15 @@ Current repository state now also has:
 - inert `CaveniaBiomeSourceStrategyRequirement`
 - inert `CaveniaBiomeSourceStrategyRequirementContract`
 - inert `CaveniaBiomeSourceStrategyContracts`
+- inert `CaveniaDimensionResourceRequirement`
+- inert `CaveniaDimensionResourceRequirementContract`
+- inert `CaveniaDimensionResourceContracts`
+- inert `CaveniaAccessTravelRequirement`
+- inert `CaveniaAccessTravelRequirementContract`
+- inert `CaveniaAccessTravelContracts`
+- inert `CaveniaSpawnHostRequirement`
+- inert `CaveniaSpawnHostRequirementContract`
+- inert `CaveniaSpawnHostContracts`
 
 ## Completed Readiness Inputs
 

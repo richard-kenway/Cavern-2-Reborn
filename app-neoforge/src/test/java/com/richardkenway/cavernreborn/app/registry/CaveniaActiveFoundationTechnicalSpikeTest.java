@@ -36,6 +36,7 @@ class CaveniaActiveFoundationTechnicalSpikeTest {
     private static final Path GENERATOR_RUNTIME_CONTRACTS_DOC = resolveProjectFile("docs", "cavenia-generator-runtime-contracts-non-registered-mvp.md");
     private static final Path ACTIVATION_HOSTS_DOC = resolveProjectFile("docs", "cavenia-generator-activation-readiness-host-contracts-mvp.md");
     private static final Path SPLIT_CONTRACTS_DOC = resolveProjectFile("docs", "cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md");
+    private static final Path DIMENSION_ACCESS_SPAWN_SPLIT_DOC = resolveProjectFile("docs", "cavenia-dimension-access-spawn-split-contracts-mvp.md");
 
     @Test
     void technicalSpikeExistsAndPinsTheFirstActiveFoundationDecision() throws IOException {
@@ -89,6 +90,7 @@ class CaveniaActiveFoundationTechnicalSpikeTest {
         assertTrue(spikeDoc.contains("docs/cavenia-generator-runtime-contracts-non-registered-mvp.md"));
         assertTrue(spikeDoc.contains("docs/cavenia-generator-activation-readiness-host-contracts-mvp.md"));
         assertTrue(spikeDoc.contains("docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md"));
+        assertTrue(spikeDoc.contains("docs/cavenia-dimension-access-spawn-split-contracts-mvp.md"));
         assertTrue(spikeDoc.contains("`CAVENIA_LOCATION`"));
         assertTrue(spikeDoc.contains("`CAVENIA_LEVEL_KEY`"));
         assertTrue(spikeDoc.contains("`dimension/cavenia.json`"));
@@ -134,6 +136,7 @@ class CaveniaActiveFoundationTechnicalSpikeTest {
         assertTrue(Files.readString(GENERATOR_RUNTIME_CONTRACTS_DOC).contains("docs/cavenia-active-foundation-technical-spike.md"));
         assertTrue(Files.readString(ACTIVATION_HOSTS_DOC).contains("docs/cavenia-active-foundation-technical-spike.md"));
         assertTrue(Files.readString(SPLIT_CONTRACTS_DOC).contains("docs/cavenia-active-foundation-technical-spike.md"));
+        assertTrue(Files.readString(DIMENSION_ACCESS_SPAWN_SPLIT_DOC).contains("docs/cavenia-active-foundation-technical-spike.md"));
     }
 
     private static Path resolveProjectFile(String first, String... more) {

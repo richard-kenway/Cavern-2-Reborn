@@ -47,9 +47,13 @@ import com.richardkenway.cavernreborn.app.item.OreCompassItem;
 import com.richardkenway.cavernreborn.app.mining.CavernMiningAssistEvents;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorActivationRequirement;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaActivationReadinessHosts;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaAccessTravelContracts;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaAccessTravelRequirement;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSelectionSkeleton;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyContracts;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyRequirement;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaDimensionResourceContracts;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaDimensionResourceRequirement;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorBridge;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorHostContracts;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorHostRequirement;
@@ -57,6 +61,8 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorRuntimeContra
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorRuntimeOperation;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorRegistrationBoundary;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorSkeleton;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaSpawnHostContracts;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaSpawnHostRequirement;
 import com.richardkenway.cavernreborn.app.registry.ModArmorMaterials;
 import com.richardkenway.cavernreborn.app.registry.ModBlockTags;
 import com.richardkenway.cavernreborn.app.registry.ModItemTags;
@@ -7906,6 +7912,89 @@ public final class CavernSpecialOreGameTests {
             "Expected the non-registered Cavenia biome-source-strategy split-contract layer to keep runtime biome-source behavior absent while preserving the accepted legacy biome inputs"
         );
         helper.assertTrue(
+            CaveniaDimensionResourceContracts.contracts().size() == 6
+                && CaveniaDimensionResourceContracts.requirements().equals(List.of(
+                    CaveniaDimensionResourceRequirement.DIMENSION_JSON_SHAPE,
+                    CaveniaDimensionResourceRequirement.DIMENSION_TYPE_JSON_SHAPE,
+                    CaveniaDimensionResourceRequirement.HEIGHT_AND_LOGICAL_HEIGHT,
+                    CaveniaDimensionResourceRequirement.GENERATOR_BINDING,
+                    CaveniaDimensionResourceRequirement.BIOME_SOURCE_BINDING,
+                    CaveniaDimensionResourceRequirement.RESOURCE_ACTIVATION_GUARD
+                )),
+            "Expected the non-registered Cavenia dimension-resource split-contract layer to keep the finer dimension-resource requirement order pinned"
+        );
+        helper.assertTrue(
+            CaveniaDimensionResourceContracts.allRequirementsBlocked()
+                && !CaveniaDimensionResourceContracts.anyRequirementReady()
+                && !CaveniaDimensionResourceContracts.anyResourcePresent()
+                && !CaveniaDimensionResourceContracts.anyRuntimeBound()
+                && !CaveniaDimensionResourceContracts.canCreateLevel()
+                && !CaveniaDimensionResourceContracts.dimensionJsonPresent()
+                && !CaveniaDimensionResourceContracts.dimensionTypeJsonPresent(),
+            "Expected the non-registered Cavenia dimension-resource split-contract layer to keep every finer dimension-resource requirement blocked and unable to create a level"
+        );
+        helper.assertTrue(
+            !CaveniaDimensionResourceContracts.dimensionResourceHostReady()
+                && !CaveniaDimensionResourceContracts.generatorHostReady()
+                && !CaveniaDimensionResourceContracts.biomeSourceStrategyHostReady(),
+            "Expected the non-registered Cavenia dimension-resource split-contract layer to stay blocked behind the existing activation-host, generator-host and biome-source-strategy-host boundaries"
+        );
+        helper.assertTrue(
+            CaveniaAccessTravelContracts.contracts().size() == 6
+                && CaveniaAccessTravelContracts.requirements().equals(List.of(
+                    CaveniaAccessTravelRequirement.ENTRY_TRIGGER_DECISION,
+                    CaveniaAccessTravelRequirement.SAFE_ARRIVAL_POSITION,
+                    CaveniaAccessTravelRequirement.RETURN_PATH,
+                    CaveniaAccessTravelRequirement.SERVER_LEVEL_AVAILABILITY,
+                    CaveniaAccessTravelRequirement.PLAYER_STATE_GUARDS,
+                    CaveniaAccessTravelRequirement.TRAVEL_HOST_IMPLEMENTATION
+                )),
+            "Expected the non-registered Cavenia access-travel split-contract layer to keep the finer access-travel requirement order pinned"
+        );
+        helper.assertTrue(
+            CaveniaAccessTravelContracts.allRequirementsBlocked()
+                && !CaveniaAccessTravelContracts.anyRequirementReady()
+                && !CaveniaAccessTravelContracts.anyRequirementRuntimeImplemented()
+                && !CaveniaAccessTravelContracts.canTeleport()
+                && CaveniaAccessTravelContracts.requiresActiveLevel(),
+            "Expected the non-registered Cavenia access-travel split-contract layer to keep every finer access-travel requirement blocked and unable to teleport"
+        );
+        helper.assertTrue(
+            !CaveniaAccessTravelContracts.accessTravelHostReady()
+                && !CaveniaAccessTravelContracts.dimensionResourceHostReady()
+                && !CaveniaAccessTravelContracts.dimensionCanCreateLevel(),
+            "Expected the non-registered Cavenia access-travel split-contract layer to stay blocked behind the existing dimension-resource host boundary"
+        );
+        helper.assertTrue(
+            CaveniaSpawnHostContracts.contracts().size() == 8
+                && CaveniaSpawnHostContracts.requirements().equals(List.of(
+                    CaveniaSpawnHostRequirement.CAVENIA_LEVEL_AVAILABILITY,
+                    CaveniaSpawnHostRequirement.POLICY_CONSUMPTION,
+                    CaveniaSpawnHostRequirement.NORMAL_ROSTER_HANDLING,
+                    CaveniaSpawnHostRequirement.CRAZY_ROSTER_HANDLING,
+                    CaveniaSpawnHostRequirement.NEARBY_ICAVENICMOB_SCAN,
+                    CaveniaSpawnHostRequirement.CAVEMAN_DEFERRAL,
+                    CaveniaSpawnHostRequirement.HOST_LOOP_OR_TICK_SOURCE,
+                    CaveniaSpawnHostRequirement.NO_FAKE_CAVERN_CRAZY_SPAWNING
+                )),
+            "Expected the non-registered Cavenia spawn-host split-contract layer to keep the finer spawn-host requirement order pinned"
+        );
+        helper.assertTrue(
+            CaveniaSpawnHostContracts.allRequirementsBlocked()
+                && !CaveniaSpawnHostContracts.anyRequirementReady()
+                && !CaveniaSpawnHostContracts.anyRequirementRuntimeImplemented()
+                && !CaveniaSpawnHostContracts.canSpawn()
+                && !CaveniaSpawnHostContracts.usesNormalCavernCrazySpawning(),
+            "Expected the non-registered Cavenia spawn-host split-contract layer to keep every finer spawn-host requirement blocked and unable to spawn entities"
+        );
+        helper.assertTrue(
+            !CaveniaSpawnHostContracts.spawnHostReady()
+                && !CaveniaSpawnHostContracts.dimensionResourceHostReady()
+                && !CaveniaSpawnHostContracts.dimensionCanCreateLevel()
+                && CaveniaSpawnHostContracts.cavemanRemainsDeferred(),
+            "Expected the non-registered Cavenia spawn-host split-contract layer to stay blocked behind the existing dimension-resource host boundary while keeping Caveman deferred"
+        );
+        helper.assertTrue(
             projectFileExists("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md"),
             "Expected the unregistered Cavenia generator/biome-selection skeleton doc to exist in the project root"
         );
@@ -7920,6 +8009,10 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             projectFileExists("docs", "cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md"),
             "Expected the non-registered Cavenia generator-host / biome-source-strategy split-contract doc to exist in the project root"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-dimension-access-spawn-split-contracts-mvp.md"),
+            "Expected the non-registered Cavenia dimension-resource / access-travel / spawn-host split-contract doc to exist in the project root"
         );
         helper.assertTrue(
             projectFileExists("docs", "caveman-cavenia-normal-roster-boundary.md"),

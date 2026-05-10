@@ -27,6 +27,7 @@ class CaveniaRuntimeKeyInactiveDimensionScaffoldTest {
     private static final Path GENERATOR_SKELETON_DOC = resolveProjectFile("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md");
     private static final Path GENERATOR_RUNTIME_CONTRACTS_DOC = resolveProjectFile("docs", "cavenia-generator-runtime-contracts-non-registered-mvp.md");
     private static final Path ACTIVATION_HOSTS_DOC = resolveProjectFile("docs", "cavenia-generator-activation-readiness-host-contracts-mvp.md");
+    private static final Path DIMENSION_ACCESS_SPAWN_SPLIT_DOC = resolveProjectFile("docs", "cavenia-dimension-access-spawn-split-contracts-mvp.md");
     private static final Path FOUNDATION_DOC = resolveProjectFile("docs", "cavenia-dimension-provider-foundation-boundary.md");
     private static final Path KEY_TYPE_DOC = resolveProjectFile("docs", "cavenia-dimension-key-type-contract-boundary.md");
     private static final Path CORE_DIMENSIONS_SOURCE = resolveProjectFile(
@@ -83,6 +84,7 @@ class CaveniaRuntimeKeyInactiveDimensionScaffoldTest {
         assertTrue(scaffoldDoc.contains("docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md"));
         assertTrue(scaffoldDoc.contains("docs/cavenia-generator-runtime-contracts-non-registered-mvp.md"));
         assertTrue(scaffoldDoc.contains("docs/cavenia-generator-activation-readiness-host-contracts-mvp.md"));
+        assertTrue(scaffoldDoc.contains("docs/cavenia-dimension-access-spawn-split-contracts-mvp.md"));
 
         assertTrue(readme.contains("Cavenia Runtime Key / Inactive Dimension Scaffold MVP"));
         assertTrue(readme.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
@@ -98,6 +100,7 @@ class CaveniaRuntimeKeyInactiveDimensionScaffoldTest {
         assertTrue(Files.readString(GENERATOR_SKELETON_DOC).contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
         assertTrue(Files.readString(GENERATOR_RUNTIME_CONTRACTS_DOC).contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
         assertTrue(activationHostsDoc.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
+        assertTrue(Files.readString(DIMENSION_ACCESS_SPAWN_SPLIT_DOC).contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
         assertTrue(foundationDoc.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
         assertTrue(keyTypeDoc.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
     }

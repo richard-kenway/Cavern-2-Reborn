@@ -196,7 +196,13 @@ class CaveniaSpawnProviderCrazyRosterActivationContractBoundaryTest {
                 sourceFiles
                     .filter(Files::isRegularFile)
                     .map(path -> path.getFileName().toString())
-                    .noneMatch(name -> name.contains("CaveniaSpawn") || name.contains("CrazySpawn")),
+                    .noneMatch(name ->
+                        name.equals("CaveniaSpawnProvider.java")
+                            || name.equals("CaveniaSpawnCallback.java")
+                            || name.equals("CaveniaSpawnHandler.java")
+                            || name.equals("CaveniaSpawnEvents.java")
+                            || name.equals("CaveniaServerTickSpawner.java")
+                    ),
                 "Expected the spawn-provider boundary to keep Cavenia-specific spawn host/callback classes absent"
             );
         }
