@@ -77,6 +77,22 @@ class CaveniaRuntimeBiomeSourceTest {
             )
         );
         assertTrue(designatedSource.contains("public static boolean holderConversionRuntimeReady() {\n        return false;\n    }"));
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean fallbackPolicyReadinessReady() {\n        return CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackPolicyReadinessReady();\n    }"
+            )
+        );
+        assertTrue(designatedSource.contains("public static boolean fallbackPolicyRuntimeReady() {\n        return false;\n    }"));
+        assertTrue(
+            designatedSource.contains(
+                "public static String fallbackLegacyBiomeName() {\n        return CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackLegacyBiomeName();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static String fallbackCandidateModernBiomeKey() {\n        return CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackCandidateModernBiomeKey();\n    }"
+            )
+        );
         assertTrue(designatedSource.contains("public static boolean dimensionBindingReady() {\n        return false;\n    }"));
         assertTrue(designatedSource.contains("public static boolean activationAllowedInThisSlice() {\n        return false;\n    }"));
         assertTrue(designatedSource.contains("public static boolean canActivateCaveniaNow() {\n        return false;\n    }"));

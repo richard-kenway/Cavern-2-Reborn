@@ -177,5 +177,7 @@ Why no access/spawning/worldgen resources were added:
 - this slice is limited to holder/resource-key conversion readiness only
 
 Future recommendation:
-- next slice can decide whether to add a non-runtime holder conversion plan for fallback policy
-- or continue with possible-biomes readiness while keeping the subclass unregistered and non-activating
+- next slice can continue with possible-biomes readiness
+- or make a go/no-go decision for non-runtime fallback implementation shape while keeping the subclass unregistered and non-activating
+
+The runtime-biome-source fallback-policy readiness follow-up is now documented in `docs/cavenia-runtime-biome-source-fallback-policy-readiness-mvp.md`.

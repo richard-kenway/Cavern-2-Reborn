@@ -72,6 +72,7 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceGuar
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceNextStepDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSource;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCodecMethodShapeStub;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceFallbackPolicyReadiness;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceHolderConversionReadiness;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceRealSubclassGuardrail;
@@ -8842,6 +8843,54 @@ public final class CavernSpecialOreGameTests {
             "Expected the holder-conversion readiness contract to pin the future string-to-holder path without adding registry lookup, resource-key conversion, holder resolution or activation"
         );
         helper.assertTrue(
+            CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackPolicyReadinessReady()
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackPolicySourcePinned()
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackTriggerUnparseableCandidateIdPinned()
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackTriggerUnresolvedResourceKeyPinned()
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackTriggerMissingHolderPinned()
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackTriggerEmptyPossibleBiomesPinned()
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackLegacyBiomeNamePinned()
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackCandidateModernKeyPinned()
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackRegistryVerificationDeferred()
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackHolderResolutionDeferred()
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackRuntimeUsageDeferred()
+                && !CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.runtimeFallbackImplementationReady()
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.registryLookupRequiredForRuntimeFallback()
+                && !CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.registryLookupAccessReady()
+                && !CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackRegistryVerified()
+                && !CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackHolderResolved()
+                && !CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackRuntimeReady()
+                && !CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.possibleBiomesFallbackReady()
+                && !CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.noiseBiomeFallbackReady()
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.realFallbackPolicyStillDeferred()
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackLegacyBiomeName().equals("PLAINS")
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackCandidateModernBiomeKey().equals("minecraft:plains")
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackCandidateExistsInInventory()
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackCandidateEntryCount() == 14
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.candidateInventoryReady()
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.candidateKeysStillStringOnly()
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.holderConversionReadinessReady()
+                && !CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.holderConversionRuntimeReady()
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.codecMethodShapeStubReady()
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.designatedSubclassReady()
+                && !CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.designatedSubclassRuntimeReady()
+                && !CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.usableCodecImplementationReady()
+                && !CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.codecRegistered()
+                && !CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.biomeSourceTypeRegistered()
+                && !CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.normalRuntimeConstructionAllowed()
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.unsupportedMethodStubsOnly()
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.goNoGoGuardrailsEnforced()
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.apiShapeInventoryReady()
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.selectedSurfaceReadinessItemCount() == 68
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.globalReadinessMatrixTotalRequirementCount() == 46
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.globalReadinessMatrixBlockedRequirementCount() == 46
+                && !CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.dimensionJsonPresent()
+                && !CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.dimensionTypeJsonPresent()
+                && !CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.canActivateCaveniaNow()
+                && CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.cavemanRemainsDeferred(),
+            "Expected the fallback-policy readiness contract to pin the deterministic PLAINS -> minecraft:plains fallback choice without adding runtime fallback behavior, lookup, holder resolution or activation"
+        );
+        helper.assertTrue(
             CaveniaRuntimeBiomeSource.guardedSubclassStubReady()
                 && CaveniaRuntimeBiomeSource.designatedSubclassSimpleName().equals("CaveniaRuntimeBiomeSource")
                 && CaveniaRuntimeBiomeSource.designatedSubclassFileName().equals("CaveniaRuntimeBiomeSource.java")
@@ -8862,6 +8911,10 @@ public final class CavernSpecialOreGameTests {
                 && !CaveniaRuntimeBiomeSource.holderResourceKeyConversionReady()
                 && CaveniaRuntimeBiomeSource.holderConversionReadinessReady()
                 && !CaveniaRuntimeBiomeSource.holderConversionRuntimeReady()
+                && CaveniaRuntimeBiomeSource.fallbackPolicyReadinessReady()
+                && !CaveniaRuntimeBiomeSource.fallbackPolicyRuntimeReady()
+                && CaveniaRuntimeBiomeSource.fallbackLegacyBiomeName().equals("PLAINS")
+                && CaveniaRuntimeBiomeSource.fallbackCandidateModernBiomeKey().equals("minecraft:plains")
                 && !CaveniaRuntimeBiomeSource.dimensionBindingReady()
                 && !CaveniaRuntimeBiomeSource.activationAllowedInThisSlice()
                 && !CaveniaRuntimeBiomeSource.canActivateCaveniaNow()
@@ -8895,6 +8948,10 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             projectFileExists("docs", "cavenia-runtime-biome-source-codec-method-shape-stub-mvp.md"),
             "Expected the runtime biome-source codec-method-shape stub doc to exist in the project root"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-runtime-biome-source-fallback-policy-readiness-mvp.md"),
+            "Expected the runtime biome-source fallback-policy readiness doc to exist in the project root"
         );
         helper.assertTrue(
             projectFileExists("docs", "cavenia-generator-runtime-contracts-non-registered-mvp.md"),

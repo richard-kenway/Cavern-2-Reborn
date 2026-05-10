@@ -182,3 +182,4 @@ The next slice can define holder and resource-key conversion readiness for the s
 It can also decide a non-usable codec-object placeholder only if it remains unregistered and explicitly not usable.
 
 The runtime-biome-source holder/resource-key conversion readiness follow-up is now documented in `docs/cavenia-runtime-biome-source-holder-resource-key-conversion-readiness-mvp.md`.
+The runtime-biome-source fallback-policy readiness follow-up is now documented in `docs/cavenia-runtime-biome-source-fallback-policy-readiness-mvp.md`.

@@ -114,6 +114,8 @@ class CaveniaBiomeSourceStrategyPlanTest {
         assertFalse(CaveniaBiomeSourceStrategyPlan.codecMethodShapeRuntimeReady());
         assertTrue(CaveniaBiomeSourceStrategyPlan.holderConversionReadinessReady());
         assertFalse(CaveniaBiomeSourceStrategyPlan.holderConversionRuntimeReady());
+        assertTrue(CaveniaBiomeSourceStrategyPlan.fallbackPolicyReadinessReady());
+        assertFalse(CaveniaBiomeSourceStrategyPlan.fallbackPolicyRuntimeReady());
         assertFalse(CaveniaBiomeSourceStrategyPlan.runtimeBiomeSourceReady());
         assertFalse(CaveniaBiomeSourceStrategyPlan.codecRegistered());
         assertFalse(CaveniaBiomeSourceStrategyPlan.registryLookupAccessReady());

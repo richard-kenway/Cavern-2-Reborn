@@ -244,6 +244,14 @@ public final class CaveniaRuntimeBiomeSourceHolderConversionReadiness {
         return true;
     }
 
+    public static boolean fallbackPolicyReadinessReady() {
+        return CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackPolicyReadinessReady();
+    }
+
+    public static boolean fallbackPolicyRuntimeReady() {
+        return false;
+    }
+
     public static boolean designatedSubclassReady() {
         return true;
     }

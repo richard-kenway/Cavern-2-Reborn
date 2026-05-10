@@ -14,22 +14,22 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
-import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceHolderConversionComponent;
-import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceHolderConversionEntry;
-import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceHolderConversionReadiness;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceFallbackPolicyComponent;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceFallbackPolicyEntry;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceFallbackPolicyReadiness;
 
-class CaveniaRuntimeBiomeSourceHolderConversionReadinessTest {
+class CaveniaRuntimeBiomeSourceFallbackPolicyReadinessTest {
     private static final Path COMPONENT_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
-        "CaveniaRuntimeBiomeSourceHolderConversionComponent.java"
+        "CaveniaRuntimeBiomeSourceFallbackPolicyComponent.java"
     );
     private static final Path ENTRY_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
-        "CaveniaRuntimeBiomeSourceHolderConversionEntry.java"
+        "CaveniaRuntimeBiomeSourceFallbackPolicyEntry.java"
     );
     private static final Path READINESS_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
-        "CaveniaRuntimeBiomeSourceHolderConversionReadiness.java"
+        "CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.java"
     );
     private static final Path DESIGNATED_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
@@ -43,119 +43,127 @@ class CaveniaRuntimeBiomeSourceHolderConversionReadinessTest {
     );
 
     @Test
-    void holderConversionReadinessPinsTheFutureStringToHolderPathWithoutImplementingIt() throws IOException {
-        List<CaveniaRuntimeBiomeSourceHolderConversionComponent> expectedComponents = List.of(
-            CaveniaRuntimeBiomeSourceHolderConversionComponent.STRING_CANDIDATE_KEYS_SOURCE,
-            CaveniaRuntimeBiomeSourceHolderConversionComponent.CANDIDATE_KEY_FORMAT_CONTRACT,
-            CaveniaRuntimeBiomeSourceHolderConversionComponent.RESOURCE_LOCATION_CONVERSION_DECISION,
-            CaveniaRuntimeBiomeSourceHolderConversionComponent.RESOURCE_KEY_CONVERSION_DECISION,
-            CaveniaRuntimeBiomeSourceHolderConversionComponent.BIOME_REGISTRY_LOOKUP_DECISION,
-            CaveniaRuntimeBiomeSourceHolderConversionComponent.HOLDER_RESOLUTION_DECISION,
-            CaveniaRuntimeBiomeSourceHolderConversionComponent.POSSIBLE_BIOMES_HOLDER_SET_DECISION,
-            CaveniaRuntimeBiomeSourceHolderConversionComponent.NOISE_BIOME_HOLDER_RETURN_DECISION,
-            CaveniaRuntimeBiomeSourceHolderConversionComponent.MISSING_BIOME_FALLBACK_DECISION,
-            CaveniaRuntimeBiomeSourceHolderConversionComponent.NO_RUNTIME_CONVERSION_IMPLEMENTATION,
-            CaveniaRuntimeBiomeSourceHolderConversionComponent.NO_REGISTRY_LOOKUP_ACCESS,
-            CaveniaRuntimeBiomeSourceHolderConversionComponent.REAL_HOLDER_CONVERSION_STILL_DEFERRED
+    void fallbackPolicyReadinessPinsTheDeterministicFallbackChoiceWithoutImplementingIt() throws IOException {
+        List<CaveniaRuntimeBiomeSourceFallbackPolicyComponent> expectedComponents = List.of(
+            CaveniaRuntimeBiomeSourceFallbackPolicyComponent.FALLBACK_POLICY_SOURCE,
+            CaveniaRuntimeBiomeSourceFallbackPolicyComponent.FALLBACK_TRIGGER_UNPARSEABLE_CANDIDATE_ID,
+            CaveniaRuntimeBiomeSourceFallbackPolicyComponent.FALLBACK_TRIGGER_UNRESOLVED_RESOURCE_KEY,
+            CaveniaRuntimeBiomeSourceFallbackPolicyComponent.FALLBACK_TRIGGER_MISSING_HOLDER,
+            CaveniaRuntimeBiomeSourceFallbackPolicyComponent.FALLBACK_TRIGGER_EMPTY_POSSIBLE_BIOMES,
+            CaveniaRuntimeBiomeSourceFallbackPolicyComponent.FALLBACK_LEGACY_BIOME_NAME,
+            CaveniaRuntimeBiomeSourceFallbackPolicyComponent.FALLBACK_CANDIDATE_MODERN_KEY,
+            CaveniaRuntimeBiomeSourceFallbackPolicyComponent.FALLBACK_REGISTRY_VERIFICATION_DEFERRED,
+            CaveniaRuntimeBiomeSourceFallbackPolicyComponent.FALLBACK_HOLDER_RESOLUTION_DEFERRED,
+            CaveniaRuntimeBiomeSourceFallbackPolicyComponent.FALLBACK_RUNTIME_USAGE_DEFERRED,
+            CaveniaRuntimeBiomeSourceFallbackPolicyComponent.NO_RUNTIME_FALLBACK_IMPLEMENTATION,
+            CaveniaRuntimeBiomeSourceFallbackPolicyComponent.REAL_FALLBACK_POLICY_STILL_DEFERRED
         );
-        Set<CaveniaRuntimeBiomeSourceHolderConversionComponent> registryLookupRequiredComponents = Set.of(
-            CaveniaRuntimeBiomeSourceHolderConversionComponent.BIOME_REGISTRY_LOOKUP_DECISION,
-            CaveniaRuntimeBiomeSourceHolderConversionComponent.HOLDER_RESOLUTION_DECISION,
-            CaveniaRuntimeBiomeSourceHolderConversionComponent.POSSIBLE_BIOMES_HOLDER_SET_DECISION,
-            CaveniaRuntimeBiomeSourceHolderConversionComponent.NOISE_BIOME_HOLDER_RETURN_DECISION,
-            CaveniaRuntimeBiomeSourceHolderConversionComponent.MISSING_BIOME_FALLBACK_DECISION
+        Set<CaveniaRuntimeBiomeSourceFallbackPolicyComponent> registryLookupRequiredComponents = Set.of(
+            CaveniaRuntimeBiomeSourceFallbackPolicyComponent.FALLBACK_TRIGGER_UNRESOLVED_RESOURCE_KEY,
+            CaveniaRuntimeBiomeSourceFallbackPolicyComponent.FALLBACK_TRIGGER_MISSING_HOLDER,
+            CaveniaRuntimeBiomeSourceFallbackPolicyComponent.FALLBACK_TRIGGER_EMPTY_POSSIBLE_BIOMES,
+            CaveniaRuntimeBiomeSourceFallbackPolicyComponent.FALLBACK_REGISTRY_VERIFICATION_DEFERRED,
+            CaveniaRuntimeBiomeSourceFallbackPolicyComponent.FALLBACK_HOLDER_RESOLUTION_DEFERRED
         );
-        List<CaveniaRuntimeBiomeSourceHolderConversionEntry> entries =
-            CaveniaRuntimeBiomeSourceHolderConversionReadiness.entries();
+        List<CaveniaRuntimeBiomeSourceFallbackPolicyEntry> entries =
+            CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.entries();
         String designatedSource = Files.readString(DESIGNATED_SOURCE);
 
-        assertEquals(expectedComponents, CaveniaRuntimeBiomeSourceHolderConversionReadiness.components());
-        assertEquals(12, CaveniaRuntimeBiomeSourceHolderConversionReadiness.entryCount());
+        assertEquals(expectedComponents, CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.components());
+        assertEquals(12, CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.entryCount());
         assertTrue(entries.stream().allMatch(entry -> entry.sourceContractName() != null && !entry.sourceContractName().isBlank()));
-        assertTrue(entries.stream().allMatch(entry -> entry.observedInput() != null && !entry.observedInput().isBlank()));
-        assertTrue(entries.stream().allMatch(entry -> entry.futureDecision() != null && !entry.futureDecision().isBlank()));
+        assertTrue(entries.stream().allMatch(entry -> entry.fallbackDecision() != null && !entry.fallbackDecision().isBlank()));
+        assertTrue(entries.stream().allMatch(entry -> entry.expectedFutureBehavior() != null && !entry.expectedFutureBehavior().isBlank()));
         assertTrue(entries.stream().allMatch(entry -> entry.blocker() != null && !entry.blocker().isBlank()));
-        assertTrue(entries.stream().allMatch(CaveniaRuntimeBiomeSourceHolderConversionEntry::readinessPinned));
+        assertTrue(entries.stream().allMatch(CaveniaRuntimeBiomeSourceFallbackPolicyEntry::readinessPinned));
         assertTrue(entries.stream().allMatch(entry -> !entry.implementationReady()));
         assertTrue(entries.stream().allMatch(entry -> !entry.registryLookupAvailable()));
+        assertTrue(entries.stream().allMatch(entry -> !entry.runtimeFallbackReady()));
         assertTrue(entries.stream().allMatch(entry -> !entry.activationAllowedInThisSlice()));
         entries.forEach(entry -> assertEquals(
             registryLookupRequiredComponents.contains(entry.component()),
             entry.registryLookupRequired()
         ));
 
-        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.entryFor(
-            CaveniaRuntimeBiomeSourceHolderConversionComponent.STRING_CANDIDATE_KEYS_SOURCE
-        ).orElseThrow().observedInput().contains("candidateModernBiomeKeys()"));
-        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.entryFor(
-            CaveniaRuntimeBiomeSourceHolderConversionComponent.CANDIDATE_KEY_FORMAT_CONTRACT
-        ).orElseThrow().observedInput().contains("minecraft:ocean"));
-        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.entryFor(
-            CaveniaRuntimeBiomeSourceHolderConversionComponent.NOISE_BIOME_HOLDER_RETURN_DECISION
-        ).orElseThrow().observedInput().contains("Holder<Biome>"));
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.entryFor(
+            CaveniaRuntimeBiomeSourceFallbackPolicyComponent.FALLBACK_LEGACY_BIOME_NAME
+        ).orElseThrow().fallbackDecision().contains("PLAINS"));
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.entryFor(
+            CaveniaRuntimeBiomeSourceFallbackPolicyComponent.FALLBACK_CANDIDATE_MODERN_KEY
+        ).orElseThrow().fallbackDecision().contains("minecraft:plains"));
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.entryFor(
+            CaveniaRuntimeBiomeSourceFallbackPolicyComponent.FALLBACK_HOLDER_RESOLUTION_DEFERRED
+        ).orElseThrow().fallbackDecision().contains("Holder<Biome>"));
 
-        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.holderConversionReadinessReady());
-        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.stringCandidateKeysSourcePinned());
-        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.candidateKeyFormatPinned());
-        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.resourceLocationConversionDecisionPinned());
-        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.resourceKeyConversionDecisionPinned());
-        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.biomeRegistryLookupDecisionPinned());
-        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.holderResolutionDecisionPinned());
-        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.possibleBiomesHolderSetDecisionPinned());
-        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.noiseBiomeHolderReturnDecisionPinned());
-        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.missingBiomeFallbackDecisionPinned());
-        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.runtimeConversionImplementationReady());
-        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.registryLookupRequiredForRuntimeConversion());
-        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.registryLookupAccessReady());
-        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.holderResolutionReady());
-        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.resourceKeyConversionReady());
-        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.resourceLocationConversionReady());
-        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.possibleBiomesRuntimeReady());
-        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.noiseBiomeRuntimeReady());
-        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.missingBiomeFallbackReady());
-        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.realHolderConversionStillDeferred());
-        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.activationAllowedInThisSlice());
-        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.canActivateCaveniaNow());
-        assertEquals(14, CaveniaRuntimeBiomeSourceHolderConversionReadiness.candidateEntryCount());
-        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.candidateInventoryReady());
-        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.candidateKeysStillStringOnly());
-        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.fallbackPolicyReadinessReady());
-        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.fallbackPolicyRuntimeReady());
-        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.designatedSubclassReady());
-        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.designatedSubclassRuntimeReady());
-        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.codecMethodShapeStubReady());
-        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.usableCodecImplementationReady());
-        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.codecRegistered());
-        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.biomeSourceTypeRegistered());
-        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.normalRuntimeConstructionAllowed());
-        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.unsupportedMethodStubsOnly());
-        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.goNoGoGuardrailsEnforced());
-        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.apiShapeInventoryReady());
-        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.dimensionBindingReady());
-        assertEquals(68, CaveniaRuntimeBiomeSourceHolderConversionReadiness.selectedSurfaceReadinessItemCount());
-        assertEquals(46, CaveniaRuntimeBiomeSourceHolderConversionReadiness.globalReadinessMatrixTotalRequirementCount());
-        assertEquals(46, CaveniaRuntimeBiomeSourceHolderConversionReadiness.globalReadinessMatrixBlockedRequirementCount());
-        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.dimensionJsonPresent());
-        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.dimensionTypeJsonPresent());
-        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.cavemanRemainsDeferred());
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackPolicyReadinessReady());
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackPolicySourcePinned());
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackTriggerUnparseableCandidateIdPinned());
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackTriggerUnresolvedResourceKeyPinned());
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackTriggerMissingHolderPinned());
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackTriggerEmptyPossibleBiomesPinned());
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackLegacyBiomeNamePinned());
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackCandidateModernKeyPinned());
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackRegistryVerificationDeferred());
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackHolderResolutionDeferred());
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackRuntimeUsageDeferred());
+        assertFalse(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.runtimeFallbackImplementationReady());
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.registryLookupRequiredForRuntimeFallback());
+        assertFalse(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.registryLookupAccessReady());
+        assertFalse(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackRegistryVerified());
+        assertFalse(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackHolderResolved());
+        assertFalse(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackRuntimeReady());
+        assertFalse(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.possibleBiomesFallbackReady());
+        assertFalse(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.noiseBiomeFallbackReady());
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.realFallbackPolicyStillDeferred());
+        assertFalse(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.activationAllowedInThisSlice());
+        assertFalse(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.canActivateCaveniaNow());
+        assertEquals("PLAINS", CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackLegacyBiomeName());
+        assertEquals("minecraft:plains", CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackCandidateModernBiomeKey());
+        assertEquals(
+            "CaveniaLegacyToModernBiomeKeyMappings",
+            CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackSourceContractName()
+        );
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackCandidateExistsInInventory());
+        assertEquals(14, CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackCandidateEntryCount());
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.candidateInventoryReady());
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.candidateKeysStillStringOnly());
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.holderConversionReadinessReady());
+        assertFalse(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.holderConversionRuntimeReady());
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.codecMethodShapeStubReady());
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.designatedSubclassReady());
+        assertFalse(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.designatedSubclassRuntimeReady());
+        assertFalse(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.usableCodecImplementationReady());
+        assertFalse(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.codecRegistered());
+        assertFalse(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.biomeSourceTypeRegistered());
+        assertFalse(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.normalRuntimeConstructionAllowed());
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.unsupportedMethodStubsOnly());
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.goNoGoGuardrailsEnforced());
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.apiShapeInventoryReady());
+        assertFalse(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.dimensionBindingReady());
+        assertEquals(68, CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.selectedSurfaceReadinessItemCount());
+        assertEquals(46, CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.globalReadinessMatrixTotalRequirementCount());
+        assertEquals(46, CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.globalReadinessMatrixBlockedRequirementCount());
+        assertFalse(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.dimensionJsonPresent());
+        assertFalse(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.dimensionTypeJsonPresent());
+        assertTrue(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.cavemanRemainsDeferred());
 
         assertTrue(
             designatedSource.contains(
-                "public static boolean holderConversionReadinessReady() {\n        return CaveniaRuntimeBiomeSourceHolderConversionReadiness.holderConversionReadinessReady();\n    }"
+                "public static boolean fallbackPolicyReadinessReady() {\n        return CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackPolicyReadinessReady();\n    }"
             )
         );
-        assertTrue(designatedSource.contains("public static boolean holderConversionRuntimeReady() {\n        return false;\n    }"));
+        assertTrue(designatedSource.contains("public static boolean fallbackPolicyRuntimeReady() {\n        return false;\n    }"));
 
-        assertImmutableList(CaveniaRuntimeBiomeSourceHolderConversionReadiness.entries(), entries.get(0));
+        assertImmutableList(CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.entries(), entries.get(0));
         assertImmutableList(
-            CaveniaRuntimeBiomeSourceHolderConversionReadiness.components(),
-            CaveniaRuntimeBiomeSourceHolderConversionComponent.STRING_CANDIDATE_KEYS_SOURCE
+            CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.components(),
+            CaveniaRuntimeBiomeSourceFallbackPolicyComponent.FALLBACK_POLICY_SOURCE
         );
         entries.forEach(entry -> assertNotNull(entry.component()));
     }
 
     @Test
-    void holderConversionReadinessSourcesKeepRuntimeApiUsageAndConversionImplementationBlocked() throws IOException {
+    void fallbackPolicyReadinessSourcesKeepRuntimeFallbackAndLookupImplementationBlocked() throws IOException {
         String componentSource = Files.readString(COMPONENT_SOURCE);
         String entrySource = Files.readString(ENTRY_SOURCE);
         String readinessSource = Files.readString(READINESS_SOURCE);
@@ -252,7 +260,7 @@ class CaveniaRuntimeBiomeSourceHolderConversionReadinessTest {
                             || path.contains("/neoforge/biome_modifier/cavenia")
                             || path.contains("/tags/worldgen/biome/cavenia")
                     ),
-                "Expected the holder-conversion readiness slice to keep active Cavenia resources absent"
+                "Expected the fallback-policy readiness slice to keep active Cavenia resources absent"
             );
         }
     }
@@ -261,15 +269,15 @@ class CaveniaRuntimeBiomeSourceHolderConversionReadinessTest {
         assertFalse(source.contains("extends ChunkGenerator"));
         assertFalse(source.contains("extends BiomeSource"));
         assertFalse(source.contains("import net.minecraft.world.level.biome.BiomeSource;"));
-        assertFalse(source.contains("Holder<Biome>"));
-        assertFalse(source.contains("ResourceLocation"));
-        assertFalse(source.contains("ResourceKey<Biome>"));
-        assertFalse(source.contains("RegistryLookup<"));
-        assertFalse(source.contains("RegistryAccess"));
         assertFalse(source.contains("MapCodec"));
         assertFalse(source.contains("Codec<"));
         assertFalse(source.contains("RecordCodecBuilder"));
         assertFalse(source.contains("Registry.register"));
+        assertFalse(source.contains("Holder<Biome>"));
+        assertFalse(source.contains("RegistryLookup<"));
+        assertFalse(source.contains("RegistryAccess"));
+        assertFalse(source.contains("ResourceLocation"));
+        assertFalse(source.contains("ResourceKey<Biome>"));
         assertFalse(source.contains("registerConfiguredFeature("));
         assertFalse(source.contains("registerPlacedFeature("));
         assertFalse(source.contains("registerConfiguredCarver("));
@@ -292,7 +300,7 @@ class CaveniaRuntimeBiomeSourceHolderConversionReadinessTest {
         assertEquals(List.of(DESIGNATED_SOURCE), matchingFiles, "Expected only the designated subclass file to contain: " + fragment);
     }
 
-    private static void assertNoMainSourceContains(List<Path> sourceFiles, String fragment) {
+    private static void assertNoMainSourceContains(List<Path> sourceFiles, String fragment) throws IOException {
         assertTrue(
             sourceFiles.stream().noneMatch(path -> {
                 try {
