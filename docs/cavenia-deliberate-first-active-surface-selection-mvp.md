@@ -213,6 +213,5 @@ The next implementation slice should still stay inside `BIOME_SOURCE_STRATEGY`, 
 
 It should still avoid dimension JSON, active level, access, spawning and worldgen resources unless explicitly chosen later.
 
-The runtime-biome-source API-shape inventory follow-up is now documented in .
 
 The runtime-biome-source API-shape inventory follow-up is now documented in `docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md`.

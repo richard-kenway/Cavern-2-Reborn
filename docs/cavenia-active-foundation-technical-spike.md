@@ -330,6 +330,5 @@ The later adapter codec/registration readiness follow-up is now documented in:
 - `docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md`
 - `docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md`
 
-The runtime-biome-source API-shape inventory follow-up is now documented in .
 
 The runtime-biome-source API-shape inventory follow-up is now documented in `docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md`.

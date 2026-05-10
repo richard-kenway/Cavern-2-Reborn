@@ -11,6 +11,8 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 
 class CaveniaRuntimeBiomeSourceApiShapeInventoryBoundaryTest {
+    private static final String BROKEN_FOLLOW_UP_LINE =
+        "The runtime-biome-source API-shape inventory follow-up is now documented in .";
     private static final Path README = resolveProjectFile("README.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
     private static final Path INVENTORY_DOC = resolveProjectFile("docs", "cavenia-runtime-biome-source-api-shape-inventory-mvp.md");
@@ -131,6 +133,19 @@ class CaveniaRuntimeBiomeSourceApiShapeInventoryBoundaryTest {
         assertTrue(selectionDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
         assertTrue(activationMatrixDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
         assertTrue(generatorHostDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertFalse(subclassDecisionDoc.contains(BROKEN_FOLLOW_UP_LINE));
+        assertFalse(skeletonDoc.contains(BROKEN_FOLLOW_UP_LINE));
+        assertFalse(firstDecisionDoc.contains(BROKEN_FOLLOW_UP_LINE));
+        assertFalse(matrixDoc.contains(BROKEN_FOLLOW_UP_LINE));
+        assertFalse(registryLookupDoc.contains(BROKEN_FOLLOW_UP_LINE));
+        assertFalse(adapterCodecDoc.contains(BROKEN_FOLLOW_UP_LINE));
+        assertFalse(adapterDoc.contains(BROKEN_FOLLOW_UP_LINE));
+        assertFalse(weightedSelectionDoc.contains(BROKEN_FOLLOW_UP_LINE));
+        assertFalse(legacyMappingDoc.contains(BROKEN_FOLLOW_UP_LINE));
+        assertFalse(planDoc.contains(BROKEN_FOLLOW_UP_LINE));
+        assertFalse(selectionDoc.contains(BROKEN_FOLLOW_UP_LINE));
+        assertFalse(activationMatrixDoc.contains(BROKEN_FOLLOW_UP_LINE));
+        assertFalse(generatorHostDoc.contains(BROKEN_FOLLOW_UP_LINE));
     }
 
     @Test

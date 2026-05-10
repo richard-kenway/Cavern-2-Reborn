@@ -192,6 +192,5 @@ A real `BiomeSource` subclass must be a separate explicit MVP and must still avo
 
 The runtime-biome-source codec/holder/registry decision follow-up is now documented in `docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md`.
 
-The runtime-biome-source API-shape inventory follow-up is now documented in .
 
 The runtime-biome-source API-shape inventory follow-up is now documented in `docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md`.

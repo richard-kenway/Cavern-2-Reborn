@@ -201,6 +201,5 @@ The next slice can define codec/registration readiness contracts for that adapte
 
 Runtime `BiomeSource`, codec, registration and registry lookup access must remain separate explicit MVPs.
 
-The runtime-biome-source API-shape inventory follow-up is now documented in .
 
 The runtime-biome-source API-shape inventory follow-up is now documented in `docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md`.
