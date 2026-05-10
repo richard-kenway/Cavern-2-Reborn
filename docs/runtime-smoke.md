@@ -476,6 +476,19 @@ NeoForge GameTest runtime smoke covers:
 - registry lookup readiness is ready while registry lookup runtime is not ready
 - registry access source decision is not ready, biome registry reference is not ready and resource-key conversion is not ready
 - holder resolution is not ready, missing-biome fallback decision is not ready, runtime lookup context is not ready and adapter result to runtime biome is not ready
+- `EntityCaveman -> deferred:caveman` remains unchanged
+- the readiness-only registry-lookup note at `docs/cavenia-registry-lookup-readiness-contracts-mvp.md`
+- Cavenia BIOME_SOURCE_STRATEGY Final Readiness Matrix MVP
+- final selected-surface BIOME_SOURCE_STRATEGY readiness-matrix MVP
+- `CaveniaBiomeSourceStrategyReadinessMatrix` now resolves from `app-neoforge`
+- the matrix entry count remains `6` and the total selected-surface readiness item count remains `68`
+- all six readiness layers are ready as contracts/data while all runtime surfaces remain blocked
+- candidate inventory is ready, candidate keys remain string-only, the weighted selection algorithm is ready, adapter shape is ready, codec/registration readiness is ready and registry lookup readiness is ready
+- registry lookup runtime is not ready, registry lookup access is not ready, registry verification is not ready and runtime biome resolution is not ready
+- runtime `BiomeSource` is not ready, runtime biome-source registration is not ready, codec is not registered and dimension binding is not ready
+- selected surface remains `BIOME_SOURCE_STRATEGY`, the plan remains non-runtime and activation is not allowed in this slice
+- dimension JSON/type JSON remain absent, Cavenia cannot activate now and `EntityCaveman -> deferred:caveman` remains unchanged
+- the final selected-surface readiness-matrix note at `docs/cavenia-biome-source-strategy-final-readiness-matrix-mvp.md`
 - registry lookup access is not ready, registry verification is not ready and runtime biome source is not ready
 - runtime biome source is not registered and codec is not registered
 - adapter entry count remains `14` and adapter total weight remains `675`

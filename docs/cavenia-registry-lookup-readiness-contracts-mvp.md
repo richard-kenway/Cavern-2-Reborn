@@ -175,6 +175,8 @@ Current Reborn therefore still keeps:
 
 ## Future Recommendation
 
+The selected-surface consolidation follow-up is now documented in `docs/cavenia-biome-source-strategy-final-readiness-matrix-mvp.md`.
+
 The next slice may consolidate `BIOME_SOURCE_STRATEGY` readiness into a final selected-surface readiness matrix.
 
 Real runtime `BiomeSource`, codec, registration and registry lookup access must remain separate explicit MVPs.

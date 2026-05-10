@@ -192,6 +192,7 @@ The later pure selector and unregistered adapter follow-ups are now documented i
 - `docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md`
 - `docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md`
 - `docs/cavenia-registry-lookup-readiness-contracts-mvp.md`
+- `docs/cavenia-biome-source-strategy-final-readiness-matrix-mvp.md`
 
 The next slice can define codec/registration readiness contracts for that adapter, but should still avoid actual codec registration, registry lookup access and runtime activation unless explicitly changing the boundary.
 

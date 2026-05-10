@@ -86,6 +86,7 @@ class CaveniaAdapterCodecRegistrationReadinessBoundaryTest {
         assertTrue(readinessDoc.contains("no active Cavenia worldgen resources"));
         assertTrue(readinessDoc.contains("`EntityCaveman -> deferred:caveman`"));
         assertTrue(readinessDoc.contains("docs/cavenia-registry-lookup-readiness-contracts-mvp.md"));
+        assertTrue(readinessDoc.contains("docs/cavenia-biome-source-strategy-final-readiness-matrix-mvp.md"));
 
         assertTrue(readme.contains("Cavenia Adapter Codec/Registration Readiness Contracts MVP"));
         assertTrue(readme.contains("docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md"));

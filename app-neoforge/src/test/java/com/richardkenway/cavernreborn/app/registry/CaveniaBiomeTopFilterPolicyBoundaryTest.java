@@ -111,6 +111,7 @@ class CaveniaBiomeTopFilterPolicyBoundaryTest {
         assertTrue(policyDoc.contains("docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md"));
         assertTrue(adapterDoc.contains("`CaveniaBiomeTopFilterPolicy`"));
         assertTrue(policyDoc.contains("docs/cavenia-registry-lookup-readiness-contracts-mvp.md"));
+        assertTrue(policyDoc.contains("docs/cavenia-biome-source-strategy-final-readiness-matrix-mvp.md"));
     }
 
     @Test

@@ -93,6 +93,7 @@ class CaveniaBiomeSelectionAdapterContractBoundaryTest {
         assertTrue(adapterDoc.contains("`EntityCaveman -> deferred:caveman`"));
         assertTrue(adapterDoc.contains("docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md"));
         assertTrue(adapterDoc.contains("docs/cavenia-registry-lookup-readiness-contracts-mvp.md"));
+        assertTrue(adapterDoc.contains("docs/cavenia-biome-source-strategy-final-readiness-matrix-mvp.md"));
 
         assertTrue(readme.contains("Cavenia Unregistered Runtime Biome-Source Shape / Adapter Contract MVP"));
         assertTrue(readme.contains("docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md"));

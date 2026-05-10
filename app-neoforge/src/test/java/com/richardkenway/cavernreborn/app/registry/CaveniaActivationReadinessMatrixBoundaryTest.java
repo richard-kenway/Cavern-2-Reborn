@@ -117,6 +117,7 @@ class CaveniaActivationReadinessMatrixBoundaryTest {
         assertTrue(adapterDoc.contains("`CaveniaActivationReadinessMatrix`"));
         assertTrue(matrixDoc.contains("docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md"));
         assertTrue(matrixDoc.contains("docs/cavenia-registry-lookup-readiness-contracts-mvp.md"));
+        assertTrue(matrixDoc.contains("docs/cavenia-biome-source-strategy-final-readiness-matrix-mvp.md"));
     }
 
     @Test

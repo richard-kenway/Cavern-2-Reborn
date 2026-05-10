@@ -162,3 +162,5 @@ The next slice may define registry lookup readiness contracts, but must still av
 Real runtime `BiomeSource`, codec, registration and registry lookup access must remain separate explicit MVPs.
 
 The registry lookup readiness follow-up is now documented in `docs/cavenia-registry-lookup-readiness-contracts-mvp.md`.
+
+The final selected-surface readiness-matrix follow-up is now documented in `docs/cavenia-biome-source-strategy-final-readiness-matrix-mvp.md`.

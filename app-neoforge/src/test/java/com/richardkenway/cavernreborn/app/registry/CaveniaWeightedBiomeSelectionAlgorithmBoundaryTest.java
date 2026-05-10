@@ -84,6 +84,7 @@ class CaveniaWeightedBiomeSelectionAlgorithmBoundaryTest {
         assertTrue(algorithmDoc.contains("docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md"));
         assertTrue(algorithmDoc.contains("docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md"));
         assertTrue(algorithmDoc.contains("docs/cavenia-registry-lookup-readiness-contracts-mvp.md"));
+        assertTrue(algorithmDoc.contains("docs/cavenia-biome-source-strategy-final-readiness-matrix-mvp.md"));
 
         assertTrue(readme.contains("Cavenia Weighted Biome Selection Algorithm / Pure Non-Runtime MVP"));
         assertTrue(readme.contains("docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md"));

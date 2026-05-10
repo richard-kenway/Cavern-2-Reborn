@@ -116,6 +116,7 @@ class CaveniaBiomeProviderContractBoundaryTest {
         assertTrue(contractDoc.contains("docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md"));
         assertTrue(contractDoc.contains("docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md"));
         assertTrue(contractDoc.contains("docs/cavenia-registry-lookup-readiness-contracts-mvp.md"));
+        assertTrue(contractDoc.contains("docs/cavenia-biome-source-strategy-final-readiness-matrix-mvp.md"));
 
         assertTrue(foundationDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));
         assertTrue(keyTypeDoc.contains("docs/cavenia-biome-provider-contract-boundary.md"));

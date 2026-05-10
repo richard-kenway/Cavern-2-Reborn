@@ -56,6 +56,8 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeKeyMappingKind;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaLegacyToModernBiomeKeyMappings;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyPlan;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyPlanStep;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyReadinessMatrix;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyReadinessSurface;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSelectionAdapterContract;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaAdapterCodecRegistrationReadiness;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaAdapterCodecRegistrationRequirement;
@@ -8359,6 +8361,65 @@ public final class CavernSpecialOreGameTests {
             "Expected the registry-lookup readiness layer to keep registry access, biome resolution and runtime biome-source activation absent"
         );
         helper.assertTrue(
+            CaveniaBiomeSourceStrategyReadinessMatrix.entryCount() == 6
+                && CaveniaBiomeSourceStrategyReadinessMatrix.totalReadinessItemCount() == 68
+                && CaveniaBiomeSourceStrategyReadinessMatrix.surfaces().equals(List.of(
+                    CaveniaBiomeSourceStrategyReadinessSurface.SELECTED_SURFACE_PLAN,
+                    CaveniaBiomeSourceStrategyReadinessSurface.LEGACY_MAPPING_INVENTORY,
+                    CaveniaBiomeSourceStrategyReadinessSurface.WEIGHTED_SELECTION_ALGORITHM,
+                    CaveniaBiomeSourceStrategyReadinessSurface.BIOME_SELECTION_ADAPTER,
+                    CaveniaBiomeSourceStrategyReadinessSurface.ADAPTER_CODEC_REGISTRATION_READINESS,
+                    CaveniaBiomeSourceStrategyReadinessSurface.REGISTRY_LOOKUP_READINESS
+                ))
+                && CaveniaBiomeSourceStrategyReadinessMatrix.selectedSurface() == CaveniaActivationSurface.BIOME_SOURCE_STRATEGY
+                && CaveniaBiomeSourceStrategyReadinessMatrix.selectedSurfaceIsBiomeSourceStrategy(),
+            "Expected the final BIOME_SOURCE_STRATEGY readiness matrix to keep the exact surface order, total readiness-item count and selected future surface pinned"
+        );
+        helper.assertTrue(
+            CaveniaBiomeSourceStrategyReadinessMatrix.allReadinessLayersReady()
+                && CaveniaBiomeSourceStrategyReadinessMatrix.allRuntimeSurfacesBlocked()
+                && !CaveniaBiomeSourceStrategyReadinessMatrix.anyRuntimeReady()
+                && !CaveniaBiomeSourceStrategyReadinessMatrix.activationAllowedInThisSlice()
+                && !CaveniaBiomeSourceStrategyReadinessMatrix.canActivateCaveniaNow(),
+            "Expected the final BIOME_SOURCE_STRATEGY readiness matrix to keep every consolidated readiness layer ready while all runtime surfaces remain blocked"
+        );
+        helper.assertTrue(
+            CaveniaBiomeSourceStrategyReadinessMatrix.planStepCount() == 8
+                && CaveniaBiomeSourceStrategyReadinessMatrix.legacyMappingEntryCount() == 14
+                && CaveniaBiomeSourceStrategyReadinessMatrix.weightedSelectionEntryCount() == 14
+                && CaveniaBiomeSourceStrategyReadinessMatrix.adapterEntryCount() == 14
+                && CaveniaBiomeSourceStrategyReadinessMatrix.adapterCodecRegistrationRequirementCount() == 9
+                && CaveniaBiomeSourceStrategyReadinessMatrix.registryLookupRequirementCount() == 9
+                && CaveniaBiomeSourceStrategyReadinessMatrix.legacyBiomeTotalWeight() == 675
+                && CaveniaBiomeSourceStrategyReadinessMatrix.candidateInventoryReady()
+                && CaveniaBiomeSourceStrategyReadinessMatrix.candidateKeysStillStringOnly()
+                && CaveniaBiomeSourceStrategyReadinessMatrix.weightedSelectionAlgorithmReady()
+                && CaveniaBiomeSourceStrategyReadinessMatrix.adapterShapeReady()
+                && CaveniaBiomeSourceStrategyReadinessMatrix.codecRegistrationReadinessReady()
+                && CaveniaBiomeSourceStrategyReadinessMatrix.registryLookupReadinessReady(),
+            "Expected the final BIOME_SOURCE_STRATEGY readiness matrix to keep every selected-surface readiness count and layer-ready contract pinned"
+        );
+        helper.assertTrue(
+            !CaveniaBiomeSourceStrategyReadinessMatrix.finalRuntimeMappingReady()
+                && !CaveniaBiomeSourceStrategyReadinessMatrix.weightedSelectionRuntimeReady()
+                && !CaveniaBiomeSourceStrategyReadinessMatrix.adapterRuntimeReady()
+                && !CaveniaBiomeSourceStrategyReadinessMatrix.codecRegistrationRuntimeReady()
+                && !CaveniaBiomeSourceStrategyReadinessMatrix.registryLookupRuntimeReady()
+                && !CaveniaBiomeSourceStrategyReadinessMatrix.runtimeBiomeSourceReady()
+                && !CaveniaBiomeSourceStrategyReadinessMatrix.runtimeBiomeSourceRegistered()
+                && !CaveniaBiomeSourceStrategyReadinessMatrix.codecRegistered()
+                && !CaveniaBiomeSourceStrategyReadinessMatrix.registryLookupAccessReady()
+                && !CaveniaBiomeSourceStrategyReadinessMatrix.registryVerified()
+                && !CaveniaBiomeSourceStrategyReadinessMatrix.runtimeBiomeResolved()
+                && !CaveniaBiomeSourceStrategyReadinessMatrix.dimensionBindingReady()
+                && !CaveniaBiomeSourceStrategyReadinessMatrix.dimensionJsonPresent()
+                && !CaveniaBiomeSourceStrategyReadinessMatrix.dimensionTypeJsonPresent()
+                && CaveniaBiomeSourceStrategyReadinessMatrix.globalReadinessMatrixTotalRequirementCount() == 46
+                && CaveniaBiomeSourceStrategyReadinessMatrix.globalReadinessMatrixBlockedRequirementCount() == 46
+                && CaveniaBiomeSourceStrategyReadinessMatrix.cavemanRemainsDeferred(),
+            "Expected the final BIOME_SOURCE_STRATEGY readiness matrix to keep runtime mapping, registration, registry lookup, dimension binding and activation absent"
+        );
+        helper.assertTrue(
             projectFileExists("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md"),
             "Expected the unregistered Cavenia generator/biome-selection skeleton doc to exist in the project root"
         );
@@ -8405,6 +8466,10 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             projectFileExists("docs", "cavenia-registry-lookup-readiness-contracts-mvp.md"),
             "Expected the registry-lookup readiness-contract doc to exist in the project root"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-biome-source-strategy-final-readiness-matrix-mvp.md"),
+            "Expected the final BIOME_SOURCE_STRATEGY readiness-matrix doc to exist in the project root"
         );
         helper.assertTrue(
             projectFileExists("docs", "caveman-cavenia-normal-roster-boundary.md"),

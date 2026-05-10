@@ -194,6 +194,14 @@ public final class CaveniaBiomeSourceStrategyPlan {
         return false;
     }
 
+    public static boolean finalSelectedSurfaceReadinessMatrixReady() {
+        return CaveniaBiomeSourceStrategyReadinessMatrix.allReadinessLayersReady();
+    }
+
+    public static boolean finalSelectedSurfaceRuntimeReady() {
+        return false;
+    }
+
     public static boolean runtimeBiomeSourceReady() {
         return false;
     }
