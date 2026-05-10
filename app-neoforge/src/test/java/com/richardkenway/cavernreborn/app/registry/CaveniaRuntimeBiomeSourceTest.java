@@ -71,6 +71,12 @@ class CaveniaRuntimeBiomeSourceTest {
         assertTrue(designatedSource.contains("public static boolean biomeSourceTypeRegistered() {\n        return false;\n    }"));
         assertTrue(designatedSource.contains("public static boolean registryLookupAccessReady() {\n        return false;\n    }"));
         assertTrue(designatedSource.contains("public static boolean holderResourceKeyConversionReady() {\n        return false;\n    }"));
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean holderConversionReadinessReady() {\n        return CaveniaRuntimeBiomeSourceHolderConversionReadiness.holderConversionReadinessReady();\n    }"
+            )
+        );
+        assertTrue(designatedSource.contains("public static boolean holderConversionRuntimeReady() {\n        return false;\n    }"));
         assertTrue(designatedSource.contains("public static boolean dimensionBindingReady() {\n        return false;\n    }"));
         assertTrue(designatedSource.contains("public static boolean activationAllowedInThisSlice() {\n        return false;\n    }"));
         assertTrue(designatedSource.contains("public static boolean canActivateCaveniaNow() {\n        return false;\n    }"));
@@ -150,6 +156,7 @@ class CaveniaRuntimeBiomeSourceTest {
         assertFalse(designatedSource.contains("DeferredRegister"));
         assertFalse(designatedSource.contains("RegistryLookup<"));
         assertFalse(designatedSource.contains("RegistryAccess"));
+        assertFalse(designatedSource.contains("ResourceLocation"));
         assertFalse(designatedSource.contains("ResourceKey<Biome>"));
 
         try (Stream<Path> sourceFiles = Files.walk(APP_SOURCE_ROOT)) {

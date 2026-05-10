@@ -9,26 +9,27 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
-import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCodecMethodShapeComponent;
-import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCodecMethodShapeEntry;
-import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCodecMethodShapeStub;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceHolderConversionComponent;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceHolderConversionEntry;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceHolderConversionReadiness;
 
-class CaveniaRuntimeBiomeSourceCodecMethodShapeStubTest {
+class CaveniaRuntimeBiomeSourceHolderConversionReadinessTest {
     private static final Path COMPONENT_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
-        "CaveniaRuntimeBiomeSourceCodecMethodShapeComponent.java"
+        "CaveniaRuntimeBiomeSourceHolderConversionComponent.java"
     );
     private static final Path ENTRY_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
-        "CaveniaRuntimeBiomeSourceCodecMethodShapeEntry.java"
+        "CaveniaRuntimeBiomeSourceHolderConversionEntry.java"
     );
-    private static final Path STUB_SOURCE = resolveProjectFile(
+    private static final Path READINESS_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
-        "CaveniaRuntimeBiomeSourceCodecMethodShapeStub.java"
+        "CaveniaRuntimeBiomeSourceHolderConversionReadiness.java"
     );
     private static final Path DESIGNATED_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
@@ -42,111 +43,142 @@ class CaveniaRuntimeBiomeSourceCodecMethodShapeStubTest {
     );
 
     @Test
-    void codecMethodShapeStubPinsTheGuardedCodecMethodContractWithoutEnablingCodecBehavior() {
-        List<CaveniaRuntimeBiomeSourceCodecMethodShapeComponent> expectedComponents = List.of(
-            CaveniaRuntimeBiomeSourceCodecMethodShapeComponent.LOCAL_CODEC_METHOD_SIGNATURE,
-            CaveniaRuntimeBiomeSourceCodecMethodShapeComponent.DESIGNATED_SUBCLASS_OVERRIDE,
-            CaveniaRuntimeBiomeSourceCodecMethodShapeComponent.UNSUPPORTED_CODEC_METHOD_BODY,
-            CaveniaRuntimeBiomeSourceCodecMethodShapeComponent.NO_USABLE_MAP_CODEC,
-            CaveniaRuntimeBiomeSourceCodecMethodShapeComponent.NO_STATIC_CODEC_FIELD,
-            CaveniaRuntimeBiomeSourceCodecMethodShapeComponent.NO_RECORD_CODEC_BUILDER,
-            CaveniaRuntimeBiomeSourceCodecMethodShapeComponent.NO_CODEC_REGISTRATION,
-            CaveniaRuntimeBiomeSourceCodecMethodShapeComponent.NO_BIOME_SOURCE_TYPE_REGISTRATION,
-            CaveniaRuntimeBiomeSourceCodecMethodShapeComponent.NO_REGISTRY_LOOKUP_DEPENDENCY,
-            CaveniaRuntimeBiomeSourceCodecMethodShapeComponent.REAL_CODEC_STILL_DEFERRED
+    void holderConversionReadinessPinsTheFutureStringToHolderPathWithoutImplementingIt() throws IOException {
+        List<CaveniaRuntimeBiomeSourceHolderConversionComponent> expectedComponents = List.of(
+            CaveniaRuntimeBiomeSourceHolderConversionComponent.STRING_CANDIDATE_KEYS_SOURCE,
+            CaveniaRuntimeBiomeSourceHolderConversionComponent.CANDIDATE_KEY_FORMAT_CONTRACT,
+            CaveniaRuntimeBiomeSourceHolderConversionComponent.RESOURCE_LOCATION_CONVERSION_DECISION,
+            CaveniaRuntimeBiomeSourceHolderConversionComponent.RESOURCE_KEY_CONVERSION_DECISION,
+            CaveniaRuntimeBiomeSourceHolderConversionComponent.BIOME_REGISTRY_LOOKUP_DECISION,
+            CaveniaRuntimeBiomeSourceHolderConversionComponent.HOLDER_RESOLUTION_DECISION,
+            CaveniaRuntimeBiomeSourceHolderConversionComponent.POSSIBLE_BIOMES_HOLDER_SET_DECISION,
+            CaveniaRuntimeBiomeSourceHolderConversionComponent.NOISE_BIOME_HOLDER_RETURN_DECISION,
+            CaveniaRuntimeBiomeSourceHolderConversionComponent.MISSING_BIOME_FALLBACK_DECISION,
+            CaveniaRuntimeBiomeSourceHolderConversionComponent.NO_RUNTIME_CONVERSION_IMPLEMENTATION,
+            CaveniaRuntimeBiomeSourceHolderConversionComponent.NO_REGISTRY_LOOKUP_ACCESS,
+            CaveniaRuntimeBiomeSourceHolderConversionComponent.REAL_HOLDER_CONVERSION_STILL_DEFERRED
         );
-        List<CaveniaRuntimeBiomeSourceCodecMethodShapeEntry> entries =
-            CaveniaRuntimeBiomeSourceCodecMethodShapeStub.entries();
+        Set<CaveniaRuntimeBiomeSourceHolderConversionComponent> registryLookupRequiredComponents = Set.of(
+            CaveniaRuntimeBiomeSourceHolderConversionComponent.BIOME_REGISTRY_LOOKUP_DECISION,
+            CaveniaRuntimeBiomeSourceHolderConversionComponent.HOLDER_RESOLUTION_DECISION,
+            CaveniaRuntimeBiomeSourceHolderConversionComponent.POSSIBLE_BIOMES_HOLDER_SET_DECISION,
+            CaveniaRuntimeBiomeSourceHolderConversionComponent.NOISE_BIOME_HOLDER_RETURN_DECISION,
+            CaveniaRuntimeBiomeSourceHolderConversionComponent.MISSING_BIOME_FALLBACK_DECISION
+        );
+        List<CaveniaRuntimeBiomeSourceHolderConversionEntry> entries =
+            CaveniaRuntimeBiomeSourceHolderConversionReadiness.entries();
+        String designatedSource = Files.readString(DESIGNATED_SOURCE);
 
-        assertEquals(expectedComponents, CaveniaRuntimeBiomeSourceCodecMethodShapeStub.components());
-        assertEquals(10, CaveniaRuntimeBiomeSourceCodecMethodShapeStub.entryCount());
+        assertEquals(expectedComponents, CaveniaRuntimeBiomeSourceHolderConversionReadiness.components());
+        assertEquals(12, CaveniaRuntimeBiomeSourceHolderConversionReadiness.entryCount());
         assertTrue(entries.stream().allMatch(entry -> entry.sourceContractName() != null && !entry.sourceContractName().isBlank()));
-        assertTrue(entries.stream().allMatch(entry -> entry.observedShape() != null && !entry.observedShape().isBlank()));
-        assertTrue(entries.stream().allMatch(entry -> entry.expectedBehavior() != null && !entry.expectedBehavior().isBlank()));
+        assertTrue(entries.stream().allMatch(entry -> entry.observedInput() != null && !entry.observedInput().isBlank()));
+        assertTrue(entries.stream().allMatch(entry -> entry.futureDecision() != null && !entry.futureDecision().isBlank()));
         assertTrue(entries.stream().allMatch(entry -> entry.blocker() != null && !entry.blocker().isBlank()));
-        assertTrue(entries.stream().allMatch(CaveniaRuntimeBiomeSourceCodecMethodShapeEntry::shapePinned));
-        assertTrue(entries.stream().allMatch(entry -> !entry.usableCodecImplementation()));
-        assertTrue(entries.stream().allMatch(entry -> !entry.registered()));
+        assertTrue(entries.stream().allMatch(CaveniaRuntimeBiomeSourceHolderConversionEntry::readinessPinned));
+        assertTrue(entries.stream().allMatch(entry -> !entry.implementationReady()));
+        assertTrue(entries.stream().allMatch(entry -> !entry.registryLookupAvailable()));
         assertTrue(entries.stream().allMatch(entry -> !entry.activationAllowedInThisSlice()));
-        assertTrue(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.entryFor(
-            CaveniaRuntimeBiomeSourceCodecMethodShapeComponent.LOCAL_CODEC_METHOD_SIGNATURE
-        ).orElseThrow().observedShape().contains("MapCodec<? extends BiomeSource> codec()"));
-        assertTrue(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.entryFor(
-            CaveniaRuntimeBiomeSourceCodecMethodShapeComponent.UNSUPPORTED_CODEC_METHOD_BODY
-        ).orElseThrow().observedShape().contains("UnsupportedOperationException"));
-        assertTrue(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.entryFor(
-            CaveniaRuntimeBiomeSourceCodecMethodShapeComponent.NO_RECORD_CODEC_BUILDER
-        ).orElseThrow().observedShape().contains("RecordCodecBuilder"));
+        entries.forEach(entry -> assertEquals(
+            registryLookupRequiredComponents.contains(entry.component()),
+            entry.registryLookupRequired()
+        ));
 
-        assertTrue(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.codecMethodShapeStubReady());
-        assertTrue(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.localCodecMethodSignaturePinned());
-        assertTrue(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.designatedSubclassOverridesCodecMethod());
-        assertTrue(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.codecMethodUnsupportedStubbed());
-        assertFalse(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.usableMapCodecReady());
-        assertFalse(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.staticCodecFieldPresent());
-        assertFalse(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.recordCodecBuilderUsed());
-        assertFalse(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.usableCodecImplementationReady());
-        assertFalse(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.codecRegistered());
-        assertFalse(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.biomeSourceTypeRegistered());
-        assertFalse(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.registryLookupDependencyReady());
-        assertTrue(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.realCodecStillDeferred());
-        assertFalse(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.activationAllowedInThisSlice());
-        assertFalse(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.canActivateCaveniaNow());
-        assertTrue(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.designatedSubclassReady());
-        assertFalse(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.designatedSubclassRuntimeReady());
-        assertEquals("CaveniaRuntimeBiomeSource.java", CaveniaRuntimeBiomeSourceCodecMethodShapeStub.designatedSubclassFileName());
-        assertEquals("CaveniaRuntimeBiomeSource", CaveniaRuntimeBiomeSourceCodecMethodShapeStub.designatedSubclassSimpleName());
-        assertFalse(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.normalRuntimeConstructionAllowed());
-        assertTrue(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.unsupportedMethodStubsOnly());
-        assertTrue(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.goNoGoGuardrailsEnforced());
-        assertTrue(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.apiShapeInventoryReady());
-        assertFalse(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.registryLookupAccessReady());
-        assertFalse(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.holderResourceKeyConversionReady());
-        assertTrue(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.holderConversionReadinessReady());
-        assertFalse(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.holderConversionRuntimeReady());
-        assertFalse(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.dimensionBindingReady());
-        assertEquals(68, CaveniaRuntimeBiomeSourceCodecMethodShapeStub.selectedSurfaceReadinessItemCount());
-        assertEquals(46, CaveniaRuntimeBiomeSourceCodecMethodShapeStub.globalReadinessMatrixTotalRequirementCount());
-        assertEquals(46, CaveniaRuntimeBiomeSourceCodecMethodShapeStub.globalReadinessMatrixBlockedRequirementCount());
-        assertFalse(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.dimensionJsonPresent());
-        assertFalse(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.dimensionTypeJsonPresent());
-        assertTrue(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.cavemanRemainsDeferred());
-        assertTrue(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.codecMethodUnsupportedReason().contains("unsupported stub"));
+        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.entryFor(
+            CaveniaRuntimeBiomeSourceHolderConversionComponent.STRING_CANDIDATE_KEYS_SOURCE
+        ).orElseThrow().observedInput().contains("candidateModernBiomeKeys()"));
+        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.entryFor(
+            CaveniaRuntimeBiomeSourceHolderConversionComponent.CANDIDATE_KEY_FORMAT_CONTRACT
+        ).orElseThrow().observedInput().contains("minecraft:ocean"));
+        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.entryFor(
+            CaveniaRuntimeBiomeSourceHolderConversionComponent.NOISE_BIOME_HOLDER_RETURN_DECISION
+        ).orElseThrow().observedInput().contains("Holder<Biome>"));
 
-        assertImmutableList(CaveniaRuntimeBiomeSourceCodecMethodShapeStub.entries(), entries.get(0));
+        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.holderConversionReadinessReady());
+        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.stringCandidateKeysSourcePinned());
+        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.candidateKeyFormatPinned());
+        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.resourceLocationConversionDecisionPinned());
+        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.resourceKeyConversionDecisionPinned());
+        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.biomeRegistryLookupDecisionPinned());
+        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.holderResolutionDecisionPinned());
+        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.possibleBiomesHolderSetDecisionPinned());
+        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.noiseBiomeHolderReturnDecisionPinned());
+        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.missingBiomeFallbackDecisionPinned());
+        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.runtimeConversionImplementationReady());
+        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.registryLookupRequiredForRuntimeConversion());
+        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.registryLookupAccessReady());
+        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.holderResolutionReady());
+        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.resourceKeyConversionReady());
+        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.resourceLocationConversionReady());
+        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.possibleBiomesRuntimeReady());
+        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.noiseBiomeRuntimeReady());
+        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.missingBiomeFallbackReady());
+        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.realHolderConversionStillDeferred());
+        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.activationAllowedInThisSlice());
+        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.canActivateCaveniaNow());
+        assertEquals(14, CaveniaRuntimeBiomeSourceHolderConversionReadiness.candidateEntryCount());
+        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.candidateInventoryReady());
+        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.candidateKeysStillStringOnly());
+        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.designatedSubclassReady());
+        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.designatedSubclassRuntimeReady());
+        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.codecMethodShapeStubReady());
+        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.usableCodecImplementationReady());
+        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.codecRegistered());
+        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.biomeSourceTypeRegistered());
+        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.normalRuntimeConstructionAllowed());
+        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.unsupportedMethodStubsOnly());
+        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.goNoGoGuardrailsEnforced());
+        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.apiShapeInventoryReady());
+        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.dimensionBindingReady());
+        assertEquals(68, CaveniaRuntimeBiomeSourceHolderConversionReadiness.selectedSurfaceReadinessItemCount());
+        assertEquals(46, CaveniaRuntimeBiomeSourceHolderConversionReadiness.globalReadinessMatrixTotalRequirementCount());
+        assertEquals(46, CaveniaRuntimeBiomeSourceHolderConversionReadiness.globalReadinessMatrixBlockedRequirementCount());
+        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.dimensionJsonPresent());
+        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.dimensionTypeJsonPresent());
+        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.cavemanRemainsDeferred());
+
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean holderConversionReadinessReady() {\n        return CaveniaRuntimeBiomeSourceHolderConversionReadiness.holderConversionReadinessReady();\n    }"
+            )
+        );
+        assertTrue(designatedSource.contains("public static boolean holderConversionRuntimeReady() {\n        return false;\n    }"));
+
+        assertImmutableList(CaveniaRuntimeBiomeSourceHolderConversionReadiness.entries(), entries.get(0));
         assertImmutableList(
-            CaveniaRuntimeBiomeSourceCodecMethodShapeStub.components(),
-            CaveniaRuntimeBiomeSourceCodecMethodShapeComponent.LOCAL_CODEC_METHOD_SIGNATURE
+            CaveniaRuntimeBiomeSourceHolderConversionReadiness.components(),
+            CaveniaRuntimeBiomeSourceHolderConversionComponent.STRING_CANDIDATE_KEYS_SOURCE
         );
         entries.forEach(entry -> assertNotNull(entry.component()));
     }
 
     @Test
-    void codecMethodShapeStubSourcesKeepRuntimeApiUsageConstrainedToTheDesignatedSubclass() throws IOException {
+    void holderConversionReadinessSourcesKeepRuntimeApiUsageAndConversionImplementationBlocked() throws IOException {
         String componentSource = Files.readString(COMPONENT_SOURCE);
         String entrySource = Files.readString(ENTRY_SOURCE);
-        String stubSource = Files.readString(STUB_SOURCE);
+        String readinessSource = Files.readString(READINESS_SOURCE);
         String designatedSource = Files.readString(DESIGNATED_SOURCE);
 
         assertSourceStaysInert(componentSource);
         assertSourceStaysInert(entrySource);
-        assertSourceStaysInert(stubSource);
+        assertSourceStaysInert(readinessSource);
 
         assertTrue(designatedSource.contains("extends BiomeSource"));
         assertTrue(designatedSource.contains("import net.minecraft.world.level.biome.BiomeSource;"));
         assertTrue(designatedSource.contains("Holder<Biome>"));
         assertTrue(designatedSource.contains("MapCodec"));
         assertTrue(designatedSource.contains("Climate.Sampler"));
-        assertFalse(designatedSource.contains("public static final MapCodec"));
-        assertFalse(designatedSource.contains("static final MapCodec"));
-        assertFalse(designatedSource.contains("CODEC ="));
-        assertFalse(designatedSource.contains("RecordCodecBuilder"));
+        assertFalse(designatedSource.contains("ResourceLocation"));
+        assertFalse(designatedSource.contains("ResourceKey<Biome>"));
+        assertFalse(designatedSource.contains("RegistryLookup<"));
+        assertFalse(designatedSource.contains("RegistryAccess"));
         assertFalse(designatedSource.contains("Registry.register"));
         assertFalse(designatedSource.contains("BuiltInRegistries.BIOME_SOURCE.register"));
         assertFalse(designatedSource.contains("DeferredRegister"));
-        assertFalse(designatedSource.contains("RegistryLookup<"));
-        assertFalse(designatedSource.contains("RegistryAccess"));
-        assertFalse(designatedSource.contains("ResourceKey<Biome>"));
+        assertFalse(designatedSource.contains("RecordCodecBuilder"));
+        assertFalse(designatedSource.contains("public static final MapCodec"));
+        assertFalse(designatedSource.contains("static final MapCodec"));
+        assertFalse(designatedSource.contains("CODEC ="));
 
         try (Stream<Path> sourceFiles = Files.walk(APP_WORLDGEN_SOURCE_ROOT)) {
             List<Path> regularFiles = sourceFiles
@@ -165,16 +197,21 @@ class CaveniaRuntimeBiomeSourceCodecMethodShapeStubTest {
             assertOnlyDesignatedFileContains(regularFiles, "import com.mojang.serialization.MapCodec;");
             assertOnlyDesignatedFileContains(regularFiles, "protected MapCodec<? extends BiomeSource> codec()");
             assertOnlyDesignatedFileContains(regularFiles, "Climate.Sampler");
-            assertNoMainSourceContains(regularFiles, "public static final MapCodec");
-            assertNoMainSourceContains(regularFiles, "static final MapCodec");
-            assertNoMainSourceContains(regularFiles, "CODEC =");
-            assertNoMainSourceContains(regularFiles, "RecordCodecBuilder");
+            List<Path> runtimeBiomeSourceFiles = regularFiles.stream()
+                .filter(path -> path.getFileName().toString().contains("CaveniaRuntimeBiomeSource"))
+                .toList();
+
+            assertNoMainSourceContains(runtimeBiomeSourceFiles, "ResourceLocation");
+            assertNoMainSourceContains(runtimeBiomeSourceFiles, "ResourceKey<Biome>");
+            assertNoMainSourceContains(runtimeBiomeSourceFiles, "RegistryLookup<");
+            assertNoMainSourceContains(runtimeBiomeSourceFiles, "RegistryAccess");
             assertNoMainSourceContains(regularFiles, "Registry.register");
             assertNoMainSourceContains(regularFiles, "BuiltInRegistries.BIOME_SOURCE.register");
             assertNoMainSourceContains(regularFiles, "DeferredRegister");
-            assertNoMainSourceContains(regularFiles, "RegistryLookup<");
-            assertNoMainSourceContains(regularFiles, "RegistryAccess");
-            assertNoMainSourceContains(regularFiles, "ResourceKey<Biome>");
+            assertNoMainSourceContains(regularFiles, "RecordCodecBuilder");
+            assertNoMainSourceContains(regularFiles, "public static final MapCodec");
+            assertNoMainSourceContains(regularFiles, "static final MapCodec");
+            assertNoMainSourceContains(regularFiles, "CODEC =");
             assertNoMainSourceContains(regularFiles, "registerConfiguredFeature(");
             assertNoMainSourceContains(regularFiles, "registerPlacedFeature(");
             assertNoMainSourceContains(regularFiles, "registerConfiguredCarver(");
@@ -213,7 +250,7 @@ class CaveniaRuntimeBiomeSourceCodecMethodShapeStubTest {
                             || path.contains("/neoforge/biome_modifier/cavenia")
                             || path.contains("/tags/worldgen/biome/cavenia")
                     ),
-                "Expected the codec method shape stub slice to keep active Cavenia resources absent"
+                "Expected the holder-conversion readiness slice to keep active Cavenia resources absent"
             );
         }
     }
@@ -223,11 +260,11 @@ class CaveniaRuntimeBiomeSourceCodecMethodShapeStubTest {
         assertFalse(source.contains("extends BiomeSource"));
         assertFalse(source.contains("import net.minecraft.world.level.biome.BiomeSource;"));
         assertFalse(source.contains("Holder<Biome>"));
-        assertFalse(source.contains("RegistryLookup<"));
-        assertFalse(source.contains("RegistryAccess"));
         assertFalse(source.contains("ResourceLocation"));
         assertFalse(source.contains("ResourceKey<Biome>"));
-        assertFalse(source.contains("import com.mojang.serialization.MapCodec;"));
+        assertFalse(source.contains("RegistryLookup<"));
+        assertFalse(source.contains("RegistryAccess"));
+        assertFalse(source.contains("MapCodec"));
         assertFalse(source.contains("Codec<"));
         assertFalse(source.contains("RecordCodecBuilder"));
         assertFalse(source.contains("Registry.register"));

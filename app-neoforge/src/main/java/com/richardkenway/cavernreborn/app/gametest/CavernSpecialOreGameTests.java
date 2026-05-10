@@ -72,6 +72,7 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceGuar
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceNextStepDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSource;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCodecMethodShapeStub;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceHolderConversionReadiness;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceRealSubclassGuardrail;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceRealSubclassNextStepDecision;
@@ -8797,6 +8798,50 @@ public final class CavernSpecialOreGameTests {
             "Expected the codec-method-shape stub contract to pin the unsupported codec() method shape without adding a usable codec, registration, lookup dependency or activation path"
         );
         helper.assertTrue(
+            CaveniaRuntimeBiomeSourceHolderConversionReadiness.holderConversionReadinessReady()
+                && CaveniaRuntimeBiomeSourceHolderConversionReadiness.stringCandidateKeysSourcePinned()
+                && CaveniaRuntimeBiomeSourceHolderConversionReadiness.candidateKeyFormatPinned()
+                && CaveniaRuntimeBiomeSourceHolderConversionReadiness.resourceLocationConversionDecisionPinned()
+                && CaveniaRuntimeBiomeSourceHolderConversionReadiness.resourceKeyConversionDecisionPinned()
+                && CaveniaRuntimeBiomeSourceHolderConversionReadiness.biomeRegistryLookupDecisionPinned()
+                && CaveniaRuntimeBiomeSourceHolderConversionReadiness.holderResolutionDecisionPinned()
+                && CaveniaRuntimeBiomeSourceHolderConversionReadiness.possibleBiomesHolderSetDecisionPinned()
+                && CaveniaRuntimeBiomeSourceHolderConversionReadiness.noiseBiomeHolderReturnDecisionPinned()
+                && CaveniaRuntimeBiomeSourceHolderConversionReadiness.missingBiomeFallbackDecisionPinned()
+                && !CaveniaRuntimeBiomeSourceHolderConversionReadiness.runtimeConversionImplementationReady()
+                && CaveniaRuntimeBiomeSourceHolderConversionReadiness.registryLookupRequiredForRuntimeConversion()
+                && !CaveniaRuntimeBiomeSourceHolderConversionReadiness.registryLookupAccessReady()
+                && !CaveniaRuntimeBiomeSourceHolderConversionReadiness.holderResolutionReady()
+                && !CaveniaRuntimeBiomeSourceHolderConversionReadiness.resourceKeyConversionReady()
+                && !CaveniaRuntimeBiomeSourceHolderConversionReadiness.resourceLocationConversionReady()
+                && !CaveniaRuntimeBiomeSourceHolderConversionReadiness.possibleBiomesRuntimeReady()
+                && !CaveniaRuntimeBiomeSourceHolderConversionReadiness.noiseBiomeRuntimeReady()
+                && !CaveniaRuntimeBiomeSourceHolderConversionReadiness.missingBiomeFallbackReady()
+                && CaveniaRuntimeBiomeSourceHolderConversionReadiness.realHolderConversionStillDeferred()
+                && CaveniaRuntimeBiomeSourceHolderConversionReadiness.candidateEntryCount() == 14
+                && CaveniaRuntimeBiomeSourceHolderConversionReadiness.candidateInventoryReady()
+                && CaveniaRuntimeBiomeSourceHolderConversionReadiness.candidateKeysStillStringOnly()
+                && CaveniaRuntimeBiomeSourceHolderConversionReadiness.designatedSubclassReady()
+                && !CaveniaRuntimeBiomeSourceHolderConversionReadiness.designatedSubclassRuntimeReady()
+                && CaveniaRuntimeBiomeSourceHolderConversionReadiness.codecMethodShapeStubReady()
+                && !CaveniaRuntimeBiomeSourceHolderConversionReadiness.usableCodecImplementationReady()
+                && !CaveniaRuntimeBiomeSourceHolderConversionReadiness.codecRegistered()
+                && !CaveniaRuntimeBiomeSourceHolderConversionReadiness.biomeSourceTypeRegistered()
+                && !CaveniaRuntimeBiomeSourceHolderConversionReadiness.normalRuntimeConstructionAllowed()
+                && CaveniaRuntimeBiomeSourceHolderConversionReadiness.unsupportedMethodStubsOnly()
+                && CaveniaRuntimeBiomeSourceHolderConversionReadiness.goNoGoGuardrailsEnforced()
+                && CaveniaRuntimeBiomeSourceHolderConversionReadiness.apiShapeInventoryReady()
+                && !CaveniaRuntimeBiomeSourceHolderConversionReadiness.dimensionBindingReady()
+                && CaveniaRuntimeBiomeSourceHolderConversionReadiness.selectedSurfaceReadinessItemCount() == 68
+                && CaveniaRuntimeBiomeSourceHolderConversionReadiness.globalReadinessMatrixTotalRequirementCount() == 46
+                && CaveniaRuntimeBiomeSourceHolderConversionReadiness.globalReadinessMatrixBlockedRequirementCount() == 46
+                && !CaveniaRuntimeBiomeSourceHolderConversionReadiness.dimensionJsonPresent()
+                && !CaveniaRuntimeBiomeSourceHolderConversionReadiness.dimensionTypeJsonPresent()
+                && !CaveniaRuntimeBiomeSourceHolderConversionReadiness.canActivateCaveniaNow()
+                && CaveniaRuntimeBiomeSourceHolderConversionReadiness.cavemanRemainsDeferred(),
+            "Expected the holder-conversion readiness contract to pin the future string-to-holder path without adding registry lookup, resource-key conversion, holder resolution or activation"
+        );
+        helper.assertTrue(
             CaveniaRuntimeBiomeSource.guardedSubclassStubReady()
                 && CaveniaRuntimeBiomeSource.designatedSubclassSimpleName().equals("CaveniaRuntimeBiomeSource")
                 && CaveniaRuntimeBiomeSource.designatedSubclassFileName().equals("CaveniaRuntimeBiomeSource.java")
@@ -8815,6 +8860,8 @@ public final class CavernSpecialOreGameTests {
                 && !CaveniaRuntimeBiomeSource.biomeSourceTypeRegistered()
                 && !CaveniaRuntimeBiomeSource.registryLookupAccessReady()
                 && !CaveniaRuntimeBiomeSource.holderResourceKeyConversionReady()
+                && CaveniaRuntimeBiomeSource.holderConversionReadinessReady()
+                && !CaveniaRuntimeBiomeSource.holderConversionRuntimeReady()
                 && !CaveniaRuntimeBiomeSource.dimensionBindingReady()
                 && !CaveniaRuntimeBiomeSource.activationAllowedInThisSlice()
                 && !CaveniaRuntimeBiomeSource.canActivateCaveniaNow()

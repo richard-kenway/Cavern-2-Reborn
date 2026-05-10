@@ -176,3 +176,4 @@ The next slice can decide how to make the codec method shape explicit without cr
 It can also define holder and resource-key conversion readiness for the subclass before any runtime activation work.
 
 The runtime-biome-source codec-method-shape stub follow-up is now documented in `docs/cavenia-runtime-biome-source-codec-method-shape-stub-mvp.md`.
+The runtime-biome-source holder/resource-key conversion readiness follow-up is now documented in `docs/cavenia-runtime-biome-source-holder-resource-key-conversion-readiness-mvp.md`.

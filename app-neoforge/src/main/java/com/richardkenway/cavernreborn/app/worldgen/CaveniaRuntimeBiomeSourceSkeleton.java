@@ -159,6 +159,14 @@ public final class CaveniaRuntimeBiomeSourceSkeleton {
         return false;
     }
 
+    public static boolean holderConversionReadinessReady() {
+        return CaveniaRuntimeBiomeSourceHolderConversionReadiness.holderConversionReadinessReady();
+    }
+
+    public static boolean holderConversionRuntimeReady() {
+        return false;
+    }
+
     public static int guardrailCount() {
         return CaveniaRuntimeBiomeSourceFirstImplementationDecision.guardrailCount();
     }

@@ -113,6 +113,14 @@ public final class CaveniaRuntimeBiomeSource extends BiomeSource {
         return false;
     }
 
+    public static boolean holderConversionReadinessReady() {
+        return CaveniaRuntimeBiomeSourceHolderConversionReadiness.holderConversionReadinessReady();
+    }
+
+    public static boolean holderConversionRuntimeReady() {
+        return false;
+    }
+
     public static boolean dimensionBindingReady() {
         return false;
     }
