@@ -179,4 +179,6 @@ The selected-surface consolidation follow-up is now documented in `docs/cavenia-
 
 The next slice may consolidate `BIOME_SOURCE_STRATEGY` readiness into a final selected-surface readiness matrix.
 
+The runtime-biome-source first-implementation decision/guardrails follow-up is now documented in `docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md`.
+
 Real runtime `BiomeSource`, codec, registration and registry lookup access must remain separate explicit MVPs.

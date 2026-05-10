@@ -199,3 +199,5 @@ The next slice may deliberately choose whether to start real runtime `BiomeSourc
 If choosing runtime `BiomeSource`, make it a separate explicit MVP with strict no-dimension-activation guardrails.
 
 Real runtime `BiomeSource`, codec, registration and registry lookup access must remain separate explicit MVPs unless deliberately chosen.
+
+The runtime-biome-source first-implementation decision/guardrails follow-up is now documented in `docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md`.

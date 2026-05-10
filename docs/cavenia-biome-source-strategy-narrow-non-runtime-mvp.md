@@ -185,6 +185,7 @@ The later adapter codec/registration readiness follow-up is now documented in:
 - `docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md`
 - `docs/cavenia-registry-lookup-readiness-contracts-mvp.md`
 - `docs/cavenia-biome-source-strategy-final-readiness-matrix-mvp.md`
+- `docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md`
 
 The next runtime-adjacent slice may define registry lookup readiness contracts for that unregistered adapter, but should still avoid actual registry lookup access, codec registration and runtime activation unless explicitly changing the boundary.
 

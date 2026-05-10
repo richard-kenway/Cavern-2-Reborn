@@ -202,6 +202,14 @@ public final class CaveniaBiomeSourceStrategyPlan {
         return false;
     }
 
+    public static boolean runtimeBiomeSourceFirstImplementationDecisionReady() {
+        return CaveniaRuntimeBiomeSourceFirstImplementationDecision.decisionIsImplementationOnlyForNextSlice();
+    }
+
+    public static boolean runtimeBiomeSourceFirstImplementationRuntimeReady() {
+        return false;
+    }
+
     public static boolean runtimeBiomeSourceReady() {
         return false;
     }

@@ -189,3 +189,4 @@ The later adapter codec/registration readiness follow-up is now documented in:
 - `docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md`
 - `docs/cavenia-registry-lookup-readiness-contracts-mvp.md`
 - `docs/cavenia-biome-source-strategy-final-readiness-matrix-mvp.md`
+- `docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md`

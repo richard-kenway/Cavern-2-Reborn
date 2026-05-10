@@ -128,6 +128,7 @@ The current completed readiness base is:
 - `docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md`
 - `docs/cavenia-registry-lookup-readiness-contracts-mvp.md`
 - `docs/cavenia-biome-source-strategy-final-readiness-matrix-mvp.md`
+- `docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md`
 - `docs/cavenia-cave-carver-policy-non-runtime-mvp.md`
 - `docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md`
 - `docs/cavenia-veins-content-policy-non-runtime-mvp.md`

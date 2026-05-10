@@ -1,0 +1,9 @@
+package com.richardkenway.cavernreborn.app.worldgen;
+
+public enum CaveniaRuntimeBiomeSourceNextStepDecision {
+    PROCEED_WITH_UNREGISTERED_RUNTIME_BIOME_SOURCE_SKELETON_NEXT,
+    DEFER_DIMENSION_ACTIVATION,
+    DEFER_CODEC_REGISTRATION,
+    DEFER_REGISTRY_LOOKUP_ACCESS,
+    DEFER_ACCESS_AND_SPAWNING
+}

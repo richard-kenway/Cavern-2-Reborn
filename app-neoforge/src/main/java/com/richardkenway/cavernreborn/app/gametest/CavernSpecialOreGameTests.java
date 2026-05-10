@@ -65,6 +65,9 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyCon
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyRequirement;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRegistryLookupReadiness;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRegistryLookupRequirement;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceFirstImplementationDecision;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceGuardrail;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceNextStepDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaWeightedBiomeSelectionAlgorithm;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaDimensionResourceContracts;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaDimensionResourceRequirement;
@@ -8418,6 +8421,65 @@ public final class CavernSpecialOreGameTests {
                 && CaveniaBiomeSourceStrategyReadinessMatrix.globalReadinessMatrixBlockedRequirementCount() == 46
                 && CaveniaBiomeSourceStrategyReadinessMatrix.cavemanRemainsDeferred(),
             "Expected the final BIOME_SOURCE_STRATEGY readiness matrix to keep runtime mapping, registration, registry lookup, dimension binding and activation absent"
+        );
+        helper.assertTrue(
+            CaveniaRuntimeBiomeSourceFirstImplementationDecision.selectedDecision()
+                == CaveniaRuntimeBiomeSourceNextStepDecision.PROCEED_WITH_UNREGISTERED_RUNTIME_BIOME_SOURCE_SKELETON_NEXT
+                && CaveniaRuntimeBiomeSourceFirstImplementationDecision.decisionIsToProceedWithUnregisteredSkeletonNext()
+                && CaveniaRuntimeBiomeSourceFirstImplementationDecision.decisionIsImplementationOnlyForNextSlice()
+                && !CaveniaRuntimeBiomeSourceFirstImplementationDecision.runtimeBiomeSourceImplementedInThisSlice()
+                && !CaveniaRuntimeBiomeSourceFirstImplementationDecision.activationAllowedInThisSlice()
+                && CaveniaRuntimeBiomeSourceFirstImplementationDecision.guardrailCount() == 14
+                && CaveniaRuntimeBiomeSourceFirstImplementationDecision.guardrailValues().equals(List.of(
+                    CaveniaRuntimeBiomeSourceGuardrail.NO_DIMENSION_JSON,
+                    CaveniaRuntimeBiomeSourceGuardrail.NO_DIMENSION_TYPE_JSON,
+                    CaveniaRuntimeBiomeSourceGuardrail.NO_ACTIVE_CAVENIA_LEVEL,
+                    CaveniaRuntimeBiomeSourceGuardrail.NO_CODEC_IMPLEMENTATION,
+                    CaveniaRuntimeBiomeSourceGuardrail.NO_CODEC_REGISTRATION,
+                    CaveniaRuntimeBiomeSourceGuardrail.NO_BIOME_SOURCE_TYPE_REGISTRATION,
+                    CaveniaRuntimeBiomeSourceGuardrail.NO_REGISTRY_LOOKUP_ACCESS,
+                    CaveniaRuntimeBiomeSourceGuardrail.NO_BIOME_HOLDER_OR_RESOURCE_KEY_CONVERSION,
+                    CaveniaRuntimeBiomeSourceGuardrail.NO_WORLDGEN_RESOURCES,
+                    CaveniaRuntimeBiomeSourceGuardrail.NO_ACCESS_OR_TELEPORT,
+                    CaveniaRuntimeBiomeSourceGuardrail.NO_SPAWNING,
+                    CaveniaRuntimeBiomeSourceGuardrail.NO_CAVEMAN_ENTITY_REGISTRATION,
+                    CaveniaRuntimeBiomeSourceGuardrail.UNREGISTERED_SKELETON_ONLY,
+                    CaveniaRuntimeBiomeSourceGuardrail.KEEP_BIOME_SOURCE_STRATEGY_MATRIX_BLOCKED
+                )),
+            "Expected the runtime-biome-source first-implementation decision layer to keep the exact selected branch and guardrail order pinned"
+        );
+        helper.assertTrue(
+            CaveniaRuntimeBiomeSourceFirstImplementationDecision.allGuardrailsEnforcedInThisSlice()
+                && !CaveniaRuntimeBiomeSourceFirstImplementationDecision.anyRuntimeActivationAllowedByGuardrails()
+                && CaveniaRuntimeBiomeSourceFirstImplementationDecision.nextSliceMayAddUnregisteredSkeleton()
+                && !CaveniaRuntimeBiomeSourceFirstImplementationDecision.nextSliceMayAddCodecImplementation()
+                && !CaveniaRuntimeBiomeSourceFirstImplementationDecision.nextSliceMayRegisterCodec()
+                && !CaveniaRuntimeBiomeSourceFirstImplementationDecision.nextSliceMayRegisterBiomeSourceType()
+                && !CaveniaRuntimeBiomeSourceFirstImplementationDecision.nextSliceMayUseRegistryLookupAccess()
+                && !CaveniaRuntimeBiomeSourceFirstImplementationDecision.nextSliceMayAddDimensionJson()
+                && !CaveniaRuntimeBiomeSourceFirstImplementationDecision.nextSliceMayAddDimensionTypeJson()
+                && !CaveniaRuntimeBiomeSourceFirstImplementationDecision.nextSliceMayCreateActiveCaveniaLevel()
+                && !CaveniaRuntimeBiomeSourceFirstImplementationDecision.nextSliceMayAddWorldgenResources()
+                && !CaveniaRuntimeBiomeSourceFirstImplementationDecision.nextSliceMayAddAccessOrTeleport()
+                && !CaveniaRuntimeBiomeSourceFirstImplementationDecision.nextSliceMayAddSpawning()
+                && !CaveniaRuntimeBiomeSourceFirstImplementationDecision.nextSliceMayRegisterCavemanEntity(),
+            "Expected the runtime-biome-source first-implementation decision layer to keep all next-slice guardrails enforced while allowing only an unregistered skeleton direction"
+        );
+        helper.assertTrue(
+            CaveniaRuntimeBiomeSourceFirstImplementationDecision.biomeSourceStrategyMatrixReady()
+                && !CaveniaRuntimeBiomeSourceFirstImplementationDecision.biomeSourceStrategyMatrixRuntimeReady()
+                && CaveniaRuntimeBiomeSourceFirstImplementationDecision.biomeSourceStrategyTotalReadinessItemCount() == 68
+                && CaveniaRuntimeBiomeSourceFirstImplementationDecision.globalReadinessMatrixTotalRequirementCount() == 46
+                && CaveniaRuntimeBiomeSourceFirstImplementationDecision.globalReadinessMatrixBlockedRequirementCount() == 46
+                && !CaveniaRuntimeBiomeSourceFirstImplementationDecision.runtimeBiomeSourceReady()
+                && !CaveniaRuntimeBiomeSourceFirstImplementationDecision.runtimeBiomeSourceRegistered()
+                && !CaveniaRuntimeBiomeSourceFirstImplementationDecision.codecRegistered()
+                && !CaveniaRuntimeBiomeSourceFirstImplementationDecision.registryLookupAccessReady()
+                && !CaveniaRuntimeBiomeSourceFirstImplementationDecision.dimensionJsonPresent()
+                && !CaveniaRuntimeBiomeSourceFirstImplementationDecision.dimensionTypeJsonPresent()
+                && !CaveniaRuntimeBiomeSourceFirstImplementationDecision.canActivateCaveniaNow()
+                && CaveniaRuntimeBiomeSourceFirstImplementationDecision.cavemanRemainsDeferred(),
+            "Expected the runtime-biome-source first-implementation decision layer to keep the selected-surface matrix ready while runtime biome-source, registration, lookup and activation remain blocked"
         );
         helper.assertTrue(
             projectFileExists("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md"),

@@ -40,6 +40,9 @@ class CaveniaRuntimeKeyInactiveDimensionScaffoldTest {
     private static final Path FINAL_SELECTED_SURFACE_MATRIX_DOC = resolveProjectFile(
         "docs", "cavenia-biome-source-strategy-final-readiness-matrix-mvp.md"
     );
+    private static final Path RUNTIME_BIOME_SOURCE_DECISION_DOC = resolveProjectFile(
+        "docs", "cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md"
+    );
     private static final Path FOUNDATION_DOC = resolveProjectFile("docs", "cavenia-dimension-provider-foundation-boundary.md");
     private static final Path KEY_TYPE_DOC = resolveProjectFile("docs", "cavenia-dimension-key-type-contract-boundary.md");
     private static final Path CORE_DIMENSIONS_SOURCE = resolveProjectFile(
@@ -108,6 +111,7 @@ class CaveniaRuntimeKeyInactiveDimensionScaffoldTest {
         assertTrue(scaffoldDoc.contains("docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md"));
         assertTrue(scaffoldDoc.contains("docs/cavenia-registry-lookup-readiness-contracts-mvp.md"));
         assertTrue(scaffoldDoc.contains("docs/cavenia-biome-source-strategy-final-readiness-matrix-mvp.md"));
+        assertTrue(scaffoldDoc.contains("docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md"));
 
         assertTrue(readme.contains("Cavenia Runtime Key / Inactive Dimension Scaffold MVP"));
         assertTrue(readme.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
@@ -134,6 +138,7 @@ class CaveniaRuntimeKeyInactiveDimensionScaffoldTest {
         assertTrue(Files.readString(ADAPTER_READINESS_DOC).contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
         assertTrue(Files.readString(REGISTRY_LOOKUP_READINESS_DOC).contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
         assertTrue(Files.readString(FINAL_SELECTED_SURFACE_MATRIX_DOC).contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
+        assertTrue(Files.readString(RUNTIME_BIOME_SOURCE_DECISION_DOC).contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
         assertTrue(foundationDoc.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
         assertTrue(keyTypeDoc.contains("docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md"));
     }

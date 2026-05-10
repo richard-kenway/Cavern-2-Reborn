@@ -489,6 +489,21 @@ NeoForge GameTest runtime smoke covers:
 - selected surface remains `BIOME_SOURCE_STRATEGY`, the plan remains non-runtime and activation is not allowed in this slice
 - dimension JSON/type JSON remain absent, Cavenia cannot activate now and `EntityCaveman -> deferred:caveman` remains unchanged
 - the final selected-surface readiness-matrix note at `docs/cavenia-biome-source-strategy-final-readiness-matrix-mvp.md`
+- Cavenia Runtime BiomeSource First Implementation Decision / Guardrails MVP
+- runtime-biome-source first-implementation decision/guardrails MVP
+- `CaveniaRuntimeBiomeSourceFirstImplementationDecision` now resolves from `app-neoforge`
+- selected decision is `PROCEED_WITH_UNREGISTERED_RUNTIME_BIOME_SOURCE_SKELETON_NEXT`
+- decision is to proceed with unregistered skeleton next while runtime biome source is not implemented in this slice
+- activation is not allowed in this slice, guardrail count remains `14` and all guardrails are enforced in this slice
+- no runtime activation is allowed by guardrails and next slice may add only an unregistered skeleton
+- next slice may not add codec implementation, may not register codec and may not register biome-source type
+- next slice may not use registry lookup access, may not add dimension JSON/type JSON and may not create an active Cavenia level
+- next slice may not add worldgen resources, may not add access/teleport, may not add spawning and may not register `cavernreborn:caveman`
+- selected-surface readiness matrix remains ready while selected-surface runtime remains blocked
+- selected-surface readiness item count remains `68` and global readiness matrix total/blocked requirement counts remain `46/46`
+- runtime biome source is not ready, runtime biome source is not registered, codec is not registered and registry lookup access is not ready
+- dimension JSON/type JSON remain absent, Cavenia cannot activate now and `EntityCaveman -> deferred:caveman` remains unchanged
+- the runtime-biome-source first-implementation decision/guardrails note at `docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md`
 - registry lookup access is not ready, registry verification is not ready and runtime biome source is not ready
 - runtime biome source is not registered and codec is not registered
 - adapter entry count remains `14` and adapter total weight remains `675`
