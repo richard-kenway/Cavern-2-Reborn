@@ -110,6 +110,14 @@ public final class CaveniaRuntimeBiomeSourceFirstImplementationDecision {
         return false;
     }
 
+    public static boolean unregisteredSkeletonImplemented() {
+        return CaveniaRuntimeBiomeSourceSkeleton.unregisteredSkeletonReady();
+    }
+
+    public static boolean unregisteredSkeletonRuntimeReady() {
+        return false;
+    }
+
     public static boolean activationAllowedInThisSlice() {
         return false;
     }

@@ -67,6 +67,8 @@ class CaveniaRuntimeBiomeSourceFirstImplementationDecisionTest {
         assertTrue(CaveniaRuntimeBiomeSourceFirstImplementationDecision.decisionIsToProceedWithUnregisteredSkeletonNext());
         assertTrue(CaveniaRuntimeBiomeSourceFirstImplementationDecision.decisionIsImplementationOnlyForNextSlice());
         assertFalse(CaveniaRuntimeBiomeSourceFirstImplementationDecision.runtimeBiomeSourceImplementedInThisSlice());
+        assertTrue(CaveniaRuntimeBiomeSourceFirstImplementationDecision.unregisteredSkeletonImplemented());
+        assertFalse(CaveniaRuntimeBiomeSourceFirstImplementationDecision.unregisteredSkeletonRuntimeReady());
         assertFalse(CaveniaRuntimeBiomeSourceFirstImplementationDecision.activationAllowedInThisSlice());
         assertFalse(CaveniaRuntimeBiomeSourceFirstImplementationDecision.canActivateCaveniaNow());
         assertEquals(expectedGuardrails, CaveniaRuntimeBiomeSourceFirstImplementationDecision.guardrailValues());

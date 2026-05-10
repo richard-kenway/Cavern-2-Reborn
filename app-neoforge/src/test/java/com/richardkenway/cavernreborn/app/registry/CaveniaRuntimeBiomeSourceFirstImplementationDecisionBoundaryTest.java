@@ -101,6 +101,7 @@ class CaveniaRuntimeBiomeSourceFirstImplementationDecisionBoundaryTest {
         assertTrue(decisionDoc.contains("no active Cavenia spawning"));
         assertTrue(decisionDoc.contains("no active Cavenia worldgen resources"));
         assertTrue(decisionDoc.contains("`EntityCaveman -> deferred:caveman`"));
+        assertTrue(decisionDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
 
         assertTrue(readme.contains("Cavenia Runtime BiomeSource First Implementation Decision / Guardrails MVP"));
         assertTrue(readme.contains("docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md"));

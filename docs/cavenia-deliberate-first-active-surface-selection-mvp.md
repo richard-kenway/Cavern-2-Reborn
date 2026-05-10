@@ -206,6 +206,7 @@ The later non-runtime and unregistered follow-ups are now documented in:
 - `docs/cavenia-registry-lookup-readiness-contracts-mvp.md`
 - `docs/cavenia-biome-source-strategy-final-readiness-matrix-mvp.md`
 - `docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md`
+- `docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md`
 
 The next implementation slice should still stay inside `BIOME_SOURCE_STRATEGY`, but it can now move to codec/registration readiness contracts for the adapter without becoming runtime.
 

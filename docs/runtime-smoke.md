@@ -503,6 +503,21 @@ NeoForge GameTest runtime smoke covers:
 - selected-surface readiness item count remains `68` and global readiness matrix total/blocked requirement counts remain `46/46`
 - runtime biome source is not ready, runtime biome source is not registered, codec is not registered and registry lookup access is not ready
 - dimension JSON/type JSON remain absent, Cavenia cannot activate now and `EntityCaveman -> deferred:caveman` remains unchanged
+- the decision/guardrails note at `docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md`
+- Cavenia Unregistered Runtime BiomeSource Skeleton MVP
+- unregistered runtime-biome-source skeleton MVP
+- `CaveniaRuntimeBiomeSourceSkeleton` now resolves from `app-neoforge`
+- skeleton shape is ready and unregistered skeleton is ready
+- the skeleton does not extend Minecraft `BiomeSource` and is not runtime implemented or registered
+- the skeleton consumes the biome-selection adapter and preserves coordinate query fields without using them for selection yet
+- representative skeleton selections remain pinned: `0` first entry candidate, `675` first entry candidate and `-1` last entry candidate
+- coordinate query preserves coordinates but does not change selection for the same weight value
+- codec implementation is absent, codec registration is absent and registry lookup access is absent
+- biome holder/resource-key conversion is absent and dimension binding is absent
+- decision guardrail count remains `14` and all guardrails remain enforced
+- selected-surface readiness item count remains `68` and global readiness matrix total/blocked requirement counts remain `46/46`
+- dimension JSON/type JSON remain absent, Cavenia cannot activate now and `EntityCaveman -> deferred:caveman` remains unchanged
+- the unregistered runtime-biome-source skeleton note at `docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md`
 - the runtime-biome-source first-implementation decision/guardrails note at `docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md`
 - registry lookup access is not ready, registry verification is not ready and runtime biome source is not ready
 - runtime biome source is not registered and codec is not registered

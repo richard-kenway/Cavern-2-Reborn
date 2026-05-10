@@ -210,6 +210,14 @@ public final class CaveniaBiomeSourceStrategyPlan {
         return false;
     }
 
+    public static boolean unregisteredRuntimeBiomeSourceSkeletonReady() {
+        return CaveniaRuntimeBiomeSourceSkeleton.unregisteredSkeletonReady();
+    }
+
+    public static boolean unregisteredRuntimeBiomeSourceSkeletonRuntimeReady() {
+        return false;
+    }
+
     public static boolean runtimeBiomeSourceReady() {
         return false;
     }

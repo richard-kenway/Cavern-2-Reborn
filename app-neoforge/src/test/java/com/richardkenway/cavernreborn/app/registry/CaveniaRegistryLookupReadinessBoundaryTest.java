@@ -96,6 +96,7 @@ class CaveniaRegistryLookupReadinessBoundaryTest {
         assertTrue(readinessDoc.contains("no active Cavenia worldgen resources"));
         assertTrue(readinessDoc.contains("`EntityCaveman -> deferred:caveman`"));
         assertTrue(readinessDoc.contains("docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md"));
+        assertTrue(readinessDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
 
         assertTrue(readme.contains("Cavenia Registry Lookup Readiness Contracts MVP"));
         assertTrue(readme.contains("docs/cavenia-registry-lookup-readiness-contracts-mvp.md"));
