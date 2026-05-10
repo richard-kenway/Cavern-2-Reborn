@@ -243,6 +243,14 @@ public final class CaveniaBiomeSourceStrategyPlan {
         return false;
     }
 
+    public static boolean guardedRealSubclassStubImplemented() {
+        return true;
+    }
+
+    public static boolean guardedRealSubclassRuntimeReady() {
+        return false;
+    }
+
     public static boolean runtimeBiomeSourceReady() {
         return false;
     }

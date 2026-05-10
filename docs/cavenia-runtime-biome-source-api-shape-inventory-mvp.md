@@ -225,3 +225,5 @@ The next slice can make an explicit go/no-go decision for a guarded real `BiomeS
 Any real subclass must still avoid dimension activation unless explicitly chosen.
 
 The runtime-biome-source real-subclass go/no-go decision follow-up is now documented in `docs/cavenia-runtime-biome-source-real-subclass-go-no-go-decision-mvp.md`.
+
+The guarded unregistered real biome-source subclass stub follow-up is now documented in `docs/cavenia-guarded-unregistered-real-biome-source-subclass-stub-mvp.md`.

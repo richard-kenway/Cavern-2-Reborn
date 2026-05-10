@@ -308,6 +308,14 @@ public final class CaveniaRuntimeBiomeSourceApiShapeInventory {
         return false;
     }
 
+    public static boolean guardedRealSubclassStubImplemented() {
+        return true;
+    }
+
+    public static boolean guardedRealSubclassRuntimeReady() {
+        return false;
+    }
+
     public static int selectedSurfaceReadinessItemCount() {
         return CaveniaBiomeSourceStrategyReadinessMatrix.totalReadinessItemCount();
     }

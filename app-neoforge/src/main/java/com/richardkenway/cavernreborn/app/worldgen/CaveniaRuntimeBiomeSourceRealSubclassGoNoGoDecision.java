@@ -281,6 +281,14 @@ public final class CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision {
         return CaveniaRuntimeBiomeSourceSubclassDecision.readyForRealSubclass();
     }
 
+    public static boolean guardedRealSubclassStubImplemented() {
+        return true;
+    }
+
+    public static boolean guardedRealSubclassRuntimeReady() {
+        return false;
+    }
+
     public static int selectedSurfaceReadinessItemCount() {
         return CaveniaBiomeSourceStrategyReadinessMatrix.totalReadinessItemCount();
     }

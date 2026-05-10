@@ -100,6 +100,8 @@ class CaveniaRuntimeBiomeSourceSkeletonTest {
         assertFalse(CaveniaRuntimeBiomeSourceSkeleton.runtimeBiomeSourceApiShapeRuntimeReady());
         assertTrue(CaveniaRuntimeBiomeSourceSkeleton.realSubclassGoNoGoDecisionReady());
         assertFalse(CaveniaRuntimeBiomeSourceSkeleton.realSubclassGoNoGoRuntimeReady());
+        assertTrue(CaveniaRuntimeBiomeSourceSkeleton.guardedRealSubclassStubImplemented());
+        assertFalse(CaveniaRuntimeBiomeSourceSkeleton.guardedRealSubclassRuntimeReady());
         assertEquals(14, CaveniaRuntimeBiomeSourceSkeleton.guardrailCount());
         assertTrue(CaveniaRuntimeBiomeSourceSkeleton.allGuardrailsEnforced());
         assertEquals(14, CaveniaRuntimeBiomeSourceSkeleton.adapterEntryCount());

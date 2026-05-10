@@ -70,6 +70,7 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceApiS
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceApiShapeInventory;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceGuardrail;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceNextStepDecision;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSource;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceRealSubclassGuardrail;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceRealSubclassNextStepDecision;
@@ -8710,7 +8711,7 @@ public final class CavernSpecialOreGameTests {
                     CaveniaRuntimeBiomeSourceRealSubclassGuardrail.KEEP_SUBCLASS_UNREGISTERED_AND_UNREFERENCED_BY_RUNTIME,
                     CaveniaRuntimeBiomeSourceRealSubclassGuardrail.KEEP_EXISTING_SKELETON_AND_API_INVENTORY_INTACT
                 )),
-            "Expected the real-subclass go/no-go decision layer to keep the exact selected branch and guardrail order pinned without creating the designated subclass file in this slice"
+            "Expected the real-subclass go/no-go decision layer to keep the exact selected branch and guardrail order pinned while the designated subclass stub remains a separate guarded follow-up slice"
         );
         helper.assertTrue(
             CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.allGuardrailsEnforcedInThisSlice()
@@ -8748,6 +8749,8 @@ public final class CavernSpecialOreGameTests {
                 && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.skeletonRuntimeReady()
                 && CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.subclassDecisionApiShapePinned()
                 && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.subclassDecisionReadyForRealSubclass()
+                && CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.guardedRealSubclassStubImplemented()
+                && !CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.guardedRealSubclassRuntimeReady()
                 && CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.selectedSurfaceReadinessItemCount() == 68
                 && CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.globalReadinessMatrixTotalRequirementCount() == 46
                 && CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.globalReadinessMatrixBlockedRequirementCount() == 46
@@ -8762,6 +8765,35 @@ public final class CavernSpecialOreGameTests {
             "Expected the real-subclass go/no-go decision layer to keep the API inventory ready, the skeleton ready, and every runtime, registration and activation surface blocked in this slice"
         );
         helper.assertTrue(
+            CaveniaRuntimeBiomeSource.guardedSubclassStubReady()
+                && CaveniaRuntimeBiomeSource.designatedSubclassSimpleName().equals("CaveniaRuntimeBiomeSource")
+                && CaveniaRuntimeBiomeSource.designatedSubclassFileName().equals("CaveniaRuntimeBiomeSource.java")
+                && !CaveniaRuntimeBiomeSource.normalRuntimeConstructionAllowed()
+                && !CaveniaRuntimeBiomeSource.usableRuntimeBehaviorReady()
+                && CaveniaRuntimeBiomeSource.unsupportedMethodStubsOnly()
+                && CaveniaRuntimeBiomeSource.codecMethodStubbed()
+                && CaveniaRuntimeBiomeSource.collectPossibleBiomesStubbed()
+                && CaveniaRuntimeBiomeSource.getNoiseBiomeStubbed()
+                && !CaveniaRuntimeBiomeSource.usableCodecImplementationReady()
+                && !CaveniaRuntimeBiomeSource.codecRegistered()
+                && !CaveniaRuntimeBiomeSource.biomeSourceTypeRegistered()
+                && !CaveniaRuntimeBiomeSource.registryLookupAccessReady()
+                && !CaveniaRuntimeBiomeSource.holderResourceKeyConversionReady()
+                && !CaveniaRuntimeBiomeSource.dimensionBindingReady()
+                && !CaveniaRuntimeBiomeSource.activationAllowedInThisSlice()
+                && !CaveniaRuntimeBiomeSource.canActivateCaveniaNow()
+                && CaveniaRuntimeBiomeSource.apiShapeInventoryReady()
+                && CaveniaRuntimeBiomeSource.goNoGoDecisionAllowsSubclass()
+                && CaveniaRuntimeBiomeSource.allGoNoGoGuardrailsEnforced()
+                && CaveniaRuntimeBiomeSource.selectedSurfaceReadinessItemCount() == 68
+                && CaveniaRuntimeBiomeSource.globalReadinessMatrixTotalRequirementCount() == 46
+                && CaveniaRuntimeBiomeSource.globalReadinessMatrixBlockedRequirementCount() == 46
+                && !CaveniaRuntimeBiomeSource.dimensionJsonPresent()
+                && !CaveniaRuntimeBiomeSource.dimensionTypeJsonPresent()
+                && CaveniaRuntimeBiomeSource.cavemanRemainsDeferred(),
+            "Expected the guarded runtime biome-source subclass stub to resolve from app-neoforge, stay unsupported and unregistered, and keep every runtime activation surface blocked"
+        );
+        helper.assertTrue(
             projectFileExists("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md"),
             "Expected the unregistered Cavenia generator/biome-selection skeleton doc to exist in the project root"
         );
@@ -8772,6 +8804,10 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             projectFileExists("docs", "cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"),
             "Expected the runtime-biome-source codec-holder-registry decision doc to exist in the project root"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-guarded-unregistered-real-biome-source-subclass-stub-mvp.md"),
+            "Expected the guarded unregistered real Cavenia biome-source subclass stub doc to exist in the project root"
         );
         helper.assertTrue(
             projectFileExists("docs", "cavenia-generator-runtime-contracts-non-registered-mvp.md"),

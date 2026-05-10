@@ -214,3 +214,5 @@ Current Reborn therefore still keeps:
 The next slice may implement only the guarded unregistered `CaveniaRuntimeBiomeSource` subclass stub.
 
 That future slice must keep the subclass unregistered and non-activating.
+
+The guarded unregistered real biome-source subclass stub follow-up is now documented in `docs/cavenia-guarded-unregistered-real-biome-source-subclass-stub-mvp.md`.

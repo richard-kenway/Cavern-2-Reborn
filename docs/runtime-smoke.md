@@ -561,6 +561,17 @@ NeoForge GameTest runtime smoke covers:
 - runtime biome source is not ready in this slice, runtime biome source is not registered, codec is not registered and registry lookup access is not ready
 - dimension JSON/type JSON remain absent, Cavenia cannot activate now and `EntityCaveman -> deferred:caveman` remains unchanged
 - the runtime-biome-source real-subclass go/no-go decision note at `docs/cavenia-runtime-biome-source-real-subclass-go-no-go-decision-mvp.md`
+- Cavenia Guarded Unregistered Real BiomeSource Subclass Stub MVP
+- guarded unregistered real `BiomeSource` subclass stub MVP
+- `CaveniaRuntimeBiomeSource` now resolves from `app-neoforge`
+- it extends Minecraft `BiomeSource`, but normal runtime construction is not allowed
+- unsupported method stubs only
+- codec method is stubbed, possible-biomes collection method is stubbed and noise-biome method is stubbed
+- usable runtime behavior is not ready, usable codec implementation is not ready, codec is not registered and biome-source type is not registered
+- registry lookup access is not ready, holder/resource-key conversion is not ready and dimension binding is not ready
+- go/no-go guardrails remain enforced, selected-surface readiness item count remains `68` and global readiness matrix total/blocked requirement counts remain `46/46`
+- dimension JSON/type JSON remain absent, Cavenia cannot activate now and `EntityCaveman -> deferred:caveman` remains unchanged
+- the guarded runtime-biome-source subclass stub note at `docs/cavenia-guarded-unregistered-real-biome-source-subclass-stub-mvp.md`
 - the registry lookup readiness note at `docs/cavenia-registry-lookup-readiness-contracts-mvp.md`
 - `CaveniaSpawnProviderPolicy` still keeps `EntityCaveman -> deferred:caveman`
 - no registered `cavernreborn:caveman` entity type exists at runtime

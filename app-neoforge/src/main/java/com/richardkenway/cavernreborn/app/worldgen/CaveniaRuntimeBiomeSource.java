@@ -1,0 +1,147 @@
+package com.richardkenway.cavernreborn.app.worldgen;
+
+import com.mojang.serialization.MapCodec;
+
+import java.util.stream.Stream;
+
+import net.minecraft.core.Holder;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.biome.Climate;
+
+public final class CaveniaRuntimeBiomeSource extends BiomeSource {
+    private static final String DESIGNATED_SUBCLASS_SIMPLE_NAME = "CaveniaRuntimeBiomeSource";
+    private static final String DESIGNATED_SUBCLASS_FILE_NAME = DESIGNATED_SUBCLASS_SIMPLE_NAME + ".java";
+    private static final String UNAVAILABLE_REASON =
+        "Cavenia runtime biome source is still a guarded unregistered stub and is not usable, registered, or activating yet.";
+
+    private CaveniaRuntimeBiomeSource() {
+    }
+
+    @Override
+    protected MapCodec<? extends BiomeSource> codec() {
+        throw unsupported("codec()");
+    }
+
+    @Override
+    protected Stream<Holder<Biome>> collectPossibleBiomes() {
+        throw unsupported("collectPossibleBiomes()");
+    }
+
+    @Override
+    public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler) {
+        throw unsupported("getNoiseBiome(int, int, int, Climate.Sampler)");
+    }
+
+    public static boolean guardedSubclassStubReady() {
+        return true;
+    }
+
+    public static boolean extendsMinecraftBiomeSource() {
+        return true;
+    }
+
+    public static String designatedSubclassFileName() {
+        return DESIGNATED_SUBCLASS_FILE_NAME;
+    }
+
+    public static String designatedSubclassSimpleName() {
+        return DESIGNATED_SUBCLASS_SIMPLE_NAME;
+    }
+
+    public static boolean normalRuntimeConstructionAllowed() {
+        return false;
+    }
+
+    public static boolean usableRuntimeBehaviorReady() {
+        return false;
+    }
+
+    public static boolean unsupportedMethodStubsOnly() {
+        return true;
+    }
+
+    public static boolean codecMethodStubbed() {
+        return true;
+    }
+
+    public static boolean collectPossibleBiomesStubbed() {
+        return true;
+    }
+
+    public static boolean getNoiseBiomeStubbed() {
+        return true;
+    }
+
+    public static boolean usableCodecImplementationReady() {
+        return false;
+    }
+
+    public static boolean codecRegistered() {
+        return false;
+    }
+
+    public static boolean biomeSourceTypeRegistered() {
+        return false;
+    }
+
+    public static boolean registryLookupAccessReady() {
+        return false;
+    }
+
+    public static boolean holderResourceKeyConversionReady() {
+        return false;
+    }
+
+    public static boolean dimensionBindingReady() {
+        return false;
+    }
+
+    public static boolean activationAllowedInThisSlice() {
+        return false;
+    }
+
+    public static boolean canActivateCaveniaNow() {
+        return false;
+    }
+
+    public static boolean apiShapeInventoryReady() {
+        return CaveniaRuntimeBiomeSourceApiShapeInventory.apiShapeInventoryReady();
+    }
+
+    public static boolean goNoGoDecisionAllowsSubclass() {
+        return CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.nextSliceMayAddOneDesignatedRealSubclassFile();
+    }
+
+    public static boolean allGoNoGoGuardrailsEnforced() {
+        return CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.allGuardrailsEnforcedInThisSlice();
+    }
+
+    public static int selectedSurfaceReadinessItemCount() {
+        return CaveniaBiomeSourceStrategyReadinessMatrix.totalReadinessItemCount();
+    }
+
+    public static int globalReadinessMatrixTotalRequirementCount() {
+        return CaveniaActivationReadinessMatrix.totalRequirementCount();
+    }
+
+    public static int globalReadinessMatrixBlockedRequirementCount() {
+        return CaveniaActivationReadinessMatrix.blockedRequirementCount();
+    }
+
+    public static boolean dimensionJsonPresent() {
+        return CaveniaRuntimeBiomeSourceSkeleton.dimensionJsonPresent();
+    }
+
+    public static boolean dimensionTypeJsonPresent() {
+        return CaveniaRuntimeBiomeSourceSkeleton.dimensionTypeJsonPresent();
+    }
+
+    public static boolean cavemanRemainsDeferred() {
+        return CaveniaRuntimeBiomeSourceSkeleton.cavemanRemainsDeferred();
+    }
+
+    private static UnsupportedOperationException unsupported(String methodName) {
+        return new UnsupportedOperationException(methodName + " is unavailable because " + UNAVAILABLE_REASON);
+    }
+}

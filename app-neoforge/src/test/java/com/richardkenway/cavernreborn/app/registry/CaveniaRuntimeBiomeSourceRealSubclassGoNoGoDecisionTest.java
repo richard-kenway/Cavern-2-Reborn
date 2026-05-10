@@ -129,6 +129,8 @@ class CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecisionTest {
         assertFalse(CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.skeletonRuntimeReady());
         assertTrue(CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.subclassDecisionApiShapePinned());
         assertFalse(CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.subclassDecisionReadyForRealSubclass());
+        assertTrue(CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.guardedRealSubclassStubImplemented());
+        assertFalse(CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.guardedRealSubclassRuntimeReady());
         assertEquals(68, CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.selectedSurfaceReadinessItemCount());
         assertEquals(46, CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.globalReadinessMatrixTotalRequirementCount());
         assertEquals(46, CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.globalReadinessMatrixBlockedRequirementCount());
@@ -166,7 +168,12 @@ class CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecisionTest {
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "placed_feature", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "neoforge", "biome_modifier", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "tags", "worldgen", "biome", "cavenia.json");
-        assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "CaveniaRuntimeBiomeSource.java");
+        assertTrue(
+            Files.exists(resolveProjectPathOrSibling(
+                "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
+                "CaveniaRuntimeBiomeSource.java"
+            ))
+        );
         assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "CaveniaChunkGenerator.java");
         assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "ChunkGeneratorCavenia.java");
         assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "CaveniaBiomeSource.java");
@@ -182,8 +189,7 @@ class CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecisionTest {
                     .filter(Files::isRegularFile)
                     .map(path -> path.getFileName().toString())
                     .noneMatch(name ->
-                        name.equals("CaveniaRuntimeBiomeSource.java")
-                            || name.equals("CaveniaChunkGenerator.java")
+                        name.equals("CaveniaChunkGenerator.java")
                             || name.equals("ChunkGeneratorCavenia.java")
                             || name.equals("CaveniaBiomeSource.java")
                             || name.equals("MapGenCaveniaCaves.java")
@@ -192,7 +198,7 @@ class CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecisionTest {
                             || name.equals("CaveniaSpawnHandler.java")
                             || name.equals("CaveniaServerTickSpawner.java")
                     ),
-                "Expected the real-subclass go/no-go decision layer to avoid adding active or designated runtime subclass files in this slice"
+                "Expected the real-subclass go/no-go decision layer sources to stay inert while the later designated subclass stub exists separately"
             );
         }
     }

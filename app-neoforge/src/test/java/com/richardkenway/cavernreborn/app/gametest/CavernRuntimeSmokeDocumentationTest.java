@@ -276,6 +276,8 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(readme.contains("docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md"));
         assertTrue(readme.contains("Cavenia Runtime BiomeSource First Implementation Decision / Guardrails MVP"));
         assertTrue(readme.contains("docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md"));
+        assertTrue(readme.contains("Cavenia Guarded Unregistered Real BiomeSource Subclass Stub MVP"));
+        assertTrue(readme.contains("docs/cavenia-guarded-unregistered-real-biome-source-subclass-stub-mvp.md"));
         assertTrue(readme.contains("full mirage-world stack"));
         assertTrue(readme.contains("old Cavenia-only `crazySpawnChance` plus a nearby `ICavenicMob` scan for `!entity.isNonBoss()`"));
         assertTrue(readme.contains("fourth crazy-variant foundation follow-up"));
@@ -730,6 +732,17 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("selected-surface readiness item count remains `68` and global readiness matrix total/blocked requirement counts remain `46/46`"));
         assertTrue(doc.contains("runtime biome source is not ready, runtime biome source is not registered, codec is not registered and registry lookup access is not ready"));
         assertTrue(doc.contains("the runtime-biome-source first-implementation decision/guardrails note at `docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md`"));
+        assertTrue(doc.contains("Cavenia Guarded Unregistered Real BiomeSource Subclass Stub MVP"));
+        assertTrue(doc.contains("guarded unregistered real `BiomeSource` subclass stub MVP"));
+        assertTrue(doc.contains("`CaveniaRuntimeBiomeSource` now resolves from `app-neoforge`"));
+        assertTrue(doc.contains("it extends Minecraft `BiomeSource`, but normal runtime construction is not allowed"));
+        assertTrue(doc.contains("unsupported method stubs only"));
+        assertTrue(doc.contains("codec method is stubbed, possible-biomes collection method is stubbed and noise-biome method is stubbed"));
+        assertTrue(doc.contains("usable runtime behavior is not ready, usable codec implementation is not ready, codec is not registered and biome-source type is not registered"));
+        assertTrue(doc.contains("registry lookup access is not ready, holder/resource-key conversion is not ready and dimension binding is not ready"));
+        assertTrue(doc.contains("go/no-go guardrails remain enforced, selected-surface readiness item count remains `68` and global readiness matrix total/blocked requirement counts remain `46/46`"));
+        assertTrue(doc.contains("dimension JSON/type JSON remain absent, Cavenia cannot activate now and `EntityCaveman -> deferred:caveman` remains unchanged"));
+        assertTrue(doc.contains("the guarded runtime-biome-source subclass stub note at `docs/cavenia-guarded-unregistered-real-biome-source-subclass-stub-mvp.md`"));
         assertTrue(doc.contains("docs/caveman-cavenia-normal-roster-boundary.md"));
         assertTrue(doc.contains("no checked-in normal `CAVERN` crazy biome modifiers or crazy biome tags exist"));
         assertTrue(doc.contains("the Cavenia spawn-provider / crazy-roster activation contract boundary note at `docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md`"));
