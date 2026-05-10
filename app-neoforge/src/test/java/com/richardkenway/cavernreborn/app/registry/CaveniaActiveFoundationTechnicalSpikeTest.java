@@ -44,6 +44,7 @@ class CaveniaActiveFoundationTechnicalSpikeTest {
     private static final Path BIOME_MAPPING_DOC = resolveProjectFile("docs", "cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md");
     private static final Path WEIGHTED_SELECTION_DOC = resolveProjectFile("docs", "cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md");
     private static final Path ADAPTER_DOC = resolveProjectFile("docs", "cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md");
+    private static final Path ADAPTER_READINESS_DOC = resolveProjectFile("docs", "cavenia-adapter-codec-registration-readiness-contracts-mvp.md");
 
     @Test
     void technicalSpikeExistsAndPinsTheFirstActiveFoundationDecision() throws IOException {
@@ -70,6 +71,7 @@ class CaveniaActiveFoundationTechnicalSpikeTest {
         String generatorScaffoldDoc = Files.readString(GENERATOR_SCAFFOLD_DOC);
         String generatorBridgeDoc = Files.readString(GENERATOR_BRIDGE_DOC);
         String adapterDoc = Files.readString(ADAPTER_DOC);
+        String adapterReadinessDoc = Files.readString(ADAPTER_READINESS_DOC);
 
         assertTrue(spikeDoc.contains("Cavenia Active Foundation Technical Spike"));
         assertTrue(spikeDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
@@ -106,6 +108,7 @@ class CaveniaActiveFoundationTechnicalSpikeTest {
         assertTrue(spikeDoc.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
         assertTrue(spikeDoc.contains("docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md"));
         assertTrue(spikeDoc.contains("docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md"));
+        assertTrue(spikeDoc.contains("docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md"));
         assertTrue(spikeDoc.contains("`CAVENIA_LOCATION`"));
         assertTrue(spikeDoc.contains("`CAVENIA_LEVEL_KEY`"));
         assertTrue(spikeDoc.contains("`dimension/cavenia.json`"));
@@ -159,6 +162,7 @@ class CaveniaActiveFoundationTechnicalSpikeTest {
         assertTrue(Files.readString(BIOME_SOURCE_PLAN_DOC).contains("docs/cavenia-active-foundation-technical-spike.md"));
         assertTrue(Files.readString(BIOME_MAPPING_DOC).contains("docs/cavenia-active-foundation-technical-spike.md"));
         assertTrue(Files.readString(WEIGHTED_SELECTION_DOC).contains("docs/cavenia-active-foundation-technical-spike.md"));
+        assertTrue(adapterReadinessDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
     }
 
     private static Path resolveProjectFile(String first, String... more) {

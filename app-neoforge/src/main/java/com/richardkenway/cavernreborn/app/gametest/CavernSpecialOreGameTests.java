@@ -57,6 +57,8 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaLegacyToModernBiomeKey
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyPlan;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyPlanStep;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSelectionAdapterContract;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaAdapterCodecRegistrationReadiness;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaAdapterCodecRegistrationRequirement;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyContracts;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyRequirement;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaWeightedBiomeSelectionAlgorithm;
@@ -8255,6 +8257,50 @@ public final class CavernSpecialOreGameTests {
             "Expected the unregistered Cavenia biome-selection adapter contract to keep representative wrapped candidate selections pinned while runtime biome-source activation stays absent"
         );
         helper.assertTrue(
+            CaveniaAdapterCodecRegistrationReadiness.requirementCount() == 9
+                && CaveniaAdapterCodecRegistrationReadiness.requirements().equals(List.of(
+                    CaveniaAdapterCodecRegistrationRequirement.ADAPTER_SHAPE_AVAILABLE,
+                    CaveniaAdapterCodecRegistrationRequirement.SERIALIZATION_MODEL_DECISION,
+                    CaveniaAdapterCodecRegistrationRequirement.CODEC_SHAPE_DECISION,
+                    CaveniaAdapterCodecRegistrationRequirement.CODEC_IMPLEMENTATION,
+                    CaveniaAdapterCodecRegistrationRequirement.BIOME_SOURCE_TYPE_KEY,
+                    CaveniaAdapterCodecRegistrationRequirement.BIOME_SOURCE_TYPE_REGISTRATION,
+                    CaveniaAdapterCodecRegistrationRequirement.REGISTRY_LOOKUP_ACCESS,
+                    CaveniaAdapterCodecRegistrationRequirement.RUNTIME_BIOME_SOURCE_CLASS,
+                    CaveniaAdapterCodecRegistrationRequirement.DIMENSION_BINDING_DEFERRED
+                )),
+            "Expected the adapter codec-registration readiness layer to keep the exact requirement order pinned"
+        );
+        helper.assertTrue(
+            CaveniaAdapterCodecRegistrationReadiness.adapterShapeReady()
+                && !CaveniaAdapterCodecRegistrationReadiness.adapterRuntimeReady()
+                && CaveniaAdapterCodecRegistrationReadiness.codecRegistrationReadinessReady()
+                && !CaveniaAdapterCodecRegistrationReadiness.codecRegistrationRuntimeReady()
+                && CaveniaAdapterCodecRegistrationReadiness.allRequirementsRuntimeBlocked()
+                && !CaveniaAdapterCodecRegistrationReadiness.anyRequirementReadyForRuntime()
+                && !CaveniaAdapterCodecRegistrationReadiness.anyCodecImplemented()
+                && !CaveniaAdapterCodecRegistrationReadiness.anyRegistered(),
+            "Expected the adapter codec-registration readiness layer to keep only the adapter-shape prerequisite satisfied while runtime readiness stays blocked"
+        );
+        helper.assertTrue(
+            !CaveniaAdapterCodecRegistrationReadiness.registryLookupAccessReady()
+                && !CaveniaAdapterCodecRegistrationReadiness.runtimeBiomeSourceReady()
+                && !CaveniaAdapterCodecRegistrationReadiness.runtimeBiomeSourceRegistered()
+                && !CaveniaAdapterCodecRegistrationReadiness.codecRegistered()
+                && !CaveniaAdapterCodecRegistrationReadiness.biomeSourceTypeKeyReady()
+                && !CaveniaAdapterCodecRegistrationReadiness.dimensionBindingReady()
+                && !CaveniaAdapterCodecRegistrationReadiness.activationAllowedInThisSlice()
+                && !CaveniaAdapterCodecRegistrationReadiness.canActivateCaveniaNow()
+                && CaveniaAdapterCodecRegistrationReadiness.adapterEntryCount() == 14
+                && CaveniaAdapterCodecRegistrationReadiness.adapterTotalWeight() == 675
+                && CaveniaAdapterCodecRegistrationReadiness.weightedSelectionAlgorithmReady()
+                && CaveniaAdapterCodecRegistrationReadiness.candidateInventoryReady()
+                && !CaveniaAdapterCodecRegistrationReadiness.dimensionJsonPresent()
+                && !CaveniaAdapterCodecRegistrationReadiness.dimensionTypeJsonPresent()
+                && CaveniaAdapterCodecRegistrationReadiness.cavemanRemainsDeferred(),
+            "Expected the adapter codec-registration readiness layer to keep codec implementation, registration, registry lookup and dimension binding absent"
+        );
+        helper.assertTrue(
             projectFileExists("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md"),
             "Expected the unregistered Cavenia generator/biome-selection skeleton doc to exist in the project root"
         );
@@ -8293,6 +8339,10 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             projectFileExists("docs", "cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md"),
             "Expected the unregistered Cavenia biome-selection adapter contract doc to exist in the project root"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-adapter-codec-registration-readiness-contracts-mvp.md"),
+            "Expected the adapter codec-registration readiness-contract doc to exist in the project root"
         );
         helper.assertTrue(
             projectFileExists("docs", "caveman-cavenia-normal-roster-boundary.md"),

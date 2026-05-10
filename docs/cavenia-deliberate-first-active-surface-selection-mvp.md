@@ -202,6 +202,7 @@ The later non-runtime and unregistered follow-ups are now documented in:
 - `docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md`
 - `docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md`
 - `docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md`
+- `docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md`
 
 The next implementation slice should still stay inside `BIOME_SOURCE_STRATEGY`, but it can now move to codec/registration readiness contracts for the adapter without becoming runtime.
 

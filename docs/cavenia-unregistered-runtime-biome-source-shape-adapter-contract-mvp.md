@@ -17,6 +17,7 @@ It builds on:
 - `docs/cavenia-active-foundation-technical-spike.md`
 - `docs/cavenia-active-foundation-readiness-plan.md`
 - `docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md`
+- `docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md`
 
 ## Exact Adapter Classes Added
 
@@ -170,6 +171,8 @@ Current Reborn therefore still keeps:
 
 ## Future Recommendation
 
-The next slice may define codec/registration readiness contracts for the adapter, but must still avoid actual codec registration and dimension activation unless explicitly chosen.
+The adapter codec/registration readiness follow-up is now documented in `docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md`.
+
+The next slice may define registry lookup readiness contracts for the adapter, but must still avoid actual registry lookup access, codec registration and dimension activation unless explicitly chosen.
 
 Real runtime `BiomeSource`, codec, registration and registry lookup access must remain separate explicit MVPs.

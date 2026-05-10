@@ -178,6 +178,14 @@ public final class CaveniaBiomeSourceStrategyPlan {
         return false;
     }
 
+    public static boolean adapterCodecRegistrationReadinessReady() {
+        return CaveniaAdapterCodecRegistrationReadiness.codecRegistrationReadinessReady();
+    }
+
+    public static boolean adapterCodecRegistrationRuntimeReady() {
+        return false;
+    }
+
     public static boolean runtimeBiomeSourceReady() {
         return false;
     }

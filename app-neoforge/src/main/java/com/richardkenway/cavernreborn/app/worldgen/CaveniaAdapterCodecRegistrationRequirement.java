@@ -1,0 +1,13 @@
+package com.richardkenway.cavernreborn.app.worldgen;
+
+public enum CaveniaAdapterCodecRegistrationRequirement {
+    ADAPTER_SHAPE_AVAILABLE,
+    SERIALIZATION_MODEL_DECISION,
+    CODEC_SHAPE_DECISION,
+    CODEC_IMPLEMENTATION,
+    BIOME_SOURCE_TYPE_KEY,
+    BIOME_SOURCE_TYPE_REGISTRATION,
+    REGISTRY_LOOKUP_ACCESS,
+    RUNTIME_BIOME_SOURCE_CLASS,
+    DIMENSION_BINDING_DEFERRED
+}

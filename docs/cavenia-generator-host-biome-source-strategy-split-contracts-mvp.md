@@ -255,5 +255,6 @@ The later biome-source follow-ups are documented in:
 
 - `docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md`
 - `docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md`
+- `docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md`
 
 Until a real generator host, real biome-source strategy, codec/registration path, dimension resources, safe access and Cavenia-only spawn-host decisions exist, this slice remains a non-registered split-contract layer only.

@@ -91,6 +91,7 @@ class CaveniaBiomeSelectionAdapterContractBoundaryTest {
         assertTrue(adapterDoc.contains("no active Cavenia worldgen resources"));
         assertTrue(adapterDoc.contains("no CAVERN resource reuse is accepted as Cavenia parity"));
         assertTrue(adapterDoc.contains("`EntityCaveman -> deferred:caveman`"));
+        assertTrue(adapterDoc.contains("docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md"));
 
         assertTrue(readme.contains("Cavenia Unregistered Runtime Biome-Source Shape / Adapter Contract MVP"));
         assertTrue(readme.contains("docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md"));

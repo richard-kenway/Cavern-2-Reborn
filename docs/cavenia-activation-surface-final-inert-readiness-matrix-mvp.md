@@ -211,3 +211,4 @@ The later biome-source follow-ups are documented in:
 
 - `docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md`
 - `docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md`
+- `docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md`

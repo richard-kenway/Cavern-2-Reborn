@@ -466,6 +466,8 @@ NeoForge GameTest runtime smoke covers:
 - dimension JSON/type JSON remain absent and Cavenia cannot activate now
 - `EntityCaveman -> deferred:caveman` remains unchanged
 - the unregistered adapter note at `docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md`
+- the Cavenia Adapter Codec/Registration Readiness Contracts MVP note at `docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md`
+- the adapter codec/registration readiness note at `docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md`
 - `CaveniaSpawnProviderPolicy` still keeps `EntityCaveman -> deferred:caveman`
 - no registered `cavernreborn:caveman` entity type exists at runtime
 - no checked-in Caveman spawn placement, biome modifier or biome tag exists

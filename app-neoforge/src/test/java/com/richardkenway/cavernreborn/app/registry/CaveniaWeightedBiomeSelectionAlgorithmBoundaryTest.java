@@ -82,6 +82,7 @@ class CaveniaWeightedBiomeSelectionAlgorithmBoundaryTest {
         assertTrue(algorithmDoc.contains("no active Cavenia worldgen resources"));
         assertTrue(algorithmDoc.contains("`EntityCaveman -> deferred:caveman`"));
         assertTrue(algorithmDoc.contains("docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md"));
+        assertTrue(algorithmDoc.contains("docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md"));
 
         assertTrue(readme.contains("Cavenia Weighted Biome Selection Algorithm / Pure Non-Runtime MVP"));
         assertTrue(readme.contains("docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md"));

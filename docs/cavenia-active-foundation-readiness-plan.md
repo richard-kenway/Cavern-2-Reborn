@@ -125,6 +125,7 @@ The current completed readiness base is:
 - `docs/caveman-cavenia-normal-roster-boundary.md`
 - `docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md`
 - `docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md`
+- `docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md`
 - `docs/cavenia-cave-carver-policy-non-runtime-mvp.md`
 - `docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md`
 - `docs/cavenia-veins-content-policy-non-runtime-mvp.md`

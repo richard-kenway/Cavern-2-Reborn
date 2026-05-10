@@ -180,6 +180,10 @@ The later unregistered adapter follow-up is now documented in:
 
 - `docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md`
 
-The next runtime-adjacent slice may define codec/registration readiness contracts for that unregistered adapter, but should still avoid actual codec registration, registry lookup access and runtime activation unless explicitly changing the boundary.
+The later adapter codec/registration readiness follow-up is now documented in:
+
+- `docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md`
+
+The next runtime-adjacent slice may define registry lookup readiness contracts for that unregistered adapter, but should still avoid actual registry lookup access, codec registration and runtime activation unless explicitly changing the boundary.
 
 Runtime `BiomeSource`, codec, registration and registry lookup access must remain separate explicit MVPs.

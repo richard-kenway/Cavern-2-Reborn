@@ -115,6 +115,7 @@ class CaveniaActivationReadinessMatrixBoundaryTest {
         assertTrue(weightedSelectionDoc.contains("`CaveniaActivationReadinessMatrix`"));
         assertTrue(matrixDoc.contains("docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md"));
         assertTrue(adapterDoc.contains("`CaveniaActivationReadinessMatrix`"));
+        assertTrue(matrixDoc.contains("docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md"));
     }
 
     @Test

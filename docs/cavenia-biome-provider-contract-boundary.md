@@ -323,3 +323,7 @@ This increment does not decide:
 The later unregistered adapter follow-up is now documented in:
 
 - `docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md`
+
+The later adapter codec/registration readiness follow-up is now documented in:
+
+- `docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md`

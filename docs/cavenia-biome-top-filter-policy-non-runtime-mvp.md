@@ -183,3 +183,7 @@ This note is therefore a non-runtime biome/top-filter foundation only, not an ac
 The later unregistered adapter follow-up is now documented in:
 
 - `docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md`
+
+The later adapter codec/registration readiness follow-up is now documented in:
+
+- `docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md`

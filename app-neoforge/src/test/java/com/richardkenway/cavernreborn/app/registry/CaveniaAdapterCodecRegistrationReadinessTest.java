@@ -2,6 +2,7 @@ package com.richardkenway.cavernreborn.app.registry;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -12,112 +13,107 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
-import com.richardkenway.cavernreborn.app.worldgen.CaveniaActivationSurface;
-import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyPlan;
-import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyPlanEntry;
-import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyPlanStep;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaAdapterCodecRegistrationReadiness;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaAdapterCodecRegistrationRequirement;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaAdapterCodecRegistrationRequirementContract;
 
-class CaveniaBiomeSourceStrategyPlanTest {
-    private static final Path STEP_SOURCE = resolveProjectFile(
+class CaveniaAdapterCodecRegistrationReadinessTest {
+    private static final Path REQUIREMENT_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
-        "CaveniaBiomeSourceStrategyPlanStep.java"
+        "CaveniaAdapterCodecRegistrationRequirement.java"
     );
-    private static final Path ENTRY_SOURCE = resolveProjectFile(
+    private static final Path CONTRACT_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
-        "CaveniaBiomeSourceStrategyPlanEntry.java"
+        "CaveniaAdapterCodecRegistrationRequirementContract.java"
     );
-    private static final Path PLAN_SOURCE = resolveProjectFile(
+    private static final Path READINESS_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
-        "CaveniaBiomeSourceStrategyPlan.java"
+        "CaveniaAdapterCodecRegistrationReadiness.java"
     );
     private static final Path APP_SOURCE_ROOT = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app"
     );
 
     @Test
-    void biomeSourceStrategyPlanPinsSelectedSurfaceLegacyInputsAndDeferredRuntimeWork() {
-        List<CaveniaBiomeSourceStrategyPlanStep> expectedSteps = List.of(
-            CaveniaBiomeSourceStrategyPlanStep.CONFIRM_SELECTED_SURFACE,
-            CaveniaBiomeSourceStrategyPlanStep.PIN_LEGACY_WEIGHTED_INPUTS,
-            CaveniaBiomeSourceStrategyPlanStep.PIN_LEGACY_TOP_BLOCK_INPUTS,
-            CaveniaBiomeSourceStrategyPlanStep.INVENTORY_LEGACY_TO_MODERN_BIOME_MAPPING,
-            CaveniaBiomeSourceStrategyPlanStep.DEFER_WEIGHTED_SELECTION_ALGORITHM,
-            CaveniaBiomeSourceStrategyPlanStep.DEFER_RUNTIME_BIOME_SOURCE,
-            CaveniaBiomeSourceStrategyPlanStep.DEFER_CODEC_AND_REGISTRATION,
-            CaveniaBiomeSourceStrategyPlanStep.DEFER_REGISTRY_LOOKUP_ACCESS
+    void adapterCodecRegistrationReadinessPinsBlockedUnregisteredRuntimePrerequisites() {
+        List<CaveniaAdapterCodecRegistrationRequirement> expectedRequirements = List.of(
+            CaveniaAdapterCodecRegistrationRequirement.ADAPTER_SHAPE_AVAILABLE,
+            CaveniaAdapterCodecRegistrationRequirement.SERIALIZATION_MODEL_DECISION,
+            CaveniaAdapterCodecRegistrationRequirement.CODEC_SHAPE_DECISION,
+            CaveniaAdapterCodecRegistrationRequirement.CODEC_IMPLEMENTATION,
+            CaveniaAdapterCodecRegistrationRequirement.BIOME_SOURCE_TYPE_KEY,
+            CaveniaAdapterCodecRegistrationRequirement.BIOME_SOURCE_TYPE_REGISTRATION,
+            CaveniaAdapterCodecRegistrationRequirement.REGISTRY_LOOKUP_ACCESS,
+            CaveniaAdapterCodecRegistrationRequirement.RUNTIME_BIOME_SOURCE_CLASS,
+            CaveniaAdapterCodecRegistrationRequirement.DIMENSION_BINDING_DEFERRED
         );
-        List<CaveniaBiomeSourceStrategyPlanEntry> entries = CaveniaBiomeSourceStrategyPlan.entries();
+        List<CaveniaAdapterCodecRegistrationRequirementContract> contracts =
+            CaveniaAdapterCodecRegistrationReadiness.contracts();
 
-        assertEquals(expectedSteps, CaveniaBiomeSourceStrategyPlan.steps());
-        assertEquals(8, entries.size());
-        assertTrue(entries.stream().allMatch(entry -> entry.sourceContractName() != null && !entry.sourceContractName().isBlank()));
-        assertTrue(entries.stream().allMatch(entry -> entry.blocker() != null && !entry.blocker().isBlank()));
-        assertEquals(CaveniaActivationSurface.BIOME_SOURCE_STRATEGY, CaveniaBiomeSourceStrategyPlan.selectedSurface());
-        assertTrue(CaveniaBiomeSourceStrategyPlan.selectedSurfaceIsBiomeSourceStrategy());
-        assertTrue(CaveniaBiomeSourceStrategyPlan.planIsNonRuntime());
-        assertFalse(CaveniaBiomeSourceStrategyPlan.activationAllowedInThisSlice());
-        assertTrue(CaveniaBiomeSourceStrategyPlan.allStepsRuntimeBlocked());
-        assertFalse(CaveniaBiomeSourceStrategyPlan.anyStepRuntimeReady());
-        assertTrue(CaveniaBiomeSourceStrategyPlan.allStepsDisallowActivationInThisSlice());
-        assertTrue(entries.stream().allMatch(entry -> !entry.runtimeReady()));
-        assertTrue(entries.stream().allMatch(entry -> !entry.activationAllowedInThisSlice()));
-        assertTrue(
-            CaveniaBiomeSourceStrategyPlan.entryFor(CaveniaBiomeSourceStrategyPlanStep.CONFIRM_SELECTED_SURFACE)
-                .orElseThrow()
-                .selectedSurfaceStep()
+        assertEquals(expectedRequirements, CaveniaAdapterCodecRegistrationReadiness.requirements());
+        assertEquals(9, contracts.size());
+        assertEquals(9, CaveniaAdapterCodecRegistrationReadiness.requirementCount());
+        assertTrue(contracts.stream().allMatch(contract -> contract.sourceContractName() != null && !contract.sourceContractName().isBlank()));
+        assertTrue(contracts.stream().allMatch(contract -> contract.blocker() != null && !contract.blocker().isBlank()));
+        assertEquals(
+            1L,
+            contracts.stream().filter(CaveniaAdapterCodecRegistrationRequirementContract::prerequisiteSatisfied).count()
         );
         assertTrue(
-            CaveniaBiomeSourceStrategyPlan.entryFor(CaveniaBiomeSourceStrategyPlanStep.PIN_LEGACY_WEIGHTED_INPUTS)
+            CaveniaAdapterCodecRegistrationReadiness.contractFor(CaveniaAdapterCodecRegistrationRequirement.ADAPTER_SHAPE_AVAILABLE)
                 .orElseThrow()
-                .inputPinned()
+                .prerequisiteSatisfied()
         );
-        assertTrue(
-            CaveniaBiomeSourceStrategyPlan.entryFor(CaveniaBiomeSourceStrategyPlanStep.PIN_LEGACY_TOP_BLOCK_INPUTS)
-                .orElseThrow()
-                .inputPinned()
-        );
-        assertEquals(14, CaveniaBiomeSourceStrategyPlan.legacyBiomeEntryCount());
-        assertEquals(675, CaveniaBiomeSourceStrategyPlan.legacyBiomeTotalWeight());
-        assertTrue(CaveniaBiomeSourceStrategyPlan.legacyBiomeNames().contains("OCEAN"));
-        assertTrue(CaveniaBiomeSourceStrategyPlan.legacyBiomeNames().contains("PLAINS"));
-        assertTrue(CaveniaBiomeSourceStrategyPlan.legacyBiomeNames().contains("DESERT"));
-        assertTrue(CaveniaBiomeSourceStrategyPlan.legacyBiomeNames().contains("MESA"));
-        assertTrue(CaveniaBiomeSourceStrategyPlan.legacyWeightedInputsPinned());
-        assertTrue(CaveniaBiomeSourceStrategyPlan.legacyTopBlocksPinned());
-        assertFalse(CaveniaBiomeSourceStrategyPlan.modernBiomeMappingReady());
-        assertTrue(CaveniaBiomeSourceStrategyPlan.legacyToModernBiomeMappingInventoryReady());
-        assertFalse(CaveniaBiomeSourceStrategyPlan.legacyToModernBiomeFinalMappingReady());
-        assertFalse(CaveniaBiomeSourceStrategyPlan.weightedSelectionAlgorithmReady());
-        assertTrue(CaveniaBiomeSourceStrategyPlan.weightedSelectionAlgorithmInventoryReady());
-        assertFalse(CaveniaBiomeSourceStrategyPlan.weightedSelectionAlgorithmFinalRuntimeReady());
-        assertTrue(CaveniaBiomeSourceStrategyPlan.unregisteredAdapterShapeReady());
-        assertFalse(CaveniaBiomeSourceStrategyPlan.unregisteredAdapterRuntimeReady());
-        assertTrue(CaveniaBiomeSourceStrategyPlan.adapterCodecRegistrationReadinessReady());
-        assertFalse(CaveniaBiomeSourceStrategyPlan.adapterCodecRegistrationRuntimeReady());
-        assertFalse(CaveniaBiomeSourceStrategyPlan.runtimeBiomeSourceReady());
-        assertFalse(CaveniaBiomeSourceStrategyPlan.codecRegistered());
-        assertFalse(CaveniaBiomeSourceStrategyPlan.registryLookupAccessReady());
-        assertFalse(CaveniaBiomeSourceStrategyPlan.dimensionJsonPresent());
-        assertFalse(CaveniaBiomeSourceStrategyPlan.dimensionTypeJsonPresent());
-        assertFalse(CaveniaBiomeSourceStrategyPlan.canActivateCaveniaNow());
-        assertEquals(46, CaveniaBiomeSourceStrategyPlan.readinessMatrixTotalRequirementCount());
-        assertEquals(46, CaveniaBiomeSourceStrategyPlan.readinessMatrixBlockedRequirementCount());
-        assertTrue(CaveniaBiomeSourceStrategyPlan.cavemanRemainsDeferred());
+        contracts.stream()
+            .filter(contract -> contract.requirement() != CaveniaAdapterCodecRegistrationRequirement.ADAPTER_SHAPE_AVAILABLE)
+            .forEach(contract -> assertFalse(contract.prerequisiteSatisfied()));
+        assertTrue(contracts.stream().allMatch(contract -> !contract.readyForRuntime()));
+        assertTrue(contracts.stream().allMatch(contract -> !contract.codecImplemented()));
+        assertTrue(contracts.stream().allMatch(contract -> !contract.registered()));
+        assertTrue(contracts.stream().allMatch(contract -> !contract.registryLookupAvailable()));
+        assertTrue(contracts.stream().allMatch(contract -> !contract.activationAllowedInThisSlice()));
+        assertTrue(CaveniaAdapterCodecRegistrationReadiness.adapterShapeReady());
+        assertFalse(CaveniaAdapterCodecRegistrationReadiness.adapterRuntimeReady());
+        assertTrue(CaveniaAdapterCodecRegistrationReadiness.codecRegistrationReadinessReady());
+        assertFalse(CaveniaAdapterCodecRegistrationReadiness.codecRegistrationRuntimeReady());
+        assertTrue(CaveniaAdapterCodecRegistrationReadiness.allRequirementsRuntimeBlocked());
+        assertFalse(CaveniaAdapterCodecRegistrationReadiness.anyRequirementReadyForRuntime());
+        assertFalse(CaveniaAdapterCodecRegistrationReadiness.anyCodecImplemented());
+        assertFalse(CaveniaAdapterCodecRegistrationReadiness.anyRegistered());
+        assertFalse(CaveniaAdapterCodecRegistrationReadiness.registryLookupAccessReady());
+        assertFalse(CaveniaAdapterCodecRegistrationReadiness.runtimeBiomeSourceReady());
+        assertFalse(CaveniaAdapterCodecRegistrationReadiness.runtimeBiomeSourceRegistered());
+        assertFalse(CaveniaAdapterCodecRegistrationReadiness.codecRegistered());
+        assertFalse(CaveniaAdapterCodecRegistrationReadiness.biomeSourceTypeKeyReady());
+        assertFalse(CaveniaAdapterCodecRegistrationReadiness.dimensionBindingReady());
+        assertFalse(CaveniaAdapterCodecRegistrationReadiness.activationAllowedInThisSlice());
+        assertFalse(CaveniaAdapterCodecRegistrationReadiness.canActivateCaveniaNow());
+        assertTrue(CaveniaAdapterCodecRegistrationReadiness.consumesAdapterContract());
+        assertEquals(14, CaveniaAdapterCodecRegistrationReadiness.adapterEntryCount());
+        assertEquals(675, CaveniaAdapterCodecRegistrationReadiness.adapterTotalWeight());
+        assertTrue(CaveniaAdapterCodecRegistrationReadiness.weightedSelectionAlgorithmReady());
+        assertTrue(CaveniaAdapterCodecRegistrationReadiness.candidateInventoryReady());
+        assertFalse(CaveniaAdapterCodecRegistrationReadiness.dimensionJsonPresent());
+        assertFalse(CaveniaAdapterCodecRegistrationReadiness.dimensionTypeJsonPresent());
+        assertTrue(CaveniaAdapterCodecRegistrationReadiness.cavemanRemainsDeferred());
 
-        assertImmutableList(CaveniaBiomeSourceStrategyPlan.entries(), entries.get(0));
-        assertImmutableList(CaveniaBiomeSourceStrategyPlan.steps(), CaveniaBiomeSourceStrategyPlanStep.CONFIRM_SELECTED_SURFACE);
-        assertImmutableList(CaveniaBiomeSourceStrategyPlan.legacyBiomeNames(), "ICE_PLAINS");
+        assertImmutableList(CaveniaAdapterCodecRegistrationReadiness.contracts(), new Object());
+        assertImmutableList(
+            CaveniaAdapterCodecRegistrationReadiness.requirements(),
+            CaveniaAdapterCodecRegistrationRequirement.ADAPTER_SHAPE_AVAILABLE
+        );
+        contracts.forEach(contract -> assertNotNull(contract.requirement()));
     }
 
     @Test
-    void biomeSourceStrategyPlanSourcesStayOutOfRuntimeBiomeSourcePaths() throws IOException {
-        String stepSource = Files.readString(STEP_SOURCE);
-        String entrySource = Files.readString(ENTRY_SOURCE);
-        String planSource = Files.readString(PLAN_SOURCE);
+    void adapterCodecRegistrationReadinessSourcesStayOutOfRuntimeCodecAndRegistrationPaths() throws IOException {
+        String requirementSource = Files.readString(REQUIREMENT_SOURCE);
+        String contractSource = Files.readString(CONTRACT_SOURCE);
+        String readinessSource = Files.readString(READINESS_SOURCE);
 
-        assertSourceStaysInert(stepSource);
-        assertSourceStaysInert(entrySource);
-        assertSourceStaysInert(planSource);
+        assertSourceStaysInert(requirementSource);
+        assertSourceStaysInert(contractSource);
+        assertSourceStaysInert(readinessSource);
 
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension_type", "cavenia.json");
@@ -150,7 +146,7 @@ class CaveniaBiomeSourceStrategyPlanTest {
                             || name.equals("CaveniaSpawnHandler.java")
                             || name.equals("CaveniaServerTickSpawner.java")
                     ),
-                "Expected the narrow non-runtime biome-source strategy plan to avoid adding active Cavenia runtime classes or resources"
+                "Expected the adapter codec-registration readiness slice to avoid adding active Cavenia runtime classes or resources"
             );
         }
     }
@@ -159,6 +155,8 @@ class CaveniaBiomeSourceStrategyPlanTest {
         assertFalse(source.contains("extends ChunkGenerator"));
         assertFalse(source.contains("extends BiomeSource"));
         assertFalse(source.contains("MapCodec"));
+        assertFalse(source.contains("Codec<"));
+        assertFalse(source.contains("RecordCodecBuilder"));
         assertFalse(source.contains("Registry.register"));
         assertFalse(source.contains("Holder<Biome>"));
         assertFalse(source.contains("RegistryLookup"));
