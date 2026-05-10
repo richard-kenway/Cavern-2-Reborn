@@ -10,24 +10,18 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
-class CaveniaFirstActiveSurfaceSelectionBoundaryTest {
+class CaveniaBiomeSourceStrategyPlanBoundaryTest {
     private static final Path README = resolveProjectFile("README.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
+    private static final Path PLAN_DOC = resolveProjectFile("docs", "cavenia-biome-source-strategy-narrow-non-runtime-mvp.md");
     private static final Path SELECTION_DOC = resolveProjectFile("docs", "cavenia-deliberate-first-active-surface-selection-mvp.md");
     private static final Path MATRIX_DOC = resolveProjectFile("docs", "cavenia-activation-surface-final-inert-readiness-matrix-mvp.md");
-    private static final Path WORLDGEN_DOC = resolveProjectFile("docs", "cavenia-worldgen-resource-host-split-contracts-mvp.md");
-    private static final Path DIMENSION_ACCESS_SPAWN_DOC = resolveProjectFile("docs", "cavenia-dimension-access-spawn-split-contracts-mvp.md");
     private static final Path GENERATOR_HOST_DOC = resolveProjectFile("docs", "cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md");
-    private static final Path ACTIVATION_HOSTS_DOC = resolveProjectFile("docs", "cavenia-generator-activation-readiness-host-contracts-mvp.md");
-    private static final Path RUNTIME_CONTRACTS_DOC = resolveProjectFile("docs", "cavenia-generator-runtime-contracts-non-registered-mvp.md");
-    private static final Path GENERATOR_SKELETON_DOC = resolveProjectFile("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md");
-    private static final Path REGISTRATION_DOC = resolveProjectFile("docs", "cavenia-active-generator-registration-inert-boundary-mvp.md");
-    private static final Path BRIDGE_DOC = resolveProjectFile("docs", "cavenia-active-generator-runtime-prototype-inert-bridge-mvp.md");
-    private static final Path TECHNICAL_SCAFFOLD_DOC = resolveProjectFile("docs", "cavenia-active-generator-technical-scaffold-mvp.md");
+    private static final Path POLICY_DOC = resolveProjectFile("docs", "cavenia-biome-top-filter-policy-non-runtime-mvp.md");
+    private static final Path PROVIDER_BOUNDARY_DOC = resolveProjectFile("docs", "cavenia-biome-provider-contract-boundary.md");
     private static final Path TECHNICAL_SPIKE_DOC = resolveProjectFile("docs", "cavenia-active-foundation-technical-spike.md");
     private static final Path READINESS_DOC = resolveProjectFile("docs", "cavenia-active-foundation-readiness-plan.md");
     private static final Path RUNTIME_KEY_DOC = resolveProjectFile("docs", "cavenia-runtime-key-inactive-dimension-scaffold-mvp.md");
-    private static final Path BIOME_SOURCE_PLAN_DOC = resolveProjectFile("docs", "cavenia-biome-source-strategy-narrow-non-runtime-mvp.md");
     private static final Path APP_SOURCE_ROOT = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app"
     );
@@ -36,77 +30,63 @@ class CaveniaFirstActiveSurfaceSelectionBoundaryTest {
     );
 
     @Test
-    void docsPinTheDecisionOnlyFirstActiveSurfaceSelection() throws IOException {
+    void docsPinTheNarrowNonRuntimeBiomeSourceStrategyPlan() throws IOException {
         String readme = Files.readString(README);
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE_DOC);
+        String planDoc = Files.readString(PLAN_DOC);
         String selectionDoc = Files.readString(SELECTION_DOC);
         String matrixDoc = Files.readString(MATRIX_DOC);
-        String worldgenDoc = Files.readString(WORLDGEN_DOC);
-        String dimensionAccessSpawnDoc = Files.readString(DIMENSION_ACCESS_SPAWN_DOC);
         String generatorHostDoc = Files.readString(GENERATOR_HOST_DOC);
-        String activationHostsDoc = Files.readString(ACTIVATION_HOSTS_DOC);
-        String runtimeContractsDoc = Files.readString(RUNTIME_CONTRACTS_DOC);
-        String generatorSkeletonDoc = Files.readString(GENERATOR_SKELETON_DOC);
-        String registrationDoc = Files.readString(REGISTRATION_DOC);
-        String bridgeDoc = Files.readString(BRIDGE_DOC);
-        String technicalScaffoldDoc = Files.readString(TECHNICAL_SCAFFOLD_DOC);
+        String policyDoc = Files.readString(POLICY_DOC);
+        String providerBoundaryDoc = Files.readString(PROVIDER_BOUNDARY_DOC);
         String technicalSpikeDoc = Files.readString(TECHNICAL_SPIKE_DOC);
         String readinessDoc = Files.readString(READINESS_DOC);
         String runtimeKeyDoc = Files.readString(RUNTIME_KEY_DOC);
-        String biomeSourcePlanDoc = Files.readString(BIOME_SOURCE_PLAN_DOC);
 
-        assertTrue(selectionDoc.contains("Cavenia Deliberate First Active Surface Selection MVP"));
-        assertTrue(selectionDoc.contains("`CaveniaFirstActiveSurfaceSelection`"));
-        assertTrue(selectionDoc.contains("`CaveniaFirstActiveSurfaceCandidate`"));
-        assertTrue(selectionDoc.contains("`CaveniaFirstActiveSurfaceSelectionReason`"));
-        assertTrue(selectionDoc.contains("`BIOME_SOURCE_STRATEGY`"));
-        assertTrue(selectionDoc.contains("`CaveniaActivationReadinessMatrix`"));
-        assertTrue(selectionDoc.contains("`CaveniaActivationSurface`"));
-        assertTrue(selectionDoc.contains("`CaveniaBiomeSourceStrategyContracts`"));
-        assertTrue(selectionDoc.contains("`CaveniaGeneratorHostContracts`"));
-        assertTrue(selectionDoc.contains("`CaveniaDimensionResourceContracts`"));
-        assertTrue(selectionDoc.contains("`CaveniaAccessTravelContracts`"));
-        assertTrue(selectionDoc.contains("`CaveniaSpawnHostContracts`"));
-        assertTrue(selectionDoc.contains("`CaveniaWorldgenResourceContracts`"));
-        assertTrue(selectionDoc.contains("`CaveniaGeneratorRegistrationBoundary`"));
-        assertTrue(selectionDoc.contains("decision-only"));
-        assertTrue(selectionDoc.contains("activation is not allowed in this slice"));
-        assertTrue(selectionDoc.contains("not a `ChunkGenerator`"));
-        assertTrue(selectionDoc.contains("not a `BiomeSource`"));
-        assertTrue(selectionDoc.contains("no codec or registry entry was added"));
-        assertTrue(selectionDoc.contains("no active `dimension/cavenia.json`"));
-        assertTrue(selectionDoc.contains("no active `dimension_type/cavenia.json`"));
-        assertTrue(selectionDoc.contains("no active Cavenia runtime level"));
-        assertTrue(selectionDoc.contains("no active Cavenia access or teleport"));
-        assertTrue(selectionDoc.contains("no active Cavenia spawning"));
-        assertTrue(selectionDoc.contains("no active crazy spawning"));
-        assertTrue(selectionDoc.contains("no fake normal `CAVERN` crazy spawning"));
-        assertTrue(selectionDoc.contains("no CAVERN resource reuse is accepted as Cavenia parity"));
-        assertTrue(selectionDoc.contains("`EntityCaveman -> deferred:caveman`"));
+        assertTrue(planDoc.contains("Cavenia Biome Source Strategy Narrow Non-Runtime MVP"));
+        assertTrue(planDoc.contains("`CaveniaBiomeSourceStrategyPlan`"));
+        assertTrue(planDoc.contains("`CaveniaBiomeSourceStrategyPlanEntry`"));
+        assertTrue(planDoc.contains("`CaveniaBiomeSourceStrategyPlanStep`"));
+        assertTrue(planDoc.contains("`BIOME_SOURCE_STRATEGY`"));
+        assertTrue(planDoc.contains("`CaveniaFirstActiveSurfaceSelection`"));
+        assertTrue(planDoc.contains("`CaveniaActivationReadinessMatrix`"));
+        assertTrue(planDoc.contains("`CaveniaBiomeSourceStrategyContracts`"));
+        assertTrue(planDoc.contains("`CaveniaBiomeSelectionSkeleton`"));
+        assertTrue(planDoc.contains("`CaveniaBiomeTopFilterPolicy`"));
+        assertTrue(planDoc.contains("`CaveniaGeneratorRegistrationBoundary`"));
+        assertTrue(planDoc.contains("non-runtime"));
+        assertTrue(planDoc.contains("activation is not allowed in this slice"));
+        assertTrue(planDoc.contains("modern biome-key mapping is not ready"));
+        assertTrue(planDoc.contains("runtime `BiomeSource` is not ready"));
+        assertTrue(planDoc.contains("codec/registration is not ready"));
+        assertTrue(planDoc.contains("registry lookup access is not ready"));
+        assertTrue(planDoc.contains("not a `BiomeSource`"));
+        assertTrue(planDoc.contains("not a `ChunkGenerator`"));
+        assertTrue(planDoc.contains("no codec or registry entry was added"));
+        assertTrue(planDoc.contains("no active `dimension/cavenia.json`"));
+        assertTrue(planDoc.contains("no active `dimension_type/cavenia.json`"));
+        assertTrue(planDoc.contains("no active Cavenia runtime level"));
+        assertTrue(planDoc.contains("no active Cavenia access or teleport"));
+        assertTrue(planDoc.contains("no active Cavenia spawning"));
+        assertTrue(planDoc.contains("no active Cavenia worldgen resources"));
+        assertTrue(planDoc.contains("`EntityCaveman -> deferred:caveman`"));
 
-        assertTrue(readme.contains("Cavenia Deliberate First Active Surface Selection MVP"));
-        assertTrue(readme.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
-        assertTrue(runtimeSmokeDoc.contains("Cavenia Deliberate First Active Surface Selection MVP"));
-        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
-        assertTrue(matrixDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
-        assertTrue(worldgenDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
-        assertTrue(dimensionAccessSpawnDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
-        assertTrue(generatorHostDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
-        assertTrue(activationHostsDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
-        assertTrue(runtimeContractsDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
-        assertTrue(generatorSkeletonDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
-        assertTrue(registrationDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
-        assertTrue(bridgeDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
-        assertTrue(technicalScaffoldDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
-        assertTrue(technicalSpikeDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
-        assertTrue(readinessDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
-        assertTrue(runtimeKeyDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
+        assertTrue(readme.contains("Cavenia Biome Source Strategy Narrow Non-Runtime MVP"));
+        assertTrue(readme.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
+        assertTrue(runtimeSmokeDoc.contains("Cavenia Biome Source Strategy Narrow Non-Runtime MVP"));
+        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
         assertTrue(selectionDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
-        assertTrue(biomeSourcePlanDoc.contains("`CaveniaFirstActiveSurfaceSelection`"));
+        assertTrue(matrixDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
+        assertTrue(generatorHostDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
+        assertTrue(policyDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
+        assertTrue(providerBoundaryDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
+        assertTrue(technicalSpikeDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
+        assertTrue(readinessDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
+        assertTrue(runtimeKeyDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
     }
 
     @Test
-    void selectionBoundaryKeepsActiveRuntimeSurfacesAbsent() throws IOException {
+    void planBoundaryKeepsActiveRuntimeSurfacesAbsent() throws IOException {
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension_type", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "configured_carver", "cavenia.json");
@@ -138,7 +118,7 @@ class CaveniaFirstActiveSurfaceSelectionBoundaryTest {
                             || name.equals("CaveniaSpawnHandler.java")
                             || name.equals("CaveniaServerTickSpawner.java")
                     ),
-                "Expected the decision-only first-active-surface selection to avoid adding any active Cavenia runtime classes"
+                "Expected the narrow non-runtime biome-source strategy plan to avoid adding active Cavenia runtime classes"
             );
         }
 
@@ -156,7 +136,7 @@ class CaveniaFirstActiveSurfaceSelectionBoundaryTest {
                             || path.contains("/neoforge/biome_modifier/cavenia")
                             || path.contains("/tags/worldgen/biome/cavenia")
                     ),
-                "Expected the decision-only first-active-surface selection to keep active Cavenia runtime resources absent"
+                "Expected the narrow non-runtime biome-source strategy plan to keep active Cavenia runtime resources absent"
             );
         }
     }

@@ -52,6 +52,8 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaActivationSurface;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaAccessTravelContracts;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaAccessTravelRequirement;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSelectionSkeleton;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyPlan;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyPlanStep;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyContracts;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyRequirement;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaDimensionResourceContracts;
@@ -8117,6 +8119,52 @@ public final class CavernSpecialOreGameTests {
                 && !CaveniaFirstActiveSurfaceSelection.worldgenCanAffectWorldgen()
                 && CaveniaFirstActiveSurfaceSelection.cavemanRemainsDeferred(),
             "Expected the decision-only Cavenia first-active-surface selection layer to keep runtime biome-source, dimension, access, spawn and worldgen activation absent"
+        );
+        helper.assertTrue(
+            CaveniaBiomeSourceStrategyPlan.entries().size() == 8
+                && CaveniaBiomeSourceStrategyPlan.steps().equals(List.of(
+                    CaveniaBiomeSourceStrategyPlanStep.CONFIRM_SELECTED_SURFACE,
+                    CaveniaBiomeSourceStrategyPlanStep.PIN_LEGACY_WEIGHTED_INPUTS,
+                    CaveniaBiomeSourceStrategyPlanStep.PIN_LEGACY_TOP_BLOCK_INPUTS,
+                    CaveniaBiomeSourceStrategyPlanStep.INVENTORY_LEGACY_TO_MODERN_BIOME_MAPPING,
+                    CaveniaBiomeSourceStrategyPlanStep.DEFER_WEIGHTED_SELECTION_ALGORITHM,
+                    CaveniaBiomeSourceStrategyPlanStep.DEFER_RUNTIME_BIOME_SOURCE,
+                    CaveniaBiomeSourceStrategyPlanStep.DEFER_CODEC_AND_REGISTRATION,
+                    CaveniaBiomeSourceStrategyPlanStep.DEFER_REGISTRY_LOOKUP_ACCESS
+                ))
+                && CaveniaBiomeSourceStrategyPlan.selectedSurface() == CaveniaActivationSurface.BIOME_SOURCE_STRATEGY
+                && CaveniaBiomeSourceStrategyPlan.selectedSurfaceIsBiomeSourceStrategy(),
+            "Expected the narrow non-runtime Cavenia biome-source strategy plan to keep the exact plan-step order and selected BIOME_SOURCE_STRATEGY surface pinned"
+        );
+        helper.assertTrue(
+            CaveniaBiomeSourceStrategyPlan.planIsNonRuntime()
+                && !CaveniaBiomeSourceStrategyPlan.activationAllowedInThisSlice()
+                && CaveniaBiomeSourceStrategyPlan.allStepsRuntimeBlocked()
+                && !CaveniaBiomeSourceStrategyPlan.anyStepRuntimeReady()
+                && CaveniaBiomeSourceStrategyPlan.allStepsDisallowActivationInThisSlice(),
+            "Expected the narrow non-runtime Cavenia biome-source strategy plan to keep runtime behavior blocked and activation disallowed in this slice"
+        );
+        helper.assertTrue(
+            CaveniaBiomeSourceStrategyPlan.legacyBiomeEntryCount() == 14
+                && CaveniaBiomeSourceStrategyPlan.legacyBiomeTotalWeight() == 675
+                && CaveniaBiomeSourceStrategyPlan.legacyWeightedInputsPinned()
+                && CaveniaBiomeSourceStrategyPlan.legacyTopBlocksPinned()
+                && CaveniaBiomeSourceStrategyPlan.legacyBiomeNames().containsAll(List.of("OCEAN", "PLAINS", "DESERT", "MESA")),
+            "Expected the narrow non-runtime Cavenia biome-source strategy plan to pin the exact legacy weighted-biome and top-block inputs"
+        );
+        helper.assertTrue(
+            !CaveniaBiomeSourceStrategyPlan.modernBiomeMappingReady()
+                && !CaveniaBiomeSourceStrategyPlan.weightedSelectionAlgorithmReady()
+                && !CaveniaBiomeSourceStrategyPlan.runtimeBiomeSourceReady()
+                && !CaveniaBiomeSourceStrategyPlan.codecRegistered()
+                && !CaveniaBiomeSourceStrategyPlan.registryLookupAccessReady()
+                && !CaveniaBiomeSourceStrategyPlan.dimensionJsonPresent()
+                && !CaveniaBiomeSourceStrategyPlan.dimensionTypeJsonPresent()
+                && !CaveniaBiomeSourceStrategyPlan.canActivateCaveniaNow()
+                && CaveniaBiomeSourceStrategyPlan.readinessMatrixTotalRequirementCount() == 46
+                && CaveniaBiomeSourceStrategyPlan.readinessMatrixBlockedRequirementCount() == 46
+                && CaveniaBiomeSourceStrategyPlan.cavemanRemainsDeferred(),
+            "Expected the narrow non-runtime Cavenia biome-source strategy plan to keep mapping, runtime biome source, codec, registry lookup, dimension resources and activation absent"
         );
         helper.assertTrue(
             projectFileExists("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md"),

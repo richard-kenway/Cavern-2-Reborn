@@ -82,6 +82,7 @@ The later final inert readiness-matrix note is now documented separately in:
 
 - `docs/cavenia-activation-surface-final-inert-readiness-matrix-mvp.md`
 - `docs/cavenia-deliberate-first-active-surface-selection-mvp.md`
+- `docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md`
 
 This spike still does not imply active `cavernreborn:cavenia`, `dimension/cavenia.json`, `dimension_type/cavenia.json`, active Cavenia spawning, active crazy spawning, fake normal `CAVERN` crazy spawning or a `cavernreborn:caveman` entity.
 
@@ -101,6 +102,10 @@ The current narrow recommendation is:
 - keep `dimension_type/cavenia.json` absent
 - keep entry/access, spawning and worldgen inactive
 - defer runtime `BiomeSource`, codec, registration and registry lookup access to later explicit MVPs
+
+That narrow non-runtime follow-up is now documented in:
+
+- `docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md`
 
 ## Minimum Safe Active Scaffold
 

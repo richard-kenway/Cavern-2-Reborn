@@ -418,6 +418,18 @@ NeoForge GameTest runtime smoke covers:
 - `EntityCaveman -> deferred:caveman` remains unchanged
 - no `CAVERN` resource reuse is accepted as Cavenia parity
 - the decision-only selection note at `docs/cavenia-deliberate-first-active-surface-selection-mvp.md`
+- Cavenia Biome Source Strategy Narrow Non-Runtime MVP
+- narrow non-runtime Cavenia biome-source strategy plan MVP
+- `CaveniaBiomeSourceStrategyPlan` now resolves from `app-neoforge`
+- `CaveniaBiomeSourceStrategyPlan` still keeps the plan entry count at `8`
+- the exact legacy biome entry count remains `14`
+- the exact legacy total weight remains `675`
+- legacy weighted inputs are pinned and legacy top-block inputs are pinned
+- modern biome-key mapping is not ready, weighted selection algorithm is not ready, runtime `BiomeSource` is not ready, codec/registration is not ready and registry lookup access is not ready
+- activation is not allowed in this slice and Cavenia cannot activate now
+- dimension JSON/type JSON remain absent
+- `EntityCaveman -> deferred:caveman` remains unchanged
+- the narrow non-runtime strategy note at `docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md`
 - `CaveniaSpawnProviderPolicy` still keeps `EntityCaveman -> deferred:caveman`
 - no registered `cavernreborn:caveman` entity type exists at runtime
 - no checked-in Caveman spawn placement, biome modifier or biome tag exists

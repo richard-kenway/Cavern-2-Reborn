@@ -19,6 +19,10 @@ It builds on:
 - `docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md`
 - `docs/cavenia-population-policy-non-runtime-mvp.md`
 
+The later narrow non-runtime biome-source strategy plan note is now documented separately in:
+
+- `docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md`
+
 ## What This MVP Adds
 
 Current Reborn now has a pure `core` biome/top-filter policy:

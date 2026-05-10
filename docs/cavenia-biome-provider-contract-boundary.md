@@ -18,6 +18,10 @@ The later pure non-runtime biome top/filter policy note is documented separately
 
 - `docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md`
 
+The later narrow non-runtime biome-source strategy plan note is documented separately in:
+
+- `docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md`
+
 It does not add:
 
 - `data/cavernreborn/dimension/cavenia.json`

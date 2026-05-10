@@ -30,6 +30,10 @@ The later decision-only first-active-surface selection note is now documented se
 
 - `docs/cavenia-deliberate-first-active-surface-selection-mvp.md`
 
+The later narrow non-runtime biome-source strategy plan note is now documented separately in:
+
+- `docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md`
+
 ## What This MVP Adds
 
 Current Reborn now has two narrower app-side split-contract surfaces:
