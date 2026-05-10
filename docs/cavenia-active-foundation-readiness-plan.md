@@ -350,3 +350,7 @@ That next slice should still remain non-runtime. It should not add `dimension/ca
 - `docs/cavenia-crazy-roster-natural-spawn-boundary.md`
 - `docs/caveman-cavenia-normal-roster-boundary.md`
 - `docs/cavenia-terrain-generator-foundation-non-runtime-mvp.md`
+
+The runtime-biome-source API-shape inventory follow-up is now documented in .
+
+The runtime-biome-source API-shape inventory follow-up is now documented in `docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md`.

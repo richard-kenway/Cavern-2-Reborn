@@ -192,3 +192,7 @@ The later adapter codec/registration readiness follow-up is now documented in:
 The next runtime-adjacent slice may define registry lookup readiness contracts for that unregistered adapter, but should still avoid actual registry lookup access, codec registration and runtime activation unless explicitly changing the boundary.
 
 Runtime `BiomeSource`, codec, registration and registry lookup access must remain separate explicit MVPs.
+
+The runtime-biome-source API-shape inventory follow-up is now documented in .
+
+The runtime-biome-source API-shape inventory follow-up is now documented in `docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md`.

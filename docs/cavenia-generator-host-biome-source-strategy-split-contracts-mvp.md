@@ -263,3 +263,7 @@ The later biome-source follow-ups are documented in:
 - `docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md`
 
 Until a real generator host, real biome-source strategy, codec/registration path, dimension resources, safe access and Cavenia-only spawn-host decisions exist, this slice remains a non-registered split-contract layer only.
+
+The runtime-biome-source API-shape inventory follow-up is now documented in .
+
+The runtime-biome-source API-shape inventory follow-up is now documented in `docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md`.

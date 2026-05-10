@@ -528,6 +528,21 @@ NeoForge GameTest runtime smoke covers:
 - selected surface remains `BIOME_SOURCE_STRATEGY`, plan remains non-runtime and activation is not allowed in this slice
 - dimension JSON/type JSON remain absent and Cavenia cannot activate now
 - `EntityCaveman -> deferred:caveman` remains unchanged
+- Cavenia Runtime BiomeSource API Shape Inventory MVP
+- runtime-biome-source API-shape inventory MVP
+- `CaveniaRuntimeBiomeSourceApiShapeInventory` now resolves from `app-neoforge`
+- entry count is `12`, local `BiomeSource` class was located, all components were locally inspected and all shapes are pinned
+- runtime API is not implemented and is not allowed in this slice
+- abstract methods inventory, codec dispatch/method, possible-biomes, noise-biome query, climate sampler, holder return, registry context, resource-key conversion and missing-biome fallback shapes are now pinned as inventory/data
+- real subclass is still deferred and not ready for real subclass implementation
+- existing subclass decision now reports API shape decisions pinned while still keeping real subclass deferred
+- next slice may decide real subclass implementation, but may not implement a real subclass directly without a separate explicit decision
+- next slice may not add codec implementation/registration, may not use registry lookup access and may not add dimension JSON/type JSON
+- next slice may not create an active Cavenia level, may not add worldgen resources, may not add access/teleport, may not add spawning and may not register `cavernreborn:caveman`
+- selected-surface readiness item count remains `68` and global readiness matrix total/blocked requirement counts remain `46/46`
+- runtime biome source is not ready, runtime biome source is not registered, codec is not registered and registry lookup access is not ready
+- dimension JSON/type JSON remain absent, Cavenia cannot activate now and `EntityCaveman -> deferred:caveman` remains unchanged
+- the runtime-biome-source API-shape inventory note at `docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md`
 - the registry lookup readiness note at `docs/cavenia-registry-lookup-readiness-contracts-mvp.md`
 - `CaveniaSpawnProviderPolicy` still keeps `EntityCaveman -> deferred:caveman`
 - no registered `cavernreborn:caveman` entity type exists at runtime

@@ -21,59 +21,59 @@ public final class CaveniaRuntimeBiomeSourceSubclassDecision {
         ),
         contract(
             CaveniaRuntimeBiomeSourceSubclassRequirement.ABSTRACT_METHODS_INVENTORY,
-            "CaveniaRuntimeBiomeSourceSubclassDecision",
-            false,
-            false,
-            "The required real-biome-source abstract method inventory has not been pinned yet."
+            "CaveniaRuntimeBiomeSourceApiShapeInventory",
+            true,
+            true,
+            "The local BiomeSource abstract method inventory is pinned as inert inventory data, but the real subclass still stays deferred."
         ),
         contract(
             CaveniaRuntimeBiomeSourceSubclassRequirement.CODEC_METHOD_SHAPE_DECISION,
-            "CaveniaAdapterCodecRegistrationReadiness",
-            false,
-            false,
-            "The codec method shape for a real biome-source subclass has not been pinned yet."
+            "CaveniaRuntimeBiomeSourceApiShapeInventory",
+            true,
+            true,
+            "The local codec method shape is pinned as inert inventory data, but codec implementation and registration remain blocked."
         ),
         contract(
             CaveniaRuntimeBiomeSourceSubclassRequirement.POSSIBLE_BIOMES_SHAPE_DECISION,
-            "CaveniaRuntimeBiomeSourceSkeleton",
-            false,
-            false,
-            "The possible-biomes return shape for a real biome-source subclass has not been pinned yet."
+            "CaveniaRuntimeBiomeSourceApiShapeInventory",
+            true,
+            true,
+            "The local possible-biomes shape is pinned as inert inventory data, but no holder-return path is implemented."
         ),
         contract(
             CaveniaRuntimeBiomeSourceSubclassRequirement.NOISE_BIOME_QUERY_SHAPE_DECISION,
-            "CaveniaRuntimeBiomeSourceSkeleton",
-            false,
-            false,
-            "The noise-biome query shape for a real biome-source subclass has not been pinned yet."
+            "CaveniaRuntimeBiomeSourceApiShapeInventory",
+            true,
+            true,
+            "The local noise-biome query shape is pinned as inert inventory data, but runtime biome resolution remains blocked."
         ),
         contract(
             CaveniaRuntimeBiomeSourceSubclassRequirement.HOLDER_RETURN_PATH_DECISION,
-            "CaveniaRegistryLookupReadiness",
-            false,
-            false,
-            "The holder return path for resolved runtime biomes has not been pinned yet."
+            "CaveniaRuntimeBiomeSourceApiShapeInventory",
+            true,
+            true,
+            "The holder-return requirement is pinned as inert inventory data, but no runtime holder resolution path exists."
         ),
         contract(
             CaveniaRuntimeBiomeSourceSubclassRequirement.REGISTRY_CONTEXT_DECISION,
-            "CaveniaRegistryLookupReadiness",
-            false,
-            false,
-            "The registry context needed by a real biome-source subclass has not been pinned yet."
+            "CaveniaRuntimeBiomeSourceApiShapeInventory",
+            true,
+            true,
+            "The registry-context requirement is pinned as inert inventory data, but runtime registry access remains blocked."
         ),
         contract(
             CaveniaRuntimeBiomeSourceSubclassRequirement.RESOURCE_KEY_CONVERSION_DECISION,
-            "CaveniaRegistryLookupReadiness",
-            false,
-            false,
-            "The string-to-runtime biome-key conversion path has not been pinned yet."
+            "CaveniaRuntimeBiomeSourceApiShapeInventory",
+            true,
+            true,
+            "The resource-key conversion requirement is pinned as inert inventory data, but no runtime conversion implementation exists."
         ),
         contract(
             CaveniaRuntimeBiomeSourceSubclassRequirement.MISSING_BIOME_FALLBACK_DECISION,
-            "CaveniaRegistryLookupReadiness",
-            false,
-            false,
-            "The missing-biome fallback contract for a real biome-source subclass has not been pinned yet."
+            "CaveniaRuntimeBiomeSourceApiShapeInventory",
+            true,
+            true,
+            "The missing-biome fallback requirement is pinned as inert inventory data, but no runtime fallback implementation exists."
         ),
         contract(
             CaveniaRuntimeBiomeSourceSubclassRequirement.NO_DIMENSION_ACTIVATION,
@@ -176,7 +176,7 @@ public final class CaveniaRuntimeBiomeSourceSubclassDecision {
     }
 
     public static boolean apiShapeDecisionsPinned() {
-        return false;
+        return CaveniaRuntimeBiomeSourceApiShapeInventory.apiShapeInventoryReady();
     }
 
     public static boolean readyForRealSubclass() {
@@ -184,39 +184,47 @@ public final class CaveniaRuntimeBiomeSourceSubclassDecision {
     }
 
     public static boolean abstractMethodsInventoryReady() {
-        return false;
+        return CaveniaRuntimeBiomeSourceApiShapeInventory.abstractMethodsInventoryReady();
     }
 
     public static boolean codecMethodShapeReady() {
-        return false;
+        return CaveniaRuntimeBiomeSourceApiShapeInventory.codecMethodShapeReady();
     }
 
     public static boolean possibleBiomesShapeReady() {
-        return false;
+        return CaveniaRuntimeBiomeSourceApiShapeInventory.possibleBiomesShapeReady();
     }
 
     public static boolean noiseBiomeQueryShapeReady() {
-        return false;
+        return CaveniaRuntimeBiomeSourceApiShapeInventory.noiseBiomeQueryShapeReady();
     }
 
     public static boolean holderReturnPathReady() {
-        return false;
+        return CaveniaRuntimeBiomeSourceApiShapeInventory.holderReturnShapeReady();
     }
 
     public static boolean registryContextReady() {
-        return false;
+        return CaveniaRuntimeBiomeSourceApiShapeInventory.registryContextShapeReady();
     }
 
     public static boolean resourceKeyConversionReady() {
-        return false;
+        return CaveniaRuntimeBiomeSourceApiShapeInventory.resourceKeyConversionShapeReady();
     }
 
     public static boolean missingBiomeFallbackReady() {
-        return false;
+        return CaveniaRuntimeBiomeSourceApiShapeInventory.missingBiomeFallbackShapeReady();
     }
 
     public static boolean nextSliceMayInventoryRuntimeBiomeSourceApiShape() {
         return true;
+    }
+
+    public static boolean runtimeBiomeSourceApiShapeInventoryReady() {
+        return CaveniaRuntimeBiomeSourceApiShapeInventory.apiShapeInventoryReady();
+    }
+
+    public static boolean runtimeBiomeSourceApiShapeRuntimeReady() {
+        return false;
     }
 
     public static boolean nextSliceMayImplementRealBiomeSourceSubclass() {

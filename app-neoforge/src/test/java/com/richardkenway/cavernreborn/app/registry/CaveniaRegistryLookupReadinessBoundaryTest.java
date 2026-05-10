@@ -98,6 +98,7 @@ class CaveniaRegistryLookupReadinessBoundaryTest {
         assertTrue(readinessDoc.contains("docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md"));
         assertTrue(readinessDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
         assertTrue(readinessDoc.contains("docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"));
+        assertTrue(readinessDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
 
         assertTrue(readme.contains("Cavenia Registry Lookup Readiness Contracts MVP"));
         assertTrue(readme.contains("docs/cavenia-registry-lookup-readiness-contracts-mvp.md"));

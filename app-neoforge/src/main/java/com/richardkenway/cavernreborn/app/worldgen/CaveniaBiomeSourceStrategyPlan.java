@@ -226,6 +226,14 @@ public final class CaveniaBiomeSourceStrategyPlan {
         return false;
     }
 
+    public static boolean runtimeBiomeSourceApiShapeInventoryReady() {
+        return CaveniaRuntimeBiomeSourceApiShapeInventory.apiShapeInventoryReady();
+    }
+
+    public static boolean runtimeBiomeSourceApiShapeRuntimeReady() {
+        return false;
+    }
+
     public static boolean runtimeBiomeSourceReady() {
         return false;
     }

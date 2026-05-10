@@ -10,11 +10,15 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
-class CaveniaRuntimeBiomeSourceSkeletonBoundaryTest {
+class CaveniaRuntimeBiomeSourceApiShapeInventoryBoundaryTest {
     private static final Path README = resolveProjectFile("README.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
+    private static final Path INVENTORY_DOC = resolveProjectFile("docs", "cavenia-runtime-biome-source-api-shape-inventory-mvp.md");
+    private static final Path SUBCLASS_DECISION_DOC = resolveProjectFile(
+        "docs", "cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"
+    );
     private static final Path SKELETON_DOC = resolveProjectFile("docs", "cavenia-unregistered-runtime-biome-source-skeleton-mvp.md");
-    private static final Path DECISION_DOC = resolveProjectFile(
+    private static final Path FIRST_DECISION_DOC = resolveProjectFile(
         "docs", "cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md"
     );
     private static final Path MATRIX_DOC = resolveProjectFile("docs", "cavenia-biome-source-strategy-final-readiness-matrix-mvp.md");
@@ -22,16 +26,15 @@ class CaveniaRuntimeBiomeSourceSkeletonBoundaryTest {
     private static final Path ADAPTER_CODEC_DOC = resolveProjectFile("docs", "cavenia-adapter-codec-registration-readiness-contracts-mvp.md");
     private static final Path ADAPTER_DOC = resolveProjectFile("docs", "cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md");
     private static final Path WEIGHTED_SELECTION_DOC = resolveProjectFile("docs", "cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md");
-    private static final Path INVENTORY_DOC = resolveProjectFile("docs", "cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md");
+    private static final Path LEGACY_MAPPING_DOC = resolveProjectFile("docs", "cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md");
     private static final Path PLAN_DOC = resolveProjectFile("docs", "cavenia-biome-source-strategy-narrow-non-runtime-mvp.md");
     private static final Path SELECTION_DOC = resolveProjectFile("docs", "cavenia-deliberate-first-active-surface-selection-mvp.md");
-    private static final Path GLOBAL_MATRIX_DOC = resolveProjectFile("docs", "cavenia-activation-surface-final-inert-readiness-matrix-mvp.md");
-    private static final Path GENERATOR_HOST_DOC = resolveProjectFile("docs", "cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md");
-    private static final Path POLICY_DOC = resolveProjectFile("docs", "cavenia-biome-top-filter-policy-non-runtime-mvp.md");
-    private static final Path PROVIDER_BOUNDARY_DOC = resolveProjectFile("docs", "cavenia-biome-provider-contract-boundary.md");
-    private static final Path TECHNICAL_SPIKE_DOC = resolveProjectFile("docs", "cavenia-active-foundation-technical-spike.md");
-    private static final Path FOUNDATION_READINESS_DOC = resolveProjectFile("docs", "cavenia-active-foundation-readiness-plan.md");
-    private static final Path RUNTIME_KEY_DOC = resolveProjectFile("docs", "cavenia-runtime-key-inactive-dimension-scaffold-mvp.md");
+    private static final Path ACTIVATION_MATRIX_DOC = resolveProjectFile(
+        "docs", "cavenia-activation-surface-final-inert-readiness-matrix-mvp.md"
+    );
+    private static final Path GENERATOR_HOST_DOC = resolveProjectFile(
+        "docs", "cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md"
+    );
     private static final Path APP_SOURCE_ROOT = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app"
     );
@@ -40,91 +43,98 @@ class CaveniaRuntimeBiomeSourceSkeletonBoundaryTest {
     );
 
     @Test
-    void docsPinTheUnregisteredRuntimeBiomeSourceSkeletonSlice() throws IOException {
+    void docsPinTheRuntimeBiomeSourceApiShapeInventorySlice() throws IOException {
         String readme = Files.readString(README);
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE_DOC);
+        String inventoryDoc = Files.readString(INVENTORY_DOC);
+        String subclassDecisionDoc = Files.readString(SUBCLASS_DECISION_DOC);
         String skeletonDoc = Files.readString(SKELETON_DOC);
-        String decisionDoc = Files.readString(DECISION_DOC);
+        String firstDecisionDoc = Files.readString(FIRST_DECISION_DOC);
         String matrixDoc = Files.readString(MATRIX_DOC);
         String registryLookupDoc = Files.readString(REGISTRY_LOOKUP_DOC);
         String adapterCodecDoc = Files.readString(ADAPTER_CODEC_DOC);
         String adapterDoc = Files.readString(ADAPTER_DOC);
         String weightedSelectionDoc = Files.readString(WEIGHTED_SELECTION_DOC);
-        String inventoryDoc = Files.readString(INVENTORY_DOC);
+        String legacyMappingDoc = Files.readString(LEGACY_MAPPING_DOC);
         String planDoc = Files.readString(PLAN_DOC);
         String selectionDoc = Files.readString(SELECTION_DOC);
-        String globalMatrixDoc = Files.readString(GLOBAL_MATRIX_DOC);
+        String activationMatrixDoc = Files.readString(ACTIVATION_MATRIX_DOC);
         String generatorHostDoc = Files.readString(GENERATOR_HOST_DOC);
-        String policyDoc = Files.readString(POLICY_DOC);
-        String providerBoundaryDoc = Files.readString(PROVIDER_BOUNDARY_DOC);
-        String technicalSpikeDoc = Files.readString(TECHNICAL_SPIKE_DOC);
-        String foundationReadinessDoc = Files.readString(FOUNDATION_READINESS_DOC);
-        String runtimeKeyDoc = Files.readString(RUNTIME_KEY_DOC);
 
-        assertTrue(skeletonDoc.contains("Cavenia Unregistered Runtime BiomeSource Skeleton MVP"));
-        assertTrue(skeletonDoc.contains("`CaveniaRuntimeBiomeSourceSkeleton`"));
-        assertTrue(skeletonDoc.contains("`CaveniaRuntimeBiomeSourceSkeletonQuery`"));
-        assertTrue(skeletonDoc.contains("`CaveniaRuntimeBiomeSourceSkeletonResult`"));
-        assertTrue(skeletonDoc.contains("`CaveniaRuntimeBiomeSourceFirstImplementationDecision`"));
-        assertTrue(skeletonDoc.contains("`CaveniaRuntimeBiomeSourceGuardrail`"));
-        assertTrue(skeletonDoc.contains("`CaveniaBiomeSourceStrategyReadinessMatrix`"));
-        assertTrue(skeletonDoc.contains("`CaveniaRegistryLookupReadiness`"));
-        assertTrue(skeletonDoc.contains("`CaveniaAdapterCodecRegistrationReadiness`"));
-        assertTrue(skeletonDoc.contains("`CaveniaBiomeSelectionAdapterContract`"));
-        assertTrue(skeletonDoc.contains("`CaveniaWeightedBiomeSelectionAlgorithm`"));
-        assertTrue(skeletonDoc.contains("`CaveniaLegacyToModernBiomeKeyMappings`"));
-        assertTrue(skeletonDoc.contains("`CaveniaBiomeSourceStrategyPlan`"));
-        assertTrue(skeletonDoc.contains("`CaveniaFirstActiveSurfaceSelection`"));
-        assertTrue(skeletonDoc.contains("`CaveniaActivationReadinessMatrix`"));
-        assertTrue(skeletonDoc.contains("`CaveniaGeneratorRegistrationBoundary`"));
-        assertTrue(skeletonDoc.contains("unregistered runtime-biome-source skeleton"));
-        assertTrue(skeletonDoc.contains("not a real Minecraft `BiomeSource` subclass"));
-        assertTrue(skeletonDoc.contains("skeleton shape is ready"));
-        assertTrue(skeletonDoc.contains("unregistered skeleton is ready"));
-        assertTrue(skeletonDoc.contains("every guardrail remains enforced"));
-        assertTrue(skeletonDoc.contains("runtime `BiomeSource` is still not implemented"));
-        assertTrue(skeletonDoc.contains("runtime biome-source registration is still absent"));
-        assertTrue(skeletonDoc.contains("codec implementation/registration is still absent"));
-        assertTrue(skeletonDoc.contains("registry lookup access is still absent"));
-        assertTrue(skeletonDoc.contains("biome holder/resource-key conversion is still absent"));
-        assertTrue(skeletonDoc.contains("dimension JSON/type JSON are absent"));
-        assertTrue(skeletonDoc.contains("active Cavenia level is absent"));
-        assertTrue(skeletonDoc.contains("active access/teleport is absent"));
-        assertTrue(skeletonDoc.contains("active spawning is absent"));
-        assertTrue(skeletonDoc.contains("active Cavenia worldgen resources are absent"));
-        assertTrue(skeletonDoc.contains("`cavernreborn:caveman` is absent"));
-        assertTrue(skeletonDoc.contains("`EntityCaveman -> deferred:caveman`"));
-        assertTrue(skeletonDoc.contains("docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"));
-        assertTrue(skeletonDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(inventoryDoc.contains("Cavenia Runtime BiomeSource API Shape Inventory MVP"));
+        assertTrue(inventoryDoc.contains("`CaveniaRuntimeBiomeSourceApiShapeInventory`"));
+        assertTrue(inventoryDoc.contains("`CaveniaRuntimeBiomeSourceApiShapeComponent`"));
+        assertTrue(inventoryDoc.contains("`CaveniaRuntimeBiomeSourceApiShapeInventoryEntry`"));
+        assertTrue(inventoryDoc.contains("`CaveniaRuntimeBiomeSourceSubclassDecision`"));
+        assertTrue(inventoryDoc.contains("`CaveniaRuntimeBiomeSourceSkeleton`"));
+        assertTrue(inventoryDoc.contains("`CaveniaRuntimeBiomeSourceFirstImplementationDecision`"));
+        assertTrue(inventoryDoc.contains("`CaveniaBiomeSourceStrategyReadinessMatrix`"));
+        assertTrue(inventoryDoc.contains("`CaveniaRegistryLookupReadiness`"));
+        assertTrue(inventoryDoc.contains("`CaveniaAdapterCodecRegistrationReadiness`"));
+        assertTrue(inventoryDoc.contains("`CaveniaBiomeSelectionAdapterContract`"));
+        assertTrue(inventoryDoc.contains("`CaveniaWeightedBiomeSelectionAlgorithm`"));
+        assertTrue(inventoryDoc.contains("`CaveniaLegacyToModernBiomeKeyMappings`"));
+        assertTrue(inventoryDoc.contains("`CaveniaBiomeSourceStrategyPlan`"));
+        assertTrue(inventoryDoc.contains("`CaveniaFirstActiveSurfaceSelection`"));
+        assertTrue(inventoryDoc.contains("`CaveniaActivationReadinessMatrix`"));
+        assertTrue(inventoryDoc.contains("`CaveniaGeneratorRegistrationBoundary`"));
+        assertTrue(inventoryDoc.contains("API-shape inventory layer"));
+        assertTrue(inventoryDoc.contains("inspected from local dependencies"));
+        assertTrue(inventoryDoc.contains("the unregistered skeleton is ready"));
+        assertTrue(inventoryDoc.contains("the API shape inventory is ready"));
+        assertTrue(inventoryDoc.contains("the real Minecraft `BiomeSource` subclass is still deferred"));
+        assertTrue(inventoryDoc.contains("API shape decisions are now pinned as inventory/data"));
+        assertTrue(inventoryDoc.contains("no real `BiomeSource` subclass is added in this slice"));
+        assertTrue(inventoryDoc.contains("no runtime API usage is allowed in main source in this slice"));
+        assertTrue(inventoryDoc.contains("next slice may decide whether to implement a real subclass"));
+        assertTrue(inventoryDoc.contains("next slice may not implement real subclass directly without a separate explicit decision"));
+        assertTrue(inventoryDoc.contains("next slice may not add codec implementation/registration"));
+        assertTrue(inventoryDoc.contains("next slice may not use registry lookup access"));
+        assertTrue(inventoryDoc.contains("next slice may not add dimension JSON/type JSON"));
+        assertTrue(inventoryDoc.contains("next slice may not create active Cavenia level"));
+        assertTrue(inventoryDoc.contains("next slice may not add worldgen resources"));
+        assertTrue(inventoryDoc.contains("next slice may not add access/teleport"));
+        assertTrue(inventoryDoc.contains("next slice may not add spawning"));
+        assertTrue(inventoryDoc.contains("next slice may not register `cavernreborn:caveman`"));
+        assertTrue(inventoryDoc.contains("not a real `BiomeSource`"));
+        assertTrue(inventoryDoc.contains("not a `ChunkGenerator`"));
+        assertTrue(inventoryDoc.contains("no registry lookup access was added"));
+        assertTrue(inventoryDoc.contains("no biome holder/resource-key conversion implementation was added"));
+        assertTrue(inventoryDoc.contains("no codec implementation was added"));
+        assertTrue(inventoryDoc.contains("no codec or registry entry was added"));
+        assertTrue(inventoryDoc.contains("no active `dimension/cavenia.json`"));
+        assertTrue(inventoryDoc.contains("no active `dimension_type/cavenia.json`"));
+        assertTrue(inventoryDoc.contains("no active Cavenia runtime level"));
+        assertTrue(inventoryDoc.contains("no active Cavenia access or teleport"));
+        assertTrue(inventoryDoc.contains("no active Cavenia spawning"));
+        assertTrue(inventoryDoc.contains("no active Cavenia worldgen resources"));
+        assertTrue(inventoryDoc.contains("`EntityCaveman -> deferred:caveman`"));
+        assertTrue(inventoryDoc.contains("app-neoforge/build/neoForm/neoFormJoined1.21.1-20240808.144430"));
+        assertTrue(inventoryDoc.contains("net.minecraft.world.level.biome.BiomeSource"));
+        assertTrue(inventoryDoc.contains("BuiltInRegistries.BIOME_SOURCE.byNameCodec().dispatchStable"));
+        assertTrue(inventoryDoc.contains("Climate$Sampler"));
 
-        assertTrue(readme.contains("Cavenia Unregistered Runtime BiomeSource Skeleton MVP"));
-        assertTrue(readme.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
-        assertTrue(runtimeSmokeDoc.contains("Cavenia Unregistered Runtime BiomeSource Skeleton MVP"));
-        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
-        assertTrue(decisionDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
-        assertTrue(matrixDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
-        assertTrue(registryLookupDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
-        assertTrue(adapterCodecDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
-        assertTrue(adapterDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
-        assertTrue(weightedSelectionDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
-        assertTrue(inventoryDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
-        assertTrue(planDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
-        assertTrue(selectionDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
-        assertTrue(globalMatrixDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
-        assertTrue(generatorHostDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
-        assertTrue(policyDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
-        assertTrue(providerBoundaryDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
-        assertTrue(technicalSpikeDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
-        assertTrue(foundationReadinessDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
-        assertTrue(runtimeKeyDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
-        assertTrue(readme.contains("docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"));
-        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"));
+        assertTrue(readme.contains("Cavenia Runtime BiomeSource API Shape Inventory MVP"));
         assertTrue(readme.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(runtimeSmokeDoc.contains("Cavenia Runtime BiomeSource API Shape Inventory MVP"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(subclassDecisionDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(skeletonDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(firstDecisionDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(matrixDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(registryLookupDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(adapterCodecDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(adapterDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(weightedSelectionDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(legacyMappingDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(planDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(selectionDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(activationMatrixDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(generatorHostDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
     }
 
     @Test
-    void skeletonBoundaryKeepsActiveRuntimeSurfacesAbsent() throws IOException {
+    void apiShapeInventoryBoundaryKeepsActiveRuntimeSurfacesAbsent() throws IOException {
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension_type", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "configured_carver", "cavenia.json");
@@ -155,7 +165,7 @@ class CaveniaRuntimeBiomeSourceSkeletonBoundaryTest {
                             || name.equals("CaveniaSpawnHandler.java")
                             || name.equals("CaveniaServerTickSpawner.java")
                     ),
-                "Expected the runtime-biome-source skeleton layer to avoid adding active Cavenia runtime classes"
+                "Expected the runtime-biome-source API shape inventory layer to avoid adding active Cavenia runtime classes"
             );
         }
 
@@ -173,7 +183,7 @@ class CaveniaRuntimeBiomeSourceSkeletonBoundaryTest {
                             || path.contains("/neoforge/biome_modifier/cavenia")
                             || path.contains("/tags/worldgen/biome/cavenia")
                     ),
-                "Expected the runtime-biome-source skeleton layer to keep active Cavenia runtime resources absent"
+                "Expected the runtime-biome-source API shape inventory layer to keep active Cavenia runtime resources absent"
             );
         }
     }

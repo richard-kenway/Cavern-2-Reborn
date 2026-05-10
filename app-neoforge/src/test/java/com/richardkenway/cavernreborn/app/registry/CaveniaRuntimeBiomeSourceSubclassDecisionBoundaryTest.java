@@ -115,6 +115,7 @@ class CaveniaRuntimeBiomeSourceSubclassDecisionBoundaryTest {
         assertTrue(decisionDoc.contains("no active Cavenia spawning"));
         assertTrue(decisionDoc.contains("no active Cavenia worldgen resources"));
         assertTrue(decisionDoc.contains("`EntityCaveman -> deferred:caveman`"));
+        assertTrue(decisionDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
 
         assertTrue(readme.contains("Cavenia Runtime BiomeSource Codec/Holder/Registry Decision MVP"));
         assertTrue(readme.contains("docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"));
@@ -137,6 +138,26 @@ class CaveniaRuntimeBiomeSourceSubclassDecisionBoundaryTest {
         assertTrue(technicalSpikeDoc.contains("docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"));
         assertTrue(foundationReadinessDoc.contains("docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"));
         assertTrue(runtimeKeyDoc.contains("docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"));
+        assertTrue(readme.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(decisionDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(skeletonDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(firstDecisionDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(matrixDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(registryLookupDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(adapterCodecDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(adapterDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(weightedSelectionDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(inventoryDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(planDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(selectionDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(globalMatrixDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(generatorHostDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(policyDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(providerBoundaryDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(technicalSpikeDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(foundationReadinessDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
+        assertTrue(runtimeKeyDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
     }
 
     @Test

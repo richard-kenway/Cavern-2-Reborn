@@ -115,6 +115,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(planDoc.contains("docs/cavenia-registry-lookup-readiness-contracts-mvp.md"));
         assertTrue(planDoc.contains("docs/cavenia-biome-source-strategy-final-readiness-matrix-mvp.md"));
         assertTrue(planDoc.contains("docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"));
+        assertTrue(planDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
         assertTrue(planDoc.contains("`CaveniaSpawnProviderPolicy`"));
         assertTrue(planDoc.contains("`CaveniaSpawnEntry`"));
         assertTrue(planDoc.contains("`CaveniaTerrainGeneratorPolicy`"));
@@ -244,6 +245,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(readme.contains("Cavenia BIOME_SOURCE_STRATEGY Final Readiness Matrix MVP"));
         assertTrue(readme.contains("docs/cavenia-biome-source-strategy-final-readiness-matrix-mvp.md"));
         assertTrue(readme.contains("docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"));
+        assertTrue(readme.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
         assertTrue(runtimeSmokeDoc.contains("Cavenia Active Foundation Readiness / Implementation Plan"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(runtimeSmokeDoc.contains("inactive Cavenia active-foundation readiness-plan boundary"));
@@ -301,6 +303,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(runtimeSmokeDoc.contains("Cavenia BIOME_SOURCE_STRATEGY Final Readiness Matrix MVP"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-biome-source-strategy-final-readiness-matrix-mvp.md"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"));
+        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
         assertTrue(Files.readString(SELECTION_DOC).contains("`BIOME_SOURCE_STRATEGY`"));
         assertTrue(Files.readString(BIOME_SOURCE_PLAN_DOC).contains("`CaveniaBiomeSourceStrategyPlan`"));
         assertTrue(Files.readString(BIOME_MAPPING_DOC).contains("`CaveniaLegacyToModernBiomeKeyMappings`"));

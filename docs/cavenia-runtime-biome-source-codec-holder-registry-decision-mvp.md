@@ -211,3 +211,7 @@ Current Reborn therefore still keeps:
 The next slice can inventory the actual Minecraft `BiomeSource` API shape from local dependencies without creating a subclass.
 
 After that, a real subclass can be considered as a separate explicit MVP.
+
+The runtime-biome-source API-shape inventory follow-up is now documented in .
+
+The runtime-biome-source API-shape inventory follow-up is now documented in `docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md`.

@@ -126,6 +126,14 @@ public final class CaveniaRuntimeBiomeSourceFirstImplementationDecision {
         return false;
     }
 
+    public static boolean runtimeBiomeSourceApiShapeInventoryReady() {
+        return CaveniaRuntimeBiomeSourceApiShapeInventory.apiShapeInventoryReady();
+    }
+
+    public static boolean runtimeBiomeSourceApiShapeRuntimeReady() {
+        return false;
+    }
+
     public static boolean activationAllowedInThisSlice() {
         return false;
     }

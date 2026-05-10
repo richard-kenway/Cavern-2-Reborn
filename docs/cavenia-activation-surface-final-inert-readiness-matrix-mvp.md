@@ -217,3 +217,7 @@ The later biome-source follow-ups are documented in:
 - `docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md`
 - `docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md`
 - `docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md`
+
+The runtime-biome-source API-shape inventory follow-up is now documented in .
+
+The runtime-biome-source API-shape inventory follow-up is now documented in `docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md`.

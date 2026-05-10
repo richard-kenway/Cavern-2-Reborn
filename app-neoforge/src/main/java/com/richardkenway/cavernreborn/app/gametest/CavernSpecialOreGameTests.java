@@ -66,6 +66,8 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyReq
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRegistryLookupReadiness;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRegistryLookupRequirement;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceFirstImplementationDecision;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceApiShapeComponent;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceApiShapeInventory;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceGuardrail;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceNextStepDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceSkeleton;
@@ -8573,22 +8575,24 @@ public final class CavernSpecialOreGameTests {
             CaveniaRuntimeBiomeSourceSubclassDecision.skeletonReady()
                 && !CaveniaRuntimeBiomeSourceSubclassDecision.skeletonRuntimeReady()
                 && CaveniaRuntimeBiomeSourceSubclassDecision.allHardGuardrailsStillPinned()
-                && !CaveniaRuntimeBiomeSourceSubclassDecision.apiShapeDecisionsPinned()
+                && CaveniaRuntimeBiomeSourceSubclassDecision.apiShapeDecisionsPinned()
                 && !CaveniaRuntimeBiomeSourceSubclassDecision.readyForRealSubclass()
-                && !CaveniaRuntimeBiomeSourceSubclassDecision.abstractMethodsInventoryReady()
-                && !CaveniaRuntimeBiomeSourceSubclassDecision.codecMethodShapeReady()
-                && !CaveniaRuntimeBiomeSourceSubclassDecision.possibleBiomesShapeReady()
-                && !CaveniaRuntimeBiomeSourceSubclassDecision.noiseBiomeQueryShapeReady()
-                && !CaveniaRuntimeBiomeSourceSubclassDecision.holderReturnPathReady()
-                && !CaveniaRuntimeBiomeSourceSubclassDecision.registryContextReady()
-                && !CaveniaRuntimeBiomeSourceSubclassDecision.resourceKeyConversionReady()
-                && !CaveniaRuntimeBiomeSourceSubclassDecision.missingBiomeFallbackReady()
+                && CaveniaRuntimeBiomeSourceSubclassDecision.abstractMethodsInventoryReady()
+                && CaveniaRuntimeBiomeSourceSubclassDecision.codecMethodShapeReady()
+                && CaveniaRuntimeBiomeSourceSubclassDecision.possibleBiomesShapeReady()
+                && CaveniaRuntimeBiomeSourceSubclassDecision.noiseBiomeQueryShapeReady()
+                && CaveniaRuntimeBiomeSourceSubclassDecision.holderReturnPathReady()
+                && CaveniaRuntimeBiomeSourceSubclassDecision.registryContextReady()
+                && CaveniaRuntimeBiomeSourceSubclassDecision.resourceKeyConversionReady()
+                && CaveniaRuntimeBiomeSourceSubclassDecision.missingBiomeFallbackReady()
                 && CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayInventoryRuntimeBiomeSourceApiShape()
+                && CaveniaRuntimeBiomeSourceSubclassDecision.runtimeBiomeSourceApiShapeInventoryReady()
+                && !CaveniaRuntimeBiomeSourceSubclassDecision.runtimeBiomeSourceApiShapeRuntimeReady()
                 && !CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayImplementRealBiomeSourceSubclass()
                 && !CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayAddCodecImplementation()
                 && !CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayRegisterCodec()
                 && !CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayUseRegistryLookupAccess(),
-            "Expected the runtime-biome-source subclass decision layer to keep all real-subclass API-shape decisions unpinned while allowing only an inventory pass next"
+            "Expected the runtime-biome-source subclass decision layer to keep all real-subclass API-shape decisions pinned as inert inventory data while still deferring the real subclass"
         );
         helper.assertTrue(
             !CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayAddDimensionJson()
@@ -8611,6 +8615,66 @@ public final class CavernSpecialOreGameTests {
                 && !CaveniaRuntimeBiomeSourceSubclassDecision.dimensionTypeJsonPresent()
                 && CaveniaRuntimeBiomeSourceSubclassDecision.cavemanRemainsDeferred(),
             "Expected the runtime-biome-source subclass decision layer to keep runtime biome-source, codec, lookup, dimension and Caveman activation absent"
+        );
+        helper.assertTrue(
+            CaveniaRuntimeBiomeSourceApiShapeInventory.entryCount() == 12
+                && CaveniaRuntimeBiomeSourceApiShapeInventory.components().equals(List.of(
+                    CaveniaRuntimeBiomeSourceApiShapeComponent.LOCAL_BIOME_SOURCE_CLASS,
+                    CaveniaRuntimeBiomeSourceApiShapeComponent.ABSTRACT_METHODS_INVENTORY,
+                    CaveniaRuntimeBiomeSourceApiShapeComponent.CODEC_DISPATCH_SHAPE,
+                    CaveniaRuntimeBiomeSourceApiShapeComponent.CODEC_METHOD_SHAPE,
+                    CaveniaRuntimeBiomeSourceApiShapeComponent.POSSIBLE_BIOMES_SHAPE,
+                    CaveniaRuntimeBiomeSourceApiShapeComponent.NOISE_BIOME_QUERY_SHAPE,
+                    CaveniaRuntimeBiomeSourceApiShapeComponent.CLIMATE_SAMPLER_SHAPE,
+                    CaveniaRuntimeBiomeSourceApiShapeComponent.HOLDER_RETURN_SHAPE,
+                    CaveniaRuntimeBiomeSourceApiShapeComponent.REGISTRY_CONTEXT_SHAPE,
+                    CaveniaRuntimeBiomeSourceApiShapeComponent.RESOURCE_KEY_CONVERSION_SHAPE,
+                    CaveniaRuntimeBiomeSourceApiShapeComponent.MISSING_BIOME_FALLBACK_SHAPE,
+                    CaveniaRuntimeBiomeSourceApiShapeComponent.REAL_SUBCLASS_STILL_DEFERRED
+                ))
+                && CaveniaRuntimeBiomeSourceApiShapeInventory.localBiomeSourceClassLocated()
+                && CaveniaRuntimeBiomeSourceApiShapeInventory.apiShapeInventoryReady()
+                && CaveniaRuntimeBiomeSourceApiShapeInventory.allComponentsLocallyInspected()
+                && CaveniaRuntimeBiomeSourceApiShapeInventory.allShapesPinned()
+                && !CaveniaRuntimeBiomeSourceApiShapeInventory.runtimeApiImplemented()
+                && !CaveniaRuntimeBiomeSourceApiShapeInventory.runtimeApiAllowedInThisSlice()
+                && CaveniaRuntimeBiomeSourceApiShapeInventory.abstractMethodsInventoryReady()
+                && CaveniaRuntimeBiomeSourceApiShapeInventory.codecDispatchShapeReady()
+                && CaveniaRuntimeBiomeSourceApiShapeInventory.codecMethodShapeReady()
+                && CaveniaRuntimeBiomeSourceApiShapeInventory.possibleBiomesShapeReady()
+                && CaveniaRuntimeBiomeSourceApiShapeInventory.noiseBiomeQueryShapeReady()
+                && CaveniaRuntimeBiomeSourceApiShapeInventory.climateSamplerShapeReady()
+                && CaveniaRuntimeBiomeSourceApiShapeInventory.holderReturnShapeReady()
+                && CaveniaRuntimeBiomeSourceApiShapeInventory.registryContextShapeReady()
+                && CaveniaRuntimeBiomeSourceApiShapeInventory.resourceKeyConversionShapeReady()
+                && CaveniaRuntimeBiomeSourceApiShapeInventory.missingBiomeFallbackShapeReady()
+                && CaveniaRuntimeBiomeSourceApiShapeInventory.realSubclassStillDeferred()
+                && !CaveniaRuntimeBiomeSourceApiShapeInventory.readyForRealSubclassImplementation()
+                && CaveniaRuntimeBiomeSourceApiShapeInventory.nextSliceMayDecideRealSubclassImplementation()
+                && !CaveniaRuntimeBiomeSourceApiShapeInventory.nextSliceMayImplementRealBiomeSourceSubclassDirectly()
+                && !CaveniaRuntimeBiomeSourceApiShapeInventory.nextSliceMayAddCodecImplementation()
+                && !CaveniaRuntimeBiomeSourceApiShapeInventory.nextSliceMayRegisterCodec()
+                && !CaveniaRuntimeBiomeSourceApiShapeInventory.nextSliceMayUseRegistryLookupAccess()
+                && !CaveniaRuntimeBiomeSourceApiShapeInventory.nextSliceMayAddDimensionJson()
+                && !CaveniaRuntimeBiomeSourceApiShapeInventory.nextSliceMayAddDimensionTypeJson()
+                && !CaveniaRuntimeBiomeSourceApiShapeInventory.nextSliceMayCreateActiveCaveniaLevel()
+                && !CaveniaRuntimeBiomeSourceApiShapeInventory.nextSliceMayAddWorldgenResources()
+                && !CaveniaRuntimeBiomeSourceApiShapeInventory.nextSliceMayAddAccessOrTeleport()
+                && !CaveniaRuntimeBiomeSourceApiShapeInventory.nextSliceMayAddSpawning()
+                && !CaveniaRuntimeBiomeSourceApiShapeInventory.nextSliceMayRegisterCavemanEntity()
+                && CaveniaRuntimeBiomeSourceApiShapeInventory.skeletonReady()
+                && !CaveniaRuntimeBiomeSourceApiShapeInventory.skeletonRuntimeReady()
+                && CaveniaRuntimeBiomeSourceApiShapeInventory.selectedSurfaceReadinessItemCount() == 68
+                && CaveniaRuntimeBiomeSourceApiShapeInventory.globalReadinessMatrixTotalRequirementCount() == 46
+                && CaveniaRuntimeBiomeSourceApiShapeInventory.globalReadinessMatrixBlockedRequirementCount() == 46
+                && !CaveniaRuntimeBiomeSourceApiShapeInventory.runtimeBiomeSourceReady()
+                && !CaveniaRuntimeBiomeSourceApiShapeInventory.runtimeBiomeSourceRegistered()
+                && !CaveniaRuntimeBiomeSourceApiShapeInventory.codecRegistered()
+                && !CaveniaRuntimeBiomeSourceApiShapeInventory.registryLookupAccessReady()
+                && !CaveniaRuntimeBiomeSourceApiShapeInventory.dimensionJsonPresent()
+                && !CaveniaRuntimeBiomeSourceApiShapeInventory.dimensionTypeJsonPresent()
+                && CaveniaRuntimeBiomeSourceApiShapeInventory.cavemanRemainsDeferred(),
+            "Expected the runtime-biome-source API shape inventory layer to keep the locally inspected BiomeSource shape pinned while runtime, registration and activation remain absent"
         );
         helper.assertTrue(
             projectFileExists("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md"),

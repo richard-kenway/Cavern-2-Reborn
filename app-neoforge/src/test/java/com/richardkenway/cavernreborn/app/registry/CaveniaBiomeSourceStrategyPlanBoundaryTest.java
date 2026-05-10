@@ -85,6 +85,7 @@ class CaveniaBiomeSourceStrategyPlanBoundaryTest {
         assertTrue(planDoc.contains("docs/cavenia-runtime-biome-source-first-implementation-decision-guardrails-mvp.md"));
         assertTrue(planDoc.contains("docs/cavenia-unregistered-runtime-biome-source-skeleton-mvp.md"));
         assertTrue(planDoc.contains("docs/cavenia-runtime-biome-source-codec-holder-registry-decision-mvp.md"));
+        assertTrue(planDoc.contains("docs/cavenia-runtime-biome-source-api-shape-inventory-mvp.md"));
 
         assertTrue(readme.contains("Cavenia Biome Source Strategy Narrow Non-Runtime MVP"));
         assertTrue(readme.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));

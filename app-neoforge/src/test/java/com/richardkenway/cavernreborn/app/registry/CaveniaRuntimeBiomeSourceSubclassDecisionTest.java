@@ -59,13 +59,8 @@ class CaveniaRuntimeBiomeSourceSubclassDecisionTest {
             CaveniaRuntimeBiomeSourceSubclassRequirement.NO_REGISTRY_LOOKUP_ACCESS,
             CaveniaRuntimeBiomeSourceSubclassRequirement.NO_WORLDGEN_ACCESS_SPAWNING
         );
-        Set<CaveniaRuntimeBiomeSourceSubclassRequirement> pinnedRequirements = EnumSet.of(
-            CaveniaRuntimeBiomeSourceSubclassRequirement.SKELETON_READY,
-            CaveniaRuntimeBiomeSourceSubclassRequirement.REAL_SUBCLASS_DEFERRED,
-            CaveniaRuntimeBiomeSourceSubclassRequirement.NO_DIMENSION_ACTIVATION,
-            CaveniaRuntimeBiomeSourceSubclassRequirement.NO_CODEC_REGISTRATION,
-            CaveniaRuntimeBiomeSourceSubclassRequirement.NO_REGISTRY_LOOKUP_ACCESS,
-            CaveniaRuntimeBiomeSourceSubclassRequirement.NO_WORLDGEN_ACCESS_SPAWNING
+        Set<CaveniaRuntimeBiomeSourceSubclassRequirement> pinnedRequirements = EnumSet.allOf(
+            CaveniaRuntimeBiomeSourceSubclassRequirement.class
         );
         List<CaveniaRuntimeBiomeSourceSubclassRequirementContract> contracts =
             CaveniaRuntimeBiomeSourceSubclassDecision.contracts();
@@ -101,17 +96,19 @@ class CaveniaRuntimeBiomeSourceSubclassDecisionTest {
         assertTrue(CaveniaRuntimeBiomeSourceSubclassDecision.skeletonReady());
         assertFalse(CaveniaRuntimeBiomeSourceSubclassDecision.skeletonRuntimeReady());
         assertTrue(CaveniaRuntimeBiomeSourceSubclassDecision.allHardGuardrailsStillPinned());
-        assertFalse(CaveniaRuntimeBiomeSourceSubclassDecision.apiShapeDecisionsPinned());
+        assertTrue(CaveniaRuntimeBiomeSourceSubclassDecision.apiShapeDecisionsPinned());
         assertFalse(CaveniaRuntimeBiomeSourceSubclassDecision.readyForRealSubclass());
-        assertFalse(CaveniaRuntimeBiomeSourceSubclassDecision.abstractMethodsInventoryReady());
-        assertFalse(CaveniaRuntimeBiomeSourceSubclassDecision.codecMethodShapeReady());
-        assertFalse(CaveniaRuntimeBiomeSourceSubclassDecision.possibleBiomesShapeReady());
-        assertFalse(CaveniaRuntimeBiomeSourceSubclassDecision.noiseBiomeQueryShapeReady());
-        assertFalse(CaveniaRuntimeBiomeSourceSubclassDecision.holderReturnPathReady());
-        assertFalse(CaveniaRuntimeBiomeSourceSubclassDecision.registryContextReady());
-        assertFalse(CaveniaRuntimeBiomeSourceSubclassDecision.resourceKeyConversionReady());
-        assertFalse(CaveniaRuntimeBiomeSourceSubclassDecision.missingBiomeFallbackReady());
+        assertTrue(CaveniaRuntimeBiomeSourceSubclassDecision.abstractMethodsInventoryReady());
+        assertTrue(CaveniaRuntimeBiomeSourceSubclassDecision.codecMethodShapeReady());
+        assertTrue(CaveniaRuntimeBiomeSourceSubclassDecision.possibleBiomesShapeReady());
+        assertTrue(CaveniaRuntimeBiomeSourceSubclassDecision.noiseBiomeQueryShapeReady());
+        assertTrue(CaveniaRuntimeBiomeSourceSubclassDecision.holderReturnPathReady());
+        assertTrue(CaveniaRuntimeBiomeSourceSubclassDecision.registryContextReady());
+        assertTrue(CaveniaRuntimeBiomeSourceSubclassDecision.resourceKeyConversionReady());
+        assertTrue(CaveniaRuntimeBiomeSourceSubclassDecision.missingBiomeFallbackReady());
         assertTrue(CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayInventoryRuntimeBiomeSourceApiShape());
+        assertTrue(CaveniaRuntimeBiomeSourceSubclassDecision.runtimeBiomeSourceApiShapeInventoryReady());
+        assertFalse(CaveniaRuntimeBiomeSourceSubclassDecision.runtimeBiomeSourceApiShapeRuntimeReady());
         assertFalse(CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayImplementRealBiomeSourceSubclass());
         assertFalse(CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayAddCodecImplementation());
         assertFalse(CaveniaRuntimeBiomeSourceSubclassDecision.nextSliceMayRegisterCodec());
