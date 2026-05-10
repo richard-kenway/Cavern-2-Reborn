@@ -49,6 +49,7 @@ The later worldgen-resource split-contract note is now documented separately in:
 The later final inert readiness-matrix note is now documented separately in:
 
 - `docs/cavenia-activation-surface-final-inert-readiness-matrix-mvp.md`
+- `docs/cavenia-deliberate-first-active-surface-selection-mvp.md`
 
 ## What This MVP Adds
 

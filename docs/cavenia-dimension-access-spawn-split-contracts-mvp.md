@@ -23,6 +23,10 @@ The later final inert readiness-matrix note is now documented separately in:
 
 - `docs/cavenia-activation-surface-final-inert-readiness-matrix-mvp.md`
 
+The later decision-only first-active-surface selection note is now documented separately in:
+
+- `docs/cavenia-deliberate-first-active-surface-selection-mvp.md`
+
 ## What This MVP Adds
 
 Current Reborn now has three narrower app-side split-contract surfaces:

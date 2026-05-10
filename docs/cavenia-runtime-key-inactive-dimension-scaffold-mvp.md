@@ -43,6 +43,7 @@ The later non-registered active-generator technical scaffold note is now documen
 - `docs/cavenia-dimension-access-spawn-split-contracts-mvp.md`
 - `docs/cavenia-worldgen-resource-host-split-contracts-mvp.md`
 - `docs/cavenia-activation-surface-final-inert-readiness-matrix-mvp.md`
+- `docs/cavenia-deliberate-first-active-surface-selection-mvp.md`
 
 ## Exact Constants Added
 

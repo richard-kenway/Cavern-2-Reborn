@@ -25,6 +25,7 @@ class CaveniaDimensionAccessSpawnSplitContractsBoundaryTest {
     private static final Path RUNTIME_KEY_DOC = resolveProjectFile("docs", "cavenia-runtime-key-inactive-dimension-scaffold-mvp.md");
     private static final Path WORLDGEN_RESOURCE_SPLIT_DOC = resolveProjectFile("docs", "cavenia-worldgen-resource-host-split-contracts-mvp.md");
     private static final Path MATRIX_DOC = resolveProjectFile("docs", "cavenia-activation-surface-final-inert-readiness-matrix-mvp.md");
+    private static final Path SELECTION_DOC = resolveProjectFile("docs", "cavenia-deliberate-first-active-surface-selection-mvp.md");
     private static final Path APP_SOURCE_ROOT = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app"
     );
@@ -46,6 +47,7 @@ class CaveniaDimensionAccessSpawnSplitContractsBoundaryTest {
         String technicalSpikeDoc = Files.readString(TECHNICAL_SPIKE_DOC);
         String readinessDoc = Files.readString(READINESS_DOC);
         String runtimeKeyDoc = Files.readString(RUNTIME_KEY_DOC);
+        String selectionDoc = Files.readString(SELECTION_DOC);
 
         assertTrue(splitDoc.contains("Cavenia Dimension-Resource / Access-Travel / Spawn-Host Split Contracts MVP"));
         assertTrue(splitDoc.contains("`CaveniaDimensionResourceContracts`"));
@@ -83,6 +85,7 @@ class CaveniaDimensionAccessSpawnSplitContractsBoundaryTest {
         assertTrue(splitDoc.contains("`EntityCaveman -> deferred:caveman`"));
         assertTrue(splitDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
         assertTrue(splitDoc.contains("docs/cavenia-activation-surface-final-inert-readiness-matrix-mvp.md"));
+        assertTrue(splitDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
 
         assertTrue(readme.contains("Cavenia Dimension-Resource / Access-Travel / Spawn-Host Split Contracts MVP"));
         assertTrue(readme.contains("docs/cavenia-dimension-access-spawn-split-contracts-mvp.md"));
@@ -99,6 +102,9 @@ class CaveniaDimensionAccessSpawnSplitContractsBoundaryTest {
         assertTrue(runtimeKeyDoc.contains("docs/cavenia-dimension-access-spawn-split-contracts-mvp.md"));
         assertTrue(Files.readString(WORLDGEN_RESOURCE_SPLIT_DOC).contains("docs/cavenia-dimension-access-spawn-split-contracts-mvp.md"));
         assertTrue(Files.readString(MATRIX_DOC).contains("docs/cavenia-dimension-access-spawn-split-contracts-mvp.md"));
+        assertTrue(selectionDoc.contains("`CaveniaDimensionResourceContracts`"));
+        assertTrue(selectionDoc.contains("`CaveniaAccessTravelContracts`"));
+        assertTrue(selectionDoc.contains("`CaveniaSpawnHostContracts`"));
     }
 
     @Test

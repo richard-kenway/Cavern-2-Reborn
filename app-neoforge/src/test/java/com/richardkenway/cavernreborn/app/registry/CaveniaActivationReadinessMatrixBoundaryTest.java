@@ -26,6 +26,7 @@ class CaveniaActivationReadinessMatrixBoundaryTest {
     private static final Path TECHNICAL_SPIKE_DOC = resolveProjectFile("docs", "cavenia-active-foundation-technical-spike.md");
     private static final Path READINESS_DOC = resolveProjectFile("docs", "cavenia-active-foundation-readiness-plan.md");
     private static final Path RUNTIME_KEY_DOC = resolveProjectFile("docs", "cavenia-runtime-key-inactive-dimension-scaffold-mvp.md");
+    private static final Path SELECTION_DOC = resolveProjectFile("docs", "cavenia-deliberate-first-active-surface-selection-mvp.md");
     private static final Path APP_SOURCE_ROOT = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app"
     );
@@ -50,6 +51,7 @@ class CaveniaActivationReadinessMatrixBoundaryTest {
         String technicalSpikeDoc = Files.readString(TECHNICAL_SPIKE_DOC);
         String readinessDoc = Files.readString(READINESS_DOC);
         String runtimeKeyDoc = Files.readString(RUNTIME_KEY_DOC);
+        String selectionDoc = Files.readString(SELECTION_DOC);
 
         assertTrue(matrixDoc.contains("Cavenia Activation Surface Consolidation / Final Inert Readiness Matrix MVP"));
         assertTrue(matrixDoc.contains("`CaveniaActivationReadinessMatrix`"));
@@ -95,6 +97,8 @@ class CaveniaActivationReadinessMatrixBoundaryTest {
         assertTrue(technicalSpikeDoc.contains("docs/cavenia-activation-surface-final-inert-readiness-matrix-mvp.md"));
         assertTrue(readinessDoc.contains("docs/cavenia-activation-surface-final-inert-readiness-matrix-mvp.md"));
         assertTrue(runtimeKeyDoc.contains("docs/cavenia-activation-surface-final-inert-readiness-matrix-mvp.md"));
+        assertTrue(matrixDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
+        assertTrue(selectionDoc.contains("`CaveniaActivationReadinessMatrix`"));
     }
 
     @Test

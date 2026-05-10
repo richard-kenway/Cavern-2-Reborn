@@ -81,24 +81,26 @@ The later worldgen-resource split-contract note is now documented separately in:
 The later final inert readiness-matrix note is now documented separately in:
 
 - `docs/cavenia-activation-surface-final-inert-readiness-matrix-mvp.md`
+- `docs/cavenia-deliberate-first-active-surface-selection-mvp.md`
 
 This spike still does not imply active `cavernreborn:cavenia`, `dimension/cavenia.json`, `dimension_type/cavenia.json`, active Cavenia spawning, active crazy spawning, fake normal `CAVERN` crazy spawning or a `cavernreborn:caveman` entity.
 
 ## Spike Decision
 
-The next real implementation slice should be:
+The later decision-only surface-selection note now chooses the first future activation surface explicitly:
 
-- `Cavenia Runtime Key / Inactive Dimension Scaffold MVP`
+- `BIOME_SOURCE_STRATEGY`
 
-Another preparatory planning slice is not required before that point.
+This technical spike still remains a preparatory decision layer for the broader foundation, but it is no longer the latest first-slice selection note by itself.
 
-This technical spike is the preparatory decision layer. It makes the next safe step narrow and explicit:
+The current narrow recommendation is:
 
-- add inert identity constants only
+- start with a non-runtime `BIOME_SOURCE_STRATEGY` slice
 - keep `cavernreborn:cavenia` unresolved at runtime
 - keep `dimension/cavenia.json` absent
 - keep `dimension_type/cavenia.json` absent
 - keep entry/access, spawning and worldgen inactive
+- defer runtime `BiomeSource`, codec, registration and registry lookup access to later explicit MVPs
 
 ## Minimum Safe Active Scaffold
 

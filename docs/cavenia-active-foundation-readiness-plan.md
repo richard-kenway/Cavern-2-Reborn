@@ -40,6 +40,7 @@ The later non-registered active-generator technical scaffold note is now documen
 - `docs/cavenia-dimension-access-spawn-split-contracts-mvp.md`
 - `docs/cavenia-worldgen-resource-host-split-contracts-mvp.md`
 - `docs/cavenia-activation-surface-final-inert-readiness-matrix-mvp.md`
+- `docs/cavenia-deliberate-first-active-surface-selection-mvp.md`
 
 Current readiness state still has no active Cavenia spawning and no fake normal `CAVERN` crazy spawning.
 
@@ -93,6 +94,9 @@ Current repository state now also has:
 - inert `CaveniaActivationSurface`
 - inert `CaveniaActivationReadinessMatrixEntry`
 - inert `CaveniaActivationReadinessMatrix`
+- inert `CaveniaFirstActiveSurfaceCandidate`
+- inert `CaveniaFirstActiveSurfaceSelectionReason`
+- inert `CaveniaFirstActiveSurfaceSelection`
 
 ## Completed Readiness Inputs
 
@@ -289,12 +293,21 @@ It requires explicit decisions for:
 The follow-up implementation-decision bridge now lives in:
 
 - `docs/cavenia-active-foundation-technical-spike.md`
+- `docs/cavenia-deliberate-first-active-surface-selection-mvp.md`
 
-The recommended next real slice after that spike is:
+The current selected first future activation surface is:
+
+- `BIOME_SOURCE_STRATEGY`
+
+The earlier inert identity-only scaffold note remains:
 
 - `Cavenia Runtime Key / Inactive Dimension Scaffold MVP`
 
-That next slice should stop at inert identity constants and boundary smoke. It should not add `dimension/cavenia.json`, `dimension_type/cavenia.json`, active travel, terrain, spawning or fake `CAVERN` parity.
+The recommended next real slice after that selection note is:
+
+- a narrow `BIOME_SOURCE_STRATEGY` slice
+
+That next slice should still remain non-runtime. It should not add `dimension/cavenia.json`, `dimension_type/cavenia.json`, an active level, active travel, spawning, worldgen resources or fake `CAVERN` parity.
 
 ## Minimum Acceptance Checklist Before Enabling Cavenia
 

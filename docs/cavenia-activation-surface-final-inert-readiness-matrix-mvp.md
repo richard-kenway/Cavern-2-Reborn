@@ -17,6 +17,10 @@ It builds on:
 - `docs/cavenia-active-foundation-readiness-plan.md`
 - `docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md`
 
+The later decision-only first-active-surface selection note is now documented separately in:
+
+- `docs/cavenia-deliberate-first-active-surface-selection-mvp.md`
+
 ## What This MVP Adds
 
 Current Reborn now has three final inert app-side matrix types:

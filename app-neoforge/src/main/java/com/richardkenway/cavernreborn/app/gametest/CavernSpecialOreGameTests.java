@@ -56,6 +56,8 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyCon
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyRequirement;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaDimensionResourceContracts;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaDimensionResourceRequirement;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaFirstActiveSurfaceSelection;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaFirstActiveSurfaceSelectionReason;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorBridge;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorHostContracts;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorHostRequirement;
@@ -8075,6 +8077,48 @@ public final class CavernSpecialOreGameTests {
             "Expected the final inert Cavenia activation-readiness matrix to keep every runtime capability and every checked-in activation resource absent"
         );
         helper.assertTrue(
+            CaveniaFirstActiveSurfaceSelection.candidates().size() == 6
+                && CaveniaFirstActiveSurfaceSelection.selectedSurface() == CaveniaActivationSurface.BIOME_SOURCE_STRATEGY
+                && CaveniaFirstActiveSurfaceSelection.selectedRequirementCount() == 7
+                && CaveniaFirstActiveSurfaceSelection.selectedSurfaceIsBiomeSourceStrategy()
+                && CaveniaFirstActiveSurfaceSelection.selectedSurfaceName().equals("BIOME_SOURCE_STRATEGY")
+                && CaveniaFirstActiveSurfaceSelection.candidates().stream().filter(candidate -> candidate.selected()).count() == 1,
+            "Expected the decision-only Cavenia first-active-surface selection layer to keep BIOME_SOURCE_STRATEGY pinned as the single selected future surface"
+        );
+        helper.assertTrue(
+            CaveniaFirstActiveSurfaceSelection.selectionIsDecisionOnly()
+                && !CaveniaFirstActiveSurfaceSelection.activationAllowedInThisSlice()
+                && CaveniaFirstActiveSurfaceSelection.selectedSurfaceRemainsBlocked()
+                && CaveniaFirstActiveSurfaceSelection.allCandidatesRemainBlocked()
+                && CaveniaFirstActiveSurfaceSelection.allCandidatesDisallowActivationInThisSlice(),
+            "Expected the decision-only Cavenia first-active-surface selection layer to keep every candidate blocked and activation disallowed in this slice"
+        );
+        helper.assertTrue(
+            CaveniaFirstActiveSurfaceSelection.selectionReasons().equals(List.of(
+                CaveniaFirstActiveSurfaceSelectionReason.PREREQUISITE_FOR_GENERATOR_HOST,
+                CaveniaFirstActiveSurfaceSelectionReason.PREREQUISITE_FOR_DIMENSION_BINDING,
+                CaveniaFirstActiveSurfaceSelectionReason.LOWER_RUNTIME_SIDE_EFFECT_RISK,
+                CaveniaFirstActiveSurfaceSelectionReason.DOES_NOT_REQUIRE_DIMENSION_JSON_YET,
+                CaveniaFirstActiveSurfaceSelectionReason.KEEPS_ACCESS_AND_SPAWN_BLOCKED,
+                CaveniaFirstActiveSurfaceSelectionReason.REQUIRES_FUTURE_EXPLICIT_RUNTIME_BIOME_SOURCE_MVP
+            ))
+                && CaveniaFirstActiveSurfaceSelection.readinessMatrixTotalRequirementCount() == 46
+                && CaveniaFirstActiveSurfaceSelection.readinessMatrixBlockedRequirementCount() == 46
+                && CaveniaFirstActiveSurfaceSelection.allReadinessSurfacesBlocked()
+                && !CaveniaFirstActiveSurfaceSelection.canActivateCaveniaNow(),
+            "Expected the decision-only Cavenia first-active-surface selection layer to keep the selected-surface rationale pinned while the full readiness matrix stays blocked"
+        );
+        helper.assertTrue(
+            !CaveniaFirstActiveSurfaceSelection.biomeSourceRuntimeReady()
+                && !CaveniaFirstActiveSurfaceSelection.dimensionJsonPresent()
+                && !CaveniaFirstActiveSurfaceSelection.dimensionTypeJsonPresent()
+                && !CaveniaFirstActiveSurfaceSelection.accessCanTeleport()
+                && !CaveniaFirstActiveSurfaceSelection.spawnHostCanSpawn()
+                && !CaveniaFirstActiveSurfaceSelection.worldgenCanAffectWorldgen()
+                && CaveniaFirstActiveSurfaceSelection.cavemanRemainsDeferred(),
+            "Expected the decision-only Cavenia first-active-surface selection layer to keep runtime biome-source, dimension, access, spawn and worldgen activation absent"
+        );
+        helper.assertTrue(
             projectFileExists("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md"),
             "Expected the unregistered Cavenia generator/biome-selection skeleton doc to exist in the project root"
         );
@@ -8101,6 +8145,10 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             projectFileExists("docs", "cavenia-activation-surface-final-inert-readiness-matrix-mvp.md"),
             "Expected the final inert Cavenia activation-readiness matrix doc to exist in the project root"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-deliberate-first-active-surface-selection-mvp.md"),
+            "Expected the decision-only Cavenia first-active-surface selection doc to exist in the project root"
         );
         helper.assertTrue(
             projectFileExists("docs", "caveman-cavenia-normal-roster-boundary.md"),

@@ -10,10 +10,12 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
-class CaveniaWorldgenResourceSplitContractsBoundaryTest {
+class CaveniaFirstActiveSurfaceSelectionBoundaryTest {
     private static final Path README = resolveProjectFile("README.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
-    private static final Path SPLIT_DOC = resolveProjectFile("docs", "cavenia-worldgen-resource-host-split-contracts-mvp.md");
+    private static final Path SELECTION_DOC = resolveProjectFile("docs", "cavenia-deliberate-first-active-surface-selection-mvp.md");
+    private static final Path MATRIX_DOC = resolveProjectFile("docs", "cavenia-activation-surface-final-inert-readiness-matrix-mvp.md");
+    private static final Path WORLDGEN_DOC = resolveProjectFile("docs", "cavenia-worldgen-resource-host-split-contracts-mvp.md");
     private static final Path DIMENSION_ACCESS_SPAWN_DOC = resolveProjectFile("docs", "cavenia-dimension-access-spawn-split-contracts-mvp.md");
     private static final Path GENERATOR_HOST_DOC = resolveProjectFile("docs", "cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md");
     private static final Path ACTIVATION_HOSTS_DOC = resolveProjectFile("docs", "cavenia-generator-activation-readiness-host-contracts-mvp.md");
@@ -25,8 +27,6 @@ class CaveniaWorldgenResourceSplitContractsBoundaryTest {
     private static final Path TECHNICAL_SPIKE_DOC = resolveProjectFile("docs", "cavenia-active-foundation-technical-spike.md");
     private static final Path READINESS_DOC = resolveProjectFile("docs", "cavenia-active-foundation-readiness-plan.md");
     private static final Path RUNTIME_KEY_DOC = resolveProjectFile("docs", "cavenia-runtime-key-inactive-dimension-scaffold-mvp.md");
-    private static final Path MATRIX_DOC = resolveProjectFile("docs", "cavenia-activation-surface-final-inert-readiness-matrix-mvp.md");
-    private static final Path SELECTION_DOC = resolveProjectFile("docs", "cavenia-deliberate-first-active-surface-selection-mvp.md");
     private static final Path APP_SOURCE_ROOT = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app"
     );
@@ -35,10 +35,12 @@ class CaveniaWorldgenResourceSplitContractsBoundaryTest {
     );
 
     @Test
-    void docsPinTheWorldgenResourceSplitContracts() throws IOException {
+    void docsPinTheDecisionOnlyFirstActiveSurfaceSelection() throws IOException {
         String readme = Files.readString(README);
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE_DOC);
-        String splitDoc = Files.readString(SPLIT_DOC);
+        String selectionDoc = Files.readString(SELECTION_DOC);
+        String matrixDoc = Files.readString(MATRIX_DOC);
+        String worldgenDoc = Files.readString(WORLDGEN_DOC);
         String dimensionAccessSpawnDoc = Files.readString(DIMENSION_ACCESS_SPAWN_DOC);
         String generatorHostDoc = Files.readString(GENERATOR_HOST_DOC);
         String activationHostsDoc = Files.readString(ACTIVATION_HOSTS_DOC);
@@ -50,58 +52,57 @@ class CaveniaWorldgenResourceSplitContractsBoundaryTest {
         String technicalSpikeDoc = Files.readString(TECHNICAL_SPIKE_DOC);
         String readinessDoc = Files.readString(READINESS_DOC);
         String runtimeKeyDoc = Files.readString(RUNTIME_KEY_DOC);
-        String selectionDoc = Files.readString(SELECTION_DOC);
 
-        assertTrue(splitDoc.contains("Cavenia Worldgen-Resource Host Split Contracts MVP"));
-        assertTrue(splitDoc.contains("`CaveniaWorldgenResourceContracts`"));
-        assertTrue(splitDoc.contains("`CaveniaWorldgenResourceRequirement`"));
-        assertTrue(splitDoc.contains("`CaveniaWorldgenResourceRequirementContract`"));
-        assertTrue(splitDoc.contains("`CaveniaActivationReadinessHosts`"));
-        assertTrue(splitDoc.contains("`CaveniaDimensionResourceContracts`"));
-        assertTrue(splitDoc.contains("`CaveniaGeneratorHostContracts`"));
-        assertTrue(splitDoc.contains("`CaveniaBiomeSourceStrategyContracts`"));
-        assertTrue(splitDoc.contains("`CaveniaGeneratorRuntimeContracts`"));
-        assertTrue(splitDoc.contains("`CaveniaGeneratorRegistrationBoundary`"));
-        assertTrue(splitDoc.contains("`CaveniaCaveCarverPolicy`"));
-        assertTrue(splitDoc.contains("`CaveniaVeinsContentPolicy`"));
-        assertTrue(splitDoc.contains("`CaveniaPopulationPolicy`"));
-        assertTrue(splitDoc.contains("`CaveniaBiomeTopFilterPolicy`"));
-        assertTrue(splitDoc.contains("`CaveniaTerrainGeneratorPolicy`"));
-        assertTrue(splitDoc.contains("not a `ChunkGenerator`"));
-        assertTrue(splitDoc.contains("not a `BiomeSource`"));
-        assertTrue(splitDoc.contains("no codec or registry entry was added"));
-        assertTrue(splitDoc.contains("no active `dimension/cavenia.json`"));
-        assertTrue(splitDoc.contains("no active `dimension_type/cavenia.json`"));
-        assertTrue(splitDoc.contains("no active Cavenia runtime level"));
-        assertTrue(splitDoc.contains("no active Cavenia access or teleport"));
-        assertTrue(splitDoc.contains("no active Cavenia spawning"));
-        assertTrue(splitDoc.contains("no active crazy spawning"));
-        assertTrue(splitDoc.contains("no fake normal `CAVERN` crazy spawning"));
-        assertTrue(splitDoc.contains("no CAVERN resource reuse is accepted as Cavenia parity"));
-        assertTrue(splitDoc.contains("docs/cavenia-activation-surface-final-inert-readiness-matrix-mvp.md"));
-
-        assertTrue(readme.contains("Cavenia Worldgen-Resource Host Split Contracts MVP"));
-        assertTrue(readme.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
-        assertTrue(runtimeSmokeDoc.contains("Cavenia Worldgen-Resource Host Split Contracts MVP"));
-        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
-        assertTrue(dimensionAccessSpawnDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
-        assertTrue(generatorHostDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
-        assertTrue(activationHostsDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
-        assertTrue(runtimeContractsDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
-        assertTrue(generatorSkeletonDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
-        assertTrue(registrationDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
-        assertTrue(bridgeDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
-        assertTrue(technicalScaffoldDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
-        assertTrue(technicalSpikeDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
-        assertTrue(readinessDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
-        assertTrue(runtimeKeyDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
-        assertTrue(Files.readString(MATRIX_DOC).contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
-        assertTrue(splitDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
+        assertTrue(selectionDoc.contains("Cavenia Deliberate First Active Surface Selection MVP"));
+        assertTrue(selectionDoc.contains("`CaveniaFirstActiveSurfaceSelection`"));
+        assertTrue(selectionDoc.contains("`CaveniaFirstActiveSurfaceCandidate`"));
+        assertTrue(selectionDoc.contains("`CaveniaFirstActiveSurfaceSelectionReason`"));
+        assertTrue(selectionDoc.contains("`BIOME_SOURCE_STRATEGY`"));
+        assertTrue(selectionDoc.contains("`CaveniaActivationReadinessMatrix`"));
+        assertTrue(selectionDoc.contains("`CaveniaActivationSurface`"));
+        assertTrue(selectionDoc.contains("`CaveniaBiomeSourceStrategyContracts`"));
+        assertTrue(selectionDoc.contains("`CaveniaGeneratorHostContracts`"));
+        assertTrue(selectionDoc.contains("`CaveniaDimensionResourceContracts`"));
+        assertTrue(selectionDoc.contains("`CaveniaAccessTravelContracts`"));
+        assertTrue(selectionDoc.contains("`CaveniaSpawnHostContracts`"));
         assertTrue(selectionDoc.contains("`CaveniaWorldgenResourceContracts`"));
+        assertTrue(selectionDoc.contains("`CaveniaGeneratorRegistrationBoundary`"));
+        assertTrue(selectionDoc.contains("decision-only"));
+        assertTrue(selectionDoc.contains("activation is not allowed in this slice"));
+        assertTrue(selectionDoc.contains("not a `ChunkGenerator`"));
+        assertTrue(selectionDoc.contains("not a `BiomeSource`"));
+        assertTrue(selectionDoc.contains("no codec or registry entry was added"));
+        assertTrue(selectionDoc.contains("no active `dimension/cavenia.json`"));
+        assertTrue(selectionDoc.contains("no active `dimension_type/cavenia.json`"));
+        assertTrue(selectionDoc.contains("no active Cavenia runtime level"));
+        assertTrue(selectionDoc.contains("no active Cavenia access or teleport"));
+        assertTrue(selectionDoc.contains("no active Cavenia spawning"));
+        assertTrue(selectionDoc.contains("no active crazy spawning"));
+        assertTrue(selectionDoc.contains("no fake normal `CAVERN` crazy spawning"));
+        assertTrue(selectionDoc.contains("no CAVERN resource reuse is accepted as Cavenia parity"));
+        assertTrue(selectionDoc.contains("`EntityCaveman -> deferred:caveman`"));
+
+        assertTrue(readme.contains("Cavenia Deliberate First Active Surface Selection MVP"));
+        assertTrue(readme.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
+        assertTrue(runtimeSmokeDoc.contains("Cavenia Deliberate First Active Surface Selection MVP"));
+        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
+        assertTrue(matrixDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
+        assertTrue(worldgenDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
+        assertTrue(dimensionAccessSpawnDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
+        assertTrue(generatorHostDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
+        assertTrue(activationHostsDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
+        assertTrue(runtimeContractsDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
+        assertTrue(generatorSkeletonDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
+        assertTrue(registrationDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
+        assertTrue(bridgeDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
+        assertTrue(technicalScaffoldDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
+        assertTrue(technicalSpikeDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
+        assertTrue(readinessDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
+        assertTrue(runtimeKeyDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
     }
 
     @Test
-    void splitContractsBoundaryKeepsActiveWorldgenResourcesAbsent() throws IOException {
+    void selectionBoundaryKeepsActiveRuntimeSurfacesAbsent() throws IOException {
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension_type", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "configured_carver", "cavenia.json");
@@ -114,9 +115,6 @@ class CaveniaWorldgenResourceSplitContractsBoundaryTest {
         assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "CaveniaBiomeSource.java");
         assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "MapGenCaveniaCaves.java");
         assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "CaveniaTeleporter.java");
-        assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "CaveniaPortal.java");
-        assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "CaveniaPortalBlock.java");
-        assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "CaveniaAccessHandler.java");
         assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "CaveniaSpawnProvider.java");
         assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "CaveniaSpawnHandler.java");
         assertMissingProjectFile("app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen", "CaveniaServerTickSpawner.java");
@@ -132,14 +130,11 @@ class CaveniaWorldgenResourceSplitContractsBoundaryTest {
                             || name.equals("CaveniaBiomeSource.java")
                             || name.equals("MapGenCaveniaCaves.java")
                             || name.equals("CaveniaTeleporter.java")
-                            || name.equals("CaveniaPortal.java")
-                            || name.equals("CaveniaPortalBlock.java")
-                            || name.equals("CaveniaAccessHandler.java")
                             || name.equals("CaveniaSpawnProvider.java")
                             || name.equals("CaveniaSpawnHandler.java")
                             || name.equals("CaveniaServerTickSpawner.java")
                     ),
-                "Expected the worldgen-resource split-contract MVP to avoid adding any active Cavenia runtime classes"
+                "Expected the decision-only first-active-surface selection to avoid adding any active Cavenia runtime classes"
             );
         }
 
@@ -157,7 +152,7 @@ class CaveniaWorldgenResourceSplitContractsBoundaryTest {
                             || path.contains("/neoforge/biome_modifier/cavenia")
                             || path.contains("/tags/worldgen/biome/cavenia")
                     ),
-                "Expected the worldgen-resource split-contract MVP to keep active Cavenia runtime resources absent"
+                "Expected the decision-only first-active-surface selection to keep active Cavenia runtime resources absent"
             );
         }
     }
