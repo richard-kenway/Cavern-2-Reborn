@@ -14,6 +14,7 @@ class CaveniaLegacyToModernBiomeKeyMappingsBoundaryTest {
     private static final Path README = resolveProjectFile("README.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
     private static final Path INVENTORY_DOC = resolveProjectFile("docs", "cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md");
+    private static final Path ALGORITHM_DOC = resolveProjectFile("docs", "cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md");
     private static final Path PLAN_DOC = resolveProjectFile("docs", "cavenia-biome-source-strategy-narrow-non-runtime-mvp.md");
     private static final Path SELECTION_DOC = resolveProjectFile("docs", "cavenia-deliberate-first-active-surface-selection-mvp.md");
     private static final Path MATRIX_DOC = resolveProjectFile("docs", "cavenia-activation-surface-final-inert-readiness-matrix-mvp.md");
@@ -35,6 +36,7 @@ class CaveniaLegacyToModernBiomeKeyMappingsBoundaryTest {
         String readme = Files.readString(README);
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE_DOC);
         String inventoryDoc = Files.readString(INVENTORY_DOC);
+        String algorithmDoc = Files.readString(ALGORITHM_DOC);
         String planDoc = Files.readString(PLAN_DOC);
         String selectionDoc = Files.readString(SELECTION_DOC);
         String matrixDoc = Files.readString(MATRIX_DOC);
@@ -57,6 +59,7 @@ class CaveniaLegacyToModernBiomeKeyMappingsBoundaryTest {
         assertTrue(inventoryDoc.contains("`CaveniaFirstActiveSurfaceSelection`"));
         assertTrue(inventoryDoc.contains("`CaveniaActivationReadinessMatrix`"));
         assertTrue(inventoryDoc.contains("`CaveniaGeneratorRegistrationBoundary`"));
+        assertTrue(inventoryDoc.contains("docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md"));
         assertTrue(inventoryDoc.contains("non-runtime"));
         assertTrue(inventoryDoc.contains("final runtime mapping is not ready"));
         assertTrue(inventoryDoc.contains("registry verification is not ready"));
@@ -91,6 +94,7 @@ class CaveniaLegacyToModernBiomeKeyMappingsBoundaryTest {
         assertTrue(technicalSpikeDoc.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
         assertTrue(readinessDoc.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
         assertTrue(runtimeKeyDoc.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
+        assertTrue(algorithmDoc.contains("`CaveniaLegacyToModernBiomeKeyMappings`"));
     }
 
     @Test

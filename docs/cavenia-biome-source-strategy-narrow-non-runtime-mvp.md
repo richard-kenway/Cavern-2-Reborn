@@ -172,6 +172,10 @@ The later legacy-to-modern biome-key mapping inventory follow-up is now document
 
 - `docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md`
 
+The later pure selector follow-up is now documented in:
+
+- `docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md`
+
 The next runtime-adjacent slice may define a pure weighted-selection algorithm over those inventoried legacy candidate entries, but should still be non-runtime unless explicitly changing the boundary.
 
 Runtime `BiomeSource`, codec, registration and registry lookup access must remain separate explicit MVPs.

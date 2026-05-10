@@ -1,0 +1,133 @@
+# Cavenia Weighted Biome Selection Algorithm / Pure Non-Runtime MVP
+
+This is a pure non-runtime weighted biome selection algorithm, not runtime activation.
+
+Selected surface remains `BIOME_SOURCE_STRATEGY`.
+
+Exact weighted selection classes added:
+- `CaveniaWeightedBiomeSelectionEntry`
+- `CaveniaWeightedBiomeSelectionResult`
+- `CaveniaWeightedBiomeSelectionAlgorithm`
+
+Exact selection entry fields:
+- `legacyBiomeName`
+- `candidateModernBiomeKey`
+- `weight`
+- `inclusiveStartWeight`
+- `exclusiveEndWeight`
+- `candidateInventoryOnly`
+- `finalRuntimeMapping`
+- `registryVerified`
+- `runtimeReady`
+
+Exact selection result fields:
+- `inputValue`
+- `normalizedWeightValue`
+- `legacyBiomeName`
+- `candidateModernBiomeKey`
+- `weight`
+- `finalRuntimeMapping`
+- `registryVerified`
+- `runtimeReady`
+
+Exact algorithm helpers:
+- `entries()`
+- `legacyBiomeNames()`
+- `candidateModernBiomeKeys()`
+- `entryForLegacyBiomeName(String)`
+- `entryForWeightValue(int)`
+- `selectByWeightValue(int)`
+- `entryCount()`
+- `totalWeight()`
+- `firstWeightValue()`
+- `lastWeightValue()`
+- `allEntriesHavePositiveWeights()`
+- `allWeightRangesContiguous()`
+- `allLegacyBiomesHaveCandidateKeys()`
+- `candidateInventoryReady()`
+- `weightedSelectionAlgorithmReady()`
+- `weightedSelectionAlgorithmRuntimeReady()`
+- `anyFinalRuntimeMapping()`
+- `anyRegistryVerified()`
+- `runtimeBiomeSourceReady()`
+- `codecRegistered()`
+- `registryLookupAccessReady()`
+- `modernBiomeMappingReady()`
+- `planIsNonRuntime()`
+- `activationAllowedInThisSlice()`
+- `canActivateCaveniaNow()`
+- `dimensionJsonPresent()`
+- `dimensionTypeJsonPresent()`
+- `cavemanRemainsDeferred()`
+- `activationRequirements()`
+- `activationBlockedReason()`
+
+Pinned facts:
+- exact legacy entry count `14`
+- exact total weight `675`
+- every legacy biome has one candidate key
+- candidate inventory is ready
+- weighted selection algorithm inventory is ready
+- weighted selection runtime is not ready
+- final runtime mapping is not ready
+- registry verification is not ready
+- runtime `BiomeSource` is not ready
+- codec/registration is not ready
+- registry lookup access is not ready
+- `CaveniaBiomeSourceStrategyPlan.modernBiomeMappingReady()` remains false
+- activation is not allowed in this slice
+- Cavenia cannot activate now
+- dimension JSON/type JSON are absent
+- no active `dimension/cavenia.json`
+- no active `dimension_type/cavenia.json`
+- no active Cavenia runtime level
+- no active Cavenia access or teleport
+- no active Cavenia spawning
+- no active Cavenia worldgen resources
+- `EntityCaveman -> deferred:caveman` remains unchanged
+
+Selection uses normalized `0..674` values with inclusive start / exclusive end ranges.
+
+Representative wrapping behavior:
+- `0` first entry
+- `674` last entry
+- `675` first entry
+- `-1` last entry
+
+Relationship to:
+- `CaveniaLegacyToModernBiomeKeyMappings`
+- `CaveniaBiomeSourceStrategyPlan`
+- `CaveniaBiomeTopFilterPolicy`
+- `CaveniaBiomeSelectionSkeleton`
+- `CaveniaBiomeSourceStrategyContracts`
+- `CaveniaFirstActiveSurfaceSelection`
+- `CaveniaActivationReadinessMatrix`
+- `CaveniaGeneratorRegistrationBoundary`
+
+Why this stays inert:
+- this is still not a `BiomeSource`
+- this is still not a `ChunkGenerator`
+- no codec or registry entry was added
+- no registry lookup access was added
+- no dimension JSON/type JSON was added
+- no active generator was added
+- no active Cavenia runtime level was added
+- no active Cavenia access or teleport was added
+- no active Cavenia spawning was added
+- no active Cavenia worldgen resources were added
+
+Cross-links:
+- `docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md`
+- `docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md`
+- `docs/cavenia-deliberate-first-active-surface-selection-mvp.md`
+- `docs/cavenia-activation-surface-final-inert-readiness-matrix-mvp.md`
+- `docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md`
+- `docs/cavenia-biome-top-filter-policy-non-runtime-mvp.md`
+- `docs/cavenia-biome-provider-contract-boundary.md`
+- `docs/cavenia-active-foundation-technical-spike.md`
+- `docs/cavenia-active-foundation-readiness-plan.md`
+- `docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md`
+
+Future recommendation:
+- next slice can introduce an unregistered runtime-biome-source shape/adapter contract that consumes the pure selector, but must still avoid codec/registration and dimension activation unless explicitly chosen
+- runtime `BiomeSource`, codec, registration and registry lookup access must remain separate explicit MVPs

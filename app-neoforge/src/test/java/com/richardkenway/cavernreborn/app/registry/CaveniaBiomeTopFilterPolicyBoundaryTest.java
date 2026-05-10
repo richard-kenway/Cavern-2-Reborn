@@ -27,6 +27,7 @@ class CaveniaBiomeTopFilterPolicyBoundaryTest {
     private static final Path GENERATOR_SCAFFOLD_DOC = resolveProjectFile("docs", "cavenia-active-generator-technical-scaffold-mvp.md");
     private static final Path BIOME_SOURCE_PLAN_DOC = resolveProjectFile("docs", "cavenia-biome-source-strategy-narrow-non-runtime-mvp.md");
     private static final Path BIOME_MAPPING_DOC = resolveProjectFile("docs", "cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md");
+    private static final Path WEIGHTED_SELECTION_DOC = resolveProjectFile("docs", "cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md");
     private static final Path RESOURCES_ROOT = resolveProjectFile(
         "app-neoforge", "src", "main", "resources", "data", "cavernreborn"
     );
@@ -49,6 +50,7 @@ class CaveniaBiomeTopFilterPolicyBoundaryTest {
         String generatorScaffoldDoc = Files.readString(GENERATOR_SCAFFOLD_DOC);
         String biomeSourcePlanDoc = Files.readString(BIOME_SOURCE_PLAN_DOC);
         String biomeMappingDoc = Files.readString(BIOME_MAPPING_DOC);
+        String weightedSelectionDoc = Files.readString(WEIGHTED_SELECTION_DOC);
 
         assertTrue(policyDoc.contains("Cavenia Biome Top/Filter Policy / Non-Runtime MVP"));
         assertTrue(policyDoc.contains("`CaveniaBiomeTopFilterPolicy`"));
@@ -102,6 +104,8 @@ class CaveniaBiomeTopFilterPolicyBoundaryTest {
         assertTrue(biomeSourcePlanDoc.contains("`CaveniaBiomeTopFilterPolicy`"));
         assertTrue(policyDoc.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
         assertTrue(biomeMappingDoc.contains("`CaveniaBiomeTopFilterPolicy`"));
+        assertTrue(policyDoc.contains("docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md"));
+        assertTrue(weightedSelectionDoc.contains("`CaveniaBiomeTopFilterPolicy`"));
     }
 
     @Test

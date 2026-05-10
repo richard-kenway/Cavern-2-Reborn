@@ -43,6 +43,7 @@ The later non-registered active-generator technical scaffold note is now documen
 - `docs/cavenia-deliberate-first-active-surface-selection-mvp.md`
 - `docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md`
 - `docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md`
+- `docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md`
 
 Current readiness state still has no active Cavenia spawning and no fake normal `CAVERN` crazy spawning.
 

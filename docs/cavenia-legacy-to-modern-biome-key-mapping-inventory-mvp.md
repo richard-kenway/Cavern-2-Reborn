@@ -189,3 +189,7 @@ The inventory deliberately uses:
 The next slice can define a pure weighted-selection algorithm over legacy candidate entries, but should still be non-runtime unless explicitly changing the boundary.
 
 Runtime `BiomeSource`, codec, registration and registry lookup access must remain separate explicit MVPs.
+
+That later pure selector follow-up is now documented in:
+
+- `docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md`

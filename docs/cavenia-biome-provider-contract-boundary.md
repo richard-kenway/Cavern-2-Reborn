@@ -26,6 +26,10 @@ The later legacy-to-modern biome-key mapping inventory note is documented separa
 
 - `docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md`
 
+The later pure non-runtime weighted biome selection algorithm note is documented separately in:
+
+- `docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md`
+
 It does not add:
 
 - `data/cavernreborn/dimension/cavenia.json`

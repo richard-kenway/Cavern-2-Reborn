@@ -29,6 +29,10 @@ The later legacy-to-modern biome-key mapping inventory note is now documented se
 
 - `docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md`
 
+The later pure non-runtime weighted biome selection algorithm note is now documented separately in:
+
+- `docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md`
+
 ## What This MVP Adds
 
 Current Reborn now has three final inert app-side matrix types:
@@ -202,3 +206,5 @@ This slice reduces future ambiguity because:
 - all activation surfaces are now visible in one matrix
 - all remain blocked until activation requirements are satisfied
 - future implementation can choose one surface to activate deliberately rather than accidentally crossing boundaries
+
+The later pure selector follow-up is documented in `docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md`.

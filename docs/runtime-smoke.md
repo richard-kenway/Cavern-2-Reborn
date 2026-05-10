@@ -442,6 +442,19 @@ NeoForge GameTest runtime smoke covers:
 - dimension JSON/type JSON remain absent and Cavenia cannot activate now
 - `EntityCaveman -> deferred:caveman` remains unchanged
 - the candidate inventory note at `docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md`
+- Cavenia Weighted Biome Selection Algorithm / Pure Non-Runtime MVP
+- pure non-runtime Cavenia weighted biome selection algorithm MVP
+- `CaveniaWeightedBiomeSelectionAlgorithm` now resolves from `app-neoforge`
+- the algorithm entry count remains `14` and the total weight remains `675`
+- ranges remain contiguous and normalized `0..674` selection stays deterministic
+- candidate inventory is ready and weighted selection algorithm inventory is ready
+- weighted selection runtime is not ready, final runtime mapping is not ready and registry verification is not ready
+- runtime `BiomeSource` is not ready, codec/registration is not ready and registry lookup access is not ready
+- representative selections remain pinned: `0` first entry, `675` first entry and `-1` last entry
+- selected surface remains `BIOME_SOURCE_STRATEGY`, plan remains non-runtime and activation is not allowed in this slice
+- dimension JSON/type JSON remain absent and Cavenia cannot activate now
+- `EntityCaveman -> deferred:caveman` remains unchanged
+- the pure non-runtime selector note at `docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md`
 - `CaveniaSpawnProviderPolicy` still keeps `EntityCaveman -> deferred:caveman`
 - no registered `cavernreborn:caveman` entity type exists at runtime
 - no checked-in Caveman spawn placement, biome modifier or biome tag exists

@@ -58,6 +58,7 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyPla
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyPlanStep;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyContracts;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyRequirement;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaWeightedBiomeSelectionAlgorithm;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaDimensionResourceContracts;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaDimensionResourceRequirement;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaFirstActiveSurfaceSelection;
@@ -8159,6 +8160,8 @@ public final class CavernSpecialOreGameTests {
                 && CaveniaBiomeSourceStrategyPlan.legacyToModernBiomeMappingInventoryReady()
                 && !CaveniaBiomeSourceStrategyPlan.legacyToModernBiomeFinalMappingReady()
                 && !CaveniaBiomeSourceStrategyPlan.weightedSelectionAlgorithmReady()
+                && CaveniaBiomeSourceStrategyPlan.weightedSelectionAlgorithmInventoryReady()
+                && !CaveniaBiomeSourceStrategyPlan.weightedSelectionAlgorithmFinalRuntimeReady()
                 && !CaveniaBiomeSourceStrategyPlan.runtimeBiomeSourceReady()
                 && !CaveniaBiomeSourceStrategyPlan.codecRegistered()
                 && !CaveniaBiomeSourceStrategyPlan.registryLookupAccessReady()
@@ -8196,6 +8199,32 @@ public final class CavernSpecialOreGameTests {
                 && !CaveniaLegacyToModernBiomeKeyMappings.canActivateCaveniaNow()
                 && CaveniaLegacyToModernBiomeKeyMappings.cavemanRemainsDeferred(),
             "Expected the non-runtime Cavenia legacy-to-modern biome-key mapping inventory to keep representative candidate mappings pinned without activating runtime biome-source behavior"
+        );
+        helper.assertTrue(
+            CaveniaWeightedBiomeSelectionAlgorithm.entryCount() == 14
+                && CaveniaWeightedBiomeSelectionAlgorithm.totalWeight() == 675
+                && CaveniaWeightedBiomeSelectionAlgorithm.firstWeightValue() == 0
+                && CaveniaWeightedBiomeSelectionAlgorithm.lastWeightValue() == 674
+                && CaveniaWeightedBiomeSelectionAlgorithm.allWeightRangesContiguous()
+                && CaveniaWeightedBiomeSelectionAlgorithm.candidateInventoryReady()
+                && CaveniaWeightedBiomeSelectionAlgorithm.weightedSelectionAlgorithmReady()
+                && !CaveniaWeightedBiomeSelectionAlgorithm.weightedSelectionAlgorithmRuntimeReady()
+                && !CaveniaWeightedBiomeSelectionAlgorithm.anyFinalRuntimeMapping()
+                && !CaveniaWeightedBiomeSelectionAlgorithm.anyRegistryVerified(),
+            "Expected the pure non-runtime Cavenia weighted biome-selection algorithm to keep the exact weighted entry count, total weight and contiguous range contract pinned"
+        );
+        helper.assertTrue(
+            CaveniaWeightedBiomeSelectionAlgorithm.selectByWeightValue(0).legacyBiomeName().equals("OCEAN")
+                && CaveniaWeightedBiomeSelectionAlgorithm.selectByWeightValue(675).legacyBiomeName().equals("OCEAN")
+                && CaveniaWeightedBiomeSelectionAlgorithm.selectByWeightValue(-1).legacyBiomeName().equals("MESA")
+                && !CaveniaWeightedBiomeSelectionAlgorithm.runtimeBiomeSourceReady()
+                && !CaveniaWeightedBiomeSelectionAlgorithm.codecRegistered()
+                && !CaveniaWeightedBiomeSelectionAlgorithm.registryLookupAccessReady()
+                && !CaveniaWeightedBiomeSelectionAlgorithm.dimensionJsonPresent()
+                && !CaveniaWeightedBiomeSelectionAlgorithm.dimensionTypeJsonPresent()
+                && !CaveniaWeightedBiomeSelectionAlgorithm.canActivateCaveniaNow()
+                && CaveniaWeightedBiomeSelectionAlgorithm.cavemanRemainsDeferred(),
+            "Expected the pure non-runtime Cavenia weighted biome-selection algorithm to keep representative wrapping selections pinned while runtime biome-source activation stays absent"
         );
         helper.assertTrue(
             projectFileExists("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md"),

@@ -27,6 +27,10 @@ The later legacy-to-modern biome-key mapping inventory note is now documented se
 
 - `docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md`
 
+The later pure non-runtime weighted biome selection algorithm note is now documented separately in:
+
+- `docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md`
+
 ## What This MVP Adds
 
 Current Reborn now has a pure `core` biome/top-filter policy:

@@ -162,6 +162,14 @@ public final class CaveniaBiomeSourceStrategyPlan {
         return false;
     }
 
+    public static boolean weightedSelectionAlgorithmInventoryReady() {
+        return CaveniaWeightedBiomeSelectionAlgorithm.weightedSelectionAlgorithmReady();
+    }
+
+    public static boolean weightedSelectionAlgorithmFinalRuntimeReady() {
+        return false;
+    }
+
     public static boolean runtimeBiomeSourceReady() {
         return false;
     }

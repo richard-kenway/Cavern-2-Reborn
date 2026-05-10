@@ -84,6 +84,7 @@ The later final inert readiness-matrix note is now documented separately in:
 - `docs/cavenia-deliberate-first-active-surface-selection-mvp.md`
 - `docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md`
 - `docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md`
+- `docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md`
 
 This spike still does not imply active `cavernreborn:cavenia`, `dimension/cavenia.json`, `dimension_type/cavenia.json`, active Cavenia spawning, active crazy spawning, fake normal `CAVERN` crazy spawning or a `cavernreborn:caveman` entity.
 

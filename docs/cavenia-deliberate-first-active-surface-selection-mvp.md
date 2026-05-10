@@ -204,3 +204,4 @@ That later non-runtime follow-up is now documented in:
 
 - `docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md`
 - `docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md`
+- `docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md`

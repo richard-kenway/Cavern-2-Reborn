@@ -42,6 +42,7 @@ class CaveniaActiveFoundationTechnicalSpikeTest {
     private static final Path SELECTION_DOC = resolveProjectFile("docs", "cavenia-deliberate-first-active-surface-selection-mvp.md");
     private static final Path BIOME_SOURCE_PLAN_DOC = resolveProjectFile("docs", "cavenia-biome-source-strategy-narrow-non-runtime-mvp.md");
     private static final Path BIOME_MAPPING_DOC = resolveProjectFile("docs", "cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md");
+    private static final Path WEIGHTED_SELECTION_DOC = resolveProjectFile("docs", "cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md");
 
     @Test
     void technicalSpikeExistsAndPinsTheFirstActiveFoundationDecision() throws IOException {
@@ -101,6 +102,7 @@ class CaveniaActiveFoundationTechnicalSpikeTest {
         assertTrue(spikeDoc.contains("docs/cavenia-deliberate-first-active-surface-selection-mvp.md"));
         assertTrue(spikeDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
         assertTrue(spikeDoc.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
+        assertTrue(spikeDoc.contains("docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md"));
         assertTrue(spikeDoc.contains("`CAVENIA_LOCATION`"));
         assertTrue(spikeDoc.contains("`CAVENIA_LEVEL_KEY`"));
         assertTrue(spikeDoc.contains("`dimension/cavenia.json`"));
@@ -152,6 +154,7 @@ class CaveniaActiveFoundationTechnicalSpikeTest {
         assertTrue(Files.readString(SELECTION_DOC).contains("docs/cavenia-active-foundation-technical-spike.md"));
         assertTrue(Files.readString(BIOME_SOURCE_PLAN_DOC).contains("docs/cavenia-active-foundation-technical-spike.md"));
         assertTrue(Files.readString(BIOME_MAPPING_DOC).contains("docs/cavenia-active-foundation-technical-spike.md"));
+        assertTrue(Files.readString(WEIGHTED_SELECTION_DOC).contains("docs/cavenia-active-foundation-technical-spike.md"));
     }
 
     private static Path resolveProjectFile(String first, String... more) {
