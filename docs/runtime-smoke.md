@@ -793,3 +793,5 @@ Even when the runtime-smoke pass is green, manual client smoke is still needed f
 - restart persistence on a real server save
 
 The Ore Compass tracking follow-up keeps this division intentionally explicit: GameTest covers state round-trip and runtime-id/policy wiring, while the actual client-visible needle feel still requires manual smoke.
+
+The same runtime smoke slice now also covers the Cavenia Runtime BiomeSource Codec Method Shape Stub MVP: `CaveniaRuntimeBiomeSourceCodecMethodShapeStub` now resolves from `app-neoforge`, pins the local `codec()` method shape as `MapCodec<? extends BiomeSource>`, keeps `CaveniaRuntimeBiomeSource.codec()` unsupported, keeps usable codec implementation, static `CODEC`, `RecordCodecBuilder`, codec registration, biome-source type registration, registry lookup access, holder/resource-key conversion implementation and activation absent, and documents that stub in `docs/cavenia-runtime-biome-source-codec-method-shape-stub-mvp.md`.

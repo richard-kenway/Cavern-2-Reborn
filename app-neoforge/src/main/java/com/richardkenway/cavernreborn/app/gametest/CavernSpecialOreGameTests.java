@@ -71,6 +71,7 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceApiS
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceGuardrail;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceNextStepDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSource;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCodecMethodShapeStub;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceRealSubclassGuardrail;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceRealSubclassNextStepDecision;
@@ -8765,6 +8766,37 @@ public final class CavernSpecialOreGameTests {
             "Expected the real-subclass go/no-go decision layer to keep the API inventory ready, the skeleton ready, and every runtime, registration and activation surface blocked in this slice"
         );
         helper.assertTrue(
+            CaveniaRuntimeBiomeSourceCodecMethodShapeStub.codecMethodShapeStubReady()
+                && CaveniaRuntimeBiomeSourceCodecMethodShapeStub.localCodecMethodSignaturePinned()
+                && CaveniaRuntimeBiomeSourceCodecMethodShapeStub.designatedSubclassOverridesCodecMethod()
+                && CaveniaRuntimeBiomeSourceCodecMethodShapeStub.codecMethodUnsupportedStubbed()
+                && !CaveniaRuntimeBiomeSourceCodecMethodShapeStub.usableMapCodecReady()
+                && !CaveniaRuntimeBiomeSourceCodecMethodShapeStub.staticCodecFieldPresent()
+                && !CaveniaRuntimeBiomeSourceCodecMethodShapeStub.recordCodecBuilderUsed()
+                && !CaveniaRuntimeBiomeSourceCodecMethodShapeStub.usableCodecImplementationReady()
+                && !CaveniaRuntimeBiomeSourceCodecMethodShapeStub.codecRegistered()
+                && !CaveniaRuntimeBiomeSourceCodecMethodShapeStub.biomeSourceTypeRegistered()
+                && !CaveniaRuntimeBiomeSourceCodecMethodShapeStub.registryLookupDependencyReady()
+                && CaveniaRuntimeBiomeSourceCodecMethodShapeStub.realCodecStillDeferred()
+                && CaveniaRuntimeBiomeSourceCodecMethodShapeStub.designatedSubclassReady()
+                && !CaveniaRuntimeBiomeSourceCodecMethodShapeStub.designatedSubclassRuntimeReady()
+                && !CaveniaRuntimeBiomeSourceCodecMethodShapeStub.normalRuntimeConstructionAllowed()
+                && CaveniaRuntimeBiomeSourceCodecMethodShapeStub.unsupportedMethodStubsOnly()
+                && CaveniaRuntimeBiomeSourceCodecMethodShapeStub.goNoGoGuardrailsEnforced()
+                && CaveniaRuntimeBiomeSourceCodecMethodShapeStub.apiShapeInventoryReady()
+                && !CaveniaRuntimeBiomeSourceCodecMethodShapeStub.registryLookupAccessReady()
+                && !CaveniaRuntimeBiomeSourceCodecMethodShapeStub.holderResourceKeyConversionReady()
+                && !CaveniaRuntimeBiomeSourceCodecMethodShapeStub.dimensionBindingReady()
+                && CaveniaRuntimeBiomeSourceCodecMethodShapeStub.selectedSurfaceReadinessItemCount() == 68
+                && CaveniaRuntimeBiomeSourceCodecMethodShapeStub.globalReadinessMatrixTotalRequirementCount() == 46
+                && CaveniaRuntimeBiomeSourceCodecMethodShapeStub.globalReadinessMatrixBlockedRequirementCount() == 46
+                && !CaveniaRuntimeBiomeSourceCodecMethodShapeStub.dimensionJsonPresent()
+                && !CaveniaRuntimeBiomeSourceCodecMethodShapeStub.dimensionTypeJsonPresent()
+                && !CaveniaRuntimeBiomeSourceCodecMethodShapeStub.canActivateCaveniaNow()
+                && CaveniaRuntimeBiomeSourceCodecMethodShapeStub.cavemanRemainsDeferred(),
+            "Expected the codec-method-shape stub contract to pin the unsupported codec() method shape without adding a usable codec, registration, lookup dependency or activation path"
+        );
+        helper.assertTrue(
             CaveniaRuntimeBiomeSource.guardedSubclassStubReady()
                 && CaveniaRuntimeBiomeSource.designatedSubclassSimpleName().equals("CaveniaRuntimeBiomeSource")
                 && CaveniaRuntimeBiomeSource.designatedSubclassFileName().equals("CaveniaRuntimeBiomeSource.java")
@@ -8772,9 +8804,13 @@ public final class CavernSpecialOreGameTests {
                 && !CaveniaRuntimeBiomeSource.usableRuntimeBehaviorReady()
                 && CaveniaRuntimeBiomeSource.unsupportedMethodStubsOnly()
                 && CaveniaRuntimeBiomeSource.codecMethodStubbed()
+                && CaveniaRuntimeBiomeSource.codecMethodShapeStubReady()
                 && CaveniaRuntimeBiomeSource.collectPossibleBiomesStubbed()
                 && CaveniaRuntimeBiomeSource.getNoiseBiomeStubbed()
                 && !CaveniaRuntimeBiomeSource.usableCodecImplementationReady()
+                && CaveniaRuntimeBiomeSource.realCodecStillDeferred()
+                && !CaveniaRuntimeBiomeSource.staticCodecFieldPresent()
+                && !CaveniaRuntimeBiomeSource.recordCodecBuilderUsed()
                 && !CaveniaRuntimeBiomeSource.codecRegistered()
                 && !CaveniaRuntimeBiomeSource.biomeSourceTypeRegistered()
                 && !CaveniaRuntimeBiomeSource.registryLookupAccessReady()
@@ -8808,6 +8844,10 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             projectFileExists("docs", "cavenia-guarded-unregistered-real-biome-source-subclass-stub-mvp.md"),
             "Expected the guarded unregistered real Cavenia biome-source subclass stub doc to exist in the project root"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-runtime-biome-source-codec-method-shape-stub-mvp.md"),
+            "Expected the runtime biome-source codec-method-shape stub doc to exist in the project root"
         );
         helper.assertTrue(
             projectFileExists("docs", "cavenia-generator-runtime-contracts-non-registered-mvp.md"),

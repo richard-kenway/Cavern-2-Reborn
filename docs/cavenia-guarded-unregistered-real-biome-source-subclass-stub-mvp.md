@@ -174,3 +174,5 @@ No access, spawning, or worldgen resources were added.
 The next slice can decide how to make the codec method shape explicit without creating a usable or registered codec yet.
 
 It can also define holder and resource-key conversion readiness for the subclass before any runtime activation work.
+
+The runtime-biome-source codec-method-shape stub follow-up is now documented in `docs/cavenia-runtime-biome-source-codec-method-shape-stub-mvp.md`.

@@ -65,6 +65,10 @@ public final class CaveniaRuntimeBiomeSource extends BiomeSource {
         return true;
     }
 
+    public static boolean codecMethodShapeStubReady() {
+        return CaveniaRuntimeBiomeSourceCodecMethodShapeStub.codecMethodShapeStubReady();
+    }
+
     public static boolean collectPossibleBiomesStubbed() {
         return true;
     }
@@ -75,6 +79,22 @@ public final class CaveniaRuntimeBiomeSource extends BiomeSource {
 
     public static boolean usableCodecImplementationReady() {
         return false;
+    }
+
+    public static boolean realCodecStillDeferred() {
+        return true;
+    }
+
+    public static boolean staticCodecFieldPresent() {
+        return false;
+    }
+
+    public static boolean recordCodecBuilderUsed() {
+        return false;
+    }
+
+    public static String codecMethodUnsupportedReason() {
+        return UNAVAILABLE_REASON;
     }
 
     public static boolean codecRegistered() {

@@ -1,0 +1,182 @@
+# Cavenia Runtime BiomeSource Codec Method Shape Stub MVP
+
+This slice is a codec method shape stub contract, not usable codec implementation.
+
+`CaveniaRuntimeBiomeSource.codec()` now keeps the local `MapCodec<? extends BiomeSource>` method shape explicit while remaining unsupported and non-activating.
+
+## Added Classes
+
+- `CaveniaRuntimeBiomeSourceCodecMethodShapeComponent`
+- `CaveniaRuntimeBiomeSourceCodecMethodShapeEntry`
+- `CaveniaRuntimeBiomeSourceCodecMethodShapeStub`
+
+## Component Values
+
+- `LOCAL_CODEC_METHOD_SIGNATURE`
+- `DESIGNATED_SUBCLASS_OVERRIDE`
+- `UNSUPPORTED_CODEC_METHOD_BODY`
+- `NO_USABLE_MAP_CODEC`
+- `NO_STATIC_CODEC_FIELD`
+- `NO_RECORD_CODEC_BUILDER`
+- `NO_CODEC_REGISTRATION`
+- `NO_BIOME_SOURCE_TYPE_REGISTRATION`
+- `NO_REGISTRY_LOOKUP_DEPENDENCY`
+- `REAL_CODEC_STILL_DEFERRED`
+
+## Entry Fields
+
+Each `CaveniaRuntimeBiomeSourceCodecMethodShapeEntry` records:
+
+- `component`
+- `sourceContractName`
+- `observedShape`
+- `expectedBehavior`
+- `shapePinned`
+- `stubbed`
+- `usableCodecImplementation`
+- `registered`
+- `activationAllowedInThisSlice`
+- `blocker`
+
+## Helper Methods
+
+`CaveniaRuntimeBiomeSourceCodecMethodShapeStub` exposes deterministic helpers for:
+
+- `entries()`
+- `components()`
+- `entryFor(...)`
+- `entryCount()`
+- `codecMethodShapeStubReady()`
+- `localCodecMethodSignaturePinned()`
+- `designatedSubclassOverridesCodecMethod()`
+- `codecMethodUnsupportedStubbed()`
+- `usableMapCodecReady()`
+- `staticCodecFieldPresent()`
+- `recordCodecBuilderUsed()`
+- `usableCodecImplementationReady()`
+- `codecRegistered()`
+- `biomeSourceTypeRegistered()`
+- `registryLookupDependencyReady()`
+- `realCodecStillDeferred()`
+- `activationAllowedInThisSlice()`
+- `canActivateCaveniaNow()`
+- `designatedSubclassReady()`
+- `designatedSubclassRuntimeReady()`
+- `designatedSubclassFileName()`
+- `designatedSubclassSimpleName()`
+- `normalRuntimeConstructionAllowed()`
+- `unsupportedMethodStubsOnly()`
+- `goNoGoGuardrailsEnforced()`
+- `apiShapeInventoryReady()`
+- `registryLookupAccessReady()`
+- `holderResourceKeyConversionReady()`
+- `dimensionBindingReady()`
+- `selectedSurfaceReadinessItemCount()`
+- `globalReadinessMatrixTotalRequirementCount()`
+- `globalReadinessMatrixBlockedRequirementCount()`
+- `dimensionJsonPresent()`
+- `dimensionTypeJsonPresent()`
+- `cavemanRemainsDeferred()`
+- `activationRequirements()`
+- `activationBlockedReason()`
+
+## Pinned Codec Facts
+
+This contract pins these facts:
+
+- `CaveniaRuntimeBiomeSource.codec()` has the local `MapCodec<? extends BiomeSource>` method shape.
+- `codec()` still throws unsupported.
+- no usable `MapCodec` exists.
+- no static `CODEC` field exists.
+- no `RecordCodecBuilder` usage exists.
+- no codec registration exists.
+- no biome-source type registration exists.
+- no registry lookup dependency exists.
+- real codec implementation remains deferred.
+- subclass remains guarded, unregistered, and non-activating.
+- `collectPossibleBiomes()` remains unsupported.
+- `getNoiseBiome(...)` remains unsupported.
+- normal runtime construction remains unavailable.
+
+## Still Absent
+
+This slice still does not add:
+
+- usable codec implementation
+- codec registration
+- biome-source type registration
+- registry lookup access
+- holder/resource-key conversion implementation
+- `dimension/cavenia.json`
+- `dimension_type/cavenia.json`
+- active Cavenia level
+- worldgen resources
+- access or teleport
+- spawning
+- `cavernreborn:caveman`
+
+`cavernreborn:caveman` remains absent.
+
+`EntityCaveman -> deferred:caveman` remains unchanged.
+
+Selected-surface readiness item count remains `68`.
+
+Global readiness matrix total and blocked counts remain `46/46`.
+
+## Relationships
+
+This codec method shape stub builds on:
+
+- `CaveniaRuntimeBiomeSource`
+- `CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision`
+- `CaveniaRuntimeBiomeSourceApiShapeInventory`
+- `CaveniaRuntimeBiomeSourceSubclassDecision`
+- `CaveniaRuntimeBiomeSourceSkeleton`
+- `CaveniaRuntimeBiomeSourceFirstImplementationDecision`
+- `CaveniaBiomeSourceStrategyReadinessMatrix`
+- `CaveniaRegistryLookupReadiness`
+- `CaveniaAdapterCodecRegistrationReadiness`
+- `CaveniaBiomeSelectionAdapterContract`
+- `CaveniaWeightedBiomeSelectionAlgorithm`
+- `CaveniaLegacyToModernBiomeKeyMappings`
+- `CaveniaBiomeSourceStrategyPlan`
+- `CaveniaActivationReadinessMatrix`
+- `CaveniaGeneratorRegistrationBoundary`
+
+## Why This Is Still Inert
+
+This is still not a usable runtime biome source because `codec()`, `collectPossibleBiomes()`, and `getNoiseBiome(...)` remain unsupported and no usable codec object exists.
+
+This is still not a `ChunkGenerator`.
+
+No registry lookup access was added.
+
+No holder/resource-key conversion implementation was added.
+
+No usable codec implementation was added.
+
+No codec or registry entry was added.
+
+No dimension JSON/type JSON exist.
+
+no dimension JSON/type JSON exist
+
+No active generator was added.
+
+No active Cavenia level was added.
+
+no active Cavenia level exists
+
+No access, spawning, or worldgen resources were added.
+
+no worldgen resources exist
+
+no access/teleport exists
+
+no spawning exists
+
+## Future Recommendation
+
+The next slice can define holder and resource-key conversion readiness for the subclass.
+
+It can also decide a non-usable codec-object placeholder only if it remains unregistered and explicitly not usable.

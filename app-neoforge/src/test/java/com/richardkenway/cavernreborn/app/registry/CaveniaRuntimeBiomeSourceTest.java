@@ -55,9 +55,18 @@ class CaveniaRuntimeBiomeSourceTest {
         assertTrue(designatedSource.contains("public static boolean usableRuntimeBehaviorReady() {\n        return false;\n    }"));
         assertTrue(designatedSource.contains("public static boolean unsupportedMethodStubsOnly() {\n        return true;\n    }"));
         assertTrue(designatedSource.contains("public static boolean codecMethodStubbed() {\n        return true;\n    }"));
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean codecMethodShapeStubReady() {\n        return CaveniaRuntimeBiomeSourceCodecMethodShapeStub.codecMethodShapeStubReady();\n    }"
+            )
+        );
         assertTrue(designatedSource.contains("public static boolean collectPossibleBiomesStubbed() {\n        return true;\n    }"));
         assertTrue(designatedSource.contains("public static boolean getNoiseBiomeStubbed() {\n        return true;\n    }"));
         assertTrue(designatedSource.contains("public static boolean usableCodecImplementationReady() {\n        return false;\n    }"));
+        assertTrue(designatedSource.contains("public static boolean realCodecStillDeferred() {\n        return true;\n    }"));
+        assertTrue(designatedSource.contains("public static boolean staticCodecFieldPresent() {\n        return false;\n    }"));
+        assertTrue(designatedSource.contains("public static boolean recordCodecBuilderUsed() {\n        return false;\n    }"));
+        assertTrue(designatedSource.contains("public static String codecMethodUnsupportedReason() {\n        return UNAVAILABLE_REASON;\n    }"));
         assertTrue(designatedSource.contains("public static boolean codecRegistered() {\n        return false;\n    }"));
         assertTrue(designatedSource.contains("public static boolean biomeSourceTypeRegistered() {\n        return false;\n    }"));
         assertTrue(designatedSource.contains("public static boolean registryLookupAccessReady() {\n        return false;\n    }"));
@@ -114,6 +123,10 @@ class CaveniaRuntimeBiomeSourceTest {
         assertTrue(designatedSource.contains("throw unsupported(\"collectPossibleBiomes()\")"));
         assertTrue(designatedSource.contains("throw unsupported(\"getNoiseBiome(int, int, int, Climate.Sampler)\")"));
         assertTrue(designatedSource.contains("not usable, registered, or activating yet"));
+        assertFalse(designatedSource.contains("public static final MapCodec"));
+        assertFalse(designatedSource.contains("static final MapCodec"));
+        assertFalse(designatedSource.contains("CODEC ="));
+        assertFalse(designatedSource.contains("RecordCodecBuilder"));
     }
 
     @Test
@@ -128,6 +141,9 @@ class CaveniaRuntimeBiomeSourceTest {
         assertTrue(designatedSource.contains("throw unsupported(\"codec()\")"));
         assertTrue(designatedSource.contains("throw unsupported(\"collectPossibleBiomes()\")"));
         assertTrue(designatedSource.contains("throw unsupported(\"getNoiseBiome(int, int, int, Climate.Sampler)\")"));
+        assertFalse(designatedSource.contains("public static final MapCodec"));
+        assertFalse(designatedSource.contains("static final MapCodec"));
+        assertFalse(designatedSource.contains("CODEC ="));
         assertFalse(designatedSource.contains("Registry.register"));
         assertFalse(designatedSource.contains("RecordCodecBuilder"));
         assertFalse(designatedSource.contains("BuiltInRegistries.BIOME_SOURCE.register"));
@@ -147,10 +163,11 @@ class CaveniaRuntimeBiomeSourceTest {
 
             assertEquals(1, designatedFiles.size());
             assertEquals(DESIGNATED_SOURCE, designatedFiles.get(0));
-            assertOnlyDesignatedFileContains(regularFiles, "extends BiomeSource");
+            assertOnlyDesignatedFileContains(regularFiles, "class CaveniaRuntimeBiomeSource extends BiomeSource");
             assertOnlyDesignatedFileContains(regularFiles, "import net.minecraft.world.level.biome.BiomeSource;");
             assertOnlyDesignatedFileContains(regularFiles, "Holder<Biome>");
-            assertOnlyDesignatedFileContains(regularFiles, "MapCodec");
+            assertOnlyDesignatedFileContains(regularFiles, "import com.mojang.serialization.MapCodec;");
+            assertOnlyDesignatedFileContains(regularFiles, "protected MapCodec<? extends BiomeSource> codec()");
             assertOnlyDesignatedFileContains(regularFiles, "Climate.Sampler");
             assertNoMainSourceContains(regularFiles, "Registry.register");
             assertNoMainSourceContains(regularFiles, "RecordCodecBuilder");
