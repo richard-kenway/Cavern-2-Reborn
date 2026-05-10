@@ -47,6 +47,8 @@ import com.richardkenway.cavernreborn.app.item.OreCompassItem;
 import com.richardkenway.cavernreborn.app.mining.CavernMiningAssistEvents;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaGeneratorActivationRequirement;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaActivationReadinessHosts;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaActivationReadinessMatrix;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaActivationSurface;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaAccessTravelContracts;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaAccessTravelRequirement;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSelectionSkeleton;
@@ -8034,6 +8036,45 @@ public final class CavernSpecialOreGameTests {
             "Expected the non-registered Cavenia worldgen-resource split-contract layer to stay blocked behind the existing activation-host, dimension-resource, generator-host and biome-source-strategy-host boundaries"
         );
         helper.assertTrue(
+            CaveniaActivationReadinessMatrix.entries().size() == 6
+                && CaveniaActivationReadinessMatrix.surfaces().equals(List.of(
+                    CaveniaActivationSurface.GENERATOR_HOST,
+                    CaveniaActivationSurface.BIOME_SOURCE_STRATEGY,
+                    CaveniaActivationSurface.DIMENSION_RESOURCE,
+                    CaveniaActivationSurface.ACCESS_TRAVEL,
+                    CaveniaActivationSurface.SPAWN_HOST,
+                    CaveniaActivationSurface.WORLDGEN_RESOURCE
+                ))
+                && CaveniaActivationReadinessMatrix.totalRequirementCount() == 46
+                && CaveniaActivationReadinessMatrix.blockedRequirementCount() == 46,
+            "Expected the final inert Cavenia activation-readiness matrix to keep the exact surface order and total blocked requirement count pinned"
+        );
+        helper.assertTrue(
+            CaveniaActivationReadinessMatrix.allSurfacesBlocked()
+                && !CaveniaActivationReadinessMatrix.anySurfaceReady()
+                && !CaveniaActivationReadinessMatrix.anyRuntimeImplemented()
+                && !CaveniaActivationReadinessMatrix.activeRuntimeSurfacePresent()
+                && !CaveniaActivationReadinessMatrix.canActivateCavenia(),
+            "Expected the final inert Cavenia activation-readiness matrix to keep every activation surface blocked and no runtime surface present"
+        );
+        helper.assertTrue(
+            !CaveniaActivationReadinessMatrix.generatorCanCreateChunks()
+                && !CaveniaActivationReadinessMatrix.biomeSourceRuntimeReady()
+                && !CaveniaActivationReadinessMatrix.dimensionCanCreateLevel()
+                && !CaveniaActivationReadinessMatrix.accessCanTeleport()
+                && !CaveniaActivationReadinessMatrix.spawnHostCanSpawn()
+                && !CaveniaActivationReadinessMatrix.worldgenCanAffectWorldgen()
+                && !CaveniaActivationReadinessMatrix.dimensionJsonPresent()
+                && !CaveniaActivationReadinessMatrix.dimensionTypeJsonPresent()
+                && !CaveniaActivationReadinessMatrix.configuredCarverResourcesPresent()
+                && !CaveniaActivationReadinessMatrix.configuredFeatureResourcesPresent()
+                && !CaveniaActivationReadinessMatrix.placedFeatureResourcesPresent()
+                && !CaveniaActivationReadinessMatrix.biomeModifierResourcesPresent()
+                && !CaveniaActivationReadinessMatrix.biomeTagResourcesPresent()
+                && CaveniaActivationReadinessMatrix.cavemanRemainsDeferred(),
+            "Expected the final inert Cavenia activation-readiness matrix to keep every runtime capability and every checked-in activation resource absent"
+        );
+        helper.assertTrue(
             projectFileExists("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md"),
             "Expected the unregistered Cavenia generator/biome-selection skeleton doc to exist in the project root"
         );
@@ -8056,6 +8097,10 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             projectFileExists("docs", "cavenia-worldgen-resource-host-split-contracts-mvp.md"),
             "Expected the non-registered Cavenia worldgen-resource split-contract doc to exist in the project root"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-activation-surface-final-inert-readiness-matrix-mvp.md"),
+            "Expected the final inert Cavenia activation-readiness matrix doc to exist in the project root"
         );
         helper.assertTrue(
             projectFileExists("docs", "caveman-cavenia-normal-roster-boundary.md"),

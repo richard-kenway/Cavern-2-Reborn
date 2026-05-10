@@ -78,6 +78,10 @@ The later worldgen-resource split-contract note is now documented separately in:
 
 - `docs/cavenia-worldgen-resource-host-split-contracts-mvp.md`
 
+The later final inert readiness-matrix note is now documented separately in:
+
+- `docs/cavenia-activation-surface-final-inert-readiness-matrix-mvp.md`
+
 This spike still does not imply active `cavernreborn:cavenia`, `dimension/cavenia.json`, `dimension_type/cavenia.json`, active Cavenia spawning, active crazy spawning, fake normal `CAVERN` crazy spawning or a `cavernreborn:caveman` entity.
 
 ## Spike Decision

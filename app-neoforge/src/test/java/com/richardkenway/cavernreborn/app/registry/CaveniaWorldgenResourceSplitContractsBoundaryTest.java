@@ -25,6 +25,7 @@ class CaveniaWorldgenResourceSplitContractsBoundaryTest {
     private static final Path TECHNICAL_SPIKE_DOC = resolveProjectFile("docs", "cavenia-active-foundation-technical-spike.md");
     private static final Path READINESS_DOC = resolveProjectFile("docs", "cavenia-active-foundation-readiness-plan.md");
     private static final Path RUNTIME_KEY_DOC = resolveProjectFile("docs", "cavenia-runtime-key-inactive-dimension-scaffold-mvp.md");
+    private static final Path MATRIX_DOC = resolveProjectFile("docs", "cavenia-activation-surface-final-inert-readiness-matrix-mvp.md");
     private static final Path APP_SOURCE_ROOT = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app"
     );
@@ -75,6 +76,7 @@ class CaveniaWorldgenResourceSplitContractsBoundaryTest {
         assertTrue(splitDoc.contains("no active crazy spawning"));
         assertTrue(splitDoc.contains("no fake normal `CAVERN` crazy spawning"));
         assertTrue(splitDoc.contains("no CAVERN resource reuse is accepted as Cavenia parity"));
+        assertTrue(splitDoc.contains("docs/cavenia-activation-surface-final-inert-readiness-matrix-mvp.md"));
 
         assertTrue(readme.contains("Cavenia Worldgen-Resource Host Split Contracts MVP"));
         assertTrue(readme.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
@@ -91,6 +93,7 @@ class CaveniaWorldgenResourceSplitContractsBoundaryTest {
         assertTrue(technicalSpikeDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
         assertTrue(readinessDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
         assertTrue(runtimeKeyDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
+        assertTrue(Files.readString(MATRIX_DOC).contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
     }
 
     @Test

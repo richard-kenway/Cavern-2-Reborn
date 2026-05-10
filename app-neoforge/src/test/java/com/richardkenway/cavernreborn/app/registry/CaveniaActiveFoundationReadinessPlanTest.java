@@ -39,6 +39,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
     private static final Path SPLIT_CONTRACTS_DOC = resolveProjectFile("docs", "cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md");
     private static final Path DIMENSION_ACCESS_SPAWN_SPLIT_DOC = resolveProjectFile("docs", "cavenia-dimension-access-spawn-split-contracts-mvp.md");
     private static final Path WORLDGEN_RESOURCE_SPLIT_DOC = resolveProjectFile("docs", "cavenia-worldgen-resource-host-split-contracts-mvp.md");
+    private static final Path MATRIX_DOC = resolveProjectFile("docs", "cavenia-activation-surface-final-inert-readiness-matrix-mvp.md");
 
     @Test
     void readinessPlanExistsAndPinsTheCurrentInactiveFoundationState() throws IOException {
@@ -92,6 +93,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(planDoc.contains("docs/cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md"));
         assertTrue(planDoc.contains("docs/cavenia-dimension-access-spawn-split-contracts-mvp.md"));
         assertTrue(planDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
+        assertTrue(planDoc.contains("docs/cavenia-activation-surface-final-inert-readiness-matrix-mvp.md"));
         assertTrue(planDoc.contains("`CaveniaSpawnProviderPolicy`"));
         assertTrue(planDoc.contains("`CaveniaSpawnEntry`"));
         assertTrue(planDoc.contains("`CaveniaTerrainGeneratorPolicy`"));
@@ -134,6 +136,9 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(planDoc.contains("`CaveniaWorldgenResourceRequirement`"));
         assertTrue(planDoc.contains("`CaveniaWorldgenResourceRequirementContract`"));
         assertTrue(planDoc.contains("`CaveniaWorldgenResourceContracts`"));
+        assertTrue(planDoc.contains("`CaveniaActivationSurface`"));
+        assertTrue(planDoc.contains("`CaveniaActivationReadinessMatrixEntry`"));
+        assertTrue(planDoc.contains("`CaveniaActivationReadinessMatrix`"));
         assertTrue(planDoc.contains("`EntityCaveman -> deferred:caveman`"));
         assertTrue(planDoc.contains("nearby `ICavenicMob` whose `isNonBoss()` returns `false`"));
         assertTrue(planDoc.contains("docs/cavenia-active-foundation-technical-spike.md"));
@@ -196,6 +201,8 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(readme.contains("docs/cavenia-dimension-access-spawn-split-contracts-mvp.md"));
         assertTrue(readme.contains("Cavenia Worldgen-Resource Host Split Contracts MVP"));
         assertTrue(readme.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
+        assertTrue(readme.contains("Cavenia Activation Surface Consolidation / Final Inert Readiness Matrix MVP"));
+        assertTrue(readme.contains("docs/cavenia-activation-surface-final-inert-readiness-matrix-mvp.md"));
         assertTrue(runtimeSmokeDoc.contains("Cavenia Active Foundation Readiness / Implementation Plan"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(runtimeSmokeDoc.contains("inactive Cavenia active-foundation readiness-plan boundary"));
@@ -236,6 +243,8 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-dimension-access-spawn-split-contracts-mvp.md"));
         assertTrue(runtimeSmokeDoc.contains("Cavenia Worldgen-Resource Host Split Contracts MVP"));
         assertTrue(runtimeSmokeDoc.contains("docs/cavenia-worldgen-resource-host-split-contracts-mvp.md"));
+        assertTrue(runtimeSmokeDoc.contains("Cavenia Activation Surface Consolidation / Final Inert Readiness Matrix MVP"));
+        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-activation-surface-final-inert-readiness-matrix-mvp.md"));
         assertTrue(Files.readString(WORLDGEN_RESOURCE_SPLIT_DOC).contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(runtimeSmokeDoc.contains("non-registered Cavenia dimension-resource / access-travel / spawn-host split-contract MVP"));
         assertTrue(Files.readString(GENERATOR_BRIDGE_DOC).contains("docs/cavenia-active-foundation-readiness-plan.md"));
@@ -244,6 +253,7 @@ class CaveniaActiveFoundationReadinessPlanTest {
         assertTrue(Files.readString(GENERATOR_RUNTIME_CONTRACTS_DOC).contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(Files.readString(ACTIVATION_HOSTS_DOC).contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(Files.readString(DIMENSION_ACCESS_SPAWN_SPLIT_DOC).contains("docs/cavenia-active-foundation-readiness-plan.md"));
+        assertTrue(Files.readString(MATRIX_DOC).contains("docs/cavenia-active-foundation-readiness-plan.md"));
         assertTrue(runtimeSmokeDoc.contains("non-registered Cavenia active-generator technical scaffold MVP"));
         assertTrue(scaffoldDoc.contains("Cavenia Runtime Key / Inactive Dimension Scaffold MVP"));
         assertTrue(terrainPolicyDoc.contains("Cavenia Terrain Generator Foundation / Non-Runtime MVP"));

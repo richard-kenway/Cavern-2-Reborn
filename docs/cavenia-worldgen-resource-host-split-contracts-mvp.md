@@ -16,6 +16,10 @@ It builds on:
 - `docs/cavenia-active-foundation-readiness-plan.md`
 - `docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md`
 
+The later final inert readiness-matrix note is now documented separately in:
+
+- `docs/cavenia-activation-surface-final-inert-readiness-matrix-mvp.md`
+
 ## What This MVP Adds
 
 Current Reborn now has three narrower app-side worldgen-resource contract types:

@@ -25,6 +25,10 @@ The later worldgen-resource split-contract note is now documented separately in:
 
 - `docs/cavenia-worldgen-resource-host-split-contracts-mvp.md`
 
+The later final inert readiness-matrix note is now documented separately in:
+
+- `docs/cavenia-activation-surface-final-inert-readiness-matrix-mvp.md`
+
 ## What This MVP Adds
 
 Current Reborn now has three app-side non-registered activation-readiness host contract types:
