@@ -168,4 +168,5 @@ The later non-registered active-generator scaffold follow-up is now documented i
 - `docs/cavenia-generator-biome-source-unregistered-skeleton-mvp.md`
 - `docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md`
 - `docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md`
+- `docs/cavenia-registry-lookup-readiness-contracts-mvp.md`
 This inert scaffold is only the identity floor for those later slices.

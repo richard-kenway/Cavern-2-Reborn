@@ -110,6 +110,7 @@ class CaveniaBiomeTopFilterPolicyBoundaryTest {
         assertTrue(weightedSelectionDoc.contains("`CaveniaBiomeTopFilterPolicy`"));
         assertTrue(policyDoc.contains("docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md"));
         assertTrue(adapterDoc.contains("`CaveniaBiomeTopFilterPolicy`"));
+        assertTrue(policyDoc.contains("docs/cavenia-registry-lookup-readiness-contracts-mvp.md"));
     }
 
     @Test

@@ -468,6 +468,21 @@ NeoForge GameTest runtime smoke covers:
 - the unregistered adapter note at `docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md`
 - the Cavenia Adapter Codec/Registration Readiness Contracts MVP note at `docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md`
 - the adapter codec/registration readiness note at `docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md`
+- Cavenia Registry Lookup Readiness Contracts MVP
+- registry lookup readiness-contract MVP
+- `CaveniaRegistryLookupReadiness` now resolves from `app-neoforge`
+- the requirement count remains `9`
+- candidate keys are inventoried and candidate keys remain string-only
+- registry lookup readiness is ready while registry lookup runtime is not ready
+- registry access source decision is not ready, biome registry reference is not ready and resource-key conversion is not ready
+- holder resolution is not ready, missing-biome fallback decision is not ready, runtime lookup context is not ready and adapter result to runtime biome is not ready
+- registry lookup access is not ready, registry verification is not ready and runtime biome source is not ready
+- runtime biome source is not registered and codec is not registered
+- adapter entry count remains `14` and adapter total weight remains `675`
+- selected surface remains `BIOME_SOURCE_STRATEGY`, plan remains non-runtime and activation is not allowed in this slice
+- dimension JSON/type JSON remain absent and Cavenia cannot activate now
+- `EntityCaveman -> deferred:caveman` remains unchanged
+- the registry lookup readiness note at `docs/cavenia-registry-lookup-readiness-contracts-mvp.md`
 - `CaveniaSpawnProviderPolicy` still keeps `EntityCaveman -> deferred:caveman`
 - no registered `cavernreborn:caveman` entity type exists at runtime
 - no checked-in Caveman spawn placement, biome modifier or biome tag exists

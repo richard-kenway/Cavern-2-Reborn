@@ -13,102 +13,116 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
-import com.richardkenway.cavernreborn.app.worldgen.CaveniaAdapterCodecRegistrationReadiness;
-import com.richardkenway.cavernreborn.app.worldgen.CaveniaAdapterCodecRegistrationRequirement;
-import com.richardkenway.cavernreborn.app.worldgen.CaveniaAdapterCodecRegistrationRequirementContract;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRegistryLookupReadiness;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRegistryLookupRequirement;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRegistryLookupRequirementContract;
 
-class CaveniaAdapterCodecRegistrationReadinessTest {
+class CaveniaRegistryLookupReadinessTest {
     private static final Path REQUIREMENT_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
-        "CaveniaAdapterCodecRegistrationRequirement.java"
+        "CaveniaRegistryLookupRequirement.java"
     );
     private static final Path CONTRACT_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
-        "CaveniaAdapterCodecRegistrationRequirementContract.java"
+        "CaveniaRegistryLookupRequirementContract.java"
     );
     private static final Path READINESS_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
-        "CaveniaAdapterCodecRegistrationReadiness.java"
+        "CaveniaRegistryLookupReadiness.java"
     );
     private static final Path APP_SOURCE_ROOT = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app"
     );
 
     @Test
-    void adapterCodecRegistrationReadinessPinsBlockedUnregisteredRuntimePrerequisites() {
-        List<CaveniaAdapterCodecRegistrationRequirement> expectedRequirements = List.of(
-            CaveniaAdapterCodecRegistrationRequirement.ADAPTER_SHAPE_AVAILABLE,
-            CaveniaAdapterCodecRegistrationRequirement.SERIALIZATION_MODEL_DECISION,
-            CaveniaAdapterCodecRegistrationRequirement.CODEC_SHAPE_DECISION,
-            CaveniaAdapterCodecRegistrationRequirement.CODEC_IMPLEMENTATION,
-            CaveniaAdapterCodecRegistrationRequirement.BIOME_SOURCE_TYPE_KEY,
-            CaveniaAdapterCodecRegistrationRequirement.BIOME_SOURCE_TYPE_REGISTRATION,
-            CaveniaAdapterCodecRegistrationRequirement.REGISTRY_LOOKUP_ACCESS,
-            CaveniaAdapterCodecRegistrationRequirement.RUNTIME_BIOME_SOURCE_CLASS,
-            CaveniaAdapterCodecRegistrationRequirement.DIMENSION_BINDING_DEFERRED
+    void registryLookupReadinessPinsBlockedAdapterLookupPrerequisites() {
+        List<CaveniaRegistryLookupRequirement> expectedRequirements = List.of(
+            CaveniaRegistryLookupRequirement.CANDIDATE_KEYS_INVENTORIED,
+            CaveniaRegistryLookupRequirement.CANDIDATE_KEYS_STILL_STRING_ONLY,
+            CaveniaRegistryLookupRequirement.REGISTRY_ACCESS_SOURCE_DECISION,
+            CaveniaRegistryLookupRequirement.BIOME_REGISTRY_REFERENCE,
+            CaveniaRegistryLookupRequirement.RESOURCE_KEY_CONVERSION,
+            CaveniaRegistryLookupRequirement.HOLDER_RESOLUTION,
+            CaveniaRegistryLookupRequirement.MISSING_BIOME_FALLBACK_DECISION,
+            CaveniaRegistryLookupRequirement.RUNTIME_LOOKUP_CONTEXT,
+            CaveniaRegistryLookupRequirement.ADAPTER_RESULT_TO_RUNTIME_BIOME
         );
-        List<CaveniaAdapterCodecRegistrationRequirementContract> contracts =
-            CaveniaAdapterCodecRegistrationReadiness.contracts();
+        List<CaveniaRegistryLookupRequirementContract> contracts = CaveniaRegistryLookupReadiness.contracts();
 
-        assertEquals(expectedRequirements, CaveniaAdapterCodecRegistrationReadiness.requirements());
+        assertEquals(expectedRequirements, CaveniaRegistryLookupReadiness.requirements());
         assertEquals(9, contracts.size());
-        assertEquals(9, CaveniaAdapterCodecRegistrationReadiness.requirementCount());
+        assertEquals(9, CaveniaRegistryLookupReadiness.requirementCount());
         assertTrue(contracts.stream().allMatch(contract -> contract.sourceContractName() != null && !contract.sourceContractName().isBlank()));
         assertTrue(contracts.stream().allMatch(contract -> contract.blocker() != null && !contract.blocker().isBlank()));
         assertEquals(
-            1L,
-            contracts.stream().filter(CaveniaAdapterCodecRegistrationRequirementContract::prerequisiteSatisfied).count()
+            2L,
+            contracts.stream().filter(CaveniaRegistryLookupRequirementContract::prerequisiteSatisfied).count()
         );
         assertTrue(
-            CaveniaAdapterCodecRegistrationReadiness.contractFor(CaveniaAdapterCodecRegistrationRequirement.ADAPTER_SHAPE_AVAILABLE)
+            CaveniaRegistryLookupReadiness.contractFor(CaveniaRegistryLookupRequirement.CANDIDATE_KEYS_INVENTORIED)
+                .orElseThrow()
+                .prerequisiteSatisfied()
+        );
+        assertTrue(
+            CaveniaRegistryLookupReadiness.contractFor(CaveniaRegistryLookupRequirement.CANDIDATE_KEYS_STILL_STRING_ONLY)
                 .orElseThrow()
                 .prerequisiteSatisfied()
         );
         contracts.stream()
-            .filter(contract -> contract.requirement() != CaveniaAdapterCodecRegistrationRequirement.ADAPTER_SHAPE_AVAILABLE)
+            .filter(contract ->
+                contract.requirement() != CaveniaRegistryLookupRequirement.CANDIDATE_KEYS_INVENTORIED
+                    && contract.requirement() != CaveniaRegistryLookupRequirement.CANDIDATE_KEYS_STILL_STRING_ONLY
+            )
             .forEach(contract -> assertFalse(contract.prerequisiteSatisfied()));
         assertTrue(contracts.stream().allMatch(contract -> !contract.readyForRuntime()));
-        assertTrue(contracts.stream().allMatch(contract -> !contract.codecImplemented()));
-        assertTrue(contracts.stream().allMatch(contract -> !contract.registered()));
         assertTrue(contracts.stream().allMatch(contract -> !contract.registryLookupAvailable()));
+        assertTrue(contracts.stream().allMatch(contract -> !contract.registryVerified()));
+        assertTrue(contracts.stream().allMatch(contract -> !contract.runtimeBiomeResolved()));
         assertTrue(contracts.stream().allMatch(contract -> !contract.activationAllowedInThisSlice()));
-        assertTrue(CaveniaAdapterCodecRegistrationReadiness.adapterShapeReady());
-        assertFalse(CaveniaAdapterCodecRegistrationReadiness.adapterRuntimeReady());
-        assertTrue(CaveniaAdapterCodecRegistrationReadiness.codecRegistrationReadinessReady());
-        assertFalse(CaveniaAdapterCodecRegistrationReadiness.codecRegistrationRuntimeReady());
-        assertTrue(CaveniaAdapterCodecRegistrationReadiness.allRequirementsRuntimeBlocked());
-        assertFalse(CaveniaAdapterCodecRegistrationReadiness.anyRequirementReadyForRuntime());
-        assertFalse(CaveniaAdapterCodecRegistrationReadiness.anyCodecImplemented());
-        assertFalse(CaveniaAdapterCodecRegistrationReadiness.anyRegistered());
-        assertFalse(CaveniaAdapterCodecRegistrationReadiness.registryLookupAccessReady());
-        assertFalse(CaveniaAdapterCodecRegistrationReadiness.runtimeBiomeSourceReady());
-        assertFalse(CaveniaAdapterCodecRegistrationReadiness.runtimeBiomeSourceRegistered());
-        assertFalse(CaveniaAdapterCodecRegistrationReadiness.codecRegistered());
-        assertFalse(CaveniaAdapterCodecRegistrationReadiness.biomeSourceTypeKeyReady());
-        assertFalse(CaveniaAdapterCodecRegistrationReadiness.dimensionBindingReady());
-        assertFalse(CaveniaAdapterCodecRegistrationReadiness.activationAllowedInThisSlice());
-        assertFalse(CaveniaAdapterCodecRegistrationReadiness.canActivateCaveniaNow());
-        assertTrue(CaveniaAdapterCodecRegistrationReadiness.consumesAdapterContract());
-        assertEquals(14, CaveniaAdapterCodecRegistrationReadiness.adapterEntryCount());
-        assertEquals(675, CaveniaAdapterCodecRegistrationReadiness.adapterTotalWeight());
-        assertTrue(CaveniaAdapterCodecRegistrationReadiness.weightedSelectionAlgorithmReady());
-        assertTrue(CaveniaAdapterCodecRegistrationReadiness.candidateInventoryReady());
-        assertTrue(CaveniaAdapterCodecRegistrationReadiness.registryLookupReadinessReady());
-        assertFalse(CaveniaAdapterCodecRegistrationReadiness.registryLookupRuntimeReady());
-        assertFalse(CaveniaAdapterCodecRegistrationReadiness.dimensionJsonPresent());
-        assertFalse(CaveniaAdapterCodecRegistrationReadiness.dimensionTypeJsonPresent());
-        assertTrue(CaveniaAdapterCodecRegistrationReadiness.cavemanRemainsDeferred());
+        assertTrue(CaveniaRegistryLookupReadiness.candidateKeysInventoried());
+        assertTrue(CaveniaRegistryLookupReadiness.candidateKeysStillStringOnly());
+        assertTrue(CaveniaRegistryLookupReadiness.registryLookupReadinessReady());
+        assertFalse(CaveniaRegistryLookupReadiness.registryLookupRuntimeReady());
+        assertTrue(CaveniaRegistryLookupReadiness.allRequirementsRuntimeBlocked());
+        assertFalse(CaveniaRegistryLookupReadiness.anyRequirementReadyForRuntime());
+        assertFalse(CaveniaRegistryLookupReadiness.anyRegistryLookupAvailable());
+        assertFalse(CaveniaRegistryLookupReadiness.anyRegistryVerified());
+        assertFalse(CaveniaRegistryLookupReadiness.anyRuntimeBiomeResolved());
+        assertFalse(CaveniaRegistryLookupReadiness.registryAccessSourceReady());
+        assertFalse(CaveniaRegistryLookupReadiness.biomeRegistryReferenceReady());
+        assertFalse(CaveniaRegistryLookupReadiness.resourceKeyConversionReady());
+        assertFalse(CaveniaRegistryLookupReadiness.holderResolutionReady());
+        assertFalse(CaveniaRegistryLookupReadiness.missingBiomeFallbackReady());
+        assertFalse(CaveniaRegistryLookupReadiness.runtimeLookupContextReady());
+        assertFalse(CaveniaRegistryLookupReadiness.adapterResultToRuntimeBiomeReady());
+        assertTrue(CaveniaRegistryLookupReadiness.adapterShapeReady());
+        assertFalse(CaveniaRegistryLookupReadiness.adapterRuntimeReady());
+        assertTrue(CaveniaRegistryLookupReadiness.codecRegistrationReadinessReady());
+        assertFalse(CaveniaRegistryLookupReadiness.codecRegistrationRuntimeReady());
+        assertFalse(CaveniaRegistryLookupReadiness.runtimeBiomeSourceReady());
+        assertFalse(CaveniaRegistryLookupReadiness.runtimeBiomeSourceRegistered());
+        assertFalse(CaveniaRegistryLookupReadiness.codecRegistered());
+        assertFalse(CaveniaRegistryLookupReadiness.registryLookupAccessReady());
+        assertFalse(CaveniaRegistryLookupReadiness.modernBiomeMappingReady());
+        assertFalse(CaveniaRegistryLookupReadiness.activationAllowedInThisSlice());
+        assertFalse(CaveniaRegistryLookupReadiness.canActivateCaveniaNow());
+        assertEquals(14, CaveniaRegistryLookupReadiness.candidateEntryCount());
+        assertEquals(14, CaveniaRegistryLookupReadiness.adapterEntryCount());
+        assertEquals(675, CaveniaRegistryLookupReadiness.adapterTotalWeight());
+        assertFalse(CaveniaRegistryLookupReadiness.dimensionJsonPresent());
+        assertFalse(CaveniaRegistryLookupReadiness.dimensionTypeJsonPresent());
+        assertTrue(CaveniaRegistryLookupReadiness.cavemanRemainsDeferred());
 
-        assertImmutableList(CaveniaAdapterCodecRegistrationReadiness.contracts(), new Object());
+        assertImmutableList(CaveniaRegistryLookupReadiness.contracts(), new Object());
         assertImmutableList(
-            CaveniaAdapterCodecRegistrationReadiness.requirements(),
-            CaveniaAdapterCodecRegistrationRequirement.ADAPTER_SHAPE_AVAILABLE
+            CaveniaRegistryLookupReadiness.requirements(),
+            CaveniaRegistryLookupRequirement.CANDIDATE_KEYS_INVENTORIED
         );
         contracts.forEach(contract -> assertNotNull(contract.requirement()));
     }
 
     @Test
-    void adapterCodecRegistrationReadinessSourcesStayOutOfRuntimeCodecAndRegistrationPaths() throws IOException {
+    void registryLookupReadinessSourcesStayOutOfRuntimeLookupAndBiomeResolutionPaths() throws IOException {
         String requirementSource = Files.readString(REQUIREMENT_SOURCE);
         String contractSource = Files.readString(CONTRACT_SOURCE);
         String readinessSource = Files.readString(READINESS_SOURCE);
@@ -148,7 +162,7 @@ class CaveniaAdapterCodecRegistrationReadinessTest {
                             || name.equals("CaveniaSpawnHandler.java")
                             || name.equals("CaveniaServerTickSpawner.java")
                     ),
-                "Expected the adapter codec-registration readiness slice to avoid adding active Cavenia runtime classes or resources"
+                "Expected the registry-lookup readiness slice to avoid adding active Cavenia runtime classes or resources"
             );
         }
     }
@@ -162,6 +176,8 @@ class CaveniaAdapterCodecRegistrationReadinessTest {
         assertFalse(source.contains("Registry.register"));
         assertFalse(source.contains("Holder<Biome>"));
         assertFalse(source.contains("RegistryLookup<"));
+        assertFalse(source.contains("RegistryAccess"));
+        assertFalse(source.contains("ResourceKey<Biome>"));
         assertFalse(source.contains("registerConfiguredFeature("));
         assertFalse(source.contains("registerPlacedFeature("));
         assertFalse(source.contains("registerConfiguredCarver("));

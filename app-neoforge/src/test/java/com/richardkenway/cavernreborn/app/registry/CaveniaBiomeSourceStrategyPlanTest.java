@@ -94,6 +94,8 @@ class CaveniaBiomeSourceStrategyPlanTest {
         assertFalse(CaveniaBiomeSourceStrategyPlan.unregisteredAdapterRuntimeReady());
         assertTrue(CaveniaBiomeSourceStrategyPlan.adapterCodecRegistrationReadinessReady());
         assertFalse(CaveniaBiomeSourceStrategyPlan.adapterCodecRegistrationRuntimeReady());
+        assertTrue(CaveniaBiomeSourceStrategyPlan.registryLookupReadinessReady());
+        assertFalse(CaveniaBiomeSourceStrategyPlan.registryLookupRuntimeReady());
         assertFalse(CaveniaBiomeSourceStrategyPlan.runtimeBiomeSourceReady());
         assertFalse(CaveniaBiomeSourceStrategyPlan.codecRegistered());
         assertFalse(CaveniaBiomeSourceStrategyPlan.registryLookupAccessReady());
@@ -161,7 +163,7 @@ class CaveniaBiomeSourceStrategyPlanTest {
         assertFalse(source.contains("MapCodec"));
         assertFalse(source.contains("Registry.register"));
         assertFalse(source.contains("Holder<Biome>"));
-        assertFalse(source.contains("RegistryLookup"));
+        assertFalse(source.contains("RegistryLookup<"));
         assertFalse(source.contains("registerConfiguredFeature("));
         assertFalse(source.contains("registerPlacedFeature("));
         assertFalse(source.contains("registerConfiguredCarver("));

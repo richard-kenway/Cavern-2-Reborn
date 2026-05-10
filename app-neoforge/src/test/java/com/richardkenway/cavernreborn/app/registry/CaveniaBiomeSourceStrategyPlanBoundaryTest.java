@@ -80,6 +80,7 @@ class CaveniaBiomeSourceStrategyPlanBoundaryTest {
         assertTrue(planDoc.contains("`EntityCaveman -> deferred:caveman`"));
         assertTrue(planDoc.contains("docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md"));
         assertTrue(planDoc.contains("docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md"));
+        assertTrue(planDoc.contains("docs/cavenia-registry-lookup-readiness-contracts-mvp.md"));
 
         assertTrue(readme.contains("Cavenia Biome Source Strategy Narrow Non-Runtime MVP"));
         assertTrue(readme.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));

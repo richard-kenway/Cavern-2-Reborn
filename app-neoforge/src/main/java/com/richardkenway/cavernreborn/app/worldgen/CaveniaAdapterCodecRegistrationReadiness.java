@@ -170,6 +170,14 @@ public final class CaveniaAdapterCodecRegistrationReadiness {
         return CaveniaBiomeSelectionAdapterContract.candidateInventoryReady();
     }
 
+    public static boolean registryLookupReadinessReady() {
+        return CaveniaRegistryLookupReadiness.registryLookupReadinessReady();
+    }
+
+    public static boolean registryLookupRuntimeReady() {
+        return false;
+    }
+
     public static boolean dimensionJsonPresent() {
         return CaveniaBiomeSelectionAdapterContract.dimensionJsonPresent();
     }

@@ -1,6 +1,6 @@
-# Cavenia Adapter Codec/Registration Readiness Contracts MVP
+# Cavenia Registry Lookup Readiness Contracts MVP
 
-This is adapter codec/registration readiness only, not runtime activation.
+This is registry lookup readiness only, not runtime activation.
 
 This slice is readiness-only and unregistered.
 
@@ -8,6 +8,7 @@ Selected surface remains `BIOME_SOURCE_STRATEGY`.
 
 It builds on:
 
+- `docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md`
 - `docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md`
 - `docs/cavenia-weighted-biome-selection-algorithm-pure-non-runtime-mvp.md`
 - `docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md`
@@ -23,65 +24,74 @@ It builds on:
 
 ## Exact Readiness Classes Added
 
-- `CaveniaAdapterCodecRegistrationRequirement`
-- `CaveniaAdapterCodecRegistrationRequirementContract`
-- `CaveniaAdapterCodecRegistrationReadiness`
+- `CaveniaRegistryLookupRequirement`
+- `CaveniaRegistryLookupRequirementContract`
+- `CaveniaRegistryLookupReadiness`
 
 ## Exact Requirement Enum Values
 
-- `ADAPTER_SHAPE_AVAILABLE`
-- `SERIALIZATION_MODEL_DECISION`
-- `CODEC_SHAPE_DECISION`
-- `CODEC_IMPLEMENTATION`
-- `BIOME_SOURCE_TYPE_KEY`
-- `BIOME_SOURCE_TYPE_REGISTRATION`
-- `REGISTRY_LOOKUP_ACCESS`
-- `RUNTIME_BIOME_SOURCE_CLASS`
-- `DIMENSION_BINDING_DEFERRED`
+- `CANDIDATE_KEYS_INVENTORIED`
+- `CANDIDATE_KEYS_STILL_STRING_ONLY`
+- `REGISTRY_ACCESS_SOURCE_DECISION`
+- `BIOME_REGISTRY_REFERENCE`
+- `RESOURCE_KEY_CONVERSION`
+- `HOLDER_RESOLUTION`
+- `MISSING_BIOME_FALLBACK_DECISION`
+- `RUNTIME_LOOKUP_CONTEXT`
+- `ADAPTER_RESULT_TO_RUNTIME_BIOME`
 
 ## Exact Requirement Contract Fields
 
-`CaveniaAdapterCodecRegistrationRequirementContract` now exposes:
+`CaveniaRegistryLookupRequirementContract` now exposes:
 
 - `requirement`
 - `sourceContractName`
 - `prerequisiteSatisfied`
 - `readyForRuntime`
-- `codecImplemented`
-- `registered`
 - `registryLookupAvailable`
+- `registryVerified`
+- `runtimeBiomeResolved`
 - `activationAllowedInThisSlice`
 - `blocker`
 
 ## Exact Readiness Helpers
 
-`CaveniaAdapterCodecRegistrationReadiness` now exposes:
+`CaveniaRegistryLookupReadiness` now exposes:
 
 - `contracts()`
 - `requirements()`
-- `contractFor(CaveniaAdapterCodecRegistrationRequirement)`
+- `contractFor(CaveniaRegistryLookupRequirement)`
 - `requirementCount()`
+- `candidateKeysInventoried()`
+- `candidateKeysStillStringOnly()`
+- `registryLookupReadinessReady()`
+- `registryLookupRuntimeReady()`
+- `allRequirementsRuntimeBlocked()`
+- `anyRequirementReadyForRuntime()`
+- `anyRegistryLookupAvailable()`
+- `anyRegistryVerified()`
+- `anyRuntimeBiomeResolved()`
+- `registryAccessSourceReady()`
+- `biomeRegistryReferenceReady()`
+- `resourceKeyConversionReady()`
+- `holderResolutionReady()`
+- `missingBiomeFallbackReady()`
+- `runtimeLookupContextReady()`
+- `adapterResultToRuntimeBiomeReady()`
 - `adapterShapeReady()`
 - `adapterRuntimeReady()`
 - `codecRegistrationReadinessReady()`
 - `codecRegistrationRuntimeReady()`
-- `allRequirementsRuntimeBlocked()`
-- `anyRequirementReadyForRuntime()`
-- `anyCodecImplemented()`
-- `anyRegistered()`
-- `registryLookupAccessReady()`
 - `runtimeBiomeSourceReady()`
 - `runtimeBiomeSourceRegistered()`
 - `codecRegistered()`
-- `biomeSourceTypeKeyReady()`
-- `dimensionBindingReady()`
+- `registryLookupAccessReady()`
+- `modernBiomeMappingReady()`
 - `activationAllowedInThisSlice()`
 - `canActivateCaveniaNow()`
-- `consumesAdapterContract()`
+- `candidateEntryCount()`
 - `adapterEntryCount()`
 - `adapterTotalWeight()`
-- `weightedSelectionAlgorithmReady()`
-- `candidateInventoryReady()`
 - `dimensionJsonPresent()`
 - `dimensionTypeJsonPresent()`
 - `cavemanRemainsDeferred()`
@@ -90,16 +100,22 @@ It builds on:
 
 ## Pinned Current Facts
 
-- adapter shape is ready
-- codec/registration readiness contract is ready
-- codec/registration runtime is not ready
-- codec implementation is not ready
-- biome-source type key is not ready
-- biome-source type registration is not ready
+- candidate keys are inventoried
+- candidate keys remain plain strings only
+- registry lookup readiness contract is ready
+- registry lookup runtime is not ready
+- registry access source decision is not ready
+- biome registry reference is not ready
+- resource-key conversion is not ready
+- holder resolution is not ready
+- missing-biome fallback decision is not ready
+- runtime lookup context is not ready
+- adapter result to runtime biome conversion is not ready
 - registry lookup access is not ready
+- registry verification is not ready
 - runtime `BiomeSource` is not ready
 - runtime biome-source registration is not ready
-- dimension binding is deferred
+- codec implementation/registration is not ready
 - dimension JSON/type JSON are absent
 - activation is not allowed in this slice
 - Cavenia cannot activate now
@@ -109,11 +125,12 @@ It builds on:
 
 This readiness layer sits directly on top of:
 
+- `CaveniaAdapterCodecRegistrationReadiness`
 - `CaveniaBiomeSelectionAdapterContract`
 - `CaveniaBiomeSelectionAdapterQuery`
 - `CaveniaBiomeSelectionAdapterResult`
-- `CaveniaWeightedBiomeSelectionAlgorithm`
 - `CaveniaLegacyToModernBiomeKeyMappings`
+- `CaveniaWeightedBiomeSelectionAlgorithm`
 - `CaveniaBiomeSourceStrategyPlan`
 - `CaveniaBiomeSourceStrategyContracts`
 - `CaveniaActivationReadinessMatrix`
@@ -125,18 +142,19 @@ This slice is still not a `BiomeSource`.
 
 This slice is still not a `ChunkGenerator`.
 
+no registry lookup access was added.
+
+no biome holder/resource-key conversion was added.
+
 no codec implementation was added.
 
 no codec or registry entry was added.
 
-no registry lookup access was added.
-
 It does not:
 
-- define a codec
-- register a biome-source type
-- register a generator type
-- use registry lookup APIs
+- use registry lookup access
+- resolve runtime biome holders
+- convert candidate strings into runtime biome keys
 - create a runtime `BiomeSource`
 - create a runtime `ChunkGenerator`
 - add `dimension/cavenia.json`
@@ -157,8 +175,6 @@ Current Reborn therefore still keeps:
 
 ## Future Recommendation
 
-The next slice may define registry lookup readiness contracts, but must still avoid actual registry lookup access and runtime activation unless explicitly chosen.
+The next slice may consolidate `BIOME_SOURCE_STRATEGY` readiness into a final selected-surface readiness matrix.
 
 Real runtime `BiomeSource`, codec, registration and registry lookup access must remain separate explicit MVPs.
-
-The registry lookup readiness follow-up is now documented in `docs/cavenia-registry-lookup-readiness-contracts-mvp.md`.

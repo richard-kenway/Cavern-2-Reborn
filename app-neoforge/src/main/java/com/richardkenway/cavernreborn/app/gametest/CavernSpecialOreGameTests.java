@@ -61,6 +61,8 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaAdapterCodecRegistrati
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaAdapterCodecRegistrationRequirement;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyContracts;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyRequirement;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRegistryLookupReadiness;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRegistryLookupRequirement;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaWeightedBiomeSelectionAlgorithm;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaDimensionResourceContracts;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaDimensionResourceRequirement;
@@ -8295,10 +8297,66 @@ public final class CavernSpecialOreGameTests {
                 && CaveniaAdapterCodecRegistrationReadiness.adapterTotalWeight() == 675
                 && CaveniaAdapterCodecRegistrationReadiness.weightedSelectionAlgorithmReady()
                 && CaveniaAdapterCodecRegistrationReadiness.candidateInventoryReady()
+                && CaveniaAdapterCodecRegistrationReadiness.registryLookupReadinessReady()
+                && !CaveniaAdapterCodecRegistrationReadiness.registryLookupRuntimeReady()
                 && !CaveniaAdapterCodecRegistrationReadiness.dimensionJsonPresent()
                 && !CaveniaAdapterCodecRegistrationReadiness.dimensionTypeJsonPresent()
                 && CaveniaAdapterCodecRegistrationReadiness.cavemanRemainsDeferred(),
             "Expected the adapter codec-registration readiness layer to keep codec implementation, registration, registry lookup and dimension binding absent"
+        );
+        helper.assertTrue(
+            CaveniaRegistryLookupReadiness.requirementCount() == 9
+                && CaveniaRegistryLookupReadiness.requirements().equals(List.of(
+                    CaveniaRegistryLookupRequirement.CANDIDATE_KEYS_INVENTORIED,
+                    CaveniaRegistryLookupRequirement.CANDIDATE_KEYS_STILL_STRING_ONLY,
+                    CaveniaRegistryLookupRequirement.REGISTRY_ACCESS_SOURCE_DECISION,
+                    CaveniaRegistryLookupRequirement.BIOME_REGISTRY_REFERENCE,
+                    CaveniaRegistryLookupRequirement.RESOURCE_KEY_CONVERSION,
+                    CaveniaRegistryLookupRequirement.HOLDER_RESOLUTION,
+                    CaveniaRegistryLookupRequirement.MISSING_BIOME_FALLBACK_DECISION,
+                    CaveniaRegistryLookupRequirement.RUNTIME_LOOKUP_CONTEXT,
+                    CaveniaRegistryLookupRequirement.ADAPTER_RESULT_TO_RUNTIME_BIOME
+                )),
+            "Expected the registry-lookup readiness layer to keep the exact requirement order pinned"
+        );
+        helper.assertTrue(
+            CaveniaRegistryLookupReadiness.candidateKeysInventoried()
+                && CaveniaRegistryLookupReadiness.candidateKeysStillStringOnly()
+                && CaveniaRegistryLookupReadiness.registryLookupReadinessReady()
+                && !CaveniaRegistryLookupReadiness.registryLookupRuntimeReady()
+                && CaveniaRegistryLookupReadiness.allRequirementsRuntimeBlocked()
+                && !CaveniaRegistryLookupReadiness.anyRequirementReadyForRuntime()
+                && !CaveniaRegistryLookupReadiness.anyRegistryLookupAvailable()
+                && !CaveniaRegistryLookupReadiness.anyRegistryVerified()
+                && !CaveniaRegistryLookupReadiness.anyRuntimeBiomeResolved(),
+            "Expected the registry-lookup readiness layer to keep candidate-key inventory pinned while runtime registry resolution stays blocked"
+        );
+        helper.assertTrue(
+            !CaveniaRegistryLookupReadiness.registryAccessSourceReady()
+                && !CaveniaRegistryLookupReadiness.biomeRegistryReferenceReady()
+                && !CaveniaRegistryLookupReadiness.resourceKeyConversionReady()
+                && !CaveniaRegistryLookupReadiness.holderResolutionReady()
+                && !CaveniaRegistryLookupReadiness.missingBiomeFallbackReady()
+                && !CaveniaRegistryLookupReadiness.runtimeLookupContextReady()
+                && !CaveniaRegistryLookupReadiness.adapterResultToRuntimeBiomeReady()
+                && CaveniaRegistryLookupReadiness.adapterShapeReady()
+                && !CaveniaRegistryLookupReadiness.adapterRuntimeReady()
+                && CaveniaRegistryLookupReadiness.codecRegistrationReadinessReady()
+                && !CaveniaRegistryLookupReadiness.codecRegistrationRuntimeReady()
+                && !CaveniaRegistryLookupReadiness.runtimeBiomeSourceReady()
+                && !CaveniaRegistryLookupReadiness.runtimeBiomeSourceRegistered()
+                && !CaveniaRegistryLookupReadiness.codecRegistered()
+                && !CaveniaRegistryLookupReadiness.registryLookupAccessReady()
+                && !CaveniaRegistryLookupReadiness.modernBiomeMappingReady()
+                && !CaveniaRegistryLookupReadiness.activationAllowedInThisSlice()
+                && !CaveniaRegistryLookupReadiness.canActivateCaveniaNow()
+                && CaveniaRegistryLookupReadiness.candidateEntryCount() == 14
+                && CaveniaRegistryLookupReadiness.adapterEntryCount() == 14
+                && CaveniaRegistryLookupReadiness.adapterTotalWeight() == 675
+                && !CaveniaRegistryLookupReadiness.dimensionJsonPresent()
+                && !CaveniaRegistryLookupReadiness.dimensionTypeJsonPresent()
+                && CaveniaRegistryLookupReadiness.cavemanRemainsDeferred(),
+            "Expected the registry-lookup readiness layer to keep registry access, biome resolution and runtime biome-source activation absent"
         );
         helper.assertTrue(
             projectFileExists("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md"),
@@ -8343,6 +8401,10 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             projectFileExists("docs", "cavenia-adapter-codec-registration-readiness-contracts-mvp.md"),
             "Expected the adapter codec-registration readiness-contract doc to exist in the project root"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-registry-lookup-readiness-contracts-mvp.md"),
+            "Expected the registry-lookup readiness-contract doc to exist in the project root"
         );
         helper.assertTrue(
             projectFileExists("docs", "caveman-cavenia-normal-roster-boundary.md"),

@@ -131,5 +131,6 @@ Cross-links:
 Future recommendation:
 - the unregistered runtime-biome-source shape/adapter contract follow-up is now documented in `docs/cavenia-unregistered-runtime-biome-source-shape-adapter-contract-mvp.md`
 - the adapter codec/registration readiness follow-up is now documented in `docs/cavenia-adapter-codec-registration-readiness-contracts-mvp.md`
+- the registry lookup readiness follow-up is now documented in `docs/cavenia-registry-lookup-readiness-contracts-mvp.md`
 - later readiness-only slices can define registry lookup readiness contracts for that adapter, but must still avoid actual registry lookup access, codec registration and dimension activation unless explicitly chosen
 - runtime `BiomeSource`, codec, registration and registry lookup access must remain separate explicit MVPs

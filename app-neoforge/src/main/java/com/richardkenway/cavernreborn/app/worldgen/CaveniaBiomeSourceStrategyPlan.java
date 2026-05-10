@@ -186,6 +186,14 @@ public final class CaveniaBiomeSourceStrategyPlan {
         return false;
     }
 
+    public static boolean registryLookupReadinessReady() {
+        return CaveniaRegistryLookupReadiness.registryLookupReadinessReady();
+    }
+
+    public static boolean registryLookupRuntimeReady() {
+        return false;
+    }
+
     public static boolean runtimeBiomeSourceReady() {
         return false;
     }
