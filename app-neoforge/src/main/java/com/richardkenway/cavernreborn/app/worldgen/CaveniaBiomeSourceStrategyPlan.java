@@ -150,6 +150,14 @@ public final class CaveniaBiomeSourceStrategyPlan {
         return false;
     }
 
+    public static boolean legacyToModernBiomeMappingInventoryReady() {
+        return CaveniaLegacyToModernBiomeKeyMappings.candidateInventoryReady();
+    }
+
+    public static boolean legacyToModernBiomeFinalMappingReady() {
+        return false;
+    }
+
     public static boolean weightedSelectionAlgorithmReady() {
         return false;
     }

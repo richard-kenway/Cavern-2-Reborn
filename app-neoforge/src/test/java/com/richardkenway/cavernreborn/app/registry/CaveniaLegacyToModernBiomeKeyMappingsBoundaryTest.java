@@ -10,11 +10,11 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
-class CaveniaBiomeSourceStrategyPlanBoundaryTest {
+class CaveniaLegacyToModernBiomeKeyMappingsBoundaryTest {
     private static final Path README = resolveProjectFile("README.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
-    private static final Path PLAN_DOC = resolveProjectFile("docs", "cavenia-biome-source-strategy-narrow-non-runtime-mvp.md");
     private static final Path INVENTORY_DOC = resolveProjectFile("docs", "cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md");
+    private static final Path PLAN_DOC = resolveProjectFile("docs", "cavenia-biome-source-strategy-narrow-non-runtime-mvp.md");
     private static final Path SELECTION_DOC = resolveProjectFile("docs", "cavenia-deliberate-first-active-surface-selection-mvp.md");
     private static final Path MATRIX_DOC = resolveProjectFile("docs", "cavenia-activation-surface-final-inert-readiness-matrix-mvp.md");
     private static final Path GENERATOR_HOST_DOC = resolveProjectFile("docs", "cavenia-generator-host-biome-source-strategy-split-contracts-mvp.md");
@@ -31,11 +31,11 @@ class CaveniaBiomeSourceStrategyPlanBoundaryTest {
     );
 
     @Test
-    void docsPinTheNarrowNonRuntimeBiomeSourceStrategyPlan() throws IOException {
+    void docsPinTheLegacyToModernBiomeKeyMappingInventory() throws IOException {
         String readme = Files.readString(README);
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE_DOC);
-        String planDoc = Files.readString(PLAN_DOC);
         String inventoryDoc = Files.readString(INVENTORY_DOC);
+        String planDoc = Files.readString(PLAN_DOC);
         String selectionDoc = Files.readString(SELECTION_DOC);
         String matrixDoc = Files.readString(MATRIX_DOC);
         String generatorHostDoc = Files.readString(GENERATOR_HOST_DOC);
@@ -45,52 +45,56 @@ class CaveniaBiomeSourceStrategyPlanBoundaryTest {
         String readinessDoc = Files.readString(READINESS_DOC);
         String runtimeKeyDoc = Files.readString(RUNTIME_KEY_DOC);
 
-        assertTrue(planDoc.contains("Cavenia Biome Source Strategy Narrow Non-Runtime MVP"));
-        assertTrue(planDoc.contains("`CaveniaBiomeSourceStrategyPlan`"));
-        assertTrue(planDoc.contains("`CaveniaBiomeSourceStrategyPlanEntry`"));
-        assertTrue(planDoc.contains("`CaveniaBiomeSourceStrategyPlanStep`"));
-        assertTrue(planDoc.contains("`BIOME_SOURCE_STRATEGY`"));
-        assertTrue(planDoc.contains("`CaveniaFirstActiveSurfaceSelection`"));
-        assertTrue(planDoc.contains("`CaveniaActivationReadinessMatrix`"));
-        assertTrue(planDoc.contains("`CaveniaBiomeSourceStrategyContracts`"));
-        assertTrue(planDoc.contains("`CaveniaBiomeSelectionSkeleton`"));
-        assertTrue(planDoc.contains("`CaveniaBiomeTopFilterPolicy`"));
-        assertTrue(planDoc.contains("`CaveniaGeneratorRegistrationBoundary`"));
-        assertTrue(planDoc.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
-        assertTrue(planDoc.contains("non-runtime"));
-        assertTrue(planDoc.contains("activation is not allowed in this slice"));
-        assertTrue(planDoc.contains("modern biome-key mapping is not ready"));
-        assertTrue(planDoc.contains("runtime `BiomeSource` is not ready"));
-        assertTrue(planDoc.contains("codec/registration is not ready"));
-        assertTrue(planDoc.contains("registry lookup access is not ready"));
-        assertTrue(planDoc.contains("not a `BiomeSource`"));
-        assertTrue(planDoc.contains("not a `ChunkGenerator`"));
-        assertTrue(planDoc.contains("no codec or registry entry was added"));
-        assertTrue(planDoc.contains("no active `dimension/cavenia.json`"));
-        assertTrue(planDoc.contains("no active `dimension_type/cavenia.json`"));
-        assertTrue(planDoc.contains("no active Cavenia runtime level"));
-        assertTrue(planDoc.contains("no active Cavenia access or teleport"));
-        assertTrue(planDoc.contains("no active Cavenia spawning"));
-        assertTrue(planDoc.contains("no active Cavenia worldgen resources"));
-        assertTrue(planDoc.contains("`EntityCaveman -> deferred:caveman`"));
-
-        assertTrue(readme.contains("Cavenia Biome Source Strategy Narrow Non-Runtime MVP"));
-        assertTrue(readme.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
-        assertTrue(runtimeSmokeDoc.contains("Cavenia Biome Source Strategy Narrow Non-Runtime MVP"));
-        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
-        assertTrue(selectionDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
-        assertTrue(matrixDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
-        assertTrue(generatorHostDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
-        assertTrue(policyDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
-        assertTrue(providerBoundaryDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
-        assertTrue(technicalSpikeDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
-        assertTrue(readinessDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
-        assertTrue(runtimeKeyDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
+        assertTrue(inventoryDoc.contains("Cavenia Legacy-To-Modern Biome-Key Mapping Inventory MVP"));
+        assertTrue(inventoryDoc.contains("`CaveniaLegacyToModernBiomeKeyMappings`"));
+        assertTrue(inventoryDoc.contains("`CaveniaLegacyToModernBiomeKeyMappingEntry`"));
+        assertTrue(inventoryDoc.contains("`CaveniaBiomeKeyMappingKind`"));
+        assertTrue(inventoryDoc.contains("`BIOME_SOURCE_STRATEGY`"));
         assertTrue(inventoryDoc.contains("`CaveniaBiomeSourceStrategyPlan`"));
+        assertTrue(inventoryDoc.contains("`CaveniaBiomeTopFilterPolicy`"));
+        assertTrue(inventoryDoc.contains("`CaveniaBiomeSelectionSkeleton`"));
+        assertTrue(inventoryDoc.contains("`CaveniaBiomeSourceStrategyContracts`"));
+        assertTrue(inventoryDoc.contains("`CaveniaFirstActiveSurfaceSelection`"));
+        assertTrue(inventoryDoc.contains("`CaveniaActivationReadinessMatrix`"));
+        assertTrue(inventoryDoc.contains("`CaveniaGeneratorRegistrationBoundary`"));
+        assertTrue(inventoryDoc.contains("non-runtime"));
+        assertTrue(inventoryDoc.contains("final runtime mapping is not ready"));
+        assertTrue(inventoryDoc.contains("registry verification is not ready"));
+        assertTrue(inventoryDoc.contains("runtime `BiomeSource` is not ready"));
+        assertTrue(inventoryDoc.contains("codec/registration is not ready"));
+        assertTrue(inventoryDoc.contains("registry lookup access is not ready"));
+        assertTrue(inventoryDoc.contains("activation is not allowed in this slice"));
+        assertTrue(inventoryDoc.contains("not a `BiomeSource`"));
+        assertTrue(inventoryDoc.contains("not a `ChunkGenerator`"));
+        assertTrue(inventoryDoc.contains("no codec or registry entry was added"));
+        assertTrue(inventoryDoc.contains("no registry lookup access was added"));
+        assertTrue(inventoryDoc.contains("no active `dimension/cavenia.json`"));
+        assertTrue(inventoryDoc.contains("no active `dimension_type/cavenia.json`"));
+        assertTrue(inventoryDoc.contains("no active Cavenia runtime level"));
+        assertTrue(inventoryDoc.contains("no active Cavenia access or teleport"));
+        assertTrue(inventoryDoc.contains("no active Cavenia spawning"));
+        assertTrue(inventoryDoc.contains("no active Cavenia biome modifiers"));
+        assertTrue(inventoryDoc.contains("no active Cavenia biome tags"));
+        assertTrue(inventoryDoc.contains("no active Cavenia worldgen resources"));
+        assertTrue(inventoryDoc.contains("`EntityCaveman -> deferred:caveman`"));
+
+        assertTrue(readme.contains("Cavenia Legacy-To-Modern Biome-Key Mapping Inventory MVP"));
+        assertTrue(readme.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
+        assertTrue(runtimeSmokeDoc.contains("Cavenia Legacy-To-Modern Biome-Key Mapping Inventory MVP"));
+        assertTrue(runtimeSmokeDoc.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
+        assertTrue(planDoc.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
+        assertTrue(selectionDoc.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
+        assertTrue(matrixDoc.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
+        assertTrue(generatorHostDoc.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
+        assertTrue(policyDoc.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
+        assertTrue(providerBoundaryDoc.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
+        assertTrue(technicalSpikeDoc.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
+        assertTrue(readinessDoc.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
+        assertTrue(runtimeKeyDoc.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
     }
 
     @Test
-    void planBoundaryKeepsActiveRuntimeSurfacesAbsent() throws IOException {
+    void legacyToModernMappingBoundaryKeepsActiveRuntimeSurfacesAbsent() throws IOException {
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "dimension_type", "cavenia.json");
         assertMissingProjectFile("app-neoforge", "src", "main", "resources", "data", "cavernreborn", "worldgen", "configured_carver", "cavenia.json");
@@ -122,7 +126,7 @@ class CaveniaBiomeSourceStrategyPlanBoundaryTest {
                             || name.equals("CaveniaSpawnHandler.java")
                             || name.equals("CaveniaServerTickSpawner.java")
                     ),
-                "Expected the narrow non-runtime biome-source strategy plan to avoid adding active Cavenia runtime classes"
+                "Expected the legacy-to-modern biome-key mapping inventory to avoid adding active Cavenia runtime classes"
             );
         }
 
@@ -140,7 +144,7 @@ class CaveniaBiomeSourceStrategyPlanBoundaryTest {
                             || path.contains("/neoforge/biome_modifier/cavenia")
                             || path.contains("/tags/worldgen/biome/cavenia")
                     ),
-                "Expected the narrow non-runtime biome-source strategy plan to keep active Cavenia runtime resources absent"
+                "Expected the legacy-to-modern biome-key mapping inventory to keep active Cavenia runtime resources absent"
             );
         }
     }

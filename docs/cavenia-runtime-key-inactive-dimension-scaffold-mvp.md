@@ -45,6 +45,7 @@ The later non-registered active-generator technical scaffold note is now documen
 - `docs/cavenia-activation-surface-final-inert-readiness-matrix-mvp.md`
 - `docs/cavenia-deliberate-first-active-surface-selection-mvp.md`
 - `docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md`
+- `docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md`
 
 ## Exact Constants Added
 

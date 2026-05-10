@@ -25,6 +25,10 @@ The later narrow non-runtime biome-source strategy plan note is now documented s
 
 - `docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md`
 
+The later legacy-to-modern biome-key mapping inventory note is now documented separately in:
+
+- `docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md`
+
 ## What This MVP Adds
 
 Current Reborn now has three final inert app-side matrix types:

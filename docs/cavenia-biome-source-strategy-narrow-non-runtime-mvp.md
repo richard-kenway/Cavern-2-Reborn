@@ -13,6 +13,10 @@ It builds on:
 - `docs/cavenia-active-foundation-readiness-plan.md`
 - `docs/cavenia-runtime-key-inactive-dimension-scaffold-mvp.md`
 
+The later legacy-to-modern biome-key mapping inventory note is now documented separately in:
+
+- `docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md`
+
 ## What This MVP Adds
 
 Current Reborn now has three narrow non-runtime biome-source strategy plan types:
@@ -95,6 +99,8 @@ So this slice now pins the source-confirmed non-runtime biome-source strategy in
 
 modern biome-key mapping is not ready.
 
+legacy-to-modern biome-key candidate inventory is ready, but final runtime mapping is not ready.
+
 Weighted selection algorithm is not ready.
 
 runtime `BiomeSource` is not ready.
@@ -162,6 +168,10 @@ The plan deliberately uses:
 
 ## Future Recommendation
 
-The next slice may inventory legacy-to-modern biome-key mapping candidates, but should still be non-runtime unless explicitly changing the boundary.
+The later legacy-to-modern biome-key mapping inventory follow-up is now documented in:
+
+- `docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md`
+
+The next runtime-adjacent slice may define a pure weighted-selection algorithm over those inventoried legacy candidate entries, but should still be non-runtime unless explicitly changing the boundary.
 
 Runtime `BiomeSource`, codec, registration and registry lookup access must remain separate explicit MVPs.

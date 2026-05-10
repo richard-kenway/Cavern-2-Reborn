@@ -430,6 +430,18 @@ NeoForge GameTest runtime smoke covers:
 - dimension JSON/type JSON remain absent
 - `EntityCaveman -> deferred:caveman` remains unchanged
 - the narrow non-runtime strategy note at `docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md`
+- Cavenia Legacy-To-Modern Biome-Key Mapping Inventory MVP
+- non-runtime Cavenia legacy-to-modern biome-key mapping inventory MVP
+- `CaveniaLegacyToModernBiomeKeyMappings` now resolves from `app-neoforge`
+- the mapping entry count remains `14`
+- every legacy biome has one candidate modern biome key
+- candidate inventory is ready while final runtime mapping and registry verification are not ready
+- representative candidate mappings remain pinned: `PLAINS -> minecraft:plains`, `SWAMPLAND -> minecraft:swamp`, `EXTREME_HILLS -> minecraft:windswept_hills`, `MESA -> minecraft:badlands`
+- runtime `BiomeSource` is not ready, codec/registration is not ready and registry lookup access is not ready
+- selected surface remains `BIOME_SOURCE_STRATEGY`, plan remains non-runtime and activation is not allowed in this slice
+- dimension JSON/type JSON remain absent and Cavenia cannot activate now
+- `EntityCaveman -> deferred:caveman` remains unchanged
+- the candidate inventory note at `docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md`
 - `CaveniaSpawnProviderPolicy` still keeps `EntityCaveman -> deferred:caveman`
 - no registered `cavernreborn:caveman` entity type exists at runtime
 - no checked-in Caveman spawn placement, biome modifier or biome tag exists

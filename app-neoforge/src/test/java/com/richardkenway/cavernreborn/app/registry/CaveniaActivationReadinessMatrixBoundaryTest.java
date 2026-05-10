@@ -28,6 +28,7 @@ class CaveniaActivationReadinessMatrixBoundaryTest {
     private static final Path RUNTIME_KEY_DOC = resolveProjectFile("docs", "cavenia-runtime-key-inactive-dimension-scaffold-mvp.md");
     private static final Path SELECTION_DOC = resolveProjectFile("docs", "cavenia-deliberate-first-active-surface-selection-mvp.md");
     private static final Path BIOME_SOURCE_PLAN_DOC = resolveProjectFile("docs", "cavenia-biome-source-strategy-narrow-non-runtime-mvp.md");
+    private static final Path BIOME_MAPPING_DOC = resolveProjectFile("docs", "cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md");
     private static final Path APP_SOURCE_ROOT = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app"
     );
@@ -54,6 +55,7 @@ class CaveniaActivationReadinessMatrixBoundaryTest {
         String runtimeKeyDoc = Files.readString(RUNTIME_KEY_DOC);
         String selectionDoc = Files.readString(SELECTION_DOC);
         String biomeSourcePlanDoc = Files.readString(BIOME_SOURCE_PLAN_DOC);
+        String biomeMappingDoc = Files.readString(BIOME_MAPPING_DOC);
 
         assertTrue(matrixDoc.contains("Cavenia Activation Surface Consolidation / Final Inert Readiness Matrix MVP"));
         assertTrue(matrixDoc.contains("`CaveniaActivationReadinessMatrix`"));
@@ -103,6 +105,8 @@ class CaveniaActivationReadinessMatrixBoundaryTest {
         assertTrue(selectionDoc.contains("`CaveniaActivationReadinessMatrix`"));
         assertTrue(matrixDoc.contains("docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md"));
         assertTrue(biomeSourcePlanDoc.contains("`CaveniaActivationReadinessMatrix`"));
+        assertTrue(matrixDoc.contains("docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"));
+        assertTrue(biomeMappingDoc.contains("`CaveniaActivationReadinessMatrix`"));
     }
 
     @Test

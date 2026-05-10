@@ -52,6 +52,8 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaActivationSurface;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaAccessTravelContracts;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaAccessTravelRequirement;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSelectionSkeleton;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeKeyMappingKind;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaLegacyToModernBiomeKeyMappings;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyPlan;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyPlanStep;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaBiomeSourceStrategyContracts;
@@ -8154,6 +8156,8 @@ public final class CavernSpecialOreGameTests {
         );
         helper.assertTrue(
             !CaveniaBiomeSourceStrategyPlan.modernBiomeMappingReady()
+                && CaveniaBiomeSourceStrategyPlan.legacyToModernBiomeMappingInventoryReady()
+                && !CaveniaBiomeSourceStrategyPlan.legacyToModernBiomeFinalMappingReady()
                 && !CaveniaBiomeSourceStrategyPlan.weightedSelectionAlgorithmReady()
                 && !CaveniaBiomeSourceStrategyPlan.runtimeBiomeSourceReady()
                 && !CaveniaBiomeSourceStrategyPlan.codecRegistered()
@@ -8165,6 +8169,33 @@ public final class CavernSpecialOreGameTests {
                 && CaveniaBiomeSourceStrategyPlan.readinessMatrixBlockedRequirementCount() == 46
                 && CaveniaBiomeSourceStrategyPlan.cavemanRemainsDeferred(),
             "Expected the narrow non-runtime Cavenia biome-source strategy plan to keep mapping, runtime biome source, codec, registry lookup, dimension resources and activation absent"
+        );
+        helper.assertTrue(
+            CaveniaLegacyToModernBiomeKeyMappings.entryCount() == 14
+                && CaveniaLegacyToModernBiomeKeyMappings.allLegacyBiomesHaveCandidates()
+                && CaveniaLegacyToModernBiomeKeyMappings.allCandidatesInventoried()
+                && CaveniaLegacyToModernBiomeKeyMappings.candidateInventoryReady()
+                && !CaveniaLegacyToModernBiomeKeyMappings.anyFinalRuntimeMapping()
+                && !CaveniaLegacyToModernBiomeKeyMappings.anyRegistryVerified()
+                && !CaveniaLegacyToModernBiomeKeyMappings.modernBiomeMappingReady(),
+            "Expected the non-runtime Cavenia legacy-to-modern biome-key mapping inventory to pin one candidate for each legacy biome while keeping final runtime mapping absent"
+        );
+        helper.assertTrue(
+            CaveniaLegacyToModernBiomeKeyMappings.candidateKeyForLegacyBiomeName("PLAINS").equals(Optional.of("minecraft:plains"))
+                && CaveniaLegacyToModernBiomeKeyMappings.candidateKeyForLegacyBiomeName("SWAMPLAND").equals(Optional.of("minecraft:swamp"))
+                && CaveniaLegacyToModernBiomeKeyMappings.candidateKeyForLegacyBiomeName("EXTREME_HILLS")
+                    .equals(Optional.of("minecraft:windswept_hills"))
+                && CaveniaLegacyToModernBiomeKeyMappings.candidateKeyForLegacyBiomeName("MESA").equals(Optional.of("minecraft:badlands"))
+                && CaveniaLegacyToModernBiomeKeyMappings.mappingKindForLegacyBiomeName("MESA")
+                    .equals(Optional.of(CaveniaBiomeKeyMappingKind.RENAMED))
+                && !CaveniaLegacyToModernBiomeKeyMappings.runtimeBiomeSourceReady()
+                && !CaveniaLegacyToModernBiomeKeyMappings.codecRegistered()
+                && !CaveniaLegacyToModernBiomeKeyMappings.registryLookupAccessReady()
+                && !CaveniaLegacyToModernBiomeKeyMappings.dimensionJsonPresent()
+                && !CaveniaLegacyToModernBiomeKeyMappings.dimensionTypeJsonPresent()
+                && !CaveniaLegacyToModernBiomeKeyMappings.canActivateCaveniaNow()
+                && CaveniaLegacyToModernBiomeKeyMappings.cavemanRemainsDeferred(),
+            "Expected the non-runtime Cavenia legacy-to-modern biome-key mapping inventory to keep representative candidate mappings pinned without activating runtime biome-source behavior"
         );
         helper.assertTrue(
             projectFileExists("docs", "cavenia-generator-biome-source-unregistered-skeleton-mvp.md"),
@@ -8197,6 +8228,10 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             projectFileExists("docs", "cavenia-deliberate-first-active-surface-selection-mvp.md"),
             "Expected the decision-only Cavenia first-active-surface selection doc to exist in the project root"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md"),
+            "Expected the non-runtime Cavenia legacy-to-modern biome-key mapping inventory doc to exist in the project root"
         );
         helper.assertTrue(
             projectFileExists("docs", "caveman-cavenia-normal-roster-boundary.md"),

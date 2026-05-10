@@ -22,6 +22,10 @@ The later narrow non-runtime biome-source strategy plan note is now documented s
 
 - `docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md`
 
+The later legacy-to-modern biome-key mapping inventory note is now documented separately in:
+
+- `docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md`
+
 ## What This MVP Adds
 
 Current Reborn now has three decision-only app-side selection types:
@@ -192,10 +196,11 @@ Current Reborn still keeps:
 
 ## Future Recommendation
 
-The next implementation slice should be a narrow `BIOME_SOURCE_STRATEGY` slice.
+The next implementation slice should stay inside `BIOME_SOURCE_STRATEGY` and inventory candidate modern biome keys without becoming runtime.
 
 It should still avoid dimension JSON, active level, access, spawning and worldgen resources unless explicitly chosen later.
 
-That next narrow non-runtime follow-up is now documented in:
+That later non-runtime follow-up is now documented in:
 
 - `docs/cavenia-biome-source-strategy-narrow-non-runtime-mvp.md`
+- `docs/cavenia-legacy-to-modern-biome-key-mapping-inventory-mvp.md`
