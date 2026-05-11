@@ -120,6 +120,17 @@ class CaveniaRuntimeBiomeSourceTest {
         );
         assertTrue(
             designatedSource.contains(
+                "public static boolean selectorInputDerivationGoNoGoDecisionReady() {\n        return CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecision.decisionIsGoForSelectorInputDerivationReadinessNext();\n    }"
+            )
+        );
+        assertTrue(designatedSource.contains("public static boolean selectorInputDerivationRuntimeReady() {\n        return false;\n    }"));
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean selectorInputDerivationReadinessIsNext() {\n        return CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecision.nextSliceMayAddSelectorInputDerivationReadiness();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
                 "public static String fallbackLegacyBiomeName() {\n        return CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackLegacyBiomeName();\n    }"
             )
         );

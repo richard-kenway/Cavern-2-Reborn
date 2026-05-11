@@ -120,6 +120,8 @@ class CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadinessTest {
         assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.canActivateCaveniaNow());
         assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.readinessChainConsolidationReady());
         assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.readinessChainRuntimeReady());
+        assertTrue(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.selectorInputDerivationGoNoGoDecisionReady());
+        assertFalse(CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.selectorInputDerivationGoNoGoRuntimeReady());
         assertEquals("getNoiseBiome", CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.noiseBiomeMethodName());
         assertEquals(
             "getNoiseBiome(int x, int y, int z, Climate.Sampler sampler)",

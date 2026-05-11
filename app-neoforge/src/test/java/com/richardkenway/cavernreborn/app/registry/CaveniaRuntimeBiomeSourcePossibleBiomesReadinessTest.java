@@ -150,6 +150,8 @@ class CaveniaRuntimeBiomeSourcePossibleBiomesReadinessTest {
         assertTrue(CaveniaRuntimeBiomeSourcePossibleBiomesReadiness.fallbackIncludedIfEmpty());
         assertTrue(CaveniaRuntimeBiomeSourcePossibleBiomesReadiness.readinessChainConsolidationReady());
         assertFalse(CaveniaRuntimeBiomeSourcePossibleBiomesReadiness.readinessChainRuntimeReady());
+        assertTrue(CaveniaRuntimeBiomeSourcePossibleBiomesReadiness.selectorInputDerivationGoNoGoDecisionReady());
+        assertFalse(CaveniaRuntimeBiomeSourcePossibleBiomesReadiness.selectorInputDerivationGoNoGoRuntimeReady());
         assertFalse(CaveniaRuntimeBiomeSourcePossibleBiomesReadiness.fallbackRuntimeReady());
         assertTrue(CaveniaRuntimeBiomeSourcePossibleBiomesReadiness.holderConversionReadinessReady());
         assertFalse(CaveniaRuntimeBiomeSourcePossibleBiomesReadiness.holderConversionRuntimeReady());

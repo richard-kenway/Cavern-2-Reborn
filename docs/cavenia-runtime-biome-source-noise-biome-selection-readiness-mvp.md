@@ -239,3 +239,5 @@ This slice builds directly on:
 - a separate explicit decision could also define non-runtime selector input derivation while keeping registry lookup and activation absent
 
 The readiness-chain consolidation / next-decision follow-up is now documented in `docs/cavenia-runtime-biome-source-readiness-chain-consolidation-next-decision-mvp.md`.
+
+The selector-input derivation go/no-go follow-up is now documented in `docs/cavenia-runtime-biome-source-selector-input-derivation-go-no-go-mvp.md`.

@@ -100,6 +100,8 @@ class CaveniaRuntimeBiomeSourceReadinessChainConsolidationTest {
             CaveniaRuntimeBiomeSourceReadinessChainConsolidation.selectedNextDecision()
         );
         assertTrue(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.selectorInputDerivationGoNoGoIsNext());
+        assertTrue(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.selectorInputDerivationGoNoGoDecisionReady());
+        assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.selectorInputDerivationGoNoGoRuntimeReady());
         assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.selectorInputDerivationReadinessPinned());
         assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.selectorInputDerivationImplementationReady());
         assertFalse(CaveniaRuntimeBiomeSourceReadinessChainConsolidation.selectorInputDerivationRuntimeReady());

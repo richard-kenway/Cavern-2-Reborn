@@ -216,6 +216,14 @@ public final class CaveniaRuntimeBiomeSourceReadinessChainConsolidation {
         return true;
     }
 
+    public static boolean selectorInputDerivationGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecision.decisionIsGoForSelectorInputDerivationReadinessNext();
+    }
+
+    public static boolean selectorInputDerivationGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static boolean selectorInputDerivationReadinessPinned() {
         return false;
     }

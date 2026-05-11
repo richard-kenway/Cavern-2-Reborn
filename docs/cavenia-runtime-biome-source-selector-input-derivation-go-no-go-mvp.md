@@ -1,65 +1,45 @@
-# Cavenia Runtime BiomeSource Readiness Chain Consolidation / Next Decision MVP
+# Cavenia Runtime BiomeSource Selector Input Derivation Go/No-Go MVP
 
-This slice is readiness-chain consolidation and next-decision, not implementation.
+This slice is selector-input derivation go/no-go decision, not readiness and not implementation.
 
-`CaveniaRuntimeBiomeSource` still does not provide usable runtime biome behavior. This slice only consolidates the current guarded runtime-biome-source readiness chain and records the next safe decision branch.
+`CaveniaRuntimeBiomeSource` still does not provide usable runtime biome behavior. This slice only decides whether the next slice may pin selector-input derivation readiness data for the guarded `getNoiseBiome(...)` path.
 
-## Consolidated Chain
+## Decision
 
-The current consolidated readiness chain is:
+The selected decision is `PROCEED_WITH_SELECTOR_INPUT_DERIVATION_READINESS_NEXT`.
 
-- guarded subclass stub
-- codec method shape stub
-- holder/resource-key conversion readiness
-- fallback policy readiness
-- possible-biomes readiness
-- noise-biome selection readiness
+- next slice may add selector-input derivation readiness data
+- next slice may pin coordinate input policy
+- next slice may pin climate sampler input policy
+- next slice may pin weight-value derivation policy
+- next slice may not implement selector-input derivation
+- next slice may not use coordinates for runtime selection
+- next slice may not use climate sampler for runtime selection
+- next slice may not make `getNoiseBiome(...)` usable
+- next slice may not make `collectPossibleBiomes()` usable
 
-All current readiness layers are ready.
+readiness-chain consolidation remains ready, all current readiness layers are ready, and no runtime layer is ready.
 
-all current readiness layers are ready.
+selector-input derivation policy is not pinned in this slice.
 
-No runtime layer is ready.
+selector-input derivation implementation is not ready.
 
-no runtime layer is ready.
-
-The selected next decision is `PROCEED_WITH_SELECTOR_INPUT_DERIVATION_GO_NO_GO_NEXT`.
-
-- next slice may add only selector-input-derivation go/no-go decision
-- selector-input derivation is not pinned and not implemented
-- selector-input derivation runtime behavior is not ready
+selector-input derivation runtime behavior is not ready.
 
 ## Added Types
 
-- `CaveniaRuntimeBiomeSourceReadinessChainComponent`
-- `CaveniaRuntimeBiomeSourceReadinessChainEntry`
-- `CaveniaRuntimeBiomeSourceReadinessChainNextDecision`
-- `CaveniaRuntimeBiomeSourceReadinessChainConsolidation`
+- `CaveniaRuntimeBiomeSourceSelectorInputDerivationNextDecision`
+- `CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrail`
+- `CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrailContract`
+- `CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecision`
 
-## Component Order
+## Next-Decision Values
 
-- `DESIGNATED_SUBCLASS_STUB`
-- `CODEC_METHOD_SHAPE_STUB`
-- `HOLDER_RESOURCE_KEY_CONVERSION_READINESS`
-- `FALLBACK_POLICY_READINESS`
-- `POSSIBLE_BIOMES_READINESS`
-- `NOISE_BIOME_SELECTION_READINESS`
-- `SELECTOR_INPUT_DERIVATION_NOT_PINNED`
-- `REGISTRY_LOOKUP_ACCESS_BLOCKED`
-- `HOLDER_RESOLUTION_BLOCKED`
-- `RESOURCE_LOCATION_CONVERSION_BLOCKED`
-- `RESOURCE_KEY_CONVERSION_BLOCKED`
-- `USABLE_RUNTIME_METHODS_BLOCKED`
-- `USABLE_CODEC_IMPLEMENTATION_BLOCKED`
-- `CODEC_AND_TYPE_REGISTRATION_BLOCKED`
-- `DIMENSION_ACTIVATION_BLOCKED`
-- `WORLDGEN_ACCESS_SPAWNING_BLOCKED`
-- `NEXT_DECISION_SELECTED`
-
-## Next Decision Values
-
-- `PROCEED_WITH_SELECTOR_INPUT_DERIVATION_GO_NO_GO_NEXT`
+- `PROCEED_WITH_SELECTOR_INPUT_DERIVATION_READINESS_NEXT`
 - `DEFER_SELECTOR_INPUT_DERIVATION_IMPLEMENTATION`
+- `DEFER_COORDINATE_RUNTIME_SELECTION`
+- `DEFER_CLIMATE_SAMPLER_RUNTIME_SELECTION`
+- `DEFER_GET_NOISE_BIOME_IMPLEMENTATION`
 - `DEFER_REGISTRY_LOOKUP_ACCESS`
 - `DEFER_HOLDER_RESOLUTION`
 - `DEFER_USABLE_RUNTIME_BIOME_SOURCE`
@@ -67,36 +47,62 @@ The selected next decision is `PROCEED_WITH_SELECTOR_INPUT_DERIVATION_GO_NO_GO_N
 - `DEFER_DIMENSION_ACTIVATION`
 - `DEFER_WORLDGEN_ACCESS_SPAWNING`
 
-## Entry Fields
+## Guardrail Order
 
-- `component`
+- `ALLOW_SELECTOR_INPUT_DERIVATION_READINESS_NEXT`
+- `ALLOW_COORDINATE_INPUT_POLICY_PINNING_NEXT`
+- `ALLOW_CLIMATE_SAMPLER_INPUT_POLICY_PINNING_NEXT`
+- `ALLOW_WEIGHT_VALUE_DERIVATION_POLICY_PINNING_NEXT`
+- `NO_SELECTOR_INPUT_DERIVATION_IMPLEMENTATION`
+- `NO_COORDINATE_RUNTIME_SELECTION`
+- `NO_CLIMATE_SAMPLER_RUNTIME_SELECTION`
+- `NO_GET_NOISE_BIOME_IMPLEMENTATION`
+- `NO_COLLECT_POSSIBLE_BIOMES_IMPLEMENTATION`
+- `NO_REGISTRY_LOOKUP_ACCESS`
+- `NO_HOLDER_RESOLUTION`
+- `NO_RESOURCE_LOCATION_OR_KEY_CONVERSION`
+- `NO_FALLBACK_IMPLEMENTATION`
+- `NO_USABLE_CODEC_OR_REGISTRATION`
+- `NO_DIMENSION_ACTIVATION`
+- `NO_WORLDGEN_ACCESS_SPAWNING`
+- `KEEP_READINESS_CHAIN_INERT`
+
+## Guardrail Contract Fields
+
+- `guardrail`
 - `sourceContractName`
-- `consolidatedReadiness`
-- `runtimeState`
-- `readinessReady`
-- `runtimeReady`
+- `enforcedInThisSlice`
+- `allowsNextSliceReadinessAction`
+- `allowsNextSliceRuntimeAction`
 - `blocksActivation`
-- `nextDecisionInput`
 - `blocker`
 
 ## Helper Surface
 
-`CaveniaRuntimeBiomeSourceReadinessChainConsolidation` exposes deterministic helpers including:
+`CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecision` exposes deterministic helpers including:
 
-- `entries()`
-- `components()`
-- `entryFor(...)`
-- `entryCount()`
-- `readinessChainConsolidationReady()`
-- `allCurrentReadinessLayersReady()`
-- `runtimeReadyLayerCount()`
-- `consolidatedReadinessLayerCount()`
-- `selectedNextDecision()`
-- `selectorInputDerivationGoNoGoIsNext()`
-- `selectorInputDerivationReadinessPinned()`
+- `selectedDecision()`
+- `decisionIsGoForSelectorInputDerivationReadinessNext()`
+- `decisionIsReadinessOnlyForNextSlice()`
+- `selectorInputDerivationReadinessImplementedInThisSlice()`
+- `selectorInputDerivationPolicyPinnedInThisSlice()`
 - `selectorInputDerivationImplementationReady()`
 - `selectorInputDerivationRuntimeReady()`
-- `nextSliceMayAddSelectorInputDerivationGoNoGoDecision()`
+- `runtimeApiAllowedInThisSlice()`
+- `activationAllowedInThisSlice()`
+- `canActivateCaveniaNow()`
+- `guardrails()`
+- `guardrailValues()`
+- `guardrailFor(...)`
+- `guardrailCount()`
+- `allGuardrailsEnforcedInThisSlice()`
+- `allowedNextSliceReadinessActionCount()`
+- `allowedNextSliceRuntimeActionCount()`
+- `anyRuntimeActionAllowedByGuardrails()`
+- `nextSliceMayAddSelectorInputDerivationReadiness()`
+- `nextSliceMayPinCoordinateInputPolicy()`
+- `nextSliceMayPinClimateSamplerInputPolicy()`
+- `nextSliceMayPinWeightValueDerivationPolicy()`
 - `nextSliceMayImplementSelectorInputDerivation()`
 - `nextSliceMayUseCoordinatesForRuntimeSelection()`
 - `nextSliceMayUseClimateSamplerForRuntimeSelection()`
@@ -117,34 +123,18 @@ The selected next decision is `PROCEED_WITH_SELECTOR_INPUT_DERIVATION_GO_NO_GO_N
 - `nextSliceMayAddAccessOrTeleport()`
 - `nextSliceMayAddSpawning()`
 - `nextSliceMayRegisterCavemanEntity()`
-- `designatedSubclassReady()`
-- `designatedSubclassRuntimeReady()`
-- `codecMethodShapeStubReady()`
-- `holderConversionReadinessReady()`
-- `fallbackPolicyReadinessReady()`
-- `possibleBiomesReadinessReady()`
+- `readinessChainConsolidationReady()`
+- `readinessChainRuntimeReady()`
+- `readinessChainSelectedNextDecisionMatches()`
+- `allCurrentReadinessLayersReady()`
+- `runtimeReadyLayerCount()`
+- `consolidatedReadinessLayerCount()`
 - `noiseBiomeSelectionReadinessReady()`
-- `codecMethodShapeRuntimeReady()`
-- `holderConversionRuntimeReady()`
-- `fallbackPolicyRuntimeReady()`
-- `possibleBiomesRuntimeReady()`
 - `noiseBiomeSelectionRuntimeReady()`
-- `runtimeHolderReturnReady()`
-- `collectPossibleBiomesImplementationReady()`
-- `getNoiseBiomeImplementationReady()`
-- `usableRuntimeBiomeSourceReady()`
-- `registryLookupAccessReady()`
-- `holderResolutionReady()`
-- `resourceLocationConversionReady()`
-- `resourceKeyConversionReady()`
-- `usableCodecImplementationReady()`
-- `codecRegistered()`
-- `biomeSourceTypeRegistered()`
-- `normalRuntimeConstructionAllowed()`
-- `unsupportedMethodStubsOnly()`
-- `collectPossibleBiomesStubbed()`
-- `getNoiseBiomeStubbed()`
-- `codecMethodStubbed()`
+- `coordinateInputShapePinned()`
+- `climateSamplerInputShapePinned()`
+- `weightValueDerivationDecisionPinned()`
+- `weightValueDerivationPolicy()`
 - `weightedSelectionAlgorithmReady()`
 - `weightedSelectionTotalWeight()`
 - `adapterShapeReady()`
@@ -153,9 +143,33 @@ The selected next decision is `PROCEED_WITH_SELECTOR_INPUT_DERIVATION_GO_NO_GO_N
 - `candidateKeysStillStringOnly()`
 - `fallbackLegacyBiomeName()`
 - `fallbackCandidateModernBiomeKey()`
+- `holderConversionReadinessReady()`
+- `holderConversionRuntimeReady()`
+- `holderResolutionReady()`
+- `resourceLocationConversionReady()`
+- `resourceKeyConversionReady()`
+- `possibleBiomesReadinessReady()`
+- `possibleBiomesRuntimeReady()`
+- `fallbackPolicyReadinessReady()`
+- `fallbackPolicyRuntimeReady()`
+- `codecMethodShapeStubReady()`
+- `codecMethodShapeRuntimeReady()`
+- `designatedSubclassReady()`
+- `designatedSubclassRuntimeReady()`
+- `runtimeHolderReturnReady()`
+- `collectPossibleBiomesImplementationReady()`
+- `getNoiseBiomeImplementationReady()`
+- `usableRuntimeBiomeSourceReady()`
+- `registryLookupAccessReady()`
+- `usableCodecImplementationReady()`
+- `codecRegistered()`
+- `biomeSourceTypeRegistered()`
+- `normalRuntimeConstructionAllowed()`
+- `unsupportedMethodStubsOnly()`
+- `collectPossibleBiomesStubbed()`
+- `getNoiseBiomeStubbed()`
+- `codecMethodStubbed()`
 - `dimensionBindingReady()`
-- `activationAllowedInThisSlice()`
-- `canActivateCaveniaNow()`
 - `selectedSurfaceReadinessItemCount()`
 - `globalReadinessMatrixTotalRequirementCount()`
 - `globalReadinessMatrixBlockedRequirementCount()`
@@ -166,6 +180,12 @@ The selected next decision is `PROCEED_WITH_SELECTOR_INPUT_DERIVATION_GO_NO_GO_N
 - `activationBlockedReason()`
 
 ## Runtime Boundaries
+
+This slice does not pin the actual coordinate/climate-to-weight algorithm.
+
+This slice does not implement selector-input derivation.
+
+This slice does not use coordinates or climate sampler for runtime selection.
 
 `getNoiseBiome(...)` remains unsupported.
 
@@ -189,7 +209,9 @@ The selected next decision is `PROCEED_WITH_SELECTOR_INPUT_DERIVATION_GO_NO_GO_N
 - no access/teleport exists
 - no spawning exists
 
-This is still not selector-input derivation.
+This is still not selector-input derivation readiness.
+
+This is still not selector-input derivation implementation.
 
 This is still not usable noise-biome runtime behavior.
 
@@ -201,7 +223,7 @@ This is still not a usable runtime biome source.
 
 This is still not a `ChunkGenerator`.
 
-- why no registry lookup access was added: this slice only consolidates readiness state and records the next decision branch
+- why no registry lookup access was added: this slice only selects the next guarded decision branch
 - why no holder/resource-key conversion implementation was added: conversion remains a blocked runtime surface
 - why no fallback implementation was added: fallback remains inert readiness data only
 - why no usable codec implementation was added: codec work remains blocked behind later explicit slices
@@ -216,6 +238,7 @@ This is still not a `ChunkGenerator`.
 This slice builds directly on:
 
 - `CaveniaRuntimeBiomeSource`
+- `CaveniaRuntimeBiomeSourceReadinessChainConsolidation`
 - `CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness`
 - `CaveniaRuntimeBiomeSourcePossibleBiomesReadiness`
 - `CaveniaRuntimeBiomeSourceFallbackPolicyReadiness`
@@ -245,7 +268,5 @@ This slice builds directly on:
 
 ## Follow-Up
 
-- next slice should be `Cavenia Runtime BiomeSource Selector Input Derivation Go/No-Go MVP`
-- that next slice should remain decision-only unless explicitly requested otherwise
-
-The selector-input derivation go/no-go follow-up is now documented in `docs/cavenia-runtime-biome-source-selector-input-derivation-go-no-go-mvp.md`.
+- next slice should be `Cavenia Runtime BiomeSource Selector Input Derivation Readiness MVP`
+- that next slice should still be readiness-only unless explicitly requested otherwise
