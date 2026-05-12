@@ -273,6 +273,15 @@ public final class CaveniaRuntimeBiomeSourceCodecMethodShapeStub {
         return false;
     }
 
+    public static boolean selectorInputDerivationImplementationGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGoNoGoDecision
+            .decisionIsGoForPureNonRuntimeAlgorithmNext();
+    }
+
+    public static boolean selectorInputDerivationImplementationGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static boolean dimensionBindingReady() {
         return false;
     }

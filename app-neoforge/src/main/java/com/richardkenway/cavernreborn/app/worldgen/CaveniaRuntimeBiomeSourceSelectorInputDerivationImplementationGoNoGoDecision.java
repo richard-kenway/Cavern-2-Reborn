@@ -3,134 +3,137 @@ package com.richardkenway.cavernreborn.app.worldgen;
 import java.util.List;
 import java.util.Optional;
 
-public final class CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecision {
-    private static final CaveniaRuntimeBiomeSourceSelectorInputDerivationNextDecision SELECTED_DECISION =
-        CaveniaRuntimeBiomeSourceSelectorInputDerivationNextDecision.PROCEED_WITH_SELECTOR_INPUT_DERIVATION_READINESS_NEXT;
-    private static final List<CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrailContract> GUARDRAILS = List.of(
+public final class CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGoNoGoDecision {
+    private static final CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationNextDecision SELECTED_DECISION =
+        CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationNextDecision
+            .PROCEED_WITH_PURE_NON_RUNTIME_SELECTOR_INPUT_DERIVATION_ALGORITHM_NEXT;
+    private static final List<CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrailContract> GUARDRAILS = List.of(
         guardrail(
-            CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrail.ALLOW_SELECTOR_INPUT_DERIVATION_READINESS_NEXT,
-            "CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecision",
+            CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrail.ALLOW_PURE_NON_RUNTIME_ALGORITHM_NEXT,
+            "CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGoNoGoDecision",
             true,
-            "The next slice may add selector-input derivation readiness data only."
+            "The next slice may add only a pure non-runtime selector-input derivation algorithm."
         ),
         guardrail(
-            CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrail.ALLOW_COORDINATE_INPUT_POLICY_PINNING_NEXT,
-            "CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness",
+            CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrail.ALLOW_INTEGER_COORDINATE_INPUTS_NEXT,
+            "CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness",
             true,
-            "The next slice may pin a coordinate input policy only as readiness data."
+            "The next slice may use integer coordinate inputs only inside a pure non-runtime helper."
         ),
         guardrail(
-            CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrail.ALLOW_CLIMATE_SAMPLER_INPUT_POLICY_PINNING_NEXT,
-            "CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness",
+            CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrail.ALLOW_SIGNED_INT_SELECTOR_OUTPUT_NEXT,
+            "CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness",
             true,
-            "The next slice may pin a climate sampler input policy only as readiness data."
+            "The next slice may return only a signed int selector input value."
         ),
         guardrail(
-            CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrail.ALLOW_WEIGHT_VALUE_DERIVATION_POLICY_PINNING_NEXT,
-            "CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness",
+            CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrail.ALLOW_EXISTING_SELECTOR_NORMALIZATION_NEXT,
+            "CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness",
             true,
-            "The next slice may pin a weight-value derivation policy only as readiness data."
+            "The next slice may keep normalization delegated to the existing selector or adapter path."
         ),
         guardrail(
-            CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrail.NO_SELECTOR_INPUT_DERIVATION_IMPLEMENTATION,
-            "CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecision",
+            CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrail.NO_CLIMATE_SAMPLER_METHOD_CALLS,
+            "CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness",
             false,
-            "Selector-input derivation implementation must remain absent in this decision-only slice."
+            "The next slice may not call climate-sampler methods while the pure algorithm stays non-runtime."
         ),
         guardrail(
-            CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrail.NO_COORDINATE_RUNTIME_SELECTION,
-            "CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness",
+            CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrail.NO_MINECRAFT_RUNTIME_API_IMPORTS,
+            "CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGoNoGoDecision",
             false,
-            "Coordinate-based runtime selection must remain absent until a later explicit implementation slice."
+            "The next slice may not import Minecraft runtime APIs while implementing the pure algorithm."
         ),
         guardrail(
-            CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrail.NO_CLIMATE_SAMPLER_RUNTIME_SELECTION,
-            "CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness",
-            false,
-            "Climate-sampler runtime selection must remain absent until a later explicit implementation slice."
-        ),
-        guardrail(
-            CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrail.NO_GET_NOISE_BIOME_IMPLEMENTATION,
+            CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrail.NO_GET_NOISE_BIOME_WIRING,
             "CaveniaRuntimeBiomeSource",
             false,
-            "The guarded subclass must keep getNoiseBiome unsupported in this slice."
+            "The next slice may not wire the pure algorithm into the guarded getNoiseBiome path."
         ),
         guardrail(
-            CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrail.NO_COLLECT_POSSIBLE_BIOMES_IMPLEMENTATION,
+            CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrail.NO_GET_NOISE_BIOME_IMPLEMENTATION,
             "CaveniaRuntimeBiomeSource",
             false,
-            "The guarded subclass must keep collectPossibleBiomes unsupported in this slice."
+            "The guarded subclass must keep getNoiseBiome unsupported in the next slice."
         ),
         guardrail(
-            CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrail.NO_REGISTRY_LOOKUP_ACCESS,
+            CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrail.NO_COLLECT_POSSIBLE_BIOMES_IMPLEMENTATION,
+            "CaveniaRuntimeBiomeSource",
+            false,
+            "The guarded subclass must keep collectPossibleBiomes unsupported in the next slice."
+        ),
+        guardrail(
+            CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrail.NO_REGISTRY_LOOKUP_ACCESS,
             "CaveniaRegistryLookupReadiness",
             false,
-            "Registry lookup access must remain absent in this slice."
+            "Registry lookup access must remain absent in the next slice."
         ),
         guardrail(
-            CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrail.NO_HOLDER_RESOLUTION,
+            CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrail.NO_HOLDER_RESOLUTION,
             "CaveniaRuntimeBiomeSourceHolderConversionReadiness",
             false,
-            "Holder resolution must remain absent in this slice."
+            "Holder resolution must remain absent in the next slice."
         ),
         guardrail(
-            CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrail.NO_RESOURCE_LOCATION_OR_KEY_CONVERSION,
+            CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrail.NO_RESOURCE_LOCATION_OR_KEY_CONVERSION,
             "CaveniaRuntimeBiomeSourceHolderConversionReadiness",
             false,
-            "Resource-location and resource-key conversion must remain absent in this slice."
+            "Resource-location and resource-key conversion must remain absent in the next slice."
         ),
         guardrail(
-            CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrail.NO_FALLBACK_IMPLEMENTATION,
+            CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrail.NO_FALLBACK_IMPLEMENTATION,
             "CaveniaRuntimeBiomeSourceFallbackPolicyReadiness",
             false,
-            "Fallback implementation must remain absent in this slice."
+            "Fallback implementation must remain absent in the next slice."
         ),
         guardrail(
-            CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrail.NO_USABLE_CODEC_OR_REGISTRATION,
+            CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrail.NO_USABLE_CODEC_OR_REGISTRATION,
             "CaveniaRuntimeBiomeSourceCodecMethodShapeStub",
             false,
-            "Usable codec behavior and registration must remain absent in this slice."
+            "Usable codec behavior and registration must remain absent in the next slice."
         ),
         guardrail(
-            CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrail.NO_DIMENSION_ACTIVATION,
+            CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrail.NO_RANDOM_OR_MUTABLE_STATE,
+            "CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness",
+            false,
+            "Random, wall-clock, mutable global state and side effects must remain absent in the next slice."
+        ),
+        guardrail(
+            CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrail.NO_DIMENSION_ACTIVATION,
             "CaveniaActivationReadinessMatrix",
             false,
-            "Dimension activation must remain absent in this slice."
+            "Dimension activation must remain absent in the next slice."
         ),
         guardrail(
-            CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrail.NO_WORLDGEN_ACCESS_SPAWNING,
+            CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrail.NO_WORLDGEN_ACCESS_SPAWNING,
             "CaveniaActivationReadinessMatrix",
             false,
-            "Worldgen, access and spawning must remain absent in this slice."
+            "Worldgen, access and spawning must remain absent in the next slice."
         ),
         guardrail(
-            CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrail.KEEP_READINESS_CHAIN_INERT,
+            CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrail.KEEP_READINESS_CHAIN_INERT,
             "CaveniaRuntimeBiomeSourceReadinessChainConsolidation",
             false,
-            "The guarded readiness chain must remain inert and non-activating in this slice."
+            "The guarded readiness chain must remain inert and non-activating in the next slice."
         )
     );
 
-    private CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecision() {
+    private CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGoNoGoDecision() {
     }
 
-    public static CaveniaRuntimeBiomeSourceSelectorInputDerivationNextDecision selectedDecision() {
+    public static CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationNextDecision selectedDecision() {
         return SELECTED_DECISION;
     }
 
-    public static boolean decisionIsGoForSelectorInputDerivationReadinessNext() {
+    public static boolean decisionIsGoForPureNonRuntimeAlgorithmNext() {
         return true;
     }
 
-    public static boolean decisionIsReadinessOnlyForNextSlice() {
+    public static boolean decisionIsImplementationOnlyForNextSlice() {
         return true;
     }
 
-    public static boolean selectorInputDerivationReadinessImplementedInThisSlice() {
-        return false;
-    }
-
-    public static boolean selectorInputDerivationPolicyPinnedInThisSlice() {
+    public static boolean selectorInputDerivationAlgorithmImplementedInThisSlice() {
         return false;
     }
 
@@ -139,15 +142,6 @@ public final class CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecisio
     }
 
     public static boolean selectorInputDerivationReadinessRuntimeReady() {
-        return false;
-    }
-
-    public static boolean selectorInputDerivationImplementationGoNoGoDecisionReady() {
-        return CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGoNoGoDecision
-            .decisionIsGoForPureNonRuntimeAlgorithmNext();
-    }
-
-    public static boolean selectorInputDerivationImplementationGoNoGoRuntimeReady() {
         return false;
     }
 
@@ -171,18 +165,18 @@ public final class CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecisio
         return false;
     }
 
-    public static List<CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrailContract> guardrails() {
+    public static List<CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrailContract> guardrails() {
         return GUARDRAILS;
     }
 
-    public static List<CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrail> guardrailValues() {
+    public static List<CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrail> guardrailValues() {
         return GUARDRAILS.stream()
-            .map(CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrailContract::guardrail)
+            .map(CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrailContract::guardrail)
             .toList();
     }
 
-    public static Optional<CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrailContract> guardrailFor(
-        CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrail guardrail
+    public static Optional<CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrailContract> guardrailFor(
+        CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrail guardrail
     ) {
         return GUARDRAILS.stream()
             .filter(contract -> contract.guardrail() == guardrail)
@@ -197,7 +191,7 @@ public final class CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecisio
         return true;
     }
 
-    public static int allowedNextSliceReadinessActionCount() {
+    public static int allowedNextSlicePureAlgorithmActionCount() {
         return 4;
     }
 
@@ -209,31 +203,31 @@ public final class CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecisio
         return false;
     }
 
-    public static boolean nextSliceMayAddSelectorInputDerivationReadiness() {
+    public static boolean nextSliceMayAddPureNonRuntimeSelectorInputAlgorithm() {
         return true;
     }
 
-    public static boolean nextSliceMayPinCoordinateInputPolicy() {
+    public static boolean nextSliceMayUseIntegerCoordinateInputs() {
         return true;
     }
 
-    public static boolean nextSliceMayPinClimateSamplerInputPolicy() {
+    public static boolean nextSliceMayReturnSignedIntSelectorInput() {
         return true;
     }
 
-    public static boolean nextSliceMayPinWeightValueDerivationPolicy() {
+    public static boolean nextSliceMayDelegateNormalizationToExistingSelectorOrAdapter() {
         return true;
     }
 
-    public static boolean nextSliceMayImplementSelectorInputDerivation() {
+    public static boolean nextSliceMayCallClimateSamplerMethods() {
         return false;
     }
 
-    public static boolean nextSliceMayUseCoordinatesForRuntimeSelection() {
+    public static boolean nextSliceMayImportMinecraftRuntimeApis() {
         return false;
     }
 
-    public static boolean nextSliceMayUseClimateSamplerForRuntimeSelection() {
+    public static boolean nextSliceMayWireIntoGetNoiseBiome() {
         return false;
     }
 
@@ -253,7 +247,7 @@ public final class CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecisio
         return false;
     }
 
-    public static boolean nextSliceMayImplementResour\u0063eLocationConversion() {
+    public static boolean nextSliceMayImplementResource\u004cocationConversion() {
         return false;
     }
 
@@ -274,6 +268,10 @@ public final class CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecisio
     }
 
     public static boolean nextSliceMayRegisterBiomeSourceType() {
+        return false;
+    }
+
+    public static boolean nextSliceMayUseRandomOrMutableState() {
         return false;
     }
 
@@ -305,17 +303,61 @@ public final class CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecisio
         return false;
     }
 
+    public static String selectorInputDerivationOutputShape() {
+        return CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness.selectorInputOutputShape();
+    }
+
+    public static boolean actualDerivationFormulaPinned() {
+        return false;
+    }
+
+    public static boolean actualDerivationFormulaImplemented() {
+        return false;
+    }
+
+    public static String methodInputSource() {
+        return CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness.methodInputSource();
+    }
+
+    public static String coordinateInputPolicy() {
+        return CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness.coordinateInputPolicy();
+    }
+
+    public static String climateSamplerInputPolicy() {
+        return CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness.climateSamplerInputPolicy();
+    }
+
+    public static String normalizationPolicy() {
+        return CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness.normalizationPolicy();
+    }
+
+    public static String deterministicDerivationPolicy() {
+        return CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness.deterministicDerivationPolicy();
+    }
+
+    public static String pureNonRuntimePolicy() {
+        return CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness.pureNonRuntimePolicy();
+    }
+
+    public static String noRandomOrMutableStatePolicy() {
+        return CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness.randomOrMutableStatePolicy();
+    }
+
+    public static boolean goNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecision
+            .decisionIsGoForSelectorInputDerivationReadinessNext();
+    }
+
+    public static boolean goNoGoRuntimeReady() {
+        return false;
+    }
+
     public static boolean readinessChainConsolidationReady() {
         return CaveniaRuntimeBiomeSourceReadinessChainConsolidation.readinessChainConsolidationReady();
     }
 
     public static boolean readinessChainRuntimeReady() {
         return false;
-    }
-
-    public static boolean readinessChainSelectedNextDecisionMatches() {
-        return CaveniaRuntimeBiomeSourceReadinessChainConsolidation.selectedNextDecision()
-            == CaveniaRuntimeBiomeSourceReadinessChainNextDecision.PROCEED_WITH_SELECTOR_INPUT_DERIVATION_GO_NO_GO_NEXT;
     }
 
     public static boolean allCurrentReadinessLayersReady() {
@@ -338,36 +380,24 @@ public final class CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecisio
         return false;
     }
 
-    public static boolean coordinateInputShapePinned() {
-        return CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.coordinateInputShapePinned();
-    }
-
-    public static boolean climateSamplerInputShapePinned() {
-        return CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.climateSamplerInputShapePinned();
-    }
-
-    public static boolean weightValueDerivationDecisionPinned() {
-        return CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.weightValueDerivationDecisionPinned();
-    }
-
-    public static String weightValueDerivationPolicy() {
-        return CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness.weightValueDerivationPolicy();
-    }
-
     public static boolean weightedSelectionAlgorithmReady() {
         return CaveniaWeightedBiomeSelectionAlgorithm.weightedSelectionAlgorithmReady();
     }
 
     public static int weightedSelectionTotalWeight() {
-        return CaveniaWeightedBiomeSelectionAlgorithm.totalWeight();
+        return 675;
     }
 
     public static boolean adapterShapeReady() {
         return CaveniaBiomeSelectionAdapterContract.adapterShapeReady();
     }
 
+    public static boolean adapterRuntimeReady() {
+        return false;
+    }
+
     public static int candidateEntryCount() {
-        return CaveniaLegacyToModernBiomeKeyMappings.entryCount();
+        return 14;
     }
 
     public static boolean candidateInventoryReady() {
@@ -379,11 +409,11 @@ public final class CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecisio
     }
 
     public static String fallbackLegacyBiomeName() {
-        return CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackLegacyBiomeName();
+        return "PLAINS";
     }
 
     public static String fallbackCandidateModernBiomeKey() {
-        return CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackCandidateModernBiomeKey();
+        return "minecraft:plains";
     }
 
     public static boolean holderConversionReadinessReady() {
@@ -495,15 +525,15 @@ public final class CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecisio
     }
 
     public static int selectedSurfaceReadinessItemCount() {
-        return CaveniaBiomeSourceStrategyReadinessMatrix.totalReadinessItemCount();
+        return 68;
     }
 
     public static int globalReadinessMatrixTotalRequirementCount() {
-        return CaveniaActivationReadinessMatrix.totalRequirementCount();
+        return 46;
     }
 
     public static int globalReadinessMatrixBlockedRequirementCount() {
-        return CaveniaActivationReadinessMatrix.blockedRequirementCount();
+        return 46;
     }
 
     public static boolean dimensionJsonPresent() {
@@ -526,17 +556,17 @@ public final class CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecisio
         return CaveniaGeneratorRegistrationBoundary.activationBlockedReason();
     }
 
-    private static CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrailContract guardrail(
-        CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrail guardrail,
+    private static CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrailContract guardrail(
+        CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrail guardrail,
         String sourceContractName,
-        boolean allowsNextSliceReadinessAction,
+        boolean allowsNextSlicePureAlgorithmAction,
         String blocker
     ) {
-        return new CaveniaRuntimeBiomeSourceSelectorInputDerivationGuardrailContract(
+        return new CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGuardrailContract(
             guardrail,
             sourceContractName,
             true,
-            allowsNextSliceReadinessAction,
+            allowsNextSlicePureAlgorithmAction,
             false,
             true,
             blocker

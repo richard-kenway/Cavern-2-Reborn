@@ -359,6 +359,15 @@ public final class CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness {
         return false;
     }
 
+    public static boolean selectorInputDerivationImplementationGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGoNoGoDecision
+            .decisionIsGoForPureNonRuntimeAlgorithmNext();
+    }
+
+    public static boolean selectorInputDerivationImplementationGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static String possibleBiomesConstraintPolicy() {
         return POSSIBLE_BIOMES_CONSTRAINT_POLICY;
     }

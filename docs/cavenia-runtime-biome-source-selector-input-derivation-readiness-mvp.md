@@ -265,3 +265,5 @@ Why no access/spawning/worldgen resources were added: selector-input readiness m
 - next slice can be `Cavenia Runtime BiomeSource Selector Input Derivation Implementation Go/No-Go MVP`
 - that next slice should decide whether to allow a pure non-runtime selector-input derivation algorithm
 - that next slice must still keep `getNoiseBiome(...)` unusable unless explicitly requested otherwise
+
+The selector-input derivation implementation go/no-go follow-up is now documented in `docs/cavenia-runtime-biome-source-selector-input-derivation-implementation-go-no-go-mvp.md`.

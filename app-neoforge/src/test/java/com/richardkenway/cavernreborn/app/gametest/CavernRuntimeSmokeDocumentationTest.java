@@ -839,6 +839,15 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("usable codec implementation is not ready, codec is not registered and biome-source type is not registered, normal runtime construction is not allowed, unsupported method stubs only remain in place"));
         assertTrue(doc.contains("selected-surface readiness item count remains `68`, global readiness matrix total requirement count remains `46`, global readiness matrix blocked requirement count remains `46`, dimension JSON is absent, dimension type JSON is absent, Caveman remains deferred and `EntityCaveman -> deferred:caveman` remains unchanged"));
         assertTrue(doc.contains("the selector-input derivation readiness note at `docs/cavenia-runtime-biome-source-selector-input-derivation-readiness-mvp.md`"));
+        assertTrue(doc.contains("Cavenia Runtime BiomeSource Selector Input Derivation Implementation Go/No-Go MVP"));
+        assertTrue(doc.contains("Selector Input Derivation Implementation Go/No-Go MVP"));
+        assertTrue(doc.contains("`CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGoNoGoDecision` now resolves from `app-neoforge`"));
+        assertTrue(doc.contains("selected decision is `PROCEED_WITH_PURE_NON_RUNTIME_SELECTOR_INPUT_DERIVATION_ALGORITHM_NEXT`, decision is go for pure non-runtime algorithm next, selector-input derivation algorithm is not implemented in this slice"));
+        assertTrue(doc.contains("guardrail count is `18`, all guardrails are enforced in this slice, allowed next-slice pure algorithm action count is `4`, allowed next-slice runtime action count is `0` and no runtime action is allowed by guardrails"));
+        assertTrue(doc.contains("next slice may add pure non-runtime selector-input algorithm, may use integer coordinate inputs, may return signed int selector input and may delegate normalization to existing selector/adapter"));
+        assertTrue(doc.contains("next slice may not call climate sampler methods, may not import Minecraft runtime APIs, may not wire into `getNoiseBiome(...)`, may not make `getNoiseBiome(...)` or `collectPossibleBiomes()` usable"));
+        assertTrue(doc.contains("selector-input derivation readiness is ready, selector-input derivation readiness runtime is not ready, selector-input derivation output shape is pinned, actual derivation formula is not pinned and actual derivation formula is not implemented"));
+        assertTrue(doc.contains("the selector-input derivation implementation go/no-go note at `docs/cavenia-runtime-biome-source-selector-input-derivation-implementation-go-no-go-mvp.md`"));
         assertTrue(doc.contains("docs/caveman-cavenia-normal-roster-boundary.md"));
         assertTrue(doc.contains("no checked-in normal `CAVERN` crazy biome modifiers or crazy biome tags exist"));
         assertTrue(doc.contains("the Cavenia spawn-provider / crazy-roster activation contract boundary note at `docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md`"));

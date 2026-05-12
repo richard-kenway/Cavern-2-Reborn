@@ -89,6 +89,8 @@ class CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecisionTest {
         assertFalse(CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecision.selectorInputDerivationPolicyPinnedInThisSlice());
         assertTrue(CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecision.selectorInputDerivationReadinessReady());
         assertFalse(CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecision.selectorInputDerivationReadinessRuntimeReady());
+        assertTrue(CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecision.selectorInputDerivationImplementationGoNoGoDecisionReady());
+        assertFalse(CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecision.selectorInputDerivationImplementationGoNoGoRuntimeReady());
         assertFalse(CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecision.selectorInputDerivationImplementationReady());
         assertFalse(CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecision.selectorInputDerivationRuntimeReady());
         assertFalse(CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecision.runtimeApiAllowedInThisSlice());

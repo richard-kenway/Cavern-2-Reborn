@@ -137,6 +137,17 @@ class CaveniaRuntimeBiomeSourceTest {
         );
         assertTrue(
             designatedSource.contains(
+                "public static boolean selectorInputDerivationImplementationGoNoGoDecisionReady() {\n        return CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGoNoGoDecision\n            .decisionIsGoForPureNonRuntimeAlgorithmNext();\n    }"
+            )
+        );
+        assertTrue(designatedSource.contains("public static boolean selectorInputDerivationAlgorithmRuntimeReady() {\n        return false;\n    }"));
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean selectorInputDerivationPureAlgorithmIsNext() {\n        return CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGoNoGoDecision\n            .nextSliceMayAddPureNonRuntimeSelectorInputAlgorithm();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
                 "public static String selectorInputDerivationOutputShape() {\n        return CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness.selectorInputOutputShape();\n    }"
             )
         );
