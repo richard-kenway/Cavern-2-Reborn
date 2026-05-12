@@ -159,6 +159,14 @@ public final class CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecisio
         return false;
     }
 
+    public static boolean selectorInputAlgorithmConsolidationReady() {
+        return CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.selectorInputAlgorithmConsolidationReady();
+    }
+
+    public static boolean selectorInputAlgorithmConsolidationRuntimeReady() {
+        return false;
+    }
+
     public static boolean selectorInputDerivationImplementationReady() {
         return false;
     }

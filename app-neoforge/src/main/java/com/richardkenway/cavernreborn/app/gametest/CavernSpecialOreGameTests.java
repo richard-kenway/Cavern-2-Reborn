@@ -83,6 +83,8 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceReal
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceRealSubclassNextStepDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceSelectorInputDerivationAlgorithm;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidationNextDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGoNoGoDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationNextDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceSelectorInputDerivationNextDecision;
@@ -9407,6 +9409,88 @@ public final class CavernSpecialOreGameTests {
             "Expected the pure selector-input derivation algorithm layer to stay deterministic, non-runtime, unwired and inert while exposing stable coordinate-to-selector-int derivation"
         );
         helper.assertTrue(
+            CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.selectorInputAlgorithmConsolidationReady()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.selectorInputAlgorithmReady()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.pureNonRuntimeAlgorithmReady()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.integerCoordinateInputsReady()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.climateSamplerExcluded()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.signedIntSelectorOutputReady()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.deterministicFormulaReady()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.normalizationDelegated()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.weightedSelectorCompatibilityReady()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.adapterCompatibilityReady()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.selectorToWeightedCandidateBridgeReady()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.selectorToWeightedCandidateBridgeImplemented()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.selectorToWeightedCandidateBridgeRuntimeReady()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.selectedNextDecision()
+                    == CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidationNextDecision
+                        .PROCEED_WITH_SELECTOR_TO_WEIGHTED_CANDIDATE_BRIDGE_GO_NO_GO_NEXT
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.selectorToWeightedCandidateBridgeGoNoGoIsNext()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation
+                    .nextSliceMayAddSelectorToWeightedCandidateBridgeGoNoGoDecision()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation
+                    .nextSliceMayImplementSelectorToWeightedCandidateBridge()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation
+                    .nextSliceMayCallWeightedSelectorWithDerivedInput()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation
+                    .nextSliceMayCallAdapterWithDerivedInput()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.nextSliceMayWireIntoGetNoiseBiome()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation
+                    .nextSliceMayMakeGetNoiseBiomeUsable()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.deriveSelectorInputSampleOrigin() == -104499101
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.deriveSelectorInputSampleMixed() == 700186390
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.deriveSelectorInputSampleNegative() == -1039724642
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.implementationGoNoGoDecisionReady()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.implementationGoNoGoRuntimeReady()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.selectorInputDerivationReadinessReady()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation
+                    .selectorInputDerivationReadinessRuntimeReady()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.readinessChainConsolidationReady()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.readinessChainRuntimeReady()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.allCurrentReadinessLayersReady()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.runtimeReadyLayerCount() == 0
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.consolidatedReadinessLayerCount() == 6
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.weightedSelectionTotalWeight() == 675
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.candidateEntryCount() == 14
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.candidateInventoryReady()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.candidateKeysStillStringOnly()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.fallbackLegacyBiomeName().equals("PLAINS")
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation
+                    .fallbackCandidateModernBiomeKey().equals("minecraft:plains")
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.holderConversionReadinessReady()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.holderConversionRuntimeReady()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.holderResolutionReady()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.resourceLocationConversionReady()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.resourceKeyConversionReady()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.possibleBiomesReadinessReady()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.possibleBiomesRuntimeReady()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.fallbackPolicyReadinessReady()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.fallbackPolicyRuntimeReady()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.codecMethodShapeStubReady()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.codecMethodShapeRuntimeReady()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.designatedSubclassReady()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.designatedSubclassRuntimeReady()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.runtimeHolderReturnReady()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.collectPossibleBiomesImplementationReady()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.getNoiseBiomeImplementationReady()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.usableRuntimeBiomeSourceReady()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.registryLookupAccessReady()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.usableCodecImplementationReady()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.codecRegistered()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.biomeSourceTypeRegistered()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.normalRuntimeConstructionAllowed()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.unsupportedMethodStubsOnly()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.selectedSurfaceReadinessItemCount() == 68
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation
+                    .globalReadinessMatrixTotalRequirementCount() == 46
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation
+                    .globalReadinessMatrixBlockedRequirementCount() == 46
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.dimensionJsonPresent()
+                && !CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.dimensionTypeJsonPresent()
+                && CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.cavemanRemainsDeferred(),
+            "Expected the selector-input algorithm consolidation layer to keep the pure selector-input helper consolidated and inert while selecting only a future bridge go/no-go branch"
+        );
+        helper.assertTrue(
             CaveniaRuntimeBiomeSource.guardedSubclassStubReady()
                 && CaveniaRuntimeBiomeSource.designatedSubclassSimpleName().equals("CaveniaRuntimeBiomeSource")
                 && CaveniaRuntimeBiomeSource.designatedSubclassFileName().equals("CaveniaRuntimeBiomeSource.java")
@@ -9449,6 +9533,9 @@ public final class CavernSpecialOreGameTests {
                 && CaveniaRuntimeBiomeSource.selectorInputDerivationAlgorithmReady()
                 && !CaveniaRuntimeBiomeSource.selectorInputDerivationAlgorithmRuntimeReady()
                 && CaveniaRuntimeBiomeSource.selectorInputDerivationPureAlgorithmIsNext()
+                && CaveniaRuntimeBiomeSource.selectorInputAlgorithmConsolidationReady()
+                && !CaveniaRuntimeBiomeSource.selectorInputAlgorithmRuntimeReady()
+                && CaveniaRuntimeBiomeSource.selectorToWeightedCandidateBridgeGoNoGoIsNext()
                 && CaveniaRuntimeBiomeSource.selectorInputDerivationAlgorithmOutputShape()
                     .equals("signed int selector input")
                 && CaveniaRuntimeBiomeSource.selectorInputDerivationOutputShape()

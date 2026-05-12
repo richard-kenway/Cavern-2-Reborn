@@ -270,3 +270,5 @@ The next follow-up can be `Cavenia Runtime BiomeSource Selector Input Algorithm 
 That next slice should decide whether to bridge the selector input to the existing weighted selector/adapter path.
 
 That next slice must still keep `getNoiseBiome(...)` unusable unless explicitly requested otherwise.
+
+The selector-input algorithm consolidation follow-up is documented in `docs/cavenia-runtime-biome-source-selector-input-algorithm-consolidation-next-decision-mvp.md`.
