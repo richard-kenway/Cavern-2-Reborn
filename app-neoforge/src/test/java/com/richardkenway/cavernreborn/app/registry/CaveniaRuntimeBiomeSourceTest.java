@@ -163,6 +163,17 @@ class CaveniaRuntimeBiomeSourceTest {
         );
         assertTrue(
             designatedSource.contains(
+                "public static boolean selectorToWeightedCandidateBridgeGoNoGoDecisionReady() {\n        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision\n            .decisionIsGoForSelectorToWeightedCandidateBridgeReadinessNext();\n    }"
+            )
+        );
+        assertTrue(designatedSource.contains("public static boolean selectorToWeightedCandidateBridgeRuntimeReady() {\n        return false;\n    }"));
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean selectorToWeightedCandidateBridgeReadinessIsNext() {\n        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision\n            .nextSliceMayAddSelectorToWeightedCandidateBridgeReadiness();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
                 "public static String fallbackLegacyBiomeName() {\n        return CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackLegacyBiomeName();\n    }"
             )
         );

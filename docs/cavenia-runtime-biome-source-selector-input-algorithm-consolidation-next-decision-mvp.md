@@ -256,3 +256,5 @@ No access, spawning, or worldgen resources were added because those runtime surf
 - Next slice can be `Cavenia Runtime BiomeSource Selector-to-Weighted-Candidate Bridge Go/No-Go MVP`.
 - That next slice should remain decision-only unless explicitly requested otherwise.
 - That next slice must still keep `getNoiseBiome(...)` unusable unless explicitly requested otherwise.
+
+The selector-to-weighted-candidate bridge go/no-go follow-up is documented in `docs/cavenia-runtime-biome-source-selector-to-weighted-candidate-bridge-go-no-go-mvp.md`.

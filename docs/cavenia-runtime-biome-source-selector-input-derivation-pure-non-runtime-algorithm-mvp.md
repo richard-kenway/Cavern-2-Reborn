@@ -272,3 +272,4 @@ That next slice should decide whether to bridge the selector input to the existi
 That next slice must still keep `getNoiseBiome(...)` unusable unless explicitly requested otherwise.
 
 The selector-input algorithm consolidation follow-up is documented in `docs/cavenia-runtime-biome-source-selector-input-algorithm-consolidation-next-decision-mvp.md`.
+The selector-to-weighted-candidate bridge go/no-go follow-up is documented in `docs/cavenia-runtime-biome-source-selector-to-weighted-candidate-bridge-go-no-go-mvp.md`.

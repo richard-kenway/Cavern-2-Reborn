@@ -231,6 +231,20 @@ public final class CaveniaRuntimeBiomeSource extends BiomeSource {
         return CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.selectorToWeightedCandidateBridgeGoNoGoIsNext();
     }
 
+    public static boolean selectorToWeightedCandidateBridgeGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+            .decisionIsGoForSelectorToWeightedCandidateBridgeReadinessNext();
+    }
+
+    public static boolean selectorToWeightedCandidateBridgeRuntimeReady() {
+        return false;
+    }
+
+    public static boolean selectorToWeightedCandidateBridgeReadinessIsNext() {
+        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+            .nextSliceMayAddSelectorToWeightedCandidateBridgeReadiness();
+    }
+
     public static String fallbackLegacyBiomeName() {
         return CaveniaRuntimeBiomeSourceFallbackPolicyReadiness.fallbackLegacyBiomeName();
     }

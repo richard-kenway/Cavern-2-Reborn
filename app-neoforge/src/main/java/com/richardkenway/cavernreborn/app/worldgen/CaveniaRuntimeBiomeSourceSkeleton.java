@@ -240,6 +240,15 @@ public final class CaveniaRuntimeBiomeSourceSkeleton {
         return false;
     }
 
+    public static boolean selectorToWeightedCandidateBridgeGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+            .decisionIsGoForSelectorToWeightedCandidateBridgeReadinessNext();
+    }
+
+    public static boolean selectorToWeightedCandidateBridgeGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static int guardrailCount() {
         return CaveniaRuntimeBiomeSourceFirstImplementationDecision.guardrailCount();
     }

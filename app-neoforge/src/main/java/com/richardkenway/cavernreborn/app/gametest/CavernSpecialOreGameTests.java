@@ -89,6 +89,8 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceSele
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationNextDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceSelectorInputDerivationNextDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeNextDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceSkeleton;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceSubclassDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceSubclassNextStepDecision;
@@ -9491,6 +9493,153 @@ public final class CavernSpecialOreGameTests {
             "Expected the selector-input algorithm consolidation layer to keep the pure selector-input helper consolidated and inert while selecting only a future bridge go/no-go branch"
         );
         helper.assertTrue(
+            CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                .decisionIsGoForSelectorToWeightedCandidateBridgeReadinessNext()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision.selectedDecision()
+                    == CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeNextDecision
+                        .PROCEED_WITH_SELECTOR_TO_WEIGHTED_CANDIDATE_BRIDGE_READINESS_NEXT
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .decisionIsReadinessOnlyForNextSlice()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .selectorToWeightedCandidateBridgeReadinessImplementedInThisSlice()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .selectorToWeightedCandidateBridgeImplementationReady()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .selectorToWeightedCandidateBridgeRuntimeReady()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision.guardrailCount() == 19
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .allGuardrailsEnforcedInThisSlice()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .allowedNextSliceReadinessActionCount() == 5
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .allowedNextSliceBridgeImplementationActionCount() == 0
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .allowedNextSliceRuntimeActionCount() == 0
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .anyBridgeImplementationAllowedByGuardrails()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .anyRuntimeActionAllowedByGuardrails()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .nextSliceMayAddSelectorToWeightedCandidateBridgeReadiness()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .nextSliceMayPinSelectorInputSurfacePolicy()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .nextSliceMayPinWeightedSelectorQueryPolicy()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .nextSliceMayPinAdapterQueryPolicy()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .nextSliceMayPinCandidateKeyOutputPolicy()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .nextSliceMayImplementSelectorToWeightedCandidateBridge()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .nextSliceMayCallWeightedSelectorWithDerivedInput()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .nextSliceMayCallAdapterWithDerivedInput()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .nextSliceMayWireIntoGetNoiseBiome()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .nextSliceMayMakeGetNoiseBiomeUsable()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .selectorInputAlgorithmConsolidationReady()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .selectorInputAlgorithmConsolidationRuntimeReady()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .selectorInputAlgorithmSelectedNextDecisionMatches()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .selectorInputAlgorithmReady()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .selectorInputAlgorithmRuntimeReady()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .weightedSelectorCompatibilityReady()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .weightedSelectionTotalWeight() == 675
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .adapterCompatibilityReady()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision.adapterRuntimeReady()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .candidateEntryCount() == 14
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .candidateInventoryReady()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .candidateKeysStillStringOnly()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .fallbackLegacyBiomeName().equals("PLAINS")
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .fallbackCandidateModernBiomeKey().equals("minecraft:plains")
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .readinessChainConsolidationReady()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .readinessChainRuntimeReady()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .allCurrentReadinessLayersReady()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .runtimeReadyLayerCount() == 0
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .consolidatedReadinessLayerCount() == 6
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .noiseBiomeSelectionReadinessReady()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .noiseBiomeSelectionRuntimeReady()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .holderConversionReadinessReady()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .holderConversionRuntimeReady()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .holderResolutionReady()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .resourceLocationConversionReady()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .resourceKeyConversionReady()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .possibleBiomesReadinessReady()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .possibleBiomesRuntimeReady()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .fallbackPolicyReadinessReady()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .fallbackPolicyRuntimeReady()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .codecMethodShapeStubReady()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .codecMethodShapeRuntimeReady()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .designatedSubclassReady()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .designatedSubclassRuntimeReady()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .runtimeHolderReturnReady()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .collectPossibleBiomesImplementationReady()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .getNoiseBiomeImplementationReady()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .usableRuntimeBiomeSourceReady()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .registryLookupAccessReady()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .usableCodecImplementationReady()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision.codecRegistered()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .biomeSourceTypeRegistered()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .normalRuntimeConstructionAllowed()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .unsupportedMethodStubsOnly()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .selectedSurfaceReadinessItemCount() == 68
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .globalReadinessMatrixTotalRequirementCount() == 46
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .globalReadinessMatrixBlockedRequirementCount() == 46
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .dimensionJsonPresent()
+                && !CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .dimensionTypeJsonPresent()
+                && CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
+                    .cavemanRemainsDeferred(),
+            "Expected the selector-to-weighted-candidate bridge go/no-go layer to allow only future readiness data while keeping bridge behavior, runtime wiring and activation absent"
+        );
+        helper.assertTrue(
             CaveniaRuntimeBiomeSource.guardedSubclassStubReady()
                 && CaveniaRuntimeBiomeSource.designatedSubclassSimpleName().equals("CaveniaRuntimeBiomeSource")
                 && CaveniaRuntimeBiomeSource.designatedSubclassFileName().equals("CaveniaRuntimeBiomeSource.java")
@@ -9536,6 +9685,9 @@ public final class CavernSpecialOreGameTests {
                 && CaveniaRuntimeBiomeSource.selectorInputAlgorithmConsolidationReady()
                 && !CaveniaRuntimeBiomeSource.selectorInputAlgorithmRuntimeReady()
                 && CaveniaRuntimeBiomeSource.selectorToWeightedCandidateBridgeGoNoGoIsNext()
+                && CaveniaRuntimeBiomeSource.selectorToWeightedCandidateBridgeGoNoGoDecisionReady()
+                && !CaveniaRuntimeBiomeSource.selectorToWeightedCandidateBridgeRuntimeReady()
+                && CaveniaRuntimeBiomeSource.selectorToWeightedCandidateBridgeReadinessIsNext()
                 && CaveniaRuntimeBiomeSource.selectorInputDerivationAlgorithmOutputShape()
                     .equals("signed int selector input")
                 && CaveniaRuntimeBiomeSource.selectorInputDerivationOutputShape()
