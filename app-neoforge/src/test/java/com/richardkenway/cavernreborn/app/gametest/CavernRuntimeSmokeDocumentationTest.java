@@ -848,6 +848,7 @@ class CavernRuntimeSmokeDocumentationTest {
         assertTrue(doc.contains("next slice may not call climate sampler methods, may not import Minecraft runtime APIs, may not wire into `getNoiseBiome(...)`, may not make `getNoiseBiome(...)` or `collectPossibleBiomes()` usable"));
         assertTrue(doc.contains("selector-input derivation readiness is ready, selector-input derivation readiness runtime is not ready, selector-input derivation output shape is pinned, actual derivation formula is not pinned and actual derivation formula is not implemented"));
         assertTrue(doc.contains("the selector-input derivation implementation go/no-go note at `docs/cavenia-runtime-biome-source-selector-input-derivation-implementation-go-no-go-mvp.md`"));
+        assertTrue(doc.contains("the pure non-runtime selector-input derivation algorithm note at `docs/cavenia-runtime-biome-source-selector-input-derivation-pure-non-runtime-algorithm-mvp.md`"));
         assertTrue(doc.contains("docs/caveman-cavenia-normal-roster-boundary.md"));
         assertTrue(doc.contains("no checked-in normal `CAVERN` crazy biome modifiers or crazy biome tags exist"));
         assertTrue(doc.contains("the Cavenia spawn-provider / crazy-roster activation contract boundary note at `docs/cavenia-spawn-provider-crazy-roster-activation-contract-boundary.md`"));

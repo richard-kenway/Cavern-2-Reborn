@@ -139,6 +139,8 @@ class CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGoNoGoDecisi
 
         assertTrue(CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGoNoGoDecision.selectorInputDerivationReadinessReady());
         assertFalse(CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGoNoGoDecision.selectorInputDerivationReadinessRuntimeReady());
+        assertTrue(CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGoNoGoDecision.selectorInputDerivationAlgorithmReady());
+        assertFalse(CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGoNoGoDecision.selectorInputDerivationAlgorithmRuntimeReady());
         assertFalse(CaveniaRuntimeBiomeSourceSelectorInputDerivationImplementationGoNoGoDecision.selectorInputDerivationImplementationReady());
         assertEquals(
             "signed int weight value accepted by the existing adapter and weighted selector path",

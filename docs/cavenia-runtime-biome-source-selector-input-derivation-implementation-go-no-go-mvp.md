@@ -289,3 +289,5 @@ This is still not a `ChunkGenerator`.
 - next slice can be `Cavenia Runtime BiomeSource Selector Input Derivation Pure Non-Runtime Algorithm MVP`
 - that next slice may implement only a pure non-runtime helper/algorithm
 - that next slice must still keep `getNoiseBiome(...)` unusable unless explicitly requested otherwise
+
+The pure non-runtime selector-input derivation follow-up is documented in `docs/cavenia-runtime-biome-source-selector-input-derivation-pure-non-runtime-algorithm-mvp.md`.

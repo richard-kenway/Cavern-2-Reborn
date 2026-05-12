@@ -149,6 +149,8 @@ class CaveniaRuntimeBiomeSourceSelectorInputDerivationReadinessTest {
         assertFalse(CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness.goNoGoRuntimeReady());
         assertTrue(CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness.selectorInputDerivationImplementationGoNoGoDecisionReady());
         assertFalse(CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness.selectorInputDerivationImplementationGoNoGoRuntimeReady());
+        assertTrue(CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness.selectorInputDerivationAlgorithmReady());
+        assertFalse(CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness.selectorInputDerivationAlgorithmRuntimeReady());
         assertTrue(CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness.readinessChainConsolidationReady());
         assertFalse(CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness.readinessChainRuntimeReady());
         assertTrue(CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness.allCurrentReadinessLayersReady());

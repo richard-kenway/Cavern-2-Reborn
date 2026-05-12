@@ -320,6 +320,14 @@ public final class CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness {
         return false;
     }
 
+    public static boolean selectorInputDerivationAlgorithmReady() {
+        return CaveniaRuntimeBiomeSourceSelectorInputDerivationAlgorithm.selectorInputDerivationAlgorithmReady();
+    }
+
+    public static boolean selectorInputDerivationAlgorithmRuntimeReady() {
+        return false;
+    }
+
     public static boolean readinessChainConsolidationReady() {
         return CaveniaRuntimeBiomeSourceReadinessChainConsolidation.readinessChainConsolidationReady();
     }
