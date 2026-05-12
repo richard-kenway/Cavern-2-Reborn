@@ -270,3 +270,5 @@ This slice builds directly on:
 
 - next slice should be `Cavenia Runtime BiomeSource Selector Input Derivation Readiness MVP`
 - that next slice should still be readiness-only unless explicitly requested otherwise
+
+The selector-input derivation readiness follow-up is now documented in `docs/cavenia-runtime-biome-source-selector-input-derivation-readiness-mvp.md`.

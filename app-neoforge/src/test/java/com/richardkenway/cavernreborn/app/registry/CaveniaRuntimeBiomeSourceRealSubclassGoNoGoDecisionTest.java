@@ -145,6 +145,8 @@ class CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecisionTest {
         assertFalse(CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.readinessChainRuntimeReady());
         assertTrue(CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.selectorInputDerivationGoNoGoDecisionReady());
         assertFalse(CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.selectorInputDerivationGoNoGoRuntimeReady());
+        assertTrue(CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.selectorInputDerivationReadinessReady());
+        assertFalse(CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.selectorInputDerivationReadinessRuntimeReady());
         assertEquals(68, CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.selectedSurfaceReadinessItemCount());
         assertEquals(46, CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.globalReadinessMatrixTotalRequirementCount());
         assertEquals(46, CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision.globalReadinessMatrixBlockedRequirementCount());

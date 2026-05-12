@@ -220,6 +220,14 @@ public final class CaveniaRuntimeBiomeSourcePossibleBiomesReadiness {
         return false;
     }
 
+    public static boolean selectorInputDerivationReadinessReady() {
+        return CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness.selectorInputDerivationReadinessReady();
+    }
+
+    public static boolean selectorInputDerivationReadinessRuntimeReady() {
+        return false;
+    }
+
     public static boolean realPossibleBiomesStillDeferred() {
         return true;
     }

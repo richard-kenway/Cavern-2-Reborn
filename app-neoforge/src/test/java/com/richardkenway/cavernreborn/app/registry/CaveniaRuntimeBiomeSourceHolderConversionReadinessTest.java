@@ -129,6 +129,8 @@ class CaveniaRuntimeBiomeSourceHolderConversionReadinessTest {
         assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.readinessChainRuntimeReady());
         assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.selectorInputDerivationGoNoGoDecisionReady());
         assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.selectorInputDerivationGoNoGoRuntimeReady());
+        assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.selectorInputDerivationReadinessReady());
+        assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.selectorInputDerivationReadinessRuntimeReady());
         assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.designatedSubclassReady());
         assertFalse(CaveniaRuntimeBiomeSourceHolderConversionReadiness.designatedSubclassRuntimeReady());
         assertTrue(CaveniaRuntimeBiomeSourceHolderConversionReadiness.codecMethodShapeStubReady());

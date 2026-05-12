@@ -177,12 +177,24 @@ public final class CaveniaRuntimeBiomeSource extends BiomeSource {
         return CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecision.decisionIsGoForSelectorInputDerivationReadinessNext();
     }
 
+    public static boolean selectorInputDerivationReadinessReady() {
+        return CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness.selectorInputDerivationReadinessReady();
+    }
+
+    public static boolean selectorInputDerivationImplementationReady() {
+        return false;
+    }
+
     public static boolean selectorInputDerivationRuntimeReady() {
         return false;
     }
 
     public static boolean selectorInputDerivationReadinessIsNext() {
         return CaveniaRuntimeBiomeSourceSelectorInputDerivationGoNoGoDecision.nextSliceMayAddSelectorInputDerivationReadiness();
+    }
+
+    public static String selectorInputDerivationOutputShape() {
+        return CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness.selectorInputOutputShape();
     }
 
     public static String fallbackLegacyBiomeName() {
