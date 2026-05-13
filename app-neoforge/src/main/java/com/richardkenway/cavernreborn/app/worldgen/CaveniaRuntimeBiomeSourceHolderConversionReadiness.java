@@ -278,6 +278,15 @@ public final class CaveniaRuntimeBiomeSourceHolderConversionReadiness {
         return false;
     }
 
+    public static boolean selectorToWeightedCandidateBridgeReadinessReady() {
+        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeReadiness
+            .selectorToWeightedCandidateBridgeReadinessReady();
+    }
+
+    public static boolean selectorToWeightedCandidateBridgeReadinessRuntimeReady() {
+        return false;
+    }
+
     public static boolean noiseBiomeRuntimeReady() {
         return false;
     }
