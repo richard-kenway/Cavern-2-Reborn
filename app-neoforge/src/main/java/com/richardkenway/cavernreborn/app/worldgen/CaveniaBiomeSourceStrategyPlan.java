@@ -358,6 +358,15 @@ public final class CaveniaBiomeSourceStrategyPlan {
         return false;
     }
 
+    public static boolean selectorToWeightedCandidateBridgeImplementationGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeImplementationGoNoGoDecision
+            .decisionIsGoForPureNonRuntimeBridgeNext();
+    }
+
+    public static boolean selectorToWeightedCandidateBridgeImplementationGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static boolean runtimeBiomeSourceReady() {
         return false;
     }

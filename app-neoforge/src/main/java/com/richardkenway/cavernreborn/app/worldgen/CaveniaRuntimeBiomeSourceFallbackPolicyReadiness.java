@@ -345,6 +345,15 @@ public final class CaveniaRuntimeBiomeSourceFallbackPolicyReadiness {
         return false;
     }
 
+    public static boolean selectorToWeightedCandidateBridgeImplementationGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeImplementationGoNoGoDecision
+            .decisionIsGoForPureNonRuntimeBridgeNext();
+    }
+
+    public static boolean selectorToWeightedCandidateBridgeImplementationGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static boolean holderConversionReadinessReady() {
         return CaveniaRuntimeBiomeSourceHolderConversionReadiness.holderConversionReadinessReady();
     }

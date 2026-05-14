@@ -271,6 +271,15 @@ public final class CaveniaRuntimeBiomeSourcePossibleBiomesReadiness {
         return false;
     }
 
+    public static boolean selectorToWeightedCandidateBridgeImplementationGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeImplementationGoNoGoDecision
+            .decisionIsGoForPureNonRuntimeBridgeNext();
+    }
+
+    public static boolean selectorToWeightedCandidateBridgeImplementationGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static boolean realPossibleBiomesStillDeferred() {
         return true;
     }

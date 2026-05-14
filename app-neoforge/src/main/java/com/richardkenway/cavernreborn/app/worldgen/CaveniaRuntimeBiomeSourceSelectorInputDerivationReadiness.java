@@ -354,6 +354,15 @@ public final class CaveniaRuntimeBiomeSourceSelectorInputDerivationReadiness {
         return false;
     }
 
+    public static boolean selectorToWeightedCandidateBridgeImplementationGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeImplementationGoNoGoDecision
+            .decisionIsGoForPureNonRuntimeBridgeNext();
+    }
+
+    public static boolean selectorToWeightedCandidateBridgeImplementationGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static boolean readinessChainConsolidationReady() {
         return CaveniaRuntimeBiomeSourceReadinessChainConsolidation.readinessChainConsolidationReady();
     }
