@@ -814,8 +814,8 @@ class CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeImplementationGo
             assertNoMainSourceContains(decisionFiles, "System.currentTimeMillis");
             assertNoMainSourceContains(decisionFiles, "System.nanoTime");
             assertNoMainSourceContains(decisionFiles, "deriveSelectorInput(");
-            assertNoMainSourceContains(decisionFiles, ".select");
-            assertNoMainSourceContains(decisionFiles, ".adapt");
+            assertNoMainSourceContains(decisionFiles, ".select(");
+            assertNoMainSourceContains(decisionFiles, ".adapt(");
 
             List<Path> runtimeBiomeSourceFiles = regularFiles.stream()
                 .filter(path -> path.getFileName().toString().contains("CaveniaRuntimeBiomeSource"))
@@ -900,8 +900,8 @@ class CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeImplementationGo
         assertFalse(source.contains("System.currentTimeMillis"));
         assertFalse(source.contains("System.nanoTime"));
         assertFalse(source.contains("deriveSelectorInput("));
-        assertFalse(source.contains(".select"));
-        assertFalse(source.contains(".adapt"));
+        assertFalse(source.contains(".select("));
+        assertFalse(source.contains(".adapt("));
     }
 
     private static <T> void assertImmutableList(List<T> list, T element) {

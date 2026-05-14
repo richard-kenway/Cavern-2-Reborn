@@ -222,6 +222,7 @@ This is still not usable possible-biomes runtime behavior because `collectPossib
 ## Follow-up
 
 The selector-to-weighted-candidate bridge implementation go/no-go follow-up is documented in `docs/cavenia-runtime-biome-source-selector-to-weighted-candidate-bridge-implementation-go-no-go-mvp.md`.
+- The pure non-runtime selector-to-weighted-candidate bridge implementation follow-up is documented in `docs/cavenia-runtime-biome-source-selector-to-weighted-candidate-bridge-pure-non-runtime-implementation-mvp.md`.
 
 This is still not usable runtime biome resolution because holder conversion, resource-location conversion, resource-key conversion and registry lookup access remain absent.
 

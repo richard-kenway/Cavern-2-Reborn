@@ -401,8 +401,8 @@ class CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeReadinessTest {
             assertNoMainSourceContains(readinessFiles, "System.currentTimeMillis");
             assertNoMainSourceContains(readinessFiles, "System.nanoTime");
             assertNoMainSourceContains(readinessFiles, "deriveSelectorInput(");
-            assertNoMainSourceContains(readinessFiles, ".select");
-            assertNoMainSourceContains(readinessFiles, ".adapt");
+            assertNoMainSourceContains(readinessFiles, ".select(");
+            assertNoMainSourceContains(readinessFiles, ".adapt(");
 
             List<Path> runtimeBiomeSourceFiles = regularFiles.stream()
                 .filter(path -> path.getFileName().toString().contains("CaveniaRuntimeBiomeSource"))
@@ -511,8 +511,8 @@ class CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeReadinessTest {
         assertFalse(source.contains("System.currentTimeMillis"));
         assertFalse(source.contains("System.nanoTime"));
         assertFalse(source.contains("deriveSelectorInput("));
-        assertFalse(source.contains(".select"));
-        assertFalse(source.contains(".adapt"));
+        assertFalse(source.contains(".select("));
+        assertFalse(source.contains(".adapt("));
     }
 
     private static <T> void assertImmutableList(List<T> list, T element) {

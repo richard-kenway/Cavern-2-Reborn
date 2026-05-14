@@ -119,7 +119,7 @@ class CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidationTest {
         assertTrue(CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.weightedSelectorCompatibilityReady());
         assertEquals(675, CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.weightedSelectionTotalWeight());
         assertTrue(CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.adapterCompatibilityReady());
-        assertFalse(CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.selectorToWeightedCandidateBridgeReady());
+        assertTrue(CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.selectorToWeightedCandidateBridgeReady());
         assertFalse(CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.selectorToWeightedCandidateBridgeImplemented());
         assertFalse(CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation.selectorToWeightedCandidateBridgeRuntimeReady());
         assertEquals(

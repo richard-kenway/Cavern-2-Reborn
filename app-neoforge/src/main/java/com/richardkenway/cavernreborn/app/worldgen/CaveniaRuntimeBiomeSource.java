@@ -246,6 +246,10 @@ public final class CaveniaRuntimeBiomeSource extends BiomeSource {
             .decisionIsGoForPureNonRuntimeBridgeNext();
     }
 
+    public static boolean selectorToWeightedCandidateBridgeReady() {
+        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridge.selectorToWeightedCandidateBridgeReady();
+    }
+
     public static boolean selectorToWeightedCandidateBridgeImplementationReady() {
         return false;
     }
@@ -266,6 +270,10 @@ public final class CaveniaRuntimeBiomeSource extends BiomeSource {
     public static boolean selectorToWeightedCandidateBridgePureImplementationIsNext() {
         return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeImplementationGoNoGoDecision
             .nextSliceMayAddPureNonRuntimeSelectorToWeightedCandidateBridge();
+    }
+
+    public static String selectorToWeightedCandidateBridgeCandidateOutputShape() {
+        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridge.candidateKeyOutputShape();
     }
 
     public static String selectorToWeightedCandidateBridgeOutputShape() {

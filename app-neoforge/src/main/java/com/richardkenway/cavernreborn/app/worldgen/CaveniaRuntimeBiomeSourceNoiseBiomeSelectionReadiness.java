@@ -411,6 +411,14 @@ public final class CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness {
         return false;
     }
 
+    public static boolean selectorToWeightedCandidateBridgeReady() {
+        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridge.selectorToWeightedCandidateBridgeReady();
+    }
+
+    public static boolean selectorToWeightedCandidateBridgeImplementationRuntimeReady() {
+        return false;
+    }
+
     public static String possibleBiomesConstraintPolicy() {
         return POSSIBLE_BIOMES_CONSTRAINT_POLICY;
     }
