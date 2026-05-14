@@ -194,6 +194,16 @@ class CaveniaRuntimeBiomeSourceTest {
         );
         assertTrue(
             designatedSource.contains(
+                "public static boolean selectorToWeightedCandidateBridgeConsolidationReady() {\n        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeConsolidation\n            .selectorToWeightedCandidateBridgeConsolidationReady();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean selectorToWeightedCandidateBridgeConsolidationRuntimeReady() {\n        return false;\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
                 "public static boolean selectorToWeightedCandidateBridgeReadinessIsNext() {\n        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision\n            .nextSliceMayAddSelectorToWeightedCandidateBridgeReadiness();\n    }"
             )
         );
@@ -205,6 +215,11 @@ class CaveniaRuntimeBiomeSourceTest {
         assertTrue(
             designatedSource.contains(
                 "public static String selectorToWeightedCandidateBridgeCandidateOutputShape() {\n        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridge.candidateKeyOutputShape();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean candidateKeyToHolderConversionGoNoGoIsNext() {\n        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeConsolidation\n            .candidateKeyToHolderConversionGoNoGoIsNext();\n    }"
             )
         );
         assertTrue(

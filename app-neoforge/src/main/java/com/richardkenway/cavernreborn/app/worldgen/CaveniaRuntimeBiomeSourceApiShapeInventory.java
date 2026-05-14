@@ -440,6 +440,15 @@ public final class CaveniaRuntimeBiomeSourceApiShapeInventory {
         return false;
     }
 
+    public static boolean selectorToWeightedCandidateBridgeConsolidationReady() {
+        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeConsolidation
+            .selectorToWeightedCandidateBridgeConsolidationReady();
+    }
+
+    public static boolean selectorToWeightedCandidateBridgeConsolidationRuntimeReady() {
+        return false;
+    }
+
     public static int selectedSurfaceReadinessItemCount() {
         return CaveniaBiomeSourceStrategyReadinessMatrix.totalReadinessItemCount();
     }

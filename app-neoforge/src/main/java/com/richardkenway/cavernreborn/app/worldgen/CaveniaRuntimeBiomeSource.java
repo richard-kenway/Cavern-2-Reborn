@@ -262,6 +262,15 @@ public final class CaveniaRuntimeBiomeSource extends BiomeSource {
         return false;
     }
 
+    public static boolean selectorToWeightedCandidateBridgeConsolidationReady() {
+        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeConsolidation
+            .selectorToWeightedCandidateBridgeConsolidationReady();
+    }
+
+    public static boolean selectorToWeightedCandidateBridgeConsolidationRuntimeReady() {
+        return false;
+    }
+
     public static boolean selectorToWeightedCandidateBridgeReadinessIsNext() {
         return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecision
             .nextSliceMayAddSelectorToWeightedCandidateBridgeReadiness();
@@ -274,6 +283,11 @@ public final class CaveniaRuntimeBiomeSource extends BiomeSource {
 
     public static String selectorToWeightedCandidateBridgeCandidateOutputShape() {
         return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridge.candidateKeyOutputShape();
+    }
+
+    public static boolean candidateKeyToHolderConversionGoNoGoIsNext() {
+        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeConsolidation
+            .candidateKeyToHolderConversionGoNoGoIsNext();
     }
 
     public static String selectorToWeightedCandidateBridgeOutputShape() {

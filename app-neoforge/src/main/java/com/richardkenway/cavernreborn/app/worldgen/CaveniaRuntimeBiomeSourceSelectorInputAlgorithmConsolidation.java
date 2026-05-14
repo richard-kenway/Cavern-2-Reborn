@@ -261,6 +261,11 @@ public final class CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation 
         return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridge.selectorToWeightedCandidateBridgeReady();
     }
 
+    public static boolean selectorToWeightedCandidateBridgeConsolidationReady() {
+        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeConsolidation
+            .selectorToWeightedCandidateBridgeConsolidationReady();
+    }
+
     public static boolean selectorToWeightedCandidateBridgeImplemented() {
         return false;
     }
@@ -305,6 +310,10 @@ public final class CaveniaRuntimeBiomeSourceSelectorInputAlgorithmConsolidation 
     }
 
     public static boolean selectorToWeightedCandidateBridgeImplementationRuntimeReady() {
+        return false;
+    }
+
+    public static boolean selectorToWeightedCandidateBridgeConsolidationRuntimeReady() {
         return false;
     }
 

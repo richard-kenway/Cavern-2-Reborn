@@ -304,6 +304,15 @@ public final class CaveniaRuntimeBiomeSourceHolderConversionReadiness {
         return false;
     }
 
+    public static boolean selectorToWeightedCandidateBridgeConsolidationReady() {
+        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeConsolidation
+            .selectorToWeightedCandidateBridgeConsolidationReady();
+    }
+
+    public static boolean selectorToWeightedCandidateBridgeConsolidationRuntimeReady() {
+        return false;
+    }
+
     public static boolean noiseBiomeRuntimeReady() {
         return false;
     }
