@@ -351,6 +351,15 @@ public final class CaveniaRuntimeBiomeSourceCodecMethodShapeStub {
         return false;
     }
 
+    public static boolean candidateKeyToHolderConversionReadinessReady() {
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionReadiness
+            .candidateKeyToHolderConversionReadinessReady();
+    }
+
+    public static boolean candidateKeyToHolderConversionReadinessRuntimeReady() {
+        return false;
+    }
+
     public static boolean dimensionBindingReady() {
         return false;
     }

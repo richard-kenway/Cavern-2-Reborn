@@ -160,7 +160,7 @@ class CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeConsolidationTes
         assertTrue(CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeConsolidation.sampleCandidateKeysVerified());
         assertTrue(CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeConsolidation.candidateKeysRemainStringOnly());
         assertTrue(CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeConsolidation.candidateKeyToHolderConversionGoNoGoIsNext());
-        assertFalse(CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeConsolidation.candidateKeyToHolderConversionReadinessReady());
+        assertTrue(CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeConsolidation.candidateKeyToHolderConversionReadinessReady());
         assertFalse(CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeConsolidation.candidateKeyToHolderConversionImplementationReady());
         assertFalse(CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeConsolidation.candidateKeyToHolderConversionRuntimeReady());
         assertEquals(

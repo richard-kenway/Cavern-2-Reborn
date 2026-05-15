@@ -295,6 +295,15 @@ public final class CaveniaRuntimeBiomeSource extends BiomeSource {
             .decisionIsGoForCandidateKeyToHolderConversionReadinessNext();
     }
 
+    public static boolean candidateKeyToHolderConversionReadinessReady() {
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionReadiness
+            .candidateKeyToHolderConversionReadinessReady();
+    }
+
+    public static boolean candidateKeyToHolderConversionImplementationReady() {
+        return false;
+    }
+
     public static boolean candidateKeyToHolderConversionRuntimeReady() {
         return false;
     }
@@ -302,6 +311,10 @@ public final class CaveniaRuntimeBiomeSource extends BiomeSource {
     public static boolean candidateKeyToHolderConversionReadinessIsNext() {
         return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionGoNoGoDecision
             .nextSliceMayAddCandidateKeyToHolderConversionReadiness();
+    }
+
+    public static String candidateKeyToHolderConversionInputShape() {
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionReadiness.candidateKeyInputShape();
     }
 
     public static String selectorToWeightedCandidateBridgeOutputShape() {

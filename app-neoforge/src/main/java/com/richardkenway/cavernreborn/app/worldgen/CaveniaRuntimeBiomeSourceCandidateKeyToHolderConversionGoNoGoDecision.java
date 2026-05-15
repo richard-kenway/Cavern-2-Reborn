@@ -176,6 +176,15 @@ public final class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionGoNoGo
         return false;
     }
 
+    public static boolean candidateKeyToHolderConversionReadinessReady() {
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionReadiness
+            .candidateKeyToHolderConversionReadinessReady();
+    }
+
+    public static boolean candidateKeyToHolderConversionReadinessRuntimeReady() {
+        return false;
+    }
+
     public static boolean runtimeApiAllowedInThisSlice() {
         return false;
     }

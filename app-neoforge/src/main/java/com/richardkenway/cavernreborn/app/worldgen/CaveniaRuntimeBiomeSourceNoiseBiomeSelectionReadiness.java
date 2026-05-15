@@ -437,6 +437,15 @@ public final class CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness {
         return false;
     }
 
+    public static boolean candidateKeyToHolderConversionReadinessReady() {
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionReadiness
+            .candidateKeyToHolderConversionReadinessReady();
+    }
+
+    public static boolean candidateKeyToHolderConversionReadinessRuntimeReady() {
+        return false;
+    }
+
     public static String possibleBiomesConstraintPolicy() {
         return POSSIBLE_BIOMES_CONSTRAINT_POLICY;
     }

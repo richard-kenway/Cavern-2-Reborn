@@ -249,7 +249,8 @@ public final class CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeCon
     }
 
     public static boolean candidateKeyToHolderConversionReadinessReady() {
-        return false;
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionReadiness
+            .candidateKeyToHolderConversionReadinessReady();
     }
 
     public static boolean candidateKeyToHolderConversionImplementationReady() {
@@ -257,6 +258,10 @@ public final class CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeCon
     }
 
     public static boolean candidateKeyToHolderConversionRuntimeReady() {
+        return false;
+    }
+
+    public static boolean candidateKeyToHolderConversionReadinessRuntimeReady() {
         return false;
     }
 

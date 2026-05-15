@@ -229,6 +229,16 @@ class CaveniaRuntimeBiomeSourceTest {
         );
         assertTrue(
             designatedSource.contains(
+                "public static boolean candidateKeyToHolderConversionReadinessReady() {\n        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionReadiness\n            .candidateKeyToHolderConversionReadinessReady();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean candidateKeyToHolderConversionImplementationReady() {\n        return false;\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
                 "public static boolean candidateKeyToHolderConversionRuntimeReady() {\n        return false;\n    }"
             )
         );

@@ -277,3 +277,4 @@ This is candidate-key-to-holder conversion go/no-go decision, not readiness and 
 
 - The selector-to-weighted-candidate bridge consolidation note is documented in `docs/cavenia-runtime-biome-source-selector-to-weighted-candidate-bridge-consolidation-next-decision-mvp.md`.
 - The candidate-key-to-holder conversion go/no-go note is documented in `docs/cavenia-runtime-biome-source-candidate-key-to-holder-conversion-go-no-go-mvp.md`.
+- The candidate-key-to-holder conversion readiness follow-up is documented in `docs/cavenia-runtime-biome-source-candidate-key-to-holder-conversion-readiness-mvp.md`.

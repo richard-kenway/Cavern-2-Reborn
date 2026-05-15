@@ -293,6 +293,15 @@ public final class CaveniaRuntimeBiomeSourceSkeleton {
         return false;
     }
 
+    public static boolean candidateKeyToHolderConversionReadinessReady() {
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionReadiness
+            .candidateKeyToHolderConversionReadinessReady();
+    }
+
+    public static boolean candidateKeyToHolderConversionReadinessRuntimeReady() {
+        return false;
+    }
+
     public static int guardrailCount() {
         return CaveniaRuntimeBiomeSourceFirstImplementationDecision.guardrailCount();
     }

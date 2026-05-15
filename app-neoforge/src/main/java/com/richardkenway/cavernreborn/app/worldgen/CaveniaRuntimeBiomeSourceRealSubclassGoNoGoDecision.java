@@ -431,6 +431,15 @@ public final class CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision {
         return false;
     }
 
+    public static boolean candidateKeyToHolderConversionReadinessReady() {
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionReadiness
+            .candidateKeyToHolderConversionReadinessReady();
+    }
+
+    public static boolean candidateKeyToHolderConversionReadinessRuntimeReady() {
+        return false;
+    }
+
     public static int selectedSurfaceReadinessItemCount() {
         return CaveniaBiomeSourceStrategyReadinessMatrix.totalReadinessItemCount();
     }

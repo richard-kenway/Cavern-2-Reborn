@@ -255,3 +255,4 @@ No access/spawning/worldgen resources were added because travel, spawn-host and 
 - next slice can be `Cavenia Runtime BiomeSource Selector-to-Weighted-Candidate Bridge Implementation Go/No-Go MVP`.
 - that next slice should remain decision-only unless explicitly requested otherwise.
 - that next slice must still keep `getNoiseBiome(...)` unusable unless explicitly requested otherwise.
+- The candidate-key-to-holder conversion readiness follow-up is documented in `docs/cavenia-runtime-biome-source-candidate-key-to-holder-conversion-readiness-mvp.md`.

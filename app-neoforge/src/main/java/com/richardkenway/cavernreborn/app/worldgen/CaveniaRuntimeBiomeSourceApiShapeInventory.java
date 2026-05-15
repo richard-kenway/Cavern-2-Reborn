@@ -458,6 +458,15 @@ public final class CaveniaRuntimeBiomeSourceApiShapeInventory {
         return false;
     }
 
+    public static boolean candidateKeyToHolderConversionReadinessReady() {
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionReadiness
+            .candidateKeyToHolderConversionReadinessReady();
+    }
+
+    public static boolean candidateKeyToHolderConversionReadinessRuntimeReady() {
+        return false;
+    }
+
     public static int selectedSurfaceReadinessItemCount() {
         return CaveniaBiomeSourceStrategyReadinessMatrix.totalReadinessItemCount();
     }
