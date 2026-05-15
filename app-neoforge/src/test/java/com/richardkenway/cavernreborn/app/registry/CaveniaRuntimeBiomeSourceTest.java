@@ -224,6 +224,21 @@ class CaveniaRuntimeBiomeSourceTest {
         );
         assertTrue(
             designatedSource.contains(
+                "public static boolean candidateKeyToHolderConversionGoNoGoDecisionReady() {\n        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionGoNoGoDecision\n            .decisionIsGoForCandidateKeyToHolderConversionReadinessNext();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean candidateKeyToHolderConversionRuntimeReady() {\n        return false;\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean candidateKeyToHolderConversionReadinessIsNext() {\n        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionGoNoGoDecision\n            .nextSliceMayAddCandidateKeyToHolderConversionReadiness();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
                 "public static String selectorToWeightedCandidateBridgeOutputShape() {\n        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeReadiness.candidateKeyOutputShape();\n    }"
             )
         );
