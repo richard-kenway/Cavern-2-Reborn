@@ -174,6 +174,15 @@ public final class CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridge {
         return false;
     }
 
+    public static boolean candidateKeyToHolderConversionImplementationGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoGoDecision
+            .decisionIsGoForGuardedCandidateKeyToHolderConversionImplementationNext();
+    }
+
+    public static boolean candidateKeyToHolderConversionImplementationGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static boolean pureNonRuntimeBridgeReady() {
         return true;
     }

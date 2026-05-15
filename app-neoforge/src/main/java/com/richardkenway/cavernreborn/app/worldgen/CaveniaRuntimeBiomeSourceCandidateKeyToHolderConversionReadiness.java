@@ -358,6 +358,15 @@ public final class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionReadin
         return false;
     }
 
+    public static boolean candidateKeyToHolderConversionImplementationGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoGoDecision
+            .decisionIsGoForGuardedCandidateKeyToHolderConversionImplementationNext();
+    }
+
+    public static boolean candidateKeyToHolderConversionImplementationGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static boolean holderConversionReadinessReady() {
         return CaveniaRuntimeBiomeSourceHolderConversionReadiness.holderConversionReadinessReady();
     }

@@ -402,6 +402,15 @@ public final class CaveniaBiomeSourceStrategyPlan {
         return false;
     }
 
+    public static boolean candidateKeyToHolderConversionImplementationGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoGoDecision
+            .decisionIsGoForGuardedCandidateKeyToHolderConversionImplementationNext();
+    }
+
+    public static boolean candidateKeyToHolderConversionImplementationGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static boolean runtimeBiomeSourceReady() {
         return false;
     }

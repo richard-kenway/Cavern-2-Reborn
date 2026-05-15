@@ -272,6 +272,7 @@ This slice adds no registry lookup access, no holder/resource-key conversion imp
 - The selector-to-weighted-candidate bridge consolidation and next-decision follow-up is documented in `docs/cavenia-runtime-biome-source-selector-to-weighted-candidate-bridge-consolidation-next-decision-mvp.md`.
 - The candidate-key-to-holder conversion go/no-go follow-up is documented in `docs/cavenia-runtime-biome-source-candidate-key-to-holder-conversion-go-no-go-mvp.md`.
 - The candidate-key-to-holder conversion readiness follow-up is documented in `docs/cavenia-runtime-biome-source-candidate-key-to-holder-conversion-readiness-mvp.md`.
+- The candidate-key-to-holder conversion implementation go/no-go follow-up is documented in `docs/cavenia-runtime-biome-source-candidate-key-to-holder-conversion-implementation-go-no-go-mvp.md`.
 - Future recommendation: next slice can be `Cavenia Runtime BiomeSource Selector-to-Weighted-Candidate Bridge Pure Non-Runtime Implementation MVP`.
 - That next slice may implement only a pure non-runtime bridge helper.
 - That next slice must still keep `getNoiseBiome(...)` unusable unless explicitly requested otherwise.

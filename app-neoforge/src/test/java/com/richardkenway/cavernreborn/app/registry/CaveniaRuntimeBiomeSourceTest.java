@@ -249,6 +249,21 @@ class CaveniaRuntimeBiomeSourceTest {
         );
         assertTrue(
             designatedSource.contains(
+                "public static boolean candidateKeyToHolderConversionImplementationGoNoGoDecisionReady() {\n        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoGoDecision\n            .decisionIsGoForGuardedCandidateKeyToHolderConversionImplementationNext();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean candidateKeyToHolderConversionImplementationRuntimeReady() {\n        return false;\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean candidateKeyToHolderConversionImplementationIsNext() {\n        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoGoDecision\n            .nextSliceMayAddGuardedConversionHelper();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
                 "public static String selectorToWeightedCandidateBridgeOutputShape() {\n        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeReadiness.candidateKeyOutputShape();\n    }"
             )
         );

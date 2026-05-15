@@ -313,6 +313,20 @@ public final class CaveniaRuntimeBiomeSource extends BiomeSource {
             .nextSliceMayAddCandidateKeyToHolderConversionReadiness();
     }
 
+    public static boolean candidateKeyToHolderConversionImplementationGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoGoDecision
+            .decisionIsGoForGuardedCandidateKeyToHolderConversionImplementationNext();
+    }
+
+    public static boolean candidateKeyToHolderConversionImplementationRuntimeReady() {
+        return false;
+    }
+
+    public static boolean candidateKeyToHolderConversionImplementationIsNext() {
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoGoDecision
+            .nextSliceMayAddGuardedConversionHelper();
+    }
+
     public static String candidateKeyToHolderConversionInputShape() {
         return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionReadiness.candidateKeyInputShape();
     }
