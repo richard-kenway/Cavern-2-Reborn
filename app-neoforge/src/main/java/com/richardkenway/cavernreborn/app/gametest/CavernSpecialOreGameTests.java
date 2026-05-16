@@ -90,6 +90,7 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceColl
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationNextDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetNextDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoGoDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationNextDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionNextDecision;
@@ -10954,6 +10955,124 @@ public final class CavernSpecialOreGameTests {
                     .isPresent(),
             "Expected collectPossibleBiomes holder-set implementation go/no-go to stay decision-only while allowing only a future guarded builder helper"
         );
+        List<Holder<Biome>> defaultPossibleBiomeHolders =
+            CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                .buildCandidateHolderList(helper.getLevel().registryAccess());
+        List<Holder<Biome>> duplicatePossibleBiomeHolders =
+            CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder.buildCandidateHolderList(
+                List.of("minecraft:taiga", "minecraft:taiga", "minecraft:desert"),
+                helper.getLevel().registryAccess()
+            );
+        List<Holder<Biome>> fallbackPossibleBiomeHolders =
+            CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder.buildCandidateHolderList(
+                List.of("not a valid key", "cavernreborn:missing_biome"),
+                helper.getLevel().registryAccess()
+            );
+        List<Holder<Biome>> emptyPossibleBiomeHolders =
+            CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder.buildCandidateHolderList(
+                List.of(),
+                helper.getLevel().registryAccess()
+            );
+        List<Holder<Biome>> nullCandidatePossibleBiomeHolders =
+            CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder.buildCandidateHolderList(
+                null,
+                helper.getLevel().registryAccess()
+            );
+        List<Holder<Biome>> nullLookupPossibleBiomeHolders =
+            CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder.buildCandidateHolderList(
+                List.of("minecraft:taiga"),
+                null
+            );
+        Optional<Holder<Biome>> taigaHolder = CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+            .holderForCandidateKey("minecraft:taiga", helper.getLevel().registryAccess());
+        Optional<Holder<Biome>> desertHolder = CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+            .holderForCandidateKey("minecraft:desert", helper.getLevel().registryAccess());
+        Optional<Holder<Biome>> plainsHolder = CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+            .holderForCandidateKey("minecraft:plains", helper.getLevel().registryAccess());
+        helper.assertTrue(
+            CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder.builderReady()
+                && !CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .builderRuntimeBiomeSourceReady()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .buildCandidateHolderListReady()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .candidateInventoryInputReady()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .lookupProviderParameterReady()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .designatedConverterUsageReady()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .resolvedHolderCollectionReady()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .resolvedHolderDeduplicationReady()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .legacyOrderPreservationReady()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .missingInvalidUnresolvedSkipReady()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .fallbackIfEmptyReady()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .immutableOutputListReady()
+                && !CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .collectPossibleBiomesWiringReady()
+                && !CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .getNoiseBiomeWiringReady()
+                && !CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .runtimeBiomeSourceReady()
+                && !CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .activationAllowedInThisSlice()
+                && !CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .canActivateCaveniaNow()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .designatedBuilderSimpleName()
+                    .equals("CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder")
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .designatedBuilderFileName()
+                    .equals("CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder.java")
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .candidateEntryCount() == 14
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .candidateInventoryReady()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .candidateKeysStillStringOnlyOutsideBuilder()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .candidateKeyToHolderConverterReady()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .holderForCandidateKeyReady()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .holderForCandidateKeyOrFallbackReady()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .collectPossibleBiomesHolderSetReadinessReady()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .implementationGoNoGoDecisionReady()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .futureHolderSetOutputShape()
+                    .equals("pre-resolved biome holder set/list")
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .fallbackCandidateModernBiomeKey()
+                    .equals("minecraft:plains")
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                    .fallbackLegacyBiomeName()
+                    .equals("PLAINS")
+                && taigaHolder.isPresent()
+                && desertHolder.isPresent()
+                && plainsHolder.isPresent()
+                && !defaultPossibleBiomeHolders.isEmpty()
+                && defaultPossibleBiomeHolders.contains(taigaHolder.orElseThrow())
+                && duplicatePossibleBiomeHolders.equals(
+                    List.of(taigaHolder.orElseThrow(), desertHolder.orElseThrow())
+                )
+                && fallbackPossibleBiomeHolders.equals(List.of(plainsHolder.orElseThrow()))
+                && emptyPossibleBiomeHolders.equals(List.of(plainsHolder.orElseThrow()))
+                && nullCandidatePossibleBiomeHolders.equals(List.of(plainsHolder.orElseThrow()))
+                && nullLookupPossibleBiomeHolders.isEmpty()
+                && defaultPossibleBiomeHolders.equals(
+                    CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder
+                        .buildCandidateHolderList(helper.getLevel().registryAccess())
+                )
+                && duplicatePossibleBiomeHolders.stream().distinct().count() == duplicatePossibleBiomeHolders.size(),
+            "Expected the guarded holder-set builder to aggregate pre-resolved biome holders through caller-provided lookup while remaining unwired from runtime biome-source methods"
+        );
         helper.assertTrue(
             CaveniaRuntimeBiomeSource.guardedSubclassStubReady()
                 && CaveniaRuntimeBiomeSource.designatedSubclassSimpleName().equals("CaveniaRuntimeBiomeSource")
@@ -11031,10 +11150,15 @@ public final class CavernSpecialOreGameTests {
                 && CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetGoNoGoDecisionReady()
                 && CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetReadinessReady()
                 && !CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetImplementationReady()
+                && CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetBuilderReady()
+                && !CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetBuilderRuntimeReady()
                 && !CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetRuntimeReady()
                 && CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetReadinessIsNext()
                 && CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetOutputShape()
                     .equals("pre-resolved biome holder set/list")
+                && CaveniaRuntimeBiomeSource
+                    .collectPossibleBiomesHolderSetBuilderFileName()
+                    .equals("CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder.java")
                 && CaveniaRuntimeBiomeSource.candidateKeyToHolderConversionInputShape()
                     .equals("string modern biome candidate key")
                 && CaveniaRuntimeBiomeSource.selectorToWeightedCandidateBridgeCandidateOutputShape()

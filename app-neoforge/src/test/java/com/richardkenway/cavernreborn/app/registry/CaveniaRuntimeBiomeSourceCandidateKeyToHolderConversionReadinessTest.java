@@ -410,7 +410,7 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionReadinessTest {
 
         if (text.equals("Holder<Biome>")) {
             assertEquals(
-                List.of("CaveniaRuntimeBiomeSource.java", "CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.java"),
+                List.of("CaveniaRuntimeBiomeSource.java", "CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder.java", "CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.java"),
                 matchingFiles.stream().map(path -> path.getFileName().toString()).toList()
             );
             return;

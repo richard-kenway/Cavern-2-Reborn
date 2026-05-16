@@ -415,9 +415,9 @@ class CaveniaRuntimeBiomeSourceSelectorInputDerivationAlgorithmTest {
 
         if (fragment.equals("Holder<Biome>")) {
             assertEquals(
-                List.of("CaveniaRuntimeBiomeSource.java", "CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.java"),
+                List.of("CaveniaRuntimeBiomeSource.java", "CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder.java", "CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.java"),
                 matchingFiles.stream().map(path -> path.getFileName().toString()).toList(),
-                "Expected only the designated subclass and converter files to contain: " + fragment
+                "Expected only the designated subclass, builder and converter files to contain: " + fragment
             );
             return;
         }

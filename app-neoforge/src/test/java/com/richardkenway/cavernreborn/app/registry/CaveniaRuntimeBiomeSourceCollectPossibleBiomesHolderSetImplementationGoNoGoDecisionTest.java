@@ -21,6 +21,8 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceColl
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationNextDecision;
 
 class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGoNoGoDecisionTest {
+    private static final String DESIGNATED_BUILDER_FILE_NAME =
+        "CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder.java";
     private static final String DESIGNATED_CONVERTER_FILE_NAME =
         "CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.java";
     private static final Path NEXT_DECISION_SOURCE = resolveProjectFile(
@@ -46,6 +48,10 @@ class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGoNoG
     private static final Path CONVERTER_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
         DESIGNATED_CONVERTER_FILE_NAME
+    );
+    private static final Path BUILDER_SOURCE = resolveProjectFile(
+        "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
+        DESIGNATED_BUILDER_FILE_NAME
     );
     private static final Path APP_WORLDGEN_SOURCE_ROOT = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen"
@@ -656,6 +662,16 @@ class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGoNoG
         );
         assertTrue(
             designatedSource.contains(
+                "public static boolean collectPossibleBiomesHolderSetBuilderReady() {\n        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGoNoGoDecision\n            .collectPossibleBiomesHolderSetBuilderReady();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean collectPossibleBiomesHolderSetBuilderRuntimeReady() {\n        return false;\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
                 "public static boolean collectPossibleBiomesHolderSetImplementationRuntimeReady() {\n        return false;\n    }"
             )
         );
@@ -707,10 +723,7 @@ class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGoNoG
         assertTrue(converterSource.contains("Registries.BIOME"));
         assertTrue(converterSource.contains("Holder<Biome>"));
         assertTrue(converterSource.contains("Biome"));
-        assertFalse(Files.exists(resolveProjectPathOrSibling(
-            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
-            "CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder.java"
-        )));
+        assertTrue(Files.exists(BUILDER_SOURCE));
         assertTrue(designatedSource.contains("extends BiomeSource"));
         assertTrue(designatedSource.contains("import net.minecraft.world.level.biome.BiomeSource;"));
         assertTrue(designatedSource.contains("Holder<Biome>"));
@@ -723,7 +736,7 @@ class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGoNoG
 
         assertOnlyFileContains(runtimeBiomeSourceFiles, "ResourceLocation", CONVERTER_SOURCE);
         assertOnlyFileContains(runtimeBiomeSourceFiles, "ResourceKey<Biome>", CONVERTER_SOURCE);
-        assertOnlyFileContains(runtimeBiomeSourceFiles, "HolderLookup", CONVERTER_SOURCE);
+        assertOnlyFilesContain(runtimeBiomeSourceFiles, "HolderLookup", List.of(BUILDER_SOURCE, CONVERTER_SOURCE));
         assertOnlyFileContains(
             runtimeBiomeSourceFiles,
             "ResourceKey.create(Registries.BIOME, candidateLocation)",
@@ -810,6 +823,13 @@ class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGoNoG
             .filter(path -> read(path).contains(needle))
             .toList();
         assertEquals(List.of(expectedFile), matches);
+    }
+
+    private static void assertOnlyFilesContain(List<Path> files, String needle, List<Path> expectedFiles) {
+        List<Path> matches = files.stream()
+            .filter(path -> read(path).contains(needle))
+            .toList();
+        assertEquals(expectedFiles, matches);
     }
 
     private static void assertNoMainSourceContains(List<Path> files, String needle) {

@@ -174,6 +174,14 @@ public final class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGo
         return false;
     }
 
+    public static boolean collectPossibleBiomesHolderSetBuilderReady() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder.builderReady();
+    }
+
+    public static boolean collectPossibleBiomesHolderSetBuilderRuntimeReady() {
+        return false;
+    }
+
     public static boolean collectPossibleBiomesHolderSetReadinessImplementedInThisSlice() {
         return false;
     }

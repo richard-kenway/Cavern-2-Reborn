@@ -455,6 +455,14 @@ public final class CaveniaBiomeSourceStrategyPlan {
         return false;
     }
 
+    public static boolean collectPossibleBiomesHolderSetBuilderReady() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder.builderReady();
+    }
+
+    public static boolean collectPossibleBiomesHolderSetBuilderRuntimeReady() {
+        return false;
+    }
+
     public static boolean runtimeBiomeSourceReady() {
         return false;
     }

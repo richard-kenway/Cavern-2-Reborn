@@ -705,6 +705,10 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoG
                     DESIGNATED_SOURCE,
                     resolveProjectFile(
                         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app",
+                        "worldgen", "CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder.java"
+                    ),
+                    resolveProjectFile(
+                        "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app",
                         "worldgen", DESIGNATED_CONVERTER_FILE_NAME
                     )
                 ),
@@ -721,6 +725,17 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoG
             .filter(file -> read(file).contains(text))
             .toList();
 
+        if (text.equals("HolderLookup")) {
+            assertEquals(
+                List.of(
+                    "CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder.java",
+                    DESIGNATED_CONVERTER_FILE_NAME
+                ),
+                matchingFiles.stream().map(path -> path.getFileName().toString()).toList()
+            );
+            return;
+        }
+
         assertEquals(
             List.of(DESIGNATED_CONVERTER_FILE_NAME),
             matchingFiles.stream().map(path -> path.getFileName().toString()).toList()
@@ -732,8 +747,11 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoG
             || text.equals("ResourceKey<Biome>")
             || text.equals("HolderLookup")
             || text.equals("Registries.BIOME");
+        boolean allowBuilderFile = text.equals("HolderLookup");
         assertTrue(files.stream().noneMatch(file ->
-            (!allowConverterFile || !file.getFileName().toString().equals(DESIGNATED_CONVERTER_FILE_NAME))
+            ((!allowConverterFile || !file.getFileName().toString().equals(DESIGNATED_CONVERTER_FILE_NAME))
+                && (!allowBuilderFile
+                    || !file.getFileName().toString().equals("CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder.java")))
                 && read(file).contains(text)
         ));
     }

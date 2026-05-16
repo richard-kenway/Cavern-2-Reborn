@@ -377,6 +377,15 @@ public final class CaveniaRuntimeBiomeSource extends BiomeSource {
         return false;
     }
 
+    public static boolean collectPossibleBiomesHolderSetBuilderReady() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGoNoGoDecision
+            .collectPossibleBiomesHolderSetBuilderReady();
+    }
+
+    public static boolean collectPossibleBiomesHolderSetBuilderRuntimeReady() {
+        return false;
+    }
+
     public static boolean collectPossibleBiomesHolderSetRuntimeReady() {
         return false;
     }
@@ -393,6 +402,11 @@ public final class CaveniaRuntimeBiomeSource extends BiomeSource {
 
     public static String collectPossibleBiomesHolderSetOutputShape() {
         return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness.futureHolderSetOutputShape();
+    }
+
+    public static String collectPossibleBiomesHolderSetBuilderFileName() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGoNoGoDecision
+            .nextSliceDesignatedBuilderFileName();
     }
 
     public static String candidateKeyToHolderConversionInputShape() {

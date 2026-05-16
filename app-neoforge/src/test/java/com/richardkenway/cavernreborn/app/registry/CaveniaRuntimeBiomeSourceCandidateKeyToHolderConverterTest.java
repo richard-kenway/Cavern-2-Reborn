@@ -293,7 +293,18 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterTest {
         assertOnlyFileContains(runtimeBiomeSourceFiles, "ResourceLocation", CONVERTER_SOURCE);
         assertOnlyFileContains(runtimeBiomeSourceFiles, "ResourceKey<Biome>", CONVERTER_SOURCE);
         assertOnlyFileContains(runtimeBiomeSourceFiles, "HolderLookup", CONVERTER_SOURCE);
-        assertOnlyFilesContain(runtimeBiomeSourceFiles, "Holder<Biome>", List.of(DESIGNATED_SOURCE, CONVERTER_SOURCE));
+        assertOnlyFilesContain(
+            runtimeBiomeSourceFiles,
+            "Holder<Biome>",
+            List.of(
+                DESIGNATED_SOURCE,
+                resolveProjectFile(
+                    "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app",
+                    "worldgen", "CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder.java"
+                ),
+                CONVERTER_SOURCE
+            )
+        );
         assertNoSourceContains(runtimeBiomeSourceFiles, "Registry.register");
         assertNoSourceContains(runtimeBiomeSourceFiles, "BuiltInRegistries.BIOME_SOURCE.register");
         assertNoSourceContains(runtimeBiomeSourceFiles, "DeferredRegister");
@@ -309,6 +320,17 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterTest {
         List<Path> matchingFiles = files.stream()
             .filter(file -> read(file).contains(text))
             .toList();
+
+        if (text.equals("HolderLookup")) {
+            assertEquals(
+                List.of(
+                    "CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder.java",
+                    expected.getFileName().toString()
+                ),
+                matchingFiles.stream().map(path -> path.getFileName().toString()).toList()
+            );
+            return;
+        }
 
         assertEquals(
             List.of(expected.getFileName().toString()),

@@ -737,6 +737,17 @@ class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGoDecisionTest 
             .filter(file -> read(file).contains(text))
             .toList();
 
+        if (text.equals("HolderLookup")) {
+            assertEquals(
+                List.of(
+                    "CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder.java",
+                    expected.getFileName().toString()
+                ),
+                matchingFiles.stream().map(path -> path.getFileName().toString()).toList()
+            );
+            return;
+        }
+
         assertEquals(
             List.of(expected.getFileName().toString()),
             matchingFiles.stream().map(path -> path.getFileName().toString()).toList()
