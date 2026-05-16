@@ -1,24 +1,26 @@
-# Cavenia Runtime BiomeSource Collect-Possible-Biomes Holder Set Guarded Builder MVP
+# Cavenia Runtime BiomeSource Collect-Possible-Biomes Holder Set Builder Consolidation / Next Decision MVP
 
-This is guarded pre-resolved holder-set builder implementation, not runtime method implementation.
+This is holder-set builder consolidation and next-decision, not runtime construction/factory readiness.
 
 ## Summary
 
-- the exact designated builder file added is `app-neoforge/src/main/java/com/richardkenway/cavernreborn/app/worldgen/CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder.java`
-- the exact builder method signatures chosen are `public static List<Holder<Biome>> buildCandidateHolderList(HolderLookup.Provider lookupProvider)` and `public static List<Holder<Biome>> buildCandidateHolderList(List<String> candidateKeys, HolderLookup.Provider lookupProvider)`
-- the exact builder component enum values are `DESIGNATED_BUILDER_FILE`, `CANDIDATE_INVENTORY_INPUT`, `LOOKUP_PROVIDER_PARAMETER`, `DESIGNATED_CONVERTER_USAGE`, `RESOLVED_HOLDER_COLLECTION`, `RESOLVED_HOLDER_DEDUPLICATION`, `LEGACY_ORDER_PRESERVATION`, `MISSING_INVALID_UNRESOLVED_SKIP`, `FALLBACK_IF_EMPTY`, `IMMUTABLE_OUTPUT_LIST`, `NO_COLLECT_POSSIBLE_BIOMES_WIRING`, `NO_GET_NOISE_BIOME_WIRING` and `REAL_RUNTIME_BIOME_SOURCE_STILL_DEFERRED`
-- the exact builder entry fields are `component`, `sourceContractName`, `builderBehavior`, `runtimeBoundary`, `builderReady`, `runtimeBiomeSourceReady`, `activationAllowedInThisSlice` and `blocker`
+- designated builder exists
+- builder is ready
+- `buildCandidateHolderList(...)` is ready
 - builder accepts caller-provided lookup/provider
-- builder uses current candidate inventory
-- builder uses the designated converter
+- builder uses candidate inventory input
+- builder uses the designated converter dependency
+- builder returns immutable or safely unmodifiable pre-resolved holder list
 - builder deduplicates resolved holders
-- builder preserves first successful legacy order
-- builder skips missing, invalid and unresolved candidate keys
-- builder applies fallback-if-empty using `minecraft:plains`
-- builder returns immutable or safely unmodifiable list
-- builder does not access server or world globals
+- builder preserves first-success legacy order
+- builder applies fallback-if-empty
 - builder is not wired into `collectPossibleBiomes()`
 - builder is not wired into `getNoiseBiome(...)`
+- selected next decision is `PROCEED_WITH_RUNTIME_CONSTRUCTION_FACTORY_GO_NO_GO_NEXT`
+- next slice may add only runtime construction/factory go/no-go decision
+- next slice may not add runtime construction/factory readiness
+- next slice may not add runtime construction/factory implementation
+- next slice may not wire builder into runtime methods
 
 ## Boundaries
 
@@ -44,6 +46,7 @@ This is guarded pre-resolved holder-set builder implementation, not runtime meth
 ## Relationships
 
 - `CaveniaRuntimeBiomeSource`
+- `CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder`
 - `CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGoNoGoDecision`
 - `CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness`
 - `CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGoDecision`
@@ -61,9 +64,11 @@ This is guarded pre-resolved holder-set builder implementation, not runtime meth
 
 ## Why This Is Still Bounded
 
+- this is still not runtime construction/factory go/no-go implementation because the current slice adds only a builder consolidation note and selects the next decision enum
+- this is still not runtime construction/factory readiness because no readiness matrix or runtime-construction input contract was added
 - this is still not collectPossibleBiomes implementation because `CaveniaRuntimeBiomeSource` still does not call the builder
-- this is still not getNoiseBiome implementation because `CaveniaRuntimeBiomeSource` still does not call the builder
-- this is still not usable runtime biome resolution because the builder only prepares guarded helper output outside runtime methods
+- this is still not getNoiseBiome implementation because `CaveniaRuntimeBiomeSource` still does not call the builder or converter
+- this is still not usable runtime biome resolution because the builder remains a guarded helper outside runtime methods
 - this is still not a usable runtime biome source because all runtime-facing abstract methods remain unsupported stubs
 - this is still not a ChunkGenerator because no generator file or generator registration was added
 - no usable codec implementation was added
@@ -76,8 +81,7 @@ This is guarded pre-resolved holder-set builder implementation, not runtime meth
 
 ## Follow-up
 
-- the collect-possible-biomes holder-set guarded builder note is documented in `docs/cavenia-runtime-biome-source-collect-possible-biomes-holder-set-guarded-builder-mvp.md`
-- the holder-set builder consolidation next-decision note is documented in `docs/cavenia-runtime-biome-source-collect-possible-biomes-holder-set-builder-consolidation-next-decision-mvp.md`
+- the holder-set builder consolidation note is documented in `docs/cavenia-runtime-biome-source-collect-possible-biomes-holder-set-builder-consolidation-next-decision-mvp.md`
 - the next slice can be `Cavenia Runtime BiomeSource Runtime Construction / Factory Go/No-Go MVP`
 - that next slice should remain decision-only unless explicitly requested otherwise
 - that next slice must still keep `collectPossibleBiomes()` and `getNoiseBiome(...)` unusable unless explicitly requested otherwise

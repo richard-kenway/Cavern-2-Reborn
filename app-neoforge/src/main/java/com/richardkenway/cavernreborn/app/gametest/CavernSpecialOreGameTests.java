@@ -91,6 +91,8 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceColl
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetNextDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidationNextDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoGoDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationNextDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionNextDecision;
@@ -11074,6 +11076,59 @@ public final class CavernSpecialOreGameTests {
             "Expected the guarded holder-set builder to aggregate pre-resolved biome holders through caller-provided lookup while remaining unwired from runtime biome-source methods"
         );
         helper.assertTrue(
+            CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation
+                .collectPossibleBiomesHolderSetBuilderConsolidationReady()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation
+                    .designatedBuilderExists()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation
+                    .collectPossibleBiomesHolderSetBuilderReady()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation
+                    .buildCandidateHolderListReady()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation
+                    .selectedNextDecision()
+                    == CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidationNextDecision
+                        .PROCEED_WITH_RUNTIME_CONSTRUCTION_FACTORY_GO_NO_GO_NEXT
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation
+                    .runtimeConstructionFactoryGoNoGoIsNext()
+                && !CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation
+                    .runtimeConstructionFactoryReadinessReady()
+                && !CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation
+                    .runtimeConstructionFactoryImplementationReady()
+                && !CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation
+                    .runtimeConstructionFactoryRuntimeReady()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation
+                    .nextSliceMayAddRuntimeConstructionFactoryGoNoGoDecision()
+                && !CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation
+                    .nextSliceMayAddRuntimeConstructionFactoryReadiness()
+                && !CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation
+                    .nextSliceMayImplementRuntimeConstructionFactory()
+                && !CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation
+                    .nextSliceMayWireBuilderIntoCollectPossibleBiomes()
+                && !CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation
+                    .nextSliceMayWireBuilderIntoGetNoiseBiome()
+                && !CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation
+                    .nextSliceMayImplementCollectPossibleBiomes()
+                && !CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation
+                    .nextSliceMayMakeCollectPossibleBiomesUsable()
+                && !CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation
+                    .nextSliceMayMakeGetNoiseBiomeUsable()
+                && !CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation
+                    .collectPossibleBiomesWiringReady()
+                && !CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation
+                    .getNoiseBiomeWiringReady()
+                && !CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation
+                    .runtimeBiomeSourceReady()
+                && !CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation
+                    .canActivateCaveniaNow()
+                && !defaultPossibleBiomeHolders.isEmpty()
+                && duplicatePossibleBiomeHolders.equals(
+                    List.of(taigaHolder.orElseThrow(), desertHolder.orElseThrow())
+                )
+                && fallbackPossibleBiomeHolders.equals(List.of(plainsHolder.orElseThrow()))
+                && nullLookupPossibleBiomeHolders.isEmpty(),
+            "Expected guarded holder-set builder consolidation to stay decision-only while selecting runtime construction/factory go-no-go as the next blocked branch"
+        );
+        helper.assertTrue(
             CaveniaRuntimeBiomeSource.guardedSubclassStubReady()
                 && CaveniaRuntimeBiomeSource.designatedSubclassSimpleName().equals("CaveniaRuntimeBiomeSource")
                 && CaveniaRuntimeBiomeSource.designatedSubclassFileName().equals("CaveniaRuntimeBiomeSource.java")
@@ -11152,8 +11207,11 @@ public final class CavernSpecialOreGameTests {
                 && !CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetImplementationReady()
                 && CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetBuilderReady()
                 && !CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetBuilderRuntimeReady()
+                && CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetBuilderConsolidationReady()
+                && !CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetBuilderConsolidationRuntimeReady()
                 && !CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetRuntimeReady()
                 && CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetReadinessIsNext()
+                && CaveniaRuntimeBiomeSource.runtimeConstructionFactoryGoNoGoIsNext()
                 && CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetOutputShape()
                     .equals("pre-resolved biome holder set/list")
                 && CaveniaRuntimeBiomeSource
@@ -11204,6 +11262,13 @@ public final class CavernSpecialOreGameTests {
         helper.assertTrue(
             projectFileExists("docs", "cavenia-runtime-biome-source-codec-method-shape-stub-mvp.md"),
             "Expected the runtime biome-source codec-method-shape stub doc to exist in the project root"
+        );
+        helper.assertTrue(
+            projectFileExists(
+                "docs",
+                "cavenia-runtime-biome-source-collect-possible-biomes-holder-set-builder-consolidation-next-decision-mvp.md"
+            ),
+            "Expected the collect-possible-biomes holder-set builder consolidation next-decision doc to exist in the project root"
         );
         helper.assertTrue(
             projectFileExists("docs", "cavenia-runtime-biome-source-fallback-policy-readiness-mvp.md"),

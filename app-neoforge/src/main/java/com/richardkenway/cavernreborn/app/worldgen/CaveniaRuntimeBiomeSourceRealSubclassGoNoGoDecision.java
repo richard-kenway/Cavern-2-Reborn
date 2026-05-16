@@ -501,6 +501,15 @@ public final class CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision {
         return false;
     }
 
+    public static boolean collectPossibleBiomesHolderSetBuilderConsolidationReady() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation
+            .collectPossibleBiomesHolderSetBuilderConsolidationReady();
+    }
+
+    public static boolean collectPossibleBiomesHolderSetBuilderConsolidationRuntimeReady() {
+        return false;
+    }
+
     public static int selectedSurfaceReadinessItemCount() {
         return CaveniaBiomeSourceStrategyReadinessMatrix.totalReadinessItemCount();
     }

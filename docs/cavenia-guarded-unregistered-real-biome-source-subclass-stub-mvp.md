@@ -209,3 +209,4 @@ The selector-to-weighted-candidate bridge implementation go/no-go follow-up is d
 - The collect-possible-biomes holder-set readiness follow-up is documented in `docs/cavenia-runtime-biome-source-collect-possible-biomes-holder-set-readiness-mvp.md`.
 - The collect-possible-biomes holder-set implementation go/no-go follow-up is documented in `docs/cavenia-runtime-biome-source-collect-possible-biomes-holder-set-implementation-go-no-go-mvp.md`.
 - The collect-possible-biomes holder-set guarded builder follow-up is documented in `docs/cavenia-runtime-biome-source-collect-possible-biomes-holder-set-guarded-builder-mvp.md`.
+- The holder-set builder consolidation next-decision note is documented in `docs/cavenia-runtime-biome-source-collect-possible-biomes-holder-set-builder-consolidation-next-decision-mvp.md`.

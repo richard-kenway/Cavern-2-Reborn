@@ -281,6 +281,15 @@ public final class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter {
         return false;
     }
 
+    public static boolean collectPossibleBiomesHolderSetBuilderConsolidationReady() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation
+            .collectPossibleBiomesHolderSetBuilderConsolidationReady();
+    }
+
+    public static boolean collectPossibleBiomesHolderSetBuilderConsolidationRuntimeReady() {
+        return false;
+    }
+
     public static boolean selectorToWeightedCandidateBridgeReady() {
         return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridge.selectorToWeightedCandidateBridgeReady();
     }

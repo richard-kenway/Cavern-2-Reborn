@@ -294,6 +294,15 @@ public final class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilde
         return false;
     }
 
+    public static boolean collectPossibleBiomesHolderSetBuilderConsolidationReady() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation
+            .collectPossibleBiomesHolderSetBuilderConsolidationReady();
+    }
+
+    public static boolean collectPossibleBiomesHolderSetBuilderConsolidationRuntimeReady() {
+        return false;
+    }
+
     public static String futureHolderSetOutputShape() {
         return FUTURE_HOLDER_SET_OUTPUT_SHAPE;
     }

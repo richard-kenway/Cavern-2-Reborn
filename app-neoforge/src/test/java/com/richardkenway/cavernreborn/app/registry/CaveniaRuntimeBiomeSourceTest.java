@@ -362,6 +362,21 @@ class CaveniaRuntimeBiomeSourceTest {
         );
         assertTrue(
             designatedSource.contains(
+                "public static boolean collectPossibleBiomesHolderSetBuilderConsolidationReady() {\n        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation\n            .collectPossibleBiomesHolderSetBuilderConsolidationReady();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean collectPossibleBiomesHolderSetBuilderConsolidationRuntimeReady() {\n        return false;\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean runtimeConstructionFactoryGoNoGoIsNext() {\n        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation\n            .runtimeConstructionFactoryGoNoGoIsNext();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
                 "public static String selectorToWeightedCandidateBridgeOutputShape() {\n        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeReadiness.candidateKeyOutputShape();\n    }"
             )
         );
