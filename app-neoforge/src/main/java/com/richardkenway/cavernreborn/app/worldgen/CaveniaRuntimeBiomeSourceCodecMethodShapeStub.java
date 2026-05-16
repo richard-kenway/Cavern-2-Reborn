@@ -386,6 +386,15 @@ public final class CaveniaRuntimeBiomeSourceCodecMethodShapeStub {
         return false;
     }
 
+    public static boolean collectPossibleBiomesHolderSetGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGoDecision
+            .decisionIsGoForCollectPossibleBiomesHolderSetReadinessNext();
+    }
+
+    public static boolean collectPossibleBiomesHolderSetGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static boolean dimensionBindingReady() {
         return false;
     }

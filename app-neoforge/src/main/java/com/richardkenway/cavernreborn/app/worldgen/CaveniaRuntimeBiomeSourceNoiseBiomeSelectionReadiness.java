@@ -472,6 +472,15 @@ public final class CaveniaRuntimeBiomeSourceNoiseBiomeSelectionReadiness {
         return false;
     }
 
+    public static boolean collectPossibleBiomesHolderSetGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGoDecision
+            .decisionIsGoForCollectPossibleBiomesHolderSetReadinessNext();
+    }
+
+    public static boolean collectPossibleBiomesHolderSetGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static String possibleBiomesConstraintPolicy() {
         return POSSIBLE_BIOMES_CONSTRAINT_POLICY;
     }

@@ -384,6 +384,15 @@ public final class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionReadin
         return false;
     }
 
+    public static boolean collectPossibleBiomesHolderSetGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGoDecision
+            .decisionIsGoForCollectPossibleBiomesHolderSetReadinessNext();
+    }
+
+    public static boolean collectPossibleBiomesHolderSetGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static boolean holderConversionReadinessReady() {
         return CaveniaRuntimeBiomeSourceHolderConversionReadiness.holderConversionReadinessReady();
     }

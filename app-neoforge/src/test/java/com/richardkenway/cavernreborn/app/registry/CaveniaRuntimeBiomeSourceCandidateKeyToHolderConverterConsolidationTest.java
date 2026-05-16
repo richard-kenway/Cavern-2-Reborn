@@ -144,6 +144,14 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidationTest {
         assertFalse(CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation.collectPossibleBiomesHolderSetReadinessReady());
         assertFalse(CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation.collectPossibleBiomesHolderSetImplementationReady());
         assertFalse(CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation.collectPossibleBiomesHolderSetRuntimeReady());
+        assertTrue(
+            CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation
+                .collectPossibleBiomesHolderSetGoNoGoDecisionReady()
+        );
+        assertFalse(
+            CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation
+                .collectPossibleBiomesHolderSetGoNoGoRuntimeReady()
+        );
         assertTrue(CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation.nextSliceMayAddCollectPossibleBiomesHolderSetGoNoGoDecision());
         assertFalse(CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation.nextSliceMayAddCollectPossibleBiomesHolderSetReadiness());
         assertFalse(CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation.nextSliceMayImplementCollectPossibleBiomes());
@@ -331,14 +339,10 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidationTest {
         assertNoSourceContains(runtimeBiomeSourceFiles, "changeDimension(");
         assertNoSourceContains(runtimeBiomeSourceFiles, ".teleportTo(");
 
-        try (Stream<Path> sourceFiles = Files.walk(APP_WORLDGEN_SOURCE_ROOT)) {
-            List<String> collectPossibleBiomesHolderSetFiles = sourceFiles
-                .filter(Files::isRegularFile)
-                .map(path -> path.getFileName().toString())
-                .filter(name -> name.contains("CollectPossibleBiomesHolderSet"))
-                .toList();
-            assertTrue(collectPossibleBiomesHolderSetFiles.isEmpty());
-        }
+        assertMissingProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
+            "CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness.java"
+        );
 
         assertMissingProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",

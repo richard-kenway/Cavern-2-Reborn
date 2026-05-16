@@ -296,6 +296,21 @@ class CaveniaRuntimeBiomeSourceTest {
         );
         assertTrue(
             designatedSource.contains(
+                "public static boolean collectPossibleBiomesHolderSetGoNoGoDecisionReady() {\n        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGoDecision\n            .decisionIsGoForCollectPossibleBiomesHolderSetReadinessNext();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean collectPossibleBiomesHolderSetRuntimeReady() {\n        return false;\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean collectPossibleBiomesHolderSetReadinessIsNext() {\n        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGoDecision\n            .nextSliceMayAddCollectPossibleBiomesHolderSetReadiness();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
                 "public static String selectorToWeightedCandidateBridgeOutputShape() {\n        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeReadiness.candidateKeyOutputShape();\n    }"
             )
         );

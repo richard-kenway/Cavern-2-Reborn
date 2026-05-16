@@ -131,6 +131,7 @@ This is guarded candidate-key-to-holder converter implementation, not runtime bi
 - The implementation go/no-go note is documented in `docs/cavenia-runtime-biome-source-candidate-key-to-holder-conversion-implementation-go-no-go-mvp.md`.
 - The guarded converter implementation note is documented in `docs/cavenia-runtime-biome-source-candidate-key-to-holder-conversion-guarded-implementation-mvp.md`.
 - The converter consolidation next-decision note is documented in `docs/cavenia-runtime-biome-source-candidate-key-to-holder-converter-consolidation-next-decision-mvp.md`.
+- The collect-possible-biomes holder-set go/no-go follow-up is documented in `docs/cavenia-runtime-biome-source-collect-possible-biomes-holder-set-go-no-go-mvp.md`.
 - The next slice can be `Cavenia Runtime BiomeSource Candidate-Key-to-Holder Converter Consolidation / Next Decision MVP`.
 - That next slice should decide whether to proceed toward `collectPossibleBiomes()` holder-set readiness or stop for review.
 - That next slice must still keep `getNoiseBiome(...)` and `collectPossibleBiomes()` unusable unless explicitly requested otherwise.

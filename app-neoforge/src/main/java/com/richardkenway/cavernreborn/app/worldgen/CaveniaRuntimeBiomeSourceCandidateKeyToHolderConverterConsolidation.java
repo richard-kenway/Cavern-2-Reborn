@@ -286,6 +286,15 @@ public final class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsoli
         return false;
     }
 
+    public static boolean collectPossibleBiomesHolderSetGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGoDecision
+            .decisionIsGoForCollectPossibleBiomesHolderSetReadinessNext();
+    }
+
+    public static boolean collectPossibleBiomesHolderSetGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidationNextDecision selectedNextDecision() {
         return SELECTED_NEXT_DECISION;
     }
