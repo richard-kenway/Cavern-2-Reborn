@@ -328,7 +328,8 @@ public final class CaveniaRuntimeBiomeSource extends BiomeSource {
     }
 
     public static boolean candidateKeyToHolderConverterReady() {
-        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.converterReady();
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation
+            .candidateKeyToHolderConverterReady();
     }
 
     public static boolean candidateKeyToHolderConverterRuntimeReady() {
@@ -336,7 +337,21 @@ public final class CaveniaRuntimeBiomeSource extends BiomeSource {
     }
 
     public static String candidateKeyToHolderConverterFileName() {
-        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.designatedConverterFileName();
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation.designatedConverterFileName();
+    }
+
+    public static boolean candidateKeyToHolderConverterConsolidationReady() {
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation
+            .candidateKeyToHolderConverterConsolidationReady();
+    }
+
+    public static boolean candidateKeyToHolderConverterConsolidationRuntimeReady() {
+        return false;
+    }
+
+    public static boolean collectPossibleBiomesHolderSetGoNoGoIsNext() {
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation
+            .collectPossibleBiomesHolderSetGoNoGoIsNext();
     }
 
     public static String candidateKeyToHolderConversionInputShape() {

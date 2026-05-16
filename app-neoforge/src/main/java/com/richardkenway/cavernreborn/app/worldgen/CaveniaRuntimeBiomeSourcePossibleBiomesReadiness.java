@@ -332,6 +332,15 @@ public final class CaveniaRuntimeBiomeSourcePossibleBiomesReadiness {
         return false;
     }
 
+    public static boolean candidateKeyToHolderConverterConsolidationReady() {
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation
+            .candidateKeyToHolderConverterConsolidationReady();
+    }
+
+    public static boolean candidateKeyToHolderConverterConsolidationRuntimeReady() {
+        return false;
+    }
+
     public static boolean realPossibleBiomesStillDeferred() {
         return true;
     }

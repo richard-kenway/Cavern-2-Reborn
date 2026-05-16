@@ -545,7 +545,7 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoG
         );
         assertTrue(
             designatedSource.contains(
-                "public static boolean candidateKeyToHolderConverterReady() {\n        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.converterReady();\n    }"
+                "public static boolean candidateKeyToHolderConverterReady() {\n        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation\n            .candidateKeyToHolderConverterReady();\n    }"
             )
         );
         assertTrue(
@@ -555,7 +555,7 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoG
         );
         assertTrue(
             designatedSource.contains(
-                "public static String candidateKeyToHolderConverterFileName() {\n        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.designatedConverterFileName();\n    }"
+                "public static String candidateKeyToHolderConverterFileName() {\n        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation.designatedConverterFileName();\n    }"
             )
         );
         assertTrue(

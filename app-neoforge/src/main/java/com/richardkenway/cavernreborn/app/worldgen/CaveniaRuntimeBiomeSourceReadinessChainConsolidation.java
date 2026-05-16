@@ -336,6 +336,15 @@ public final class CaveniaRuntimeBiomeSourceReadinessChainConsolidation {
         return false;
     }
 
+    public static boolean candidateKeyToHolderConverterConsolidationReady() {
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation
+            .candidateKeyToHolderConverterConsolidationReady();
+    }
+
+    public static boolean candidateKeyToHolderConverterConsolidationRuntimeReady() {
+        return false;
+    }
+
     public static boolean selectorInputDerivationReadinessPinned() {
         return false;
     }

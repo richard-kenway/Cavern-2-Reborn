@@ -182,7 +182,7 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterTest {
         );
         assertTrue(
             designatedSource.contains(
-                "public static boolean candidateKeyToHolderConverterReady() {\n        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.converterReady();\n    }"
+                "public static boolean candidateKeyToHolderConverterReady() {\n        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation\n            .candidateKeyToHolderConverterReady();\n    }"
             )
         );
         assertTrue(
@@ -192,7 +192,7 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterTest {
         );
         assertTrue(
             designatedSource.contains(
-                "public static String candidateKeyToHolderConverterFileName() {\n        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.designatedConverterFileName();\n    }"
+                "public static String candidateKeyToHolderConverterFileName() {\n        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation.designatedConverterFileName();\n    }"
             )
         );
 
@@ -241,6 +241,7 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterTest {
         assertTrue(doc.contains("The converter does not access server/world globals."));
         assertTrue(doc.contains("converter is not wired into `getNoiseBiome(...)`"));
         assertTrue(doc.contains("converter is not wired into `collectPossibleBiomes()`"));
+        assertTrue(doc.contains("converter consolidation next-decision note is documented in `docs/cavenia-runtime-biome-source-candidate-key-to-holder-converter-consolidation-next-decision-mvp.md`"));
         assertTrue(doc.contains("`getNoiseBiome(...)` remains unsupported"));
         assertTrue(doc.contains("`collectPossibleBiomes()` remains unsupported"));
         assertTrue(doc.contains("`codec()` remains unsupported"));
@@ -259,7 +260,7 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterTest {
         assertTrue(designatedSource.contains("Climate.Sampler"));
         assertFalse(designatedSource.contains("holderForCandidateKey("));
         assertFalse(designatedSource.contains("holderForCandidateKeyOrFallback("));
-        assertTrue(designatedSource.contains("CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter"));
+        assertFalse(designatedSource.contains("CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter."));
 
         assertTrue(converterSource.contains("ResourceLocation"));
         assertTrue(converterSource.contains("ResourceKey<Biome>"));

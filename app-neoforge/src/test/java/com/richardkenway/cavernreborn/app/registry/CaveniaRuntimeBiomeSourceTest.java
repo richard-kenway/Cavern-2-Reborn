@@ -266,7 +266,7 @@ class CaveniaRuntimeBiomeSourceTest {
         );
         assertTrue(
             designatedSource.contains(
-                "public static boolean candidateKeyToHolderConverterReady() {\n        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.converterReady();\n    }"
+                "public static boolean candidateKeyToHolderConverterReady() {\n        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation\n            .candidateKeyToHolderConverterReady();\n    }"
             )
         );
         assertTrue(
@@ -276,7 +276,22 @@ class CaveniaRuntimeBiomeSourceTest {
         );
         assertTrue(
             designatedSource.contains(
-                "public static String candidateKeyToHolderConverterFileName() {\n        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.designatedConverterFileName();\n    }"
+                "public static String candidateKeyToHolderConverterFileName() {\n        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation.designatedConverterFileName();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean candidateKeyToHolderConverterConsolidationReady() {\n        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation\n            .candidateKeyToHolderConverterConsolidationReady();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean candidateKeyToHolderConverterConsolidationRuntimeReady() {\n        return false;\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean collectPossibleBiomesHolderSetGoNoGoIsNext() {\n        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation\n            .collectPossibleBiomesHolderSetGoNoGoIsNext();\n    }"
             )
         );
         assertTrue(
