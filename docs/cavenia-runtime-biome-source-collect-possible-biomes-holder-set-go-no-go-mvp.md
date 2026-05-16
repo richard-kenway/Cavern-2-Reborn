@@ -155,6 +155,7 @@ This is collect-possible-biomes holder-set go/no-go decision, not readiness and 
 
 - The converter consolidation next-decision note is documented in `docs/cavenia-runtime-biome-source-candidate-key-to-holder-converter-consolidation-next-decision-mvp.md`.
 - The collect-possible-biomes holder-set go/no-go note is documented in `docs/cavenia-runtime-biome-source-collect-possible-biomes-holder-set-go-no-go-mvp.md`.
+- The collect-possible-biomes holder-set readiness note is documented in `docs/cavenia-runtime-biome-source-collect-possible-biomes-holder-set-readiness-mvp.md`.
 - The next slice can be `Cavenia Runtime BiomeSource Collect-Possible-Biomes Holder Set Readiness MVP`.
 - That next slice should remain readiness-only unless explicitly requested otherwise.
 - That next slice must still keep `collectPossibleBiomes()` and `getNoiseBiome(...)` unusable unless explicitly requested otherwise.

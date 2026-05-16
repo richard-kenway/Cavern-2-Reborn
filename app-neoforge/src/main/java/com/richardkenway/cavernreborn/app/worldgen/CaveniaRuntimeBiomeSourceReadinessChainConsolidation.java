@@ -354,6 +354,15 @@ public final class CaveniaRuntimeBiomeSourceReadinessChainConsolidation {
         return false;
     }
 
+    public static boolean collectPossibleBiomesHolderSetReadinessReady() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+            .collectPossibleBiomesHolderSetReadinessReady();
+    }
+
+    public static boolean collectPossibleBiomesHolderSetReadinessRuntimeReady() {
+        return false;
+    }
+
     public static boolean selectorInputDerivationReadinessPinned() {
         return false;
     }

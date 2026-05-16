@@ -275,7 +275,8 @@ public final class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsoli
     }
 
     public static boolean collectPossibleBiomesHolderSetReadinessReady() {
-        return false;
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+            .collectPossibleBiomesHolderSetReadinessReady();
     }
 
     public static boolean collectPossibleBiomesHolderSetImplementationReady() {
@@ -292,6 +293,10 @@ public final class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsoli
     }
 
     public static boolean collectPossibleBiomesHolderSetGoNoGoRuntimeReady() {
+        return false;
+    }
+
+    public static boolean collectPossibleBiomesHolderSetReadinessRuntimeReady() {
         return false;
     }
 

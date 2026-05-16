@@ -87,6 +87,7 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCand
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidationNextDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGoDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetNextDecision;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoGoDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationNextDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionNextDecision;
@@ -10743,7 +10744,7 @@ public final class CavernSpecialOreGameTests {
                         .PROCEED_WITH_COLLECT_POSSIBLE_BIOMES_HOLDER_SET_GO_NO_GO_NEXT
                 && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation
                     .collectPossibleBiomesHolderSetGoNoGoIsNext()
-                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation
                     .collectPossibleBiomesHolderSetReadinessReady()
                 && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation
                     .collectPossibleBiomesHolderSetImplementationReady()
@@ -10822,6 +10823,67 @@ public final class CavernSpecialOreGameTests {
             "Expected the collectPossibleBiomes holder-set go/no-go layer to stay decision-only while keeping converter-backed runtime wiring blocked"
         );
         helper.assertTrue(
+            CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+                .collectPossibleBiomesHolderSetReadinessReady()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+                    .candidateInventorySourcePinned()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+                    .designatedConverterDependencyPinned()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+                    .lookupProviderRequirementPinned()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+                    .preResolvedHolderSetPolicyPinned()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+                    .holderSetOutputShapePinned()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+                    .streamReturnBoundaryPinned()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+                    .deduplicationPolicyPinned()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+                    .orderingPolicyPinned()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+                    .fallbackIfEmptyPolicyPinned()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+                    .missingCandidateHandlingPolicyPinned()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+                    .invalidCandidateHandlingPolicyPinned()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+                    .unresolvedHolderHandlingPolicyPinned()
+                && !CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+                    .collectPossibleBiomesImplementationReady()
+                && !CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+                    .converterWiringInRuntimeMethodsReady()
+                && !CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+                    .getNoiseBiomeWiringReady()
+                && !CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+                    .runtimeConstructionOrFactoryReady()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+                    .candidateKeyToHolderConverterReady()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+                    .holderForCandidateKeyReady()
+                && CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+                    .holderForCandidateKeyOrFallbackReady()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .holderForCandidateKey("minecraft:taiga", helper.getLevel().registryAccess())
+                    .isPresent()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .holderForCandidateKey("minecraft:desert", helper.getLevel().registryAccess())
+                    .isPresent()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .holderForCandidateKey("minecraft:plains", helper.getLevel().registryAccess())
+                    .isPresent()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .holderForCandidateKey("not a valid key", helper.getLevel().registryAccess())
+                    .isEmpty()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .holderForCandidateKey("cavernreborn:missing_biome", helper.getLevel().registryAccess())
+                    .isEmpty()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .holderForCandidateKeyOrFallback("cavernreborn:missing_biome", helper.getLevel().registryAccess())
+                    .isPresent(),
+            "Expected collectPossibleBiomes holder-set readiness to pin inert future policy while runtime biome-source wiring stays blocked"
+        );
+        helper.assertTrue(
             CaveniaRuntimeBiomeSource.guardedSubclassStubReady()
                 && CaveniaRuntimeBiomeSource.designatedSubclassSimpleName().equals("CaveniaRuntimeBiomeSource")
                 && CaveniaRuntimeBiomeSource.designatedSubclassFileName().equals("CaveniaRuntimeBiomeSource.java")
@@ -10896,8 +10958,12 @@ public final class CavernSpecialOreGameTests {
                 && !CaveniaRuntimeBiomeSource.candidateKeyToHolderConverterConsolidationRuntimeReady()
                 && CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetGoNoGoIsNext()
                 && CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetGoNoGoDecisionReady()
+                && CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetReadinessReady()
+                && !CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetImplementationReady()
                 && !CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetRuntimeReady()
                 && CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetReadinessIsNext()
+                && CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetOutputShape()
+                    .equals("pre-resolved biome holder set/list")
                 && CaveniaRuntimeBiomeSource.candidateKeyToHolderConversionInputShape()
                     .equals("string modern biome candidate key")
                 && CaveniaRuntimeBiomeSource.selectorToWeightedCandidateBridgeCandidateOutputShape()

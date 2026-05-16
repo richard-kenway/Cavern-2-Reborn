@@ -110,6 +110,8 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterTest {
         );
         assertTrue(CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.candidateKeyToHolderConversionReadinessReady());
         assertTrue(CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.implementationGoNoGoDecisionReady());
+        assertTrue(CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.collectPossibleBiomesHolderSetReadinessReady());
+        assertFalse(CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.collectPossibleBiomesHolderSetReadinessRuntimeReady());
         assertTrue(CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.selectorToWeightedCandidateBridgeReady());
         assertEquals("minecraft:taiga", CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.candidateKeyForSampleOrigin());
         assertEquals("minecraft:desert", CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.candidateKeyForSampleMixed());

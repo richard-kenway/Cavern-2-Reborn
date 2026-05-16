@@ -337,6 +337,15 @@ public final class CaveniaRuntimeBiomeSourceSkeleton {
         return false;
     }
 
+    public static boolean collectPossibleBiomesHolderSetReadinessReady() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+            .collectPossibleBiomesHolderSetReadinessReady();
+    }
+
+    public static boolean collectPossibleBiomesHolderSetReadinessRuntimeReady() {
+        return false;
+    }
+
     public static int guardrailCount() {
         return CaveniaRuntimeBiomeSourceFirstImplementationDecision.guardrailCount();
     }

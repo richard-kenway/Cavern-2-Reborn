@@ -15,6 +15,8 @@ class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGoDecisionBound
     private static final String BROKEN_DOCUMENTED_IN_FRAGMENT = "documented in .";
     private static final String NEW_DOC_PATH =
         "docs/cavenia-runtime-biome-source-collect-possible-biomes-holder-set-go-no-go-mvp.md";
+    private static final String READINESS_NEXT_DOC_PATH =
+        "docs/cavenia-runtime-biome-source-collect-possible-biomes-holder-set-readiness-mvp.md";
     private static final String PRIOR_DOC_PATH =
         "docs/cavenia-runtime-biome-source-candidate-key-to-holder-converter-consolidation-next-decision-mvp.md";
     private static final Path README = resolveProjectFile("README.md");
@@ -24,6 +26,9 @@ class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGoDecisionBound
     );
     private static final Path PRIOR_DOC = resolveProjectFile(
         "docs", "cavenia-runtime-biome-source-candidate-key-to-holder-converter-consolidation-next-decision-mvp.md"
+    );
+    private static final Path READINESS_NEXT_DOC = resolveProjectFile(
+        "docs", "cavenia-runtime-biome-source-collect-possible-biomes-holder-set-readiness-mvp.md"
     );
     private static final Path GUARDED_IMPLEMENTATION_DOC = resolveProjectFile(
         "docs", "cavenia-runtime-biome-source-candidate-key-to-holder-conversion-guarded-implementation-mvp.md"
@@ -62,6 +67,7 @@ class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGoDecisionBound
         String runtimeSmokeDoc = Files.readString(RUNTIME_SMOKE_DOC);
         String newDoc = Files.readString(NEW_DOC);
         String priorDoc = Files.readString(PRIOR_DOC);
+        String readinessNextDoc = Files.readString(READINESS_NEXT_DOC);
         String guardedImplementationDoc = Files.readString(GUARDED_IMPLEMENTATION_DOC);
         String readinessDoc = Files.readString(READINESS_DOC);
         String possibleBiomesDoc = Files.readString(POSSIBLE_BIOMES_DOC);
@@ -101,22 +107,48 @@ class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGoDecisionBound
         assertTrue(newDoc.contains("no spawning exists"));
         assertTrue(newDoc.contains("`cavernreborn:caveman` remains absent"));
         assertTrue(newDoc.contains("`EntityCaveman -> deferred:caveman`"));
+        assertTrue(readinessNextDoc.contains("collect-possible-biomes holder-set readiness, not implementation"));
+        assertTrue(readinessNextDoc.contains("future candidate source is current string candidate inventory"));
+        assertTrue(readinessNextDoc.contains("future converter dependency is `CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter`"));
+        assertTrue(readinessNextDoc.contains("future lookup/provider dependency is pinned"));
+        assertTrue(readinessNextDoc.contains("future holder-set construction must be pre-resolved before runtime source can stream it"));
+        assertTrue(readinessNextDoc.contains("future holder-set output shape is pinned"));
+        assertTrue(readinessNextDoc.contains("future stream return boundary is pinned"));
+        assertTrue(readinessNextDoc.contains("future deduplication policy is pinned"));
+        assertTrue(readinessNextDoc.contains("future ordering policy is pinned"));
+        assertTrue(readinessNextDoc.contains("future fallback-if-empty policy is pinned"));
+        assertTrue(readinessNextDoc.contains("future missing candidate handling policy is pinned"));
+        assertTrue(readinessNextDoc.contains("future invalid candidate handling policy is pinned"));
+        assertTrue(readinessNextDoc.contains("future unresolved holder handling policy is pinned"));
 
         assertTrue(readme.contains(NEW_DOC_PATH));
         assertTrue(readme.contains(PRIOR_DOC_PATH));
+        assertTrue(readme.contains(READINESS_NEXT_DOC_PATH));
         assertTrue(runtimeSmokeDoc.contains(NEW_DOC_PATH));
         assertTrue(runtimeSmokeDoc.contains(PRIOR_DOC_PATH));
+        assertTrue(runtimeSmokeDoc.contains(READINESS_NEXT_DOC_PATH));
         assertTrue(priorDoc.contains(NEW_DOC_PATH));
+        assertTrue(priorDoc.contains(READINESS_NEXT_DOC_PATH));
+        assertTrue(newDoc.contains(READINESS_NEXT_DOC_PATH));
         assertTrue(guardedImplementationDoc.contains(NEW_DOC_PATH));
+        assertTrue(guardedImplementationDoc.contains(READINESS_NEXT_DOC_PATH));
         assertTrue(readinessDoc.contains(NEW_DOC_PATH));
+        assertTrue(readinessDoc.contains(READINESS_NEXT_DOC_PATH));
         assertTrue(possibleBiomesDoc.contains(NEW_DOC_PATH));
+        assertTrue(possibleBiomesDoc.contains(READINESS_NEXT_DOC_PATH));
         assertTrue(holderConversionDoc.contains(NEW_DOC_PATH));
+        assertTrue(holderConversionDoc.contains(READINESS_NEXT_DOC_PATH));
         assertTrue(fallbackDoc.contains(NEW_DOC_PATH));
+        assertTrue(fallbackDoc.contains(READINESS_NEXT_DOC_PATH));
         assertTrue(codecMethodDoc.contains(NEW_DOC_PATH));
+        assertTrue(codecMethodDoc.contains(READINESS_NEXT_DOC_PATH));
         assertTrue(realSubclassDoc.contains(NEW_DOC_PATH));
+        assertTrue(realSubclassDoc.contains(READINESS_NEXT_DOC_PATH));
         assertTrue(apiInventoryDoc.contains(NEW_DOC_PATH));
+        assertTrue(apiInventoryDoc.contains(READINESS_NEXT_DOC_PATH));
 
         assertFalse(newDoc.contains(BROKEN_DOCUMENTED_IN_FRAGMENT));
+        assertFalse(readinessNextDoc.contains(BROKEN_DOCUMENTED_IN_FRAGMENT));
         assertFalse(priorDoc.contains(BROKEN_DOCUMENTED_IN_FRAGMENT));
         assertFalse(guardedImplementationDoc.contains(BROKEN_DOCUMENTED_IN_FRAGMENT));
         assertFalse(readinessDoc.contains(BROKEN_DOCUMENTED_IN_FRAGMENT));
@@ -131,10 +163,10 @@ class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGoDecisionBound
             );
         }
 
-        assertMissingProjectFile(
+        assertTrue(Files.exists(resolveProjectPathOrSibling(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
             "CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness.java"
-        );
+        )));
         assertMissingProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
             "CaveniaBiomeSource.java"

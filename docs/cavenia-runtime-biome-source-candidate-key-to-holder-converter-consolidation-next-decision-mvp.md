@@ -185,6 +185,7 @@ This is converter consolidation and next-decision, not runtime method implementa
 - The guarded converter implementation note is documented in `docs/cavenia-runtime-biome-source-candidate-key-to-holder-conversion-guarded-implementation-mvp.md`.
 - The converter consolidation next-decision note is documented in `docs/cavenia-runtime-biome-source-candidate-key-to-holder-converter-consolidation-next-decision-mvp.md`.
 - The collect-possible-biomes holder-set go/no-go follow-up is documented in `docs/cavenia-runtime-biome-source-collect-possible-biomes-holder-set-go-no-go-mvp.md`.
+- The collect-possible-biomes holder-set readiness follow-up is documented in `docs/cavenia-runtime-biome-source-collect-possible-biomes-holder-set-readiness-mvp.md`.
 - The next slice can be `Cavenia Runtime BiomeSource Collect-Possible-Biomes Holder Set Go/No-Go MVP`.
 - That next slice should remain decision-only unless explicitly requested otherwise.
 - That next slice must still keep `collectPossibleBiomes()` and `getNoiseBiome(...)` unusable unless explicitly requested otherwise.

@@ -209,6 +209,15 @@ public final class CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridge {
         return false;
     }
 
+    public static boolean collectPossibleBiomesHolderSetReadinessReady() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+            .collectPossibleBiomesHolderSetReadinessReady();
+    }
+
+    public static boolean collectPossibleBiomesHolderSetReadinessRuntimeReady() {
+        return false;
+    }
+
     public static boolean pureNonRuntimeBridgeReady() {
         return true;
     }

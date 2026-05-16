@@ -301,12 +301,27 @@ class CaveniaRuntimeBiomeSourceTest {
         );
         assertTrue(
             designatedSource.contains(
+                "public static boolean collectPossibleBiomesHolderSetReadinessReady() {\n        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness\n            .collectPossibleBiomesHolderSetReadinessReady();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean collectPossibleBiomesHolderSetImplementationReady() {\n        return false;\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
                 "public static boolean collectPossibleBiomesHolderSetRuntimeReady() {\n        return false;\n    }"
             )
         );
         assertTrue(
             designatedSource.contains(
                 "public static boolean collectPossibleBiomesHolderSetReadinessIsNext() {\n        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGoDecision\n            .nextSliceMayAddCollectPossibleBiomesHolderSetReadiness();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static String collectPossibleBiomesHolderSetOutputShape() {\n        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness.futureHolderSetOutputShape();\n    }"
             )
         );
         assertTrue(

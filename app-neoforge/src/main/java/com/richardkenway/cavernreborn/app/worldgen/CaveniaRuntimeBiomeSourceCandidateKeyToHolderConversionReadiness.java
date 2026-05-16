@@ -393,6 +393,15 @@ public final class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionReadin
         return false;
     }
 
+    public static boolean collectPossibleBiomesHolderSetReadinessReady() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+            .collectPossibleBiomesHolderSetReadinessReady();
+    }
+
+    public static boolean collectPossibleBiomesHolderSetReadinessRuntimeReady() {
+        return false;
+    }
+
     public static boolean holderConversionReadinessReady() {
         return CaveniaRuntimeBiomeSourceHolderConversionReadiness.holderConversionReadinessReady();
     }
