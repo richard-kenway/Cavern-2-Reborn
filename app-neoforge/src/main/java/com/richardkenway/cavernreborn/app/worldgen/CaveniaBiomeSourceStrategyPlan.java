@@ -472,6 +472,15 @@ public final class CaveniaBiomeSourceStrategyPlan {
         return false;
     }
 
+    public static boolean runtimeConstructionFactoryGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision
+            .decisionIsGoForRuntimeConstructionFactoryReadinessNext();
+    }
+
+    public static boolean runtimeConstructionFactoryGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static boolean runtimeBiomeSourceReady() {
         return false;
     }

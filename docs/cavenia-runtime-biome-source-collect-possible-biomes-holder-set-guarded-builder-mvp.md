@@ -77,7 +77,7 @@ This is guarded pre-resolved holder-set builder implementation, not runtime meth
 ## Follow-up
 
 - the collect-possible-biomes holder-set guarded builder note is documented in `docs/cavenia-runtime-biome-source-collect-possible-biomes-holder-set-guarded-builder-mvp.md`
-- the holder-set builder consolidation next-decision note is documented in `docs/cavenia-runtime-biome-source-collect-possible-biomes-holder-set-builder-consolidation-next-decision-mvp.md`
-- the next slice can be `Cavenia Runtime BiomeSource Runtime Construction / Factory Go/No-Go MVP`
+- the runtime construction/factory go/no-go note is documented in `docs/cavenia-runtime-biome-source-runtime-construction-factory-go-no-go-mvp.md`
+- the next slice can be `Cavenia Runtime BiomeSource Runtime Construction / Factory Readiness MVP`
 - that next slice should remain decision-only unless explicitly requested otherwise
 - that next slice must still keep `collectPossibleBiomes()` and `getNoiseBiome(...)` unusable unless explicitly requested otherwise

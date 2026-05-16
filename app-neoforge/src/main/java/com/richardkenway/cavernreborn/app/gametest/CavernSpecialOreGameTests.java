@@ -93,6 +93,8 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceColl
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidation;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilderConsolidationNextDecision;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryNextDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoGoDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationNextDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionNextDecision;
@@ -11129,6 +11131,46 @@ public final class CavernSpecialOreGameTests {
             "Expected guarded holder-set builder consolidation to stay decision-only while selecting runtime construction/factory go-no-go as the next blocked branch"
         );
         helper.assertTrue(
+            CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision
+                .decisionIsGoForRuntimeConstructionFactoryReadinessNext()
+                && CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision.selectedDecision()
+                    == CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryNextDecision
+                        .PROCEED_WITH_RUNTIME_CONSTRUCTION_FACTORY_READINESS_NEXT
+                && CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision
+                    .decisionIsReadinessOnlyForNextSlice()
+                && !CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision
+                    .runtimeConstructionFactoryReadinessImplementedInThisSlice()
+                && !CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision
+                    .runtimeConstructionFactoryImplementationReady()
+                && !CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision
+                    .runtimeConstructionFactoryRuntimeReady()
+                && CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision.guardrailCount() == 22
+                && CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision
+                    .allGuardrailsEnforcedInThisSlice()
+                && CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision
+                    .allowedNextSliceReadinessActionCount() == 9
+                && CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision
+                    .allowedNextSliceImplementationActionCount() == 0
+                && CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision
+                    .allowedNextSliceRuntimeWiringActionCount() == 0
+                && CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision
+                    .nextSliceMayAddRuntimeConstructionFactoryReadiness()
+                && !CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision
+                    .nextSliceMayImplementRuntimeConstructionFactory()
+                && !CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision
+                    .nextSliceMayAddPublicConstructor()
+                && !CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision
+                    .nextSliceMayAddFactoryMethod()
+                && !CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision
+                    .nextSliceMayAddPreResolvedHolderState()
+                && CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision
+                    .collectPossibleBiomesHolderSetBuilderConsolidationReady()
+                && CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision
+                    .collectPossibleBiomesHolderSetBuilderReady()
+                && !defaultPossibleBiomeHolders.isEmpty(),
+            "Expected runtime construction/factory go-no-go to stay decision-only while selecting readiness as the next blocked branch"
+        );
+        helper.assertTrue(
             CaveniaRuntimeBiomeSource.guardedSubclassStubReady()
                 && CaveniaRuntimeBiomeSource.designatedSubclassSimpleName().equals("CaveniaRuntimeBiomeSource")
                 && CaveniaRuntimeBiomeSource.designatedSubclassFileName().equals("CaveniaRuntimeBiomeSource.java")
@@ -11212,6 +11254,9 @@ public final class CavernSpecialOreGameTests {
                 && !CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetRuntimeReady()
                 && CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetReadinessIsNext()
                 && CaveniaRuntimeBiomeSource.runtimeConstructionFactoryGoNoGoIsNext()
+                && CaveniaRuntimeBiomeSource.runtimeConstructionFactoryGoNoGoDecisionReady()
+                && !CaveniaRuntimeBiomeSource.runtimeConstructionFactoryRuntimeReady()
+                && CaveniaRuntimeBiomeSource.runtimeConstructionFactoryReadinessIsNext()
                 && CaveniaRuntimeBiomeSource.collectPossibleBiomesHolderSetOutputShape()
                     .equals("pre-resolved biome holder set/list")
                 && CaveniaRuntimeBiomeSource
@@ -11269,6 +11314,10 @@ public final class CavernSpecialOreGameTests {
                 "cavenia-runtime-biome-source-collect-possible-biomes-holder-set-builder-consolidation-next-decision-mvp.md"
             ),
             "Expected the collect-possible-biomes holder-set builder consolidation next-decision doc to exist in the project root"
+        );
+        helper.assertTrue(
+            projectFileExists("docs", "cavenia-runtime-biome-source-runtime-construction-factory-go-no-go-mvp.md"),
+            "Expected the runtime construction/factory go-no-go doc to exist in the project root"
         );
         helper.assertTrue(
             projectFileExists("docs", "cavenia-runtime-biome-source-fallback-policy-readiness-mvp.md"),

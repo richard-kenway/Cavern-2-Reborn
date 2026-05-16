@@ -377,6 +377,21 @@ class CaveniaRuntimeBiomeSourceTest {
         );
         assertTrue(
             designatedSource.contains(
+                "public static boolean runtimeConstructionFactoryGoNoGoDecisionReady() {\n        return CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision\n            .decisionIsGoForRuntimeConstructionFactoryReadinessNext();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean runtimeConstructionFactoryRuntimeReady() {\n        return false;\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean runtimeConstructionFactoryReadinessIsNext() {\n        return CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision\n            .nextSliceMayAddRuntimeConstructionFactoryReadiness();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
                 "public static String selectorToWeightedCandidateBridgeOutputShape() {\n        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeReadiness.candidateKeyOutputShape();\n    }"
             )
         );

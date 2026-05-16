@@ -444,6 +444,15 @@ public final class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadin
         return false;
     }
 
+    public static boolean runtimeConstructionFactoryGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision
+            .decisionIsGoForRuntimeConstructionFactoryReadinessNext();
+    }
+
+    public static boolean runtimeConstructionFactoryGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static boolean possibleBiomesReadinessReady() {
         return CaveniaRuntimeBiomeSourcePossibleBiomesReadiness.possibleBiomesReadinessReady();
     }

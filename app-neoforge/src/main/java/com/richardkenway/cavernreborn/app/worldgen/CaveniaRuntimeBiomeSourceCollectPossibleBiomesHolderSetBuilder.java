@@ -303,6 +303,15 @@ public final class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilde
         return false;
     }
 
+    public static boolean runtimeConstructionFactoryGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision
+            .decisionIsGoForRuntimeConstructionFactoryReadinessNext();
+    }
+
+    public static boolean runtimeConstructionFactoryGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static String futureHolderSetOutputShape() {
         return FUTURE_HOLDER_SET_OUTPUT_SHAPE;
     }

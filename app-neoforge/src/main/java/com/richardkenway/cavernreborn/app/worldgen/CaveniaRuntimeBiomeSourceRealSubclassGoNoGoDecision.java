@@ -510,6 +510,15 @@ public final class CaveniaRuntimeBiomeSourceRealSubclassGoNoGoDecision {
         return false;
     }
 
+    public static boolean runtimeConstructionFactoryGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceRuntimeConstructionFactoryGoNoGoDecision
+            .decisionIsGoForRuntimeConstructionFactoryReadinessNext();
+    }
+
+    public static boolean runtimeConstructionFactoryGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static int selectedSurfaceReadinessItemCount() {
         return CaveniaBiomeSourceStrategyReadinessMatrix.totalReadinessItemCount();
     }
