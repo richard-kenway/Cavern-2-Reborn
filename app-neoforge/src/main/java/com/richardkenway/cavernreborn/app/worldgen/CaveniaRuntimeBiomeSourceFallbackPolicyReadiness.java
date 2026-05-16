@@ -433,6 +433,15 @@ public final class CaveniaRuntimeBiomeSourceFallbackPolicyReadiness {
         return false;
     }
 
+    public static boolean collectPossibleBiomesHolderSetImplementationGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGoNoGoDecision
+            .decisionIsGoForGuardedCollectPossibleBiomesHolderSetBuilderNext();
+    }
+
+    public static boolean collectPossibleBiomesHolderSetImplementationGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static boolean holderConversionReadinessReady() {
         return CaveniaRuntimeBiomeSourceHolderConversionReadiness.holderConversionReadinessReady();
     }

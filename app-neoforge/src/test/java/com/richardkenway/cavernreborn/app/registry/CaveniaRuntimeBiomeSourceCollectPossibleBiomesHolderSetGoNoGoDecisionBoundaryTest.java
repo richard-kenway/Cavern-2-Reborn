@@ -17,6 +17,8 @@ class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGoDecisionBound
         "docs/cavenia-runtime-biome-source-collect-possible-biomes-holder-set-go-no-go-mvp.md";
     private static final String READINESS_NEXT_DOC_PATH =
         "docs/cavenia-runtime-biome-source-collect-possible-biomes-holder-set-readiness-mvp.md";
+    private static final String IMPLEMENTATION_GO_NO_GO_DOC_PATH =
+        "docs/cavenia-runtime-biome-source-collect-possible-biomes-holder-set-implementation-go-no-go-mvp.md";
     private static final String PRIOR_DOC_PATH =
         "docs/cavenia-runtime-biome-source-candidate-key-to-holder-converter-consolidation-next-decision-mvp.md";
     private static final Path README = resolveProjectFile("README.md");
@@ -29,6 +31,9 @@ class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGoDecisionBound
     );
     private static final Path READINESS_NEXT_DOC = resolveProjectFile(
         "docs", "cavenia-runtime-biome-source-collect-possible-biomes-holder-set-readiness-mvp.md"
+    );
+    private static final Path IMPLEMENTATION_GO_NO_GO_DOC = resolveProjectFile(
+        "docs", "cavenia-runtime-biome-source-collect-possible-biomes-holder-set-implementation-go-no-go-mvp.md"
     );
     private static final Path GUARDED_IMPLEMENTATION_DOC = resolveProjectFile(
         "docs", "cavenia-runtime-biome-source-candidate-key-to-holder-conversion-guarded-implementation-mvp.md"
@@ -68,6 +73,7 @@ class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGoDecisionBound
         String newDoc = Files.readString(NEW_DOC);
         String priorDoc = Files.readString(PRIOR_DOC);
         String readinessNextDoc = Files.readString(READINESS_NEXT_DOC);
+        String implementationGoNoGoDoc = Files.readString(IMPLEMENTATION_GO_NO_GO_DOC);
         String guardedImplementationDoc = Files.readString(GUARDED_IMPLEMENTATION_DOC);
         String readinessDoc = Files.readString(READINESS_DOC);
         String possibleBiomesDoc = Files.readString(POSSIBLE_BIOMES_DOC);
@@ -120,35 +126,52 @@ class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGoDecisionBound
         assertTrue(readinessNextDoc.contains("future missing candidate handling policy is pinned"));
         assertTrue(readinessNextDoc.contains("future invalid candidate handling policy is pinned"));
         assertTrue(readinessNextDoc.contains("future unresolved holder handling policy is pinned"));
+        assertTrue(implementationGoNoGoDoc.contains("collect-possible-biomes holder-set implementation go/no-go decision, not implementation"));
+        assertTrue(implementationGoNoGoDoc.contains("selected decision is `PROCEED_WITH_GUARDED_COLLECT_POSSIBLE_BIOMES_HOLDER_SET_BUILDER_NEXT`"));
+        assertTrue(implementationGoNoGoDoc.contains("next slice may add guarded pre-resolved holder-set builder"));
+        assertTrue(implementationGoNoGoDoc.contains("next slice designated builder simple name is `CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder`"));
 
         assertTrue(readme.contains(NEW_DOC_PATH));
         assertTrue(readme.contains(PRIOR_DOC_PATH));
         assertTrue(readme.contains(READINESS_NEXT_DOC_PATH));
+        assertTrue(readme.contains(IMPLEMENTATION_GO_NO_GO_DOC_PATH));
         assertTrue(runtimeSmokeDoc.contains(NEW_DOC_PATH));
         assertTrue(runtimeSmokeDoc.contains(PRIOR_DOC_PATH));
         assertTrue(runtimeSmokeDoc.contains(READINESS_NEXT_DOC_PATH));
+        assertTrue(runtimeSmokeDoc.contains(IMPLEMENTATION_GO_NO_GO_DOC_PATH));
         assertTrue(priorDoc.contains(NEW_DOC_PATH));
         assertTrue(priorDoc.contains(READINESS_NEXT_DOC_PATH));
+        assertTrue(priorDoc.contains(IMPLEMENTATION_GO_NO_GO_DOC_PATH));
         assertTrue(newDoc.contains(READINESS_NEXT_DOC_PATH));
+        assertTrue(newDoc.contains(IMPLEMENTATION_GO_NO_GO_DOC_PATH));
         assertTrue(guardedImplementationDoc.contains(NEW_DOC_PATH));
         assertTrue(guardedImplementationDoc.contains(READINESS_NEXT_DOC_PATH));
+        assertTrue(guardedImplementationDoc.contains(IMPLEMENTATION_GO_NO_GO_DOC_PATH));
         assertTrue(readinessDoc.contains(NEW_DOC_PATH));
         assertTrue(readinessDoc.contains(READINESS_NEXT_DOC_PATH));
+        assertTrue(readinessDoc.contains(IMPLEMENTATION_GO_NO_GO_DOC_PATH));
         assertTrue(possibleBiomesDoc.contains(NEW_DOC_PATH));
         assertTrue(possibleBiomesDoc.contains(READINESS_NEXT_DOC_PATH));
+        assertTrue(possibleBiomesDoc.contains(IMPLEMENTATION_GO_NO_GO_DOC_PATH));
         assertTrue(holderConversionDoc.contains(NEW_DOC_PATH));
         assertTrue(holderConversionDoc.contains(READINESS_NEXT_DOC_PATH));
+        assertTrue(holderConversionDoc.contains(IMPLEMENTATION_GO_NO_GO_DOC_PATH));
         assertTrue(fallbackDoc.contains(NEW_DOC_PATH));
         assertTrue(fallbackDoc.contains(READINESS_NEXT_DOC_PATH));
+        assertTrue(fallbackDoc.contains(IMPLEMENTATION_GO_NO_GO_DOC_PATH));
         assertTrue(codecMethodDoc.contains(NEW_DOC_PATH));
         assertTrue(codecMethodDoc.contains(READINESS_NEXT_DOC_PATH));
+        assertTrue(codecMethodDoc.contains(IMPLEMENTATION_GO_NO_GO_DOC_PATH));
         assertTrue(realSubclassDoc.contains(NEW_DOC_PATH));
         assertTrue(realSubclassDoc.contains(READINESS_NEXT_DOC_PATH));
+        assertTrue(realSubclassDoc.contains(IMPLEMENTATION_GO_NO_GO_DOC_PATH));
         assertTrue(apiInventoryDoc.contains(NEW_DOC_PATH));
         assertTrue(apiInventoryDoc.contains(READINESS_NEXT_DOC_PATH));
+        assertTrue(apiInventoryDoc.contains(IMPLEMENTATION_GO_NO_GO_DOC_PATH));
 
         assertFalse(newDoc.contains(BROKEN_DOCUMENTED_IN_FRAGMENT));
         assertFalse(readinessNextDoc.contains(BROKEN_DOCUMENTED_IN_FRAGMENT));
+        assertFalse(implementationGoNoGoDoc.contains(BROKEN_DOCUMENTED_IN_FRAGMENT));
         assertFalse(priorDoc.contains(BROKEN_DOCUMENTED_IN_FRAGMENT));
         assertFalse(guardedImplementationDoc.contains(BROKEN_DOCUMENTED_IN_FRAGMENT));
         assertFalse(readinessDoc.contains(BROKEN_DOCUMENTED_IN_FRAGMENT));

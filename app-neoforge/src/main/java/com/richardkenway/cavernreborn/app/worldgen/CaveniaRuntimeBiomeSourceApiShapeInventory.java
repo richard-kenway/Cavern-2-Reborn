@@ -511,6 +511,15 @@ public final class CaveniaRuntimeBiomeSourceApiShapeInventory {
         return false;
     }
 
+    public static boolean collectPossibleBiomesHolderSetImplementationGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGoNoGoDecision
+            .decisionIsGoForGuardedCollectPossibleBiomesHolderSetBuilderNext();
+    }
+
+    public static boolean collectPossibleBiomesHolderSetImplementationGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static int selectedSurfaceReadinessItemCount() {
         return CaveniaBiomeSourceStrategyReadinessMatrix.totalReadinessItemCount();
     }

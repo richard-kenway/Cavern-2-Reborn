@@ -129,6 +129,7 @@ This is collect-possible-biomes holder-set readiness, not implementation.
 
 - The collect-possible-biomes holder-set go/no-go note is documented in `docs/cavenia-runtime-biome-source-collect-possible-biomes-holder-set-go-no-go-mvp.md`.
 - The collect-possible-biomes holder-set readiness note is documented in `docs/cavenia-runtime-biome-source-collect-possible-biomes-holder-set-readiness-mvp.md`.
+- The collect-possible-biomes holder-set implementation go/no-go note is documented in `docs/cavenia-runtime-biome-source-collect-possible-biomes-holder-set-implementation-go-no-go-mvp.md`.
 - The next slice can be `Cavenia Runtime BiomeSource Collect-Possible-Biomes Holder Set Implementation Go/No-Go MVP`.
 - That next slice should remain decision-only unless explicitly requested otherwise.
 - That next slice must still keep `collectPossibleBiomes()` and `getNoiseBiome(...)` unusable unless explicitly requested otherwise.

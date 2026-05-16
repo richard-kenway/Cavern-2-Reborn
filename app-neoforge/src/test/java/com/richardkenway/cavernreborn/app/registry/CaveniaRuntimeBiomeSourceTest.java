@@ -306,7 +306,17 @@ class CaveniaRuntimeBiomeSourceTest {
         );
         assertTrue(
             designatedSource.contains(
+                "public static boolean collectPossibleBiomesHolderSetImplementationGoNoGoDecisionReady() {\n        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGoNoGoDecision\n            .decisionIsGoForGuardedCollectPossibleBiomesHolderSetBuilderNext();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
                 "public static boolean collectPossibleBiomesHolderSetImplementationReady() {\n        return false;\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean collectPossibleBiomesHolderSetImplementationRuntimeReady() {\n        return false;\n    }"
             )
         );
         assertTrue(
@@ -317,6 +327,11 @@ class CaveniaRuntimeBiomeSourceTest {
         assertTrue(
             designatedSource.contains(
                 "public static boolean collectPossibleBiomesHolderSetReadinessIsNext() {\n        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGoDecision\n            .nextSliceMayAddCollectPossibleBiomesHolderSetReadiness();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean collectPossibleBiomesHolderSetBuilderIsNext() {\n        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGoNoGoDecision\n            .nextSliceMayAddGuardedPreResolvedHolderSetBuilder();\n    }"
             )
         );
         assertTrue(

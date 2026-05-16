@@ -3,182 +3,164 @@ package com.richardkenway.cavernreborn.app.worldgen;
 import java.util.List;
 import java.util.Optional;
 
-public final class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGoDecision {
-    private static final String CANDIDATE_KEY_INPUT_SHAPE = "string modern biome candidate key";
+public final class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGoNoGoDecision {
+    private static final String DESIGNATED_BUILDER_SIMPLE_NAME =
+        "CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetBuilder";
+    private static final String DESIGNATED_BUILDER_FILE_NAME = DESIGNATED_BUILDER_SIMPLE_NAME + ".java";
     private static final String EXPECTED_SAMPLE_ORIGIN_CANDIDATE_KEY = "minecraft:taiga";
     private static final String EXPECTED_SAMPLE_MIXED_CANDIDATE_KEY = "minecraft:desert";
     private static final String EXPECTED_SAMPLE_NEGATIVE_CANDIDATE_KEY = "minecraft:desert";
-    private static final CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetNextDecision SELECTED_DECISION =
-        CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetNextDecision
-            .PROCEED_WITH_COLLECT_POSSIBLE_BIOMES_HOLDER_SET_READINESS_NEXT;
-    private static final List<CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrailContract> GUARDRAILS =
-        List.of(
+    private static final CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationNextDecision
+        SELECTED_DECISION =
+            CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationNextDecision
+                .PROCEED_WITH_GUARDED_COLLECT_POSSIBLE_BIOMES_HOLDER_SET_BUILDER_NEXT;
+    private static final List<CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrailContract>
+        GUARDRAILS = List.of(
             guardrail(
-                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrail
-                    .ALLOW_COLLECT_POSSIBLE_BIOMES_HOLDER_SET_READINESS_NEXT,
-                "CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGoDecision",
+                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrail
+                    .ALLOW_GUARDED_PRE_RESOLVED_HOLDER_SET_BUILDER_NEXT,
+                "CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGoNoGoDecision",
                 true,
-                "The next slice may add only collectPossibleBiomes holder-set readiness data."
+                "The next slice may add only a guarded pre-resolved holder-set builder helper."
             ),
             guardrail(
-                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrail
-                    .ALLOW_CANDIDATE_INVENTORY_SOURCE_PINNING_NEXT,
+                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrail
+                    .ALLOW_CANDIDATE_INVENTORY_INPUT_NEXT,
                 "CaveniaLegacyToModernBiomeKeyMappings",
                 true,
-                "The next slice may pin the current string candidate inventory as the future possible-biomes source."
+                "The next slice may use the current string candidate inventory as builder input."
             ),
             guardrail(
-                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrail
-                    .ALLOW_CONVERTER_DEPENDENCY_PINNING_NEXT,
+                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrail
+                    .ALLOW_DESIGNATED_CONVERTER_DEPENDENCY_NEXT,
                 "CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation",
                 true,
-                "The next slice may pin the guarded candidate-key-to-holder converter as the future dependency for holder-backed possible-biomes outputs."
+                "The next slice may depend on the designated candidate-key-to-holder converter."
             ),
             guardrail(
-                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrail
-                    .ALLOW_HOLDER_SET_OUTPUT_POLICY_PINNING_NEXT,
-                "CaveniaRuntimeBiomeSourcePossibleBiomesReadiness",
+                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrail
+                    .ALLOW_LOOKUP_PROVIDER_PARAMETER_NEXT,
+                "CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness",
                 true,
-                "The next slice may pin the future holder-set or list output policy without implementing runtime behavior."
+                "The next slice may require caller-provided biome lookup/provider input."
             ),
             guardrail(
-                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrail
-                    .ALLOW_DEDUPLICATION_POLICY_PINNING_NEXT,
-                "CaveniaRuntimeBiomeSourcePossibleBiomesReadiness",
+                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrail
+                    .ALLOW_RESOLVED_HOLDER_DEDUPLICATION_NEXT,
+                "CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness",
                 true,
-                "The next slice may pin the future deduplication policy without implementing runtime holder resolution."
+                "The next slice may deduplicate resolved holders while building a pre-resolved holder set."
             ),
             guardrail(
-                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrail
-                    .ALLOW_ORDERING_POLICY_PINNING_NEXT,
-                "CaveniaRuntimeBiomeSourcePossibleBiomesReadiness",
+                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrail
+                    .ALLOW_LEGACY_ORDER_PRESERVATION_NEXT,
+                "CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness",
                 true,
-                "The next slice may pin the future holder-set ordering policy without implementing collectPossibleBiomes."
+                "The next slice may preserve legacy candidate inventory order for first successful resolved holders."
             ),
             guardrail(
-                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrail
-                    .ALLOW_FALLBACK_IF_EMPTY_POLICY_PINNING_NEXT,
+                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrail
+                    .ALLOW_FALLBACK_IF_EMPTY_NEXT,
                 "CaveniaRuntimeBiomeSourceFallbackPolicyReadiness",
                 true,
-                "The next slice may pin the future fallback-if-empty policy without creating runtime fallback behavior."
+                "The next slice may apply fallback-if-empty with minecraft:plains after all candidate conversions fail."
             ),
             guardrail(
-                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrail
-                    .ALLOW_MISSING_CANDIDATE_POLICY_PINNING_NEXT,
-                "CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter",
+                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrail
+                    .ALLOW_MISSING_INVALID_UNRESOLVED_SKIP_NEXT,
+                "CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness",
                 true,
-                "The next slice may pin missing or unresolved candidate handling without wiring runtime methods."
+                "The next slice may skip missing, invalid or unresolved candidate keys during builder aggregation."
             ),
             guardrail(
-                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrail
-                    .ALLOW_STREAM_RETURN_BOUNDARY_PINNING_NEXT,
-                "CaveniaRuntimeBiomeSourceApiShapeInventory",
-                true,
-                "The next slice may pin the future stream return boundary without producing a runtime stream."
+                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrail
+                    .NO_COLLECT_POSSIBLE_BIOMES_WIRING,
+                "CaveniaRuntimeBiomeSource",
+                false,
+                "The next slice may not wire the guarded builder into collectPossibleBiomes."
             ),
             guardrail(
-                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrail
+                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrail
                     .NO_COLLECT_POSSIBLE_BIOMES_IMPLEMENTATION,
                 "CaveniaRuntimeBiomeSource",
                 false,
                 "The next slice must keep collectPossibleBiomes unsupported."
             ),
             guardrail(
-                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrail
-                    .NO_COLLECT_POSSIBLE_BIOMES_WIRING,
-                "CaveniaRuntimeBiomeSource",
-                false,
-                "The next slice may not wire the converter into collectPossibleBiomes."
-            ),
-            guardrail(
-                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrail
+                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrail
                     .NO_GET_NOISE_BIOME_WIRING,
                 "CaveniaRuntimeBiomeSource",
                 false,
-                "The next slice may not wire the converter into getNoiseBiome."
+                "The next slice may not wire the guarded builder into getNoiseBiome."
             ),
             guardrail(
-                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrail
+                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrail
                     .NO_GET_NOISE_BIOME_IMPLEMENTATION,
                 "CaveniaRuntimeBiomeSource",
                 false,
                 "The next slice must keep getNoiseBiome unsupported."
             ),
             guardrail(
-                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrail
+                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrail
+                    .NO_RUNTIME_CONSTRUCTION_OR_FACTORY,
+                "CaveniaRuntimeBiomeSource",
+                false,
+                "The next slice may not add runtime construction or factory behavior."
+            ),
+            guardrail(
+                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrail
                     .NO_CODEC_OR_BIOME_SOURCE_TYPE_REGISTRATION,
                 "CaveniaRuntimeBiomeSourceCodecMethodShapeStub",
                 false,
                 "Codec behavior and biome-source type registration must remain absent in the next slice."
             ),
             guardrail(
-                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrail
+                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrail
                     .NO_GENERATOR_REGISTRATION,
                 "CaveniaGeneratorRegistrationBoundary",
                 false,
                 "Generator registration must remain absent in the next slice."
             ),
             guardrail(
-                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrail
+                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrail
                     .NO_DIMENSION_ACTIVATION,
                 "CaveniaActivationReadinessMatrix",
                 false,
                 "Dimension activation must remain absent in the next slice."
             ),
             guardrail(
-                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrail
+                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrail
                     .NO_WORLDGEN_ACCESS_SPAWNING,
                 "CaveniaActivationReadinessMatrix",
                 false,
                 "Worldgen, access and spawning must remain absent in the next slice."
             ),
             guardrail(
-                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrail
+                CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrail
                     .KEEP_RUNTIME_METHODS_UNSUPPORTED,
                 "CaveniaRuntimeBiomeSource",
                 false,
-                "Runtime methods must remain unsupported even after the next readiness-only slice."
+                "Runtime methods must remain unsupported even if a guarded builder helper is added next."
             )
         );
 
-    private CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGoDecision() {
+    private CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGoNoGoDecision() {
     }
 
-    public static CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetNextDecision selectedDecision() {
+    public static CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationNextDecision
+        selectedDecision() {
         return SELECTED_DECISION;
     }
 
-    public static boolean decisionIsGoForCollectPossibleBiomesHolderSetReadinessNext() {
+    public static boolean decisionIsGoForGuardedCollectPossibleBiomesHolderSetBuilderNext() {
         return true;
     }
 
-    public static boolean decisionIsReadinessOnlyForNextSlice() {
+    public static boolean decisionIsImplementationOnlyForNextSlice() {
         return true;
     }
 
-    public static boolean collectPossibleBiomesHolderSetReadinessReady() {
-        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
-            .collectPossibleBiomesHolderSetReadinessReady();
-    }
-
-    public static boolean collectPossibleBiomesHolderSetReadinessRuntimeReady() {
-        return false;
-    }
-
-    public static boolean collectPossibleBiomesHolderSetImplementationGoNoGoDecisionReady() {
-        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGoNoGoDecision
-            .decisionIsGoForGuardedCollectPossibleBiomesHolderSetBuilderNext();
-    }
-
-    public static boolean collectPossibleBiomesHolderSetImplementationGoNoGoRuntimeReady() {
-        return false;
-    }
-
-    public static boolean collectPossibleBiomesHolderSetReadinessImplementedInThisSlice() {
-        return false;
-    }
-
-    public static boolean collectPossibleBiomesHolderSetImplementationReady() {
+    public static boolean collectPossibleBiomesHolderSetBuilderImplementedInThisSlice() {
         return false;
     }
 
@@ -198,19 +180,20 @@ public final class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGo
         return false;
     }
 
-    public static List<CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrailContract> guardrails() {
+    public static List<CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrailContract>
+        guardrails() {
         return GUARDRAILS;
     }
 
-    public static List<CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrail> guardrailValues() {
+    public static List<CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrail>
+        guardrailValues() {
         return GUARDRAILS.stream()
-            .map(CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrailContract::guardrail)
+            .map(CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrailContract::guardrail)
             .toList();
     }
 
-    public static Optional<CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrailContract> guardrailFor(
-        CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrail guardrail
-    ) {
+    public static Optional<CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrailContract>
+        guardrailFor(CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrail guardrail) {
         return GUARDRAILS.stream()
             .filter(contract -> contract.guardrail() == guardrail)
             .findFirst();
@@ -224,12 +207,8 @@ public final class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGo
         return true;
     }
 
-    public static int allowedNextSliceReadinessActionCount() {
-        return 9;
-    }
-
-    public static int allowedNextSliceImplementationActionCount() {
-        return 0;
+    public static int allowedNextSliceBuilderActionCount() {
+        return 8;
     }
 
     public static int allowedNextSliceRuntimeWiringActionCount() {
@@ -240,10 +219,6 @@ public final class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGo
         return 0;
     }
 
-    public static boolean anyImplementationAllowedByGuardrails() {
-        return false;
-    }
-
     public static boolean anyRuntimeWiringAllowedByGuardrails() {
         return false;
     }
@@ -252,51 +227,55 @@ public final class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGo
         return false;
     }
 
-    public static boolean nextSliceMayAddCollectPossibleBiomesHolderSetReadiness() {
+    public static boolean nextSliceMayAddGuardedPreResolvedHolderSetBuilder() {
         return true;
     }
 
-    public static boolean nextSliceMayPinCandidateInventorySource() {
+    public static boolean nextSliceMayUseCandidateInventoryInput() {
         return true;
     }
 
-    public static boolean nextSliceMayPinConverterDependency() {
+    public static boolean nextSliceMayUseDesignatedConverterDependency() {
         return true;
     }
 
-    public static boolean nextSliceMayPinHolderSetOutputPolicy() {
+    public static boolean nextSliceMayRequireLookupProviderParameter() {
         return true;
     }
 
-    public static boolean nextSliceMayPinDeduplicationPolicy() {
+    public static boolean nextSliceMayDeduplicateResolvedHolders() {
         return true;
     }
 
-    public static boolean nextSliceMayPinOrderingPolicy() {
+    public static boolean nextSliceMayPreserveLegacyOrder() {
         return true;
     }
 
-    public static boolean nextSliceMayPinFallbackIfEmptyPolicy() {
+    public static boolean nextSliceMayApplyFallbackIfEmpty() {
         return true;
     }
 
-    public static boolean nextSliceMayPinMissingCandidatePolicy() {
+    public static boolean nextSliceMaySkipMissingInvalidUnresolvedCandidates() {
         return true;
     }
 
-    public static boolean nextSliceMayPinStreamReturnBoundary() {
-        return true;
+    public static String nextSliceDesignatedBuilderSimpleName() {
+        return DESIGNATED_BUILDER_SIMPLE_NAME;
+    }
+
+    public static String nextSliceDesignatedBuilderFileName() {
+        return DESIGNATED_BUILDER_FILE_NAME;
+    }
+
+    public static boolean nextSliceMayWireBuilderIntoCollectPossibleBiomes() {
+        return false;
     }
 
     public static boolean nextSliceMayImplementCollectPossibleBiomes() {
         return false;
     }
 
-    public static boolean nextSliceMayWireConverterIntoCollectPossibleBiomes() {
-        return false;
-    }
-
-    public static boolean nextSliceMayWireConverterIntoGetNoiseBiome() {
+    public static boolean nextSliceMayWireBuilderIntoGetNoiseBiome() {
         return false;
     }
 
@@ -305,6 +284,10 @@ public final class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGo
     }
 
     public static boolean nextSliceMayMakeCollectPossibleBiomesUsable() {
+        return false;
+    }
+
+    public static boolean nextSliceMayAddRuntimeConstructionOrFactory() {
         return false;
     }
 
@@ -352,6 +335,51 @@ public final class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGo
         return false;
     }
 
+    public static boolean collectPossibleBiomesHolderSetReadinessReady() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness
+            .collectPossibleBiomesHolderSetReadinessReady();
+    }
+
+    public static boolean collectPossibleBiomesHolderSetReadinessRuntimeReady() {
+        return false;
+    }
+
+    public static boolean collectPossibleBiomesHolderSetImplementationReady() {
+        return false;
+    }
+
+    public static boolean lookupProviderRequiredForRuntimeHolderSet() {
+        return true;
+    }
+
+    public static boolean lookupProviderAvailableInThisSlice() {
+        return false;
+    }
+
+    public static String futureHolderSetOutputShape() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness.futureHolderSetOutputShape();
+    }
+
+    public static String futureStreamReturnBoundary() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness.futureStreamReturnBoundary();
+    }
+
+    public static String futureDeduplicationPolicy() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness.futureDeduplicationPolicy();
+    }
+
+    public static String futureOrderingPolicy() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness.futureOrderingPolicy();
+    }
+
+    public static String futureFallbackIfEmptyPolicy() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness.futureFallbackIfEmptyPolicy();
+    }
+
+    public static String futureMissingCandidatePolicy() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetReadiness.futureMissingCandidatePolicy();
+    }
+
     public static boolean candidateKeyToHolderConverterConsolidationReady() {
         return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation
             .candidateKeyToHolderConverterConsolidationReady();
@@ -359,12 +387,6 @@ public final class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGo
 
     public static boolean candidateKeyToHolderConverterConsolidationRuntimeReady() {
         return false;
-    }
-
-    public static boolean candidateKeyToHolderConverterConsolidationSelectedNextDecisionMatches() {
-        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidation.selectedNextDecision()
-            == CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidationNextDecision
-                .PROCEED_WITH_COLLECT_POSSIBLE_BIOMES_HOLDER_SET_GO_NO_GO_NEXT;
     }
 
     public static boolean candidateKeyToHolderConverterReady() {
@@ -381,10 +403,6 @@ public final class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGo
 
     public static boolean holderForCandidateKeyOrFallbackReady() {
         return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.holderForCandidateKeyOrFallbackReady();
-    }
-
-    public static String candidateKeyInputShape() {
-        return CANDIDATE_KEY_INPUT_SHAPE;
     }
 
     public static int candidateEntryCount() {
@@ -572,27 +590,27 @@ public final class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGo
     }
 
     public static int selectedSurfaceReadinessItemCount() {
-        return 68;
+        return CaveniaBiomeSourceStrategyReadinessMatrix.totalReadinessItemCount();
     }
 
     public static int globalReadinessMatrixTotalRequirementCount() {
-        return 46;
+        return CaveniaActivationReadinessMatrix.totalRequirementCount();
     }
 
     public static int globalReadinessMatrixBlockedRequirementCount() {
-        return 46;
+        return CaveniaActivationReadinessMatrix.blockedRequirementCount();
     }
 
     public static boolean dimensionJsonPresent() {
-        return CaveniaRuntimeBiomeSource.dimensionJsonPresent();
+        return CaveniaRuntimeBiomeSourceSkeleton.dimensionJsonPresent();
     }
 
     public static boolean dimensionTypeJsonPresent() {
-        return CaveniaRuntimeBiomeSource.dimensionTypeJsonPresent();
+        return CaveniaRuntimeBiomeSourceSkeleton.dimensionTypeJsonPresent();
     }
 
     public static boolean cavemanRemainsDeferred() {
-        return CaveniaRuntimeBiomeSource.cavemanRemainsDeferred();
+        return CaveniaRuntimeBiomeSourceSkeleton.cavemanRemainsDeferred();
     }
 
     public static List<CaveniaGeneratorActivationRequirement> activationRequirements() {
@@ -603,18 +621,17 @@ public final class CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGoNoGo
         return CaveniaGeneratorRegistrationBoundary.activationBlockedReason();
     }
 
-    private static CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrailContract guardrail(
-        CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrail guardrail,
+    private static CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrailContract guardrail(
+        CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrail guardrail,
         String sourceContractName,
-        boolean allowsNextSliceReadinessAction,
+        boolean allowsNextSliceBuilderAction,
         String blocker
     ) {
-        return new CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetGuardrailContract(
+        return new CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGuardrailContract(
             guardrail,
             sourceContractName,
             true,
-            allowsNextSliceReadinessAction,
-            false,
+            allowsNextSliceBuilderAction,
             false,
             false,
             true,

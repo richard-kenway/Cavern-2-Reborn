@@ -300,6 +300,15 @@ public final class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsoli
         return false;
     }
 
+    public static boolean collectPossibleBiomesHolderSetImplementationGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGoNoGoDecision
+            .decisionIsGoForGuardedCollectPossibleBiomesHolderSetBuilderNext();
+    }
+
+    public static boolean collectPossibleBiomesHolderSetImplementationGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverterConsolidationNextDecision selectedNextDecision() {
         return SELECTED_NEXT_DECISION;
     }

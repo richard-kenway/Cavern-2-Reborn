@@ -346,6 +346,15 @@ public final class CaveniaRuntimeBiomeSourceSkeleton {
         return false;
     }
 
+    public static boolean collectPossibleBiomesHolderSetImplementationGoNoGoDecisionReady() {
+        return CaveniaRuntimeBiomeSourceCollectPossibleBiomesHolderSetImplementationGoNoGoDecision
+            .decisionIsGoForGuardedCollectPossibleBiomesHolderSetBuilderNext();
+    }
+
+    public static boolean collectPossibleBiomesHolderSetImplementationGoNoGoRuntimeReady() {
+        return false;
+    }
+
     public static int guardrailCount() {
         return CaveniaRuntimeBiomeSourceFirstImplementationDecision.guardrailCount();
     }
