@@ -639,14 +639,30 @@ class CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeGoNoGoDecisionTe
             })
             .toList();
 
+        if (fragment.equals("Holder<Biome>")) {
+            assertEquals(
+                List.of("CaveniaRuntimeBiomeSource.java", "CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.java"),
+                matchingFiles.stream().map(path -> path.getFileName().toString()).toList(),
+                "Expected only the designated subclass and converter files to contain: " + fragment
+            );
+            return;
+        }
+
         assertEquals(List.of(DESIGNATED_SOURCE), matchingFiles, "Expected only the designated subclass file to contain: " + fragment);
     }
 
     private static void assertNoMainSourceContains(List<Path> sourceFiles, String fragment) throws IOException {
+        boolean allowConverterFile = fragment.equals("ResourceLocation")
+            || fragment.equals("ResourceKey<Biome>")
+            || fragment.equals("HolderLookup")
+            || fragment.equals("Registries.BIOME")
+            || fragment.equals("return holder");
         assertTrue(
             sourceFiles.stream().noneMatch(path -> {
                 try {
-                    return Files.readString(path).contains(fragment);
+                    return (!allowConverterFile
+                        || !path.getFileName().toString().equals("CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.java"))
+                        && Files.readString(path).contains(fragment);
                 } catch (IOException exception) {
                     throw new IllegalStateException("Could not read source file: " + path, exception);
                 }

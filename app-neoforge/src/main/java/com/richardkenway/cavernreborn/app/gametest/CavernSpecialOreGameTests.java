@@ -82,6 +82,7 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceReal
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceRealSubclassGuardrail;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceRealSubclassNextStepDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionGoNoGoDecision;
+import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoGoDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationNextDecision;
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionNextDecision;
@@ -10599,6 +10600,110 @@ public final class CavernSpecialOreGameTests {
             "Expected the candidate-key-to-holder conversion implementation go/no-go layer to allow only a guarded converter helper next while keeping runtime wiring and activation blocked"
         );
         helper.assertTrue(
+            CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.converterReady()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.holderForCandidateKeyReady()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.holderForCandidateKeyOrFallbackReady()
+                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.converterRuntimeBiomeSourceReady()
+                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.getNoiseBiomeWiringReady()
+                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.collectPossibleBiomesWiringReady()
+                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.runtimeBiomeSourceReady()
+                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.activationAllowedInThisSlice()
+                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.canActivateCaveniaNow()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .designatedConverterSimpleName()
+                    .equals("CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter")
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .designatedConverterFileName()
+                    .equals("CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.java")
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .candidateKeyInputShape()
+                    .equals("string modern biome candidate key")
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .fallbackLegacyBiomeName()
+                    .equals("PLAINS")
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .fallbackCandidateModernBiomeKey()
+                    .equals("minecraft:plains")
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .candidateKeyToHolderConversionReadinessReady()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.implementationGoNoGoDecisionReady()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.selectorToWeightedCandidateBridgeReady()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .candidateKeyForSampleOrigin()
+                    .equals("minecraft:taiga")
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .candidateKeyForSampleMixed()
+                    .equals("minecraft:desert")
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .candidateKeyForSampleNegative()
+                    .equals("minecraft:desert")
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.sampleKeysExistInInventory()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.candidateEntryCount() == 14
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.candidateInventoryReady()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .candidateKeysStillStringOnlyOutsideConverter()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.holderConversionReadinessReady()
+                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.holderConversionRuntimeReady()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.fallbackPolicyReadinessReady()
+                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.fallbackPolicyRuntimeReady()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.possibleBiomesReadinessReady()
+                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.possibleBiomesRuntimeReady()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.noiseBiomeSelectionReadinessReady()
+                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.noiseBiomeSelectionRuntimeReady()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.readinessChainConsolidationReady()
+                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.readinessChainRuntimeReady()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.allCurrentReadinessLayersReady()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.runtimeReadyLayerCount() == 0
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .consolidatedReadinessLayerCount() == 6
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.codecMethodShapeStubReady()
+                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.codecMethodShapeRuntimeReady()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.designatedSubclassReady()
+                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.designatedSubclassRuntimeReady()
+                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.runtimeHolderReturnReady()
+                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .collectPossibleBiomesImplementationReady()
+                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.getNoiseBiomeImplementationReady()
+                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.usableRuntimeBiomeSourceReady()
+                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.usableCodecImplementationReady()
+                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.codecRegistered()
+                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.biomeSourceTypeRegistered()
+                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.normalRuntimeConstructionAllowed()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.unsupportedMethodStubsOnly()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.collectPossibleBiomesStubbed()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.getNoiseBiomeStubbed()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.codecMethodStubbed()
+                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.dimensionBindingReady()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .selectedSurfaceReadinessItemCount() == 68
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .globalReadinessMatrixTotalRequirementCount() == 46
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .globalReadinessMatrixBlockedRequirementCount() == 46
+                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.dimensionJsonPresent()
+                && !CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.dimensionTypeJsonPresent()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.cavemanRemainsDeferred()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .holderForCandidateKey("minecraft:taiga", helper.getLevel().registryAccess())
+                    .isPresent()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .holderForCandidateKey("minecraft:desert", helper.getLevel().registryAccess())
+                    .isPresent()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .holderForCandidateKey("minecraft:plains", helper.getLevel().registryAccess())
+                    .isPresent()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .holderForCandidateKey("not a valid key", helper.getLevel().registryAccess())
+                    .isEmpty()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .holderForCandidateKey("cavernreborn:missing_biome", helper.getLevel().registryAccess())
+                    .isEmpty()
+                && CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter
+                    .holderForCandidateKeyOrFallback("cavernreborn:missing_biome", helper.getLevel().registryAccess())
+                    .isPresent(),
+            "Expected the guarded candidate-key-to-holder converter to resolve holders only through caller-provided lookup while remaining unwired from runtime biome-source methods"
+        );
+        helper.assertTrue(
             CaveniaRuntimeBiomeSource.guardedSubclassStubReady()
                 && CaveniaRuntimeBiomeSource.designatedSubclassSimpleName().equals("CaveniaRuntimeBiomeSource")
                 && CaveniaRuntimeBiomeSource.designatedSubclassFileName().equals("CaveniaRuntimeBiomeSource.java")
@@ -10664,6 +10769,11 @@ public final class CavernSpecialOreGameTests {
                 && CaveniaRuntimeBiomeSource.candidateKeyToHolderConversionImplementationGoNoGoDecisionReady()
                 && !CaveniaRuntimeBiomeSource.candidateKeyToHolderConversionImplementationRuntimeReady()
                 && CaveniaRuntimeBiomeSource.candidateKeyToHolderConversionImplementationIsNext()
+                && CaveniaRuntimeBiomeSource.candidateKeyToHolderConverterReady()
+                && !CaveniaRuntimeBiomeSource.candidateKeyToHolderConverterRuntimeReady()
+                && CaveniaRuntimeBiomeSource
+                    .candidateKeyToHolderConverterFileName()
+                    .equals("CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.java")
                 && CaveniaRuntimeBiomeSource.candidateKeyToHolderConversionInputShape()
                     .equals("string modern biome candidate key")
                 && CaveniaRuntimeBiomeSource.selectorToWeightedCandidateBridgeCandidateOutputShape()

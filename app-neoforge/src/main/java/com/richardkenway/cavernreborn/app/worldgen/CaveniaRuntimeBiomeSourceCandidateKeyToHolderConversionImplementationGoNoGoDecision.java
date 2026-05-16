@@ -314,6 +314,14 @@ public final class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplem
         return false;
     }
 
+    public static boolean candidateKeyToHolderConverterReady() {
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.converterReady();
+    }
+
+    public static boolean candidateKeyToHolderConverterRuntimeReady() {
+        return false;
+    }
+
     public static boolean conversionImplementationReady() {
         return false;
     }

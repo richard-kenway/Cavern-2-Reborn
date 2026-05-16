@@ -327,6 +327,18 @@ public final class CaveniaRuntimeBiomeSource extends BiomeSource {
             .nextSliceMayAddGuardedConversionHelper();
     }
 
+    public static boolean candidateKeyToHolderConverterReady() {
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.converterReady();
+    }
+
+    public static boolean candidateKeyToHolderConverterRuntimeReady() {
+        return false;
+    }
+
+    public static String candidateKeyToHolderConverterFileName() {
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.designatedConverterFileName();
+    }
+
     public static String candidateKeyToHolderConversionInputShape() {
         return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionReadiness.candidateKeyInputShape();
     }

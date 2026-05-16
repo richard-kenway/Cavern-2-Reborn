@@ -587,6 +587,14 @@ class CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeConsolidationTes
         List<Path> containingFiles = files.stream()
             .filter(path -> readString(path).contains(text))
             .toList();
+        if (text.equals("Holder<Biome>")) {
+            assertEquals(
+                List.of("CaveniaRuntimeBiomeSource.java", "CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.java"),
+                containingFiles.stream().map(path -> path.getFileName().toString()).toList(),
+                "Unexpected designated-file ownership for: " + text
+            );
+            return;
+        }
         assertEquals(List.of(DESIGNATED_SOURCE), containingFiles, "Unexpected designated-file ownership for: " + text);
     }
 

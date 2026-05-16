@@ -408,11 +408,28 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionReadinessTest {
             .filter(file -> read(file).contains(text))
             .toList();
 
+        if (text.equals("Holder<Biome>")) {
+            assertEquals(
+                List.of("CaveniaRuntimeBiomeSource.java", "CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.java"),
+                matchingFiles.stream().map(path -> path.getFileName().toString()).toList()
+            );
+            return;
+        }
+
         assertEquals(List.of(DESIGNATED_SOURCE), matchingFiles);
     }
 
     private static void assertNoMainSourceContains(List<Path> files, String text) throws IOException {
-        assertTrue(files.stream().noneMatch(file -> read(file).contains(text)));
+        boolean allowConverterFile = text.equals("ResourceLocation")
+            || text.equals("ResourceKey<Biome>")
+            || text.equals("HolderLookup")
+            || text.equals("Registries.BIOME")
+            || text.equals("return holder");
+        assertTrue(files.stream().noneMatch(file ->
+            (!allowConverterFile
+                || !file.getFileName().toString().equals("CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.java"))
+                && read(file).contains(text)
+        ));
     }
 
     private static void assertMissingProjectFile(String first, String... more) {

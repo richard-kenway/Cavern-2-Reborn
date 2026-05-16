@@ -916,6 +916,14 @@ class CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeImplementationGo
         List<Path> containingFiles = files.stream()
             .filter(path -> readString(path).contains(text))
             .toList();
+        if (text.equals("Holder<Biome>")) {
+            assertEquals(
+                List.of("CaveniaRuntimeBiomeSource.java", "CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.java"),
+                containingFiles.stream().map(path -> path.getFileName().toString()).toList(),
+                "Unexpected designated-file ownership for: " + text
+            );
+            return;
+        }
         assertEquals(List.of(DESIGNATED_SOURCE), containingFiles, "Unexpected designated-file ownership for: " + text);
     }
 
@@ -923,6 +931,16 @@ class CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeImplementationGo
         List<Path> containingFiles = files.stream()
             .filter(path -> readString(path).contains(text))
             .toList();
+        boolean allowConverterFile = text.equals("ResourceLocation")
+            || text.equals("ResourceKey<Biome>")
+            || text.equals("HolderLookup")
+            || text.equals("Registries.BIOME")
+            || text.equals("return holder");
+        if (allowConverterFile) {
+            containingFiles = containingFiles.stream()
+                .filter(path -> !path.getFileName().toString().equals("CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.java"))
+                .toList();
+        }
         assertTrue(containingFiles.isEmpty(), "Unexpected source token '" + text + "' in: " + containingFiles);
     }
 

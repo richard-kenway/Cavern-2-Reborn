@@ -328,6 +328,14 @@ public final class CaveniaRuntimeBiomeSourceReadinessChainConsolidation {
         return false;
     }
 
+    public static boolean candidateKeyToHolderConverterReady() {
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.converterReady();
+    }
+
+    public static boolean candidateKeyToHolderConverterRuntimeReady() {
+        return false;
+    }
+
     public static boolean selectorInputDerivationReadinessPinned() {
         return false;
     }

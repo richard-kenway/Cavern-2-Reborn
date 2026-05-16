@@ -398,6 +398,14 @@ public final class CaveniaRuntimeBiomeSourceFallbackPolicyReadiness {
         return false;
     }
 
+    public static boolean candidateKeyToHolderConverterReady() {
+        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.converterReady();
+    }
+
+    public static boolean candidateKeyToHolderConverterRuntimeReady() {
+        return false;
+    }
+
     public static boolean holderConversionReadinessReady() {
         return CaveniaRuntimeBiomeSourceHolderConversionReadiness.holderConversionReadinessReady();
     }

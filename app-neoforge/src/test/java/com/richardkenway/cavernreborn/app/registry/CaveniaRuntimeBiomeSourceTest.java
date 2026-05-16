@@ -14,6 +14,8 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 
 class CaveniaRuntimeBiomeSourceTest {
+    private static final String DESIGNATED_CONVERTER_FILE_NAME =
+        "CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.java";
     private static final Path DESIGNATED_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
         "CaveniaRuntimeBiomeSource.java"
@@ -264,6 +266,21 @@ class CaveniaRuntimeBiomeSourceTest {
         );
         assertTrue(
             designatedSource.contains(
+                "public static boolean candidateKeyToHolderConverterReady() {\n        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.converterReady();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean candidateKeyToHolderConverterRuntimeReady() {\n        return false;\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static String candidateKeyToHolderConverterFileName() {\n        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.designatedConverterFileName();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
                 "public static String selectorToWeightedCandidateBridgeOutputShape() {\n        return CaveniaRuntimeBiomeSourceSelectorToWeightedCandidateBridgeReadiness.candidateKeyOutputShape();\n    }"
             )
         );
@@ -356,8 +373,8 @@ class CaveniaRuntimeBiomeSourceTest {
         assertFalse(designatedSource.contains("DeferredRegister"));
         assertFalse(designatedSource.contains("RegistryLookup<"));
         assertFalse(designatedSource.contains("RegistryAccess"));
-        assertFalse(designatedSource.contains("ResourceLocation"));
-        assertFalse(designatedSource.contains("ResourceKey<Biome>"));
+        assertFalse(designatedSource.contains("holderForCandidateKey("));
+        assertFalse(designatedSource.contains("holderForCandidateKeyOrFallback("));
 
         try (Stream<Path> sourceFiles = Files.walk(APP_SOURCE_ROOT)) {
             List<Path> regularFiles = sourceFiles
@@ -366,6 +383,9 @@ class CaveniaRuntimeBiomeSourceTest {
 
             List<Path> designatedFiles = regularFiles.stream()
                 .filter(path -> path.getFileName().toString().equals("CaveniaRuntimeBiomeSource.java"))
+                .toList();
+            List<Path> runtimeBiomeSourceFiles = regularFiles.stream()
+                .filter(path -> path.getFileName().toString().contains("CaveniaRuntimeBiomeSource"))
                 .toList();
 
             assertEquals(1, designatedFiles.size());
@@ -376,13 +396,15 @@ class CaveniaRuntimeBiomeSourceTest {
             assertOnlyDesignatedFileContains(regularFiles, "import com.mojang.serialization.MapCodec;");
             assertOnlyDesignatedFileContains(regularFiles, "protected MapCodec<? extends BiomeSource> codec()");
             assertOnlyDesignatedFileContains(regularFiles, "Climate.Sampler");
+            assertOnlyConverterFileContains(runtimeBiomeSourceFiles, "ResourceLocation");
+            assertOnlyConverterFileContains(runtimeBiomeSourceFiles, "ResourceKey<Biome>");
+            assertOnlyConverterFileContains(runtimeBiomeSourceFiles, "HolderLookup");
             assertNoMainSourceContains(regularFiles, "Registry.register");
             assertNoMainSourceContains(regularFiles, "RecordCodecBuilder");
             assertNoMainSourceContains(regularFiles, "BuiltInRegistries.BIOME_SOURCE.register");
             assertNoMainSourceContains(regularFiles, "DeferredRegister");
             assertNoMainSourceContains(regularFiles, "RegistryLookup<");
             assertNoMainSourceContains(regularFiles, "RegistryAccess");
-            assertNoMainSourceContains(regularFiles, "ResourceKey<Biome>");
             assertNoMainSourceContains(regularFiles, "registerConfiguredFeature(");
             assertNoMainSourceContains(regularFiles, "registerPlacedFeature(");
             assertNoMainSourceContains(regularFiles, "registerConfiguredCarver(");
@@ -437,7 +459,41 @@ class CaveniaRuntimeBiomeSourceTest {
             })
             .toList();
 
-        assertEquals(List.of(DESIGNATED_SOURCE), matchingFiles, "Expected only the designated subclass file to contain: " + fragment);
+        if (fragment.equals("Holder<Biome>")) {
+            assertEquals(
+                List.of(DESIGNATED_SOURCE, resolveProjectFile(
+                    "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app",
+                    "worldgen", DESIGNATED_CONVERTER_FILE_NAME
+                )),
+                matchingFiles,
+                "Expected only the designated subclass and converter files to contain: " + fragment
+            );
+            return;
+        }
+
+        assertEquals(
+            List.of(DESIGNATED_SOURCE),
+            matchingFiles,
+            "Expected only the designated subclass file to contain: " + fragment
+        );
+    }
+
+    private static void assertOnlyConverterFileContains(List<Path> sourceFiles, String fragment) throws IOException {
+        List<Path> matchingFiles = sourceFiles.stream()
+            .filter(path -> {
+                try {
+                    return Files.readString(path).contains(fragment);
+                } catch (IOException exception) {
+                    throw new IllegalStateException("Could not read source file: " + path, exception);
+                }
+            })
+            .toList();
+
+        assertEquals(
+            List.of(DESIGNATED_CONVERTER_FILE_NAME),
+            matchingFiles.stream().map(path -> path.getFileName().toString()).toList(),
+            "Expected only the designated converter file to contain: " + fragment
+        );
     }
 
     private static void assertNoMainSourceContains(List<Path> sourceFiles, String fragment) throws IOException {

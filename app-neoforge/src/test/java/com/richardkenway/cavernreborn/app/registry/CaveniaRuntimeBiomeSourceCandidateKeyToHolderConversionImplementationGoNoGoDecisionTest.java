@@ -22,6 +22,8 @@ import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCand
 import com.richardkenway.cavernreborn.app.worldgen.CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionReadiness;
 
 class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoGoDecisionTest {
+    private static final String DESIGNATED_CONVERTER_FILE_NAME =
+        "CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.java";
     private static final Path NEXT_DECISION_SOURCE = resolveProjectFile(
         "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
         "CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationNextDecision.java"
@@ -541,11 +543,26 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoG
                 "public static boolean candidateKeyToHolderConversionImplementationIsNext() {\n        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoGoDecision\n            .nextSliceMayAddGuardedConversionHelper();\n    }"
             )
         );
-        assertFalse(
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean candidateKeyToHolderConverterReady() {\n        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.converterReady();\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static boolean candidateKeyToHolderConverterRuntimeReady() {\n        return false;\n    }"
+            )
+        );
+        assertTrue(
+            designatedSource.contains(
+                "public static String candidateKeyToHolderConverterFileName() {\n        return CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.designatedConverterFileName();\n    }"
+            )
+        );
+        assertTrue(
             Files.exists(
                 resolveProjectPathOrSibling(
                     "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app",
-                    "worldgen", "CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.java"
+                    "worldgen", DESIGNATED_CONVERTER_FILE_NAME
                 )
             )
         );
@@ -613,6 +630,10 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoG
         String guardrailContractSource = Files.readString(GUARDRAIL_CONTRACT_SOURCE);
         String decisionSource = Files.readString(DECISION_SOURCE);
         String designatedSource = Files.readString(DESIGNATED_SOURCE);
+        String converterSource = Files.readString(resolveProjectFile(
+            "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
+            DESIGNATED_CONVERTER_FILE_NAME
+        ));
         List<String> decisionSources = List.of(nextDecisionSource, guardrailSource, guardrailContractSource, decisionSource);
         List<String> forbiddenTokens = List.of(
             "Climate",
@@ -634,6 +655,12 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoG
         assertTrue(designatedSource.contains("Holder<Biome>"));
         assertTrue(designatedSource.contains("MapCodec"));
         assertTrue(designatedSource.contains("Climate.Sampler"));
+        assertFalse(designatedSource.contains("holderForCandidateKey("));
+        assertFalse(designatedSource.contains("holderForCandidateKeyOrFallback("));
+        assertTrue(converterSource.contains("ResourceLocation"));
+        assertTrue(converterSource.contains("ResourceKey<Biome>"));
+        assertTrue(converterSource.contains("HolderLookup"));
+        assertTrue(converterSource.contains("Holder<Biome>"));
 
         try (Stream<Path> sourceFiles = Files.walk(APP_WORLDGEN_SOURCE_ROOT)) {
             List<Path> files = sourceFiles.filter(Files::isRegularFile).toList();
@@ -645,6 +672,9 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoG
             assertOnlyDesignatedFileContains(files, "Holder<Biome>");
             assertOnlyDesignatedFileContains(files, "import com.mojang.serialization.MapCodec;");
             assertOnlyDesignatedFileContains(files, "Climate.Sampler");
+            assertOnlyConverterFileContains(runtimeBiomeSourceFiles, "ResourceLocation");
+            assertOnlyConverterFileContains(runtimeBiomeSourceFiles, "ResourceKey<Biome>");
+            assertOnlyConverterFileContains(runtimeBiomeSourceFiles, "HolderLookup");
             assertNoMainSourceContains(runtimeBiomeSourceFiles, "ResourceLocation");
             assertNoMainSourceContains(runtimeBiomeSourceFiles, "ResourceKey<Biome>");
             assertNoMainSourceContains(runtimeBiomeSourceFiles, "RegistryLookup<");
@@ -656,8 +686,6 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoG
             assertNoMainSourceContains(files, "public static final MapCodec");
             assertNoMainSourceContains(files, "static final MapCodec");
             assertNoMainSourceContains(files, "CODEC =");
-            assertNoMainSourceContains(files, "return holder");
-            assertNoMainSourceContains(files, "return fallback");
             assertNoMainSourceContains(files, "return getNoiseBiome");
             assertNoMainSourceContains(files, "return collectPossibleBiomes");
             assertNoMainSourceContains(files, "return Stream.of");
@@ -671,11 +699,43 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoG
             .filter(file -> read(file).contains(text))
             .toList();
 
+        if (text.equals("Holder<Biome>")) {
+            assertEquals(
+                List.of(
+                    DESIGNATED_SOURCE,
+                    resolveProjectFile(
+                        "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app",
+                        "worldgen", DESIGNATED_CONVERTER_FILE_NAME
+                    )
+                ),
+                matchingFiles
+            );
+            return;
+        }
+
         assertEquals(List.of(DESIGNATED_SOURCE), matchingFiles);
     }
 
+    private static void assertOnlyConverterFileContains(List<Path> files, String text) throws IOException {
+        List<Path> matchingFiles = files.stream()
+            .filter(file -> read(file).contains(text))
+            .toList();
+
+        assertEquals(
+            List.of(DESIGNATED_CONVERTER_FILE_NAME),
+            matchingFiles.stream().map(path -> path.getFileName().toString()).toList()
+        );
+    }
+
     private static void assertNoMainSourceContains(List<Path> files, String text) throws IOException {
-        assertTrue(files.stream().noneMatch(file -> read(file).contains(text)));
+        boolean allowConverterFile = text.equals("ResourceLocation")
+            || text.equals("ResourceKey<Biome>")
+            || text.equals("HolderLookup")
+            || text.equals("Registries.BIOME");
+        assertTrue(files.stream().noneMatch(file ->
+            (!allowConverterFile || !file.getFileName().toString().equals(DESIGNATED_CONVERTER_FILE_NAME))
+                && read(file).contains(text)
+        ));
     }
 
     private static Path resolveProjectFile(String first, String... more) {

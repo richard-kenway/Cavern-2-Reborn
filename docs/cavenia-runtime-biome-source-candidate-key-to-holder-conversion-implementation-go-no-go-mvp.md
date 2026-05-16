@@ -145,3 +145,4 @@ This is candidate-key-to-holder conversion implementation go/no-go decision, not
 - The next slice can be `Cavenia Runtime BiomeSource Candidate-Key-to-Holder Conversion Guarded Implementation MVP`.
 - That next slice may create only the designated converter helper.
 - That next slice must still keep `getNoiseBiome(...)` and `collectPossibleBiomes()` unusable unless explicitly requested otherwise.
+- The guarded converter implementation note is documented in `docs/cavenia-runtime-biome-source-candidate-key-to-holder-conversion-guarded-implementation-mvp.md`.

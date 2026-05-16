@@ -15,6 +15,8 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoG
     private static final String BROKEN_DOCUMENTED_IN_FRAGMENT = "documented in .";
     private static final String NEW_DOC_PATH =
         "docs/cavenia-runtime-biome-source-candidate-key-to-holder-conversion-implementation-go-no-go-mvp.md";
+    private static final String GUARDED_IMPLEMENTATION_DOC_PATH =
+        "docs/cavenia-runtime-biome-source-candidate-key-to-holder-conversion-guarded-implementation-mvp.md";
     private static final Path README = resolveProjectFile("README.md");
     private static final Path RUNTIME_SMOKE_DOC = resolveProjectFile("docs", "runtime-smoke.md");
     private static final Path NEW_DOC = resolveProjectFile(
@@ -144,21 +146,34 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoG
         assertTrue(newDoc.contains("`EntityCaveman -> deferred:caveman`"));
 
         assertTrue(readme.contains(NEW_DOC_PATH));
+        assertTrue(readme.contains(GUARDED_IMPLEMENTATION_DOC_PATH));
         assertTrue(runtimeSmokeDoc.contains(NEW_DOC_PATH));
+        assertTrue(runtimeSmokeDoc.contains(GUARDED_IMPLEMENTATION_DOC_PATH));
         assertTrue(readinessDoc.contains(NEW_DOC_PATH));
+        assertTrue(readinessDoc.contains(GUARDED_IMPLEMENTATION_DOC_PATH));
         assertTrue(goNoGoDoc.contains(NEW_DOC_PATH));
+        assertTrue(goNoGoDoc.contains(GUARDED_IMPLEMENTATION_DOC_PATH));
         assertTrue(consolidationDoc.contains(NEW_DOC_PATH));
+        assertTrue(consolidationDoc.contains(GUARDED_IMPLEMENTATION_DOC_PATH));
         assertTrue(pureBridgeDoc.contains(NEW_DOC_PATH));
+        assertTrue(pureBridgeDoc.contains(GUARDED_IMPLEMENTATION_DOC_PATH));
         assertTrue(bridgeImplementationGoNoGoDoc.contains(NEW_DOC_PATH));
         assertTrue(bridgeReadinessDoc.contains(NEW_DOC_PATH));
         assertTrue(bridgeGoNoGoDoc.contains(NEW_DOC_PATH));
         assertTrue(holderConversionDoc.contains(NEW_DOC_PATH));
+        assertTrue(holderConversionDoc.contains(GUARDED_IMPLEMENTATION_DOC_PATH));
         assertTrue(fallbackDoc.contains(NEW_DOC_PATH));
+        assertTrue(fallbackDoc.contains(GUARDED_IMPLEMENTATION_DOC_PATH));
         assertTrue(possibleBiomesDoc.contains(NEW_DOC_PATH));
+        assertTrue(possibleBiomesDoc.contains(GUARDED_IMPLEMENTATION_DOC_PATH));
         assertTrue(noiseDoc.contains(NEW_DOC_PATH));
+        assertTrue(noiseDoc.contains(GUARDED_IMPLEMENTATION_DOC_PATH));
         assertTrue(codecMethodDoc.contains(NEW_DOC_PATH));
+        assertTrue(codecMethodDoc.contains(GUARDED_IMPLEMENTATION_DOC_PATH));
         assertTrue(realSubclassDoc.contains(NEW_DOC_PATH));
+        assertTrue(realSubclassDoc.contains(GUARDED_IMPLEMENTATION_DOC_PATH));
         assertTrue(apiInventoryDoc.contains(NEW_DOC_PATH));
+        assertTrue(apiInventoryDoc.contains(GUARDED_IMPLEMENTATION_DOC_PATH));
 
         assertFalse(newDoc.contains(BROKEN_DOCUMENTED_IN_FRAGMENT));
         assertFalse(readinessDoc.contains(BROKEN_DOCUMENTED_IN_FRAGMENT));
@@ -175,10 +190,10 @@ class CaveniaRuntimeBiomeSourceCandidateKeyToHolderConversionImplementationGoNoG
             );
         }
 
-        assertMissingProjectFile(
+        assertTrue(Files.exists(resolveProjectPathOrSibling(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
             "CaveniaRuntimeBiomeSourceCandidateKeyToHolderConverter.java"
-        );
+        )));
         assertMissingProjectFile(
             "app-neoforge", "src", "main", "java", "com", "richardkenway", "cavernreborn", "app", "worldgen",
             "CaveniaBiomeSource.java"
